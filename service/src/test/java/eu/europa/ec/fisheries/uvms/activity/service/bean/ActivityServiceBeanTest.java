@@ -293,9 +293,8 @@ public class ActivityServiceBeanTest {
                 faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
         assertEquals(faReportDocumentEntity.getFluxReportDocument_IdSchemeId(),
                 faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getValue());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument_FluxParty().getFluxPartyName(), faReportCorrectionDTO.getOwnerFluxPartyName());
+        assertEquals(faReportDocumentEntity.getFluxParty_name(), faReportCorrectionDTO.getOwnerFluxPartyName());
     }
-
 
     @Test
     @SneakyThrows

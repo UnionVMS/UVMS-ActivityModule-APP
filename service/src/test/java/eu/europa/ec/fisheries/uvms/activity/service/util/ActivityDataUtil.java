@@ -17,8 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
@@ -39,16 +37,9 @@ public class ActivityDataUtil {
         faReportDocumentEntity.setFluxReportDocument_PurposeCodeListId(purposeCodeListId);
         faReportDocumentEntity.setFluxReportDocument_Purpose(purpose);
 
-        FluxPartyIdentifierEntity fluxPartyIdentifierEntity = new FluxPartyIdentifierEntity();
-        fluxPartyIdentifierEntity.setFluxPartyIdentifierId(ownerFluxPartyId);
-
-        Set<FluxPartyIdentifierEntity> partyIdentifiers = new HashSet<>();
-        partyIdentifiers.add(fluxPartyIdentifierEntity);
-
-        FluxPartyEntity fluxPartyEntity = new FluxPartyEntity();
-        fluxPartyEntity.setFluxPartyName(ownerFluxPartyName);
-        fluxPartyEntity.setFluxPartyIdentifiers(partyIdentifiers);
-        faReportDocumentEntity.setFluxReportDocument_FluxParty(fluxPartyEntity);
+        faReportDocumentEntity.setFluxParty_identifier(ownerFluxPartyId);
+        faReportDocumentEntity.setFluxParty_schemeId("FLUX_GP_PARTY");
+        faReportDocumentEntity.setFluxParty_name(ownerFluxPartyName);
     }
 
     public static VesselTransportMeansEntity getVesselTransportMeansEntity(String roleCode, String roleCodeListId, String name, RegistrationEventEntity registrationEventEntity) {

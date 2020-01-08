@@ -282,7 +282,10 @@ public class MapperUtil {
         faReportDocumentEntity.setFluxReportDocument_Id("Report Id 1");
         faReportDocumentEntity.setFluxReportDocument_IdSchemeId("Scheme Id 1");
 
-        faReportDocumentEntity.setFluxReportDocument_FluxParty(getFluxPartyEntity());
+        faReportDocumentEntity.setFluxParty_identifier("Flux party Id 1");
+        faReportDocumentEntity.setFluxParty_schemeId("Flux Scheme Id 1");
+        faReportDocumentEntity.setFluxParty_name("Flux party Name 1");
+        faReportDocumentEntity.setFluxParty_nameLanguageId("Flux party name language id 1");
 
         faReportDocumentEntity.setFluxReportDocument_Purpose("Test purpose");
         faReportDocumentEntity.setFluxReportDocument_PurposeCode("5");
@@ -291,19 +294,6 @@ public class MapperUtil {
 
         faReportDocumentEntity.setFluxReportDocument_CreationDatetime(Instant.now());
         return faReportDocumentEntity;
-    }
-
-    private static FluxPartyEntity getFluxPartyEntity() {
-        FluxPartyEntity fluxPartyEntity = new FluxPartyEntity();
-        fluxPartyEntity.setFluxPartyName("Flux party Name 1");
-        fluxPartyEntity.setNameLanguageId("Flux party name language id 1");
-
-        FluxPartyIdentifierEntity entity = new FluxPartyIdentifierEntity();
-        entity.setFluxPartyIdentifierId("Flux party Id 1");
-        entity.setFluxPartyIdentifierSchemeId("Flux Scheme Id 1");
-        HashSet<FluxPartyIdentifierEntity> fluxPartyIdentifiers = new HashSet<>(Collections.singletonList(entity));
-        fluxPartyEntity.setFluxPartyIdentifiers(fluxPartyIdentifiers);
-        return fluxPartyEntity;
     }
 
     public static AAPProcess getAapProcess() {

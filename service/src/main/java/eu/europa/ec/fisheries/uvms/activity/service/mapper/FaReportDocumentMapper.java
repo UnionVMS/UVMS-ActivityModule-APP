@@ -59,7 +59,11 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "fluxReportDocument_PurposeCode", source = "faReportDocument.relatedFLUXReportDocument.purposeCode.value"),
             @Mapping(target = "fluxReportDocument_PurposeCodeListId", source = "faReportDocument.relatedFLUXReportDocument.purposeCode.listID"),
             @Mapping(target = "fluxReportDocument_Purpose", source = "faReportDocument.relatedFLUXReportDocument.purpose.value"),
-            @Mapping(target = "fluxReportDocument_FluxParty", source = "faReportDocument.relatedFLUXReportDocument.ownerFLUXParty"),
+
+            @Mapping(target = "fluxParty_identifier", source = "faReportDocument.relatedFLUXReportDocument.ownerFLUXParty.IDS", qualifiedByName = "singleIDTypeValue"),
+            @Mapping(target = "fluxParty_schemeId", source = "faReportDocument.relatedFLUXReportDocument.ownerFLUXParty.IDS", qualifiedByName = "singleIDTypeSchemeID"),
+            @Mapping(target = "fluxParty_name", source = "faReportDocument.relatedFLUXReportDocument.ownerFLUXParty.names", qualifiedByName = "singleTextTypeValue"),
+            @Mapping(target = "fluxParty_nameLanguageId", source = "faReportDocument.relatedFLUXReportDocument.ownerFLUXParty.names", qualifiedByName = "singleTextTypeLanguageId"),
 
             @Mapping(target = "typeCode", source = "faReportDocument.typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "faReportDocument.typeCode.listID"),
@@ -82,7 +86,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "creationDate", source = "fluxReportDocument_CreationDatetime"),
             @Mapping(target = "acceptedDate", source = "acceptedDatetime"),
             @Mapping(target = "faReportIdentifiers", expression = "java(getReportIdMap(faReportDocumentEntity.getFluxReportDocument_Id(), faReportDocumentEntity.getFluxReportDocument_IdSchemeId()))"),
-            @Mapping(target = "ownerFluxPartyName", source = "fluxReportDocument_FluxParty.fluxPartyName"),
+            @Mapping(target = "ownerFluxPartyName", source = "fluxParty_name"),
             @Mapping(target = "purposeCode", source = "fluxReportDocument_PurposeCode")
     })
     public abstract FaReportCorrectionDTO mapToFaReportCorrectionDto(FaReportDocumentEntity faReportDocumentEntity);
@@ -93,7 +97,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             @Mapping(target = "type", source = "typeCode"),
             @Mapping(target = "acceptedDate", expression = "java(instantToDateUtilsStringFormat(faReportDocument.getAcceptedDatetime()))"),
             @Mapping(target = "creationDate", source = "fluxReportDocument_CreationDatetime", qualifiedByName = "instantToDateUtilsStringFormat"),
-            @Mapping(target = "owner", source = "fluxReportDocument_FluxParty.fluxPartyName"),
+            @Mapping(target = "owner", source = "fluxParty_name"),
             @Mapping(target = "refId", source = "fluxReportDocument_ReferenceId"),
             @Mapping(target = "purposeCode", source = "fluxReportDocument_PurposeCode"),
             @Mapping(target = "fmcMark", source = "fmcMarker"),

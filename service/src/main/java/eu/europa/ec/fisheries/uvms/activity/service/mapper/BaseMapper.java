@@ -366,6 +366,16 @@ public class BaseMapper {
         return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getSchemeID);
     }
 
+    @Named("singleTextTypeValue")
+    protected String singleTextTypeValue(List<TextType> textTypes) {
+        return getObjectPropertyFromListOfObjectsWithMaxOneItem(textTypes, TextType::getValue);
+    }
+
+    @Named("singleTextTypeLanguageId")
+    protected String singleTextTypeLanguageId(List<TextType> textTypes) {
+        return getObjectPropertyFromListOfObjectsWithMaxOneItem(textTypes, TextType::getLanguageID);
+    }
+
     private <O, P> P getObjectPropertyFromListOfObjectsWithMaxOneItem(List<O> listOfO, Function<O, P> getPfromOFunction) {
         if (CollectionUtils.isEmpty(listOfO)) {
             return null;
@@ -420,7 +430,14 @@ public class BaseMapper {
         idType.setSchemeID(fluxReportDocument_idSchemeId);
         ArrayList<IDType> idTypes = Lists.newArrayList(idType);
 
-        FluxPartyEntity fluxReportDocument_fluxParty = faReportDocumentEntity.getFluxReportDocument_FluxParty();
+        FluxPartyEntity fluxReportDocument_fluxParty = new FluxPartyEntity();
+        FluxPartyIdentifierEntity fluxReportDocument_fluxPartyIdentifier = new FluxPartyIdentifierEntity(-1,
+                fluxReportDocument_fluxParty,
+                faReportDocumentEntity.getFluxParty_identifier(),
+                faReportDocumentEntity.getFluxParty_schemeId());
+        fluxReportDocument_fluxParty.setFluxPartyIdentifiers(Sets.newHashSet(fluxReportDocument_fluxPartyIdentifier));
+        fluxReportDocument_fluxParty.setFluxPartyName(faReportDocumentEntity.getFluxParty_name());
+        fluxReportDocument_fluxParty.setNameLanguageId(faReportDocumentEntity.getFluxParty_nameLanguageId());
         FLUXParty fluxParty = mapToFluxParty(fluxReportDocument_fluxParty);
 
         String fluxReportDocument_purpose = faReportDocumentEntity.getFluxReportDocument_Purpose();

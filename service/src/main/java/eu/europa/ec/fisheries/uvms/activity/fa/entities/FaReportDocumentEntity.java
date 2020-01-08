@@ -29,7 +29,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -130,9 +129,17 @@ public class FaReportDocumentEntity implements Serializable {
     @Column(name = "flux_report_document_purpose")
     private String fluxReportDocument_Purpose;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "flux_report_document_flux_party_id")
-    private FluxPartyEntity fluxReportDocument_FluxParty;
+    @Column(name = "flux_party_identifier", nullable = false)
+    private String fluxParty_identifier;
+
+    @Column(name = "flux_party_scheme_id", nullable = false)
+    private String fluxParty_schemeId;
+
+    @Column(name = "flux_party_name")
+    private String fluxParty_name;
+
+    @Column(name = "flux_party_name_language_id")
+    private String fluxParty_nameLanguageId;
 
     @Column(name = "geom", columnDefinition = "Geometry")
     private Geometry geom;

@@ -46,9 +46,6 @@ public class FluxPartyEntity implements Serializable {
     private int id;
 
     @OneToOne(mappedBy = "fluxReportDocument_FluxParty", optional=true)
-    private FaReportDocumentEntity faReportDocumentEntity;
-
-    @OneToOne(mappedBy = "fluxReportDocument_FluxParty", optional=true)
     private FluxFaReportMessageEntity fluxFaReportMessageEntity;
 
     @Column(name = "flux_party_name")
