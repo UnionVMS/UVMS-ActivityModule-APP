@@ -179,6 +179,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         }
     }
 
+    @Override
     protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }

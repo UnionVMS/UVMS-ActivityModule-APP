@@ -28,6 +28,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummary
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.FluxCharacteristicsViewDtoMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
+import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritInverseConfiguration;
@@ -168,7 +169,7 @@ public abstract class FaCatchMapper extends BaseMapper {
     }
 
     protected FishingTripEntity getFishingTripEntity(List<FishingTrip> relatedFishingTrips) {
-        if(relatedFishingTrips == null || relatedFishingTrips.size() == 0) {
+        if (CollectionUtils.isEmpty(relatedFishingTrips)) {
             return null;
         }
         FishingTrip fishingTrip = relatedFishingTrips.get(0);
@@ -266,47 +267,41 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> specifiedFluxLocations, List<FLUXLocation> destFluxLocations, FaCatchEntity faCatchEntity) {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
-        if (specifiedFluxLocations != null && !specifiedFluxLocations.isEmpty()) {
-            for (FLUXLocation fluxLocation : specifiedFluxLocations) {
-                FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+        for (FLUXLocation fluxLocation : Utils.safeIterable(specifiedFluxLocations)) {
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
 
-                Set<StructuredAddressEntity> structuredAddressEntitySet = new HashSet<>();
+            Set<StructuredAddressEntity> structuredAddressEntitySet = new HashSet<>();
 
-                StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
-                StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(physicalStructuredAddress);
+            StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
+            StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(physicalStructuredAddress);
 
-                if (physicalStructuredAddressEntity != null){
-                    physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                    physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
-                    structuredAddressEntitySet.add(physicalStructuredAddressEntity);
-                }
-
-                List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
-                if (postalStructuredAddresses != null && !postalStructuredAddresses.isEmpty()) {
-                    for (StructuredAddress structuredAddress : postalStructuredAddresses) {
-                        StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
-                        if (structuredAddressEntity != null){
-                            structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
-                            structuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                            structuredAddressEntitySet.add(structuredAddressEntity);
-                        }
-                    }
-                }
-
-                fluxLocationEntity.setStructuredAddresses(structuredAddressEntitySet);
-                fluxLocationEntity.setFaCatch(faCatchEntity);
-                fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED);
-                fluxLocationEntities.add(fluxLocationEntity);
+            if (physicalStructuredAddressEntity != null) {
+                physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
+                physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
+                structuredAddressEntitySet.add(physicalStructuredAddressEntity);
             }
+
+            List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
+            for (StructuredAddress structuredAddress : Utils.safeIterable(postalStructuredAddresses)) {
+                StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
+                if (structuredAddressEntity != null) {
+                    structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
+                    structuredAddressEntity.setFluxLocation(fluxLocationEntity);
+                    structuredAddressEntitySet.add(structuredAddressEntity);
+                }
+            }
+
+            fluxLocationEntity.setStructuredAddresses(structuredAddressEntitySet);
+            fluxLocationEntity.setFaCatch(faCatchEntity);
+            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED);
+            fluxLocationEntities.add(fluxLocationEntity);
         }
 
-        if (destFluxLocations != null && !destFluxLocations.isEmpty()) {
-            for (FLUXLocation fluxLocation : destFluxLocations) {
-                FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-                fluxLocationEntity.setFaCatch(faCatchEntity);
-                fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION);
-                fluxLocationEntities.add(fluxLocationEntity);
-            }
+        for (FLUXLocation fluxLocation : Utils.safeIterable(destFluxLocations)) {
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+            fluxLocationEntity.setFaCatch(faCatchEntity);
+            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION);
+            fluxLocationEntities.add(fluxLocationEntity);
         }
 
         return fluxLocationEntities;
