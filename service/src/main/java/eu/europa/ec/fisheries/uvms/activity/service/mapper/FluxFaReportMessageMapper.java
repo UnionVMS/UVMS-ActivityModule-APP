@@ -22,20 +22,17 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = {FaReportDocumentMapper.class, FluxPartyMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FluxFaReportMessageMapper extends BaseMapper {
 
     public static FluxFaReportMessageMapper INSTANCE = Mappers.getMapper(FluxFaReportMessageMapper.class);
@@ -50,7 +47,11 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
             @Mapping(target = "fluxReportDocument_PurposeCode", source = "FLUXReportDocument.purposeCode.value"),
             @Mapping(target = "fluxReportDocument_PurposeCodeListId", source = "FLUXReportDocument.purposeCode.listID"),
             @Mapping(target = "fluxReportDocument_Purpose", source = "FLUXReportDocument.purpose.value"),
-            @Mapping(target = "fluxReportDocument_FluxParty", source = "FLUXReportDocument.ownerFLUXParty"),
+
+            @Mapping(target = "fluxParty_identifier", source = "FLUXReportDocument.ownerFLUXParty.IDS", qualifiedByName = "singleIDTypeValue"),
+            @Mapping(target = "fluxParty_schemeId", source = "FLUXReportDocument.ownerFLUXParty.IDS", qualifiedByName = "singleIDTypeSchemeID"),
+            @Mapping(target = "fluxParty_name", source = "FLUXReportDocument.ownerFLUXParty.names", qualifiedByName = "singleTextTypeValue"),
+            @Mapping(target = "fluxParty_nameLanguageId", source = "FLUXReportDocument.ownerFLUXParty.names", qualifiedByName = "singleTextTypeLanguageId"),
 
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "faReportDocuments", ignore = true)

@@ -13,8 +13,8 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingTripIdSearchBuilder;
@@ -48,10 +48,10 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     }
 
     public String getOwnerFluxPartyFromTripId(String fishingTripId) {
-        TypedQuery<FluxPartyIdentifierEntity> query = getEntityManager().createNamedQuery(FluxPartyIdentifierEntity.MESSAGE_OWNER_FROM_TRIP_ID, FluxPartyIdentifierEntity.class);
+        TypedQuery<String> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.MESSAGE_OWNER_FROM_TRIP_ID, String.class);
         query.setParameter("fishingTripId", fishingTripId).setMaxResults(1).getResultList();
-        List<FluxPartyIdentifierEntity> resultList = query.getResultList();
-        return CollectionUtils.isNotEmpty(resultList) ? resultList.get(0).getFluxPartyIdentifierId() : StringUtils.EMPTY;
+        List<String> resultList = query.getResultList();
+        return CollectionUtils.isNotEmpty(resultList) ? resultList.get(0) : StringUtils.EMPTY;
     }
 
     /**

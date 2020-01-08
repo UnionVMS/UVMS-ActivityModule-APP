@@ -22,4 +22,21 @@
         <dropColumn tableName="activity_fa_report_document" columnName="flux_report_document_flux_party_id" />
     </changeSet>
 
+    <changeSet author="robmil" id="ERS-459-add-flux-party-columns-to-flux-fa-report-message">
+        <addColumn tableName="activity_flux_fa_report_message">
+            <column name="flux_party_identifier" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_party_scheme_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_party_name" type="VARCHAR(255)"/>
+            <column name="flux_party_name_language_id" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="ERS-459-remove-flux-party-fk-from-flux-fa-report-message">
+        <dropColumn tableName="activity_flux_fa_report_message" columnName="flux_report_document_flux_party_id" />
+    </changeSet>
+
 </databaseChangeLog>

@@ -46,9 +46,9 @@ public class FluxFaReportMessageMapperTest {
         assertEquals(Instant.parse("2016-07-01T11:14:00Z"), mapped.getFluxReportDocument_CreationDatetime());
         assertEquals("9", mapped.getFluxReportDocument_PurposeCode());
         assertEquals("Purpose", mapped.getFluxReportDocument_Purpose());
-        assertEquals("Owner flux party id 1", mapped.getFluxReportDocument_FluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierId());
-        assertEquals("47rfh-5hry4-thfur75-4hf743", mapped.getFluxReportDocument_FluxParty().getFluxPartyIdentifiers().iterator().next().getFluxPartyIdentifierSchemeId());
-        assertEquals("fluxPartyOwnerName 1", mapped.getFluxReportDocument_FluxParty().getFluxPartyName());
+        assertEquals("Owner flux party id 1", mapped.getFluxParty_identifier());
+        assertEquals("47rfh-5hry4-thfur75-4hf743", mapped.getFluxParty_schemeId());
+        assertEquals("fluxPartyOwnerName 1", mapped.getFluxParty_name());
 
         // assert FA report documents
         assertEquals(2, mapped.getFaReportDocuments().size());

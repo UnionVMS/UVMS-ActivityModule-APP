@@ -26,8 +26,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -37,20 +35,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@NamedQueries({
-        @NamedQuery(name = FluxPartyIdentifierEntity.MESSAGE_OWNER_FROM_TRIP_ID,
-                query = "SELECT DISTINCT fPartyIdentifier FROM FluxPartyIdentifierEntity fPartyIdentifier " +
-                        "LEFT JOIN fPartyIdentifier.fluxParty flParty " +
-                        "LEFT JOIN flParty.fluxFaReportMessageEntity fluxRepMessage " +
-                        "LEFT JOIN fluxRepMessage.faReportDocuments faRepDocs " +
-                        "LEFT JOIN faRepDocs.fishingActivities fishActivities " +
-                        "LEFT JOIN fishActivities.fishingTrip fishTrip " +
-                        "WHERE fishTrip.fishingTripKey.tripId =:fishingTripId")
-})
 @EqualsAndHashCode(of = {"fluxPartyIdentifierId","fluxPartyIdentifierSchemeId"})
 public class FluxPartyIdentifierEntity implements Serializable {
-
-    public static final String MESSAGE_OWNER_FROM_TRIP_ID = "findMessageOwnerFromTripId";
 
     @Id
     @Column(unique = true, nullable = false)

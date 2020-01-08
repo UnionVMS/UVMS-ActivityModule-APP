@@ -25,7 +25,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -44,9 +43,6 @@ public class FluxPartyEntity implements Serializable {
     @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_pty_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
-
-    @OneToOne(mappedBy = "fluxReportDocument_FluxParty", optional=true)
-    private FluxFaReportMessageEntity fluxFaReportMessageEntity;
 
     @Column(name = "flux_party_name")
     private String fluxPartyName;

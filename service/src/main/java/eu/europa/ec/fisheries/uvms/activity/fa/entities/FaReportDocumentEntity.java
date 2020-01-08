@@ -81,6 +81,11 @@ import java.util.Set;
                         "WHERE fareport.fluxReportDocument_ReferenceId = :reportId " +
                         "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeId"
         ),
+        @NamedQuery(name = FaReportDocumentEntity.MESSAGE_OWNER_FROM_TRIP_ID,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "LEFT JOIN fareport.fishingActivities fishActivities " +
+                        "LEFT JOIN fishActivities.fishingTrip fishTrip " +
+                        "WHERE fishTrip.fishingTripKey.tripId =:fishingTripId")
 })
 @Entity
 @Table(name = "activity_fa_report_document")
@@ -98,6 +103,7 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
     public static final String FIND_MATCHING_IDENTIFIER = "findMatchingIdentifier";
     public static final String FIND_RELATED_MATCHING_IDENTIFIER = "findRelatedMatchingIdentifier";
+    public static final String MESSAGE_OWNER_FROM_TRIP_ID = "findMessageOwnerFromTripId";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
