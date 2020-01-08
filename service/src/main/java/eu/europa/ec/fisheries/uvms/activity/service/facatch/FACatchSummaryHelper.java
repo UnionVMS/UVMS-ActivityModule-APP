@@ -10,18 +10,13 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.service.facatch;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomChildProxy;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.SummaryTableDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FACatchSummaryMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.GroupCriteriaMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryRecord;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
 import lombok.extern.slf4j.Slf4j;
@@ -54,20 +49,6 @@ public abstract class FACatchSummaryHelper {
     private DateTimeFormatter yearFormatter = DateTimeFormatter.ofPattern("yyyy", Locale.ROOT).withZone(ZoneOffset.UTC.normalized());
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ROOT).withZone(ZoneOffset.UTC.normalized());
     private DateTimeFormatter defaultFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ROOT).withZone(ZoneOffset.UTC.normalized());
-
-    public static String printJsonstructure(Object obj) {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        String s = null;
-        try {
-            s = mapper.writeValueAsString(obj);
-        } catch (JsonProcessingException e) {
-            log.error("Exception while parsing JSON", e);
-        }
-        log.debug("json structure:-------->");
-        log.debug("" + s);
-        return s;
-    }
 
     /**
      * This method maps raw data fetched from database to customEntity.
@@ -253,18 +234,6 @@ public abstract class FACatchSummaryHelper {
         } else {
             return totalValue + value;
         }
-    }
-
-    public List<FACatchSummaryRecord> buildFACatchSummaryRecordList(List<FACatchSummaryRecordDTO> catchSummaryDTOList) {
-        List<FACatchSummaryRecord> faCatchSummaryRecords = new ArrayList<>();
-        for (FACatchSummaryRecordDTO faCatchSummaryDTO : catchSummaryDTOList) {
-            FACatchSummaryRecord faCatchSummaryRecord = new FACatchSummaryRecord();
-            faCatchSummaryRecord.setGroups(faCatchSummaryDTO.getGroups());
-            faCatchSummaryRecord.setSummary(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getSummaryTable()));
-            faCatchSummaryRecords.add(faCatchSummaryRecord);
-        }
-        log.debug("List of FACatchSummaryRecord objects created");
-        return faCatchSummaryRecords;
     }
 
     /**
