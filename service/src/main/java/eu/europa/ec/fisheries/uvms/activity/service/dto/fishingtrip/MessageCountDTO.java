@@ -16,9 +16,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Created by sanera on 24/08/2016.
- */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MessageCountDTO {
 

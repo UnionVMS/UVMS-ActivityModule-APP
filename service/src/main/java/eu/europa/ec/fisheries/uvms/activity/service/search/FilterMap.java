@@ -24,10 +24,10 @@ import java.util.Set;
 
 
 /**
- * Created by sanera on 12/07/2016.
  * <p>
  * Filter Fishing Activity Reports functionality require Query to be generated Dynamically based on Filters provided.
  * This class provides mapping information to Query Builder.
+ * </p>
  */
 public class FilterMap {
 

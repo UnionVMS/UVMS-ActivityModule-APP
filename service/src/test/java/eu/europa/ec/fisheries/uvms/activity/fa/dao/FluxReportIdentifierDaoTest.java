@@ -34,9 +34,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by kovian on 17/07/2017.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class FluxReportIdentifierDaoTest {
 

@@ -33,9 +33,6 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by padhyad on 9/22/2016.
- */
 public interface FishingTripService {
 
     /**

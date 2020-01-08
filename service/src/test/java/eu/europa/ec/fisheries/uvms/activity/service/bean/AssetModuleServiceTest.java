@@ -25,9 +25,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-/**
- * Created by kovian on 26/01/2017.
- */
 public class AssetModuleServiceTest {
 
     ConnectionFactory connectionFactory;
@@ -38,10 +35,8 @@ public class AssetModuleServiceTest {
 
     AssetModuleServiceBean assetsModuleBean;
 
-
     @Before
-    public void prepare(){
-
+    public void prepare() {
         assetProducer     = mock(AssetProducerBean.class);
         activityConsumer  = mock(ActivityConsumerBean.class);
         connectionFactory = mock(ConnectionFactory.class);

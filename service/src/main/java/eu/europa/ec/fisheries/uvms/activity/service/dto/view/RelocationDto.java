@@ -19,9 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.facatch.FluxCharacterist
 
 import java.util.List;
 
-/**
- * Created by padhyad on 3/28/2017.
- */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RelocationDto {
 

@@ -20,11 +20,7 @@ import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by sanera on 01/09/2016.
- */
 public class FishingActivityTypeDTO {
-
 
     @JsonProperty("date")
     @JsonSerialize(using = CustomDateSerializer.class)

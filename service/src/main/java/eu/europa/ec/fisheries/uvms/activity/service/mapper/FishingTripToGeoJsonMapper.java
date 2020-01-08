@@ -15,19 +15,20 @@ import org.opengis.feature.simple.SimpleFeatureType;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * Created by sanera on 14/11/2016.
- */
 @Slf4j
 public class FishingTripToGeoJsonMapper {
     private static final SimpleFeatureType TRIP_FEATURE = build();
     private static final String GEOMETRY = "geometry";
     private static final String TRIP = "TRIP";
 
-    private FishingTripToGeoJsonMapper(){
+    private FishingTripToGeoJsonMapper() {}
 
-    }
-    //Convert Geometry list into GEO JSON format
+    /**
+     * Convert Geometry list into GEO JSON format
+     *
+     * @param geoList
+     * @return
+     */
     public static ObjectNode toJson(List<Geometry> geoList)  {
 
         ObjectNode rootNode=null;
@@ -67,7 +68,4 @@ public class FishingTripToGeoJsonMapper {
 
         return feature;
     }
-
-
-
 }

@@ -27,9 +27,6 @@ import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 
-/**
- * Created by sanera on 07/10/2016.
- */
 public class SearchQueryBuilderTest {
 
     @Test

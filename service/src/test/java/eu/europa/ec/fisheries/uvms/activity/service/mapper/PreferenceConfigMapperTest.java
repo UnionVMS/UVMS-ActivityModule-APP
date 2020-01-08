@@ -22,9 +22,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-/**
- * Created by padhyad on 8/25/2016.
- */
 public class PreferenceConfigMapperTest {
 
     @Test

@@ -44,7 +44,6 @@ import java.util.Map;
 /**
  * This class acts as helper class for FAcatchSummary Report functionality.
  * Helper class with basic utility methods for FACatch Summary table
- * Created by sanera on 31/01/2017.
  */
 @Slf4j
 public abstract class FACatchSummaryHelper {

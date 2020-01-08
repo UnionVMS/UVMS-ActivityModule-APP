@@ -10,14 +10,8 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-/**
- * Created by kovian on 14/02/2017.
- */
 public final class GearCharacteristicConstants {
 
-    private GearCharacteristicConstants(){
-        super();
-    }
     public static final String GEAR_CHARAC_TYPE_CODE_ME = "ME";
     public static final String GEAR_CHARAC_TYPE_CODE_GM = "GM";
     public static final String GEAR_CHARAC_TYPE_CODE_GN = "GN";
@@ -29,4 +23,7 @@ public final class GearCharacteristicConstants {
     public static final String GEAR_CHARAC_TYPE_CODE_GD = "GD";
     public static final String GEAR_CHARAC_Q_CODE_C62   = "C62";
 
+    private GearCharacteristicConstants() {
+        super();
+    }
 }

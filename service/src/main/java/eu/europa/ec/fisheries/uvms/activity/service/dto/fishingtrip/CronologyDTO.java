@@ -13,18 +13,12 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
-/**
- * Created by sanera on 26/08/2016.
- */
 public class CronologyDTO {
-
 
     private String tripID;
     private String tripDate;
 
-    public CronologyDTO(){
-
-    }
+    public CronologyDTO() {}
 
     public CronologyDTO(String tripID, String tripDate) {
         this.tripID = tripID;

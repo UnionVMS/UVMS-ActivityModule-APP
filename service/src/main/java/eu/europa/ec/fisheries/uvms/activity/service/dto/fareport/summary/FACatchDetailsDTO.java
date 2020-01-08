@@ -10,9 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary;
 
-/**
- * Created by sanera on 28/02/2017.
- */
 public class FACatchDetailsDTO {
 
     private FACatchSummaryDTO catches;

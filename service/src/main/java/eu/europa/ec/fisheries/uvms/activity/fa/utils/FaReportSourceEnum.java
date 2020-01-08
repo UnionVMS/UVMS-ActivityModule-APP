@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.utils;
 
-/**
- * Created by padhyad on 9/13/2016.
- */
 public enum FaReportSourceEnum {
 
     FLUX("FLUX"),

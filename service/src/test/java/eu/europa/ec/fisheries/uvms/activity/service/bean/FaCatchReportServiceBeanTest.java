@@ -38,11 +38,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by sanera on 07/03/2017.
- */
 public class FaCatchReportServiceBeanTest {
-
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
