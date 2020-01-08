@@ -56,7 +56,7 @@ public class FilterMap {
     public static final String CONTACT_PARTY_TABLE_ALIAS = "vt.contactParty cparty";
     private static final String FA_CATCH_TABLE_ALIAS = " a.faCatchs faCatch ";
     public static final String FA_REPORT_DOC_TABLE_ALIAS = " fa ";
-    public static final String FLUX_PARTY_TABLE_ALIAS = " flux.fluxParty fp  ";
+    public static final String FLUX_PARTY_TABLE_ALIAS = " fa.fluxReportDocument_FluxParty fp  ";
     private static final String GEAR_TYPE_TABLE_ALIAS = " a.fishingGears fg ";
     private static final String FISHING_TRIP_TABLE_ALIAS = " a.fishingTrip fishingTrip ";
     public static final String AAP_PROCESS_TABLE_ALIAS = " faCatch.aapProcesses aprocess ";

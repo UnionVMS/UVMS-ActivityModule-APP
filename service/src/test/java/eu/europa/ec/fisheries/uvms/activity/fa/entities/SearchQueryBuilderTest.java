@@ -101,7 +101,7 @@ public class SearchQueryBuilderTest {
         String expected =
                 "SELECT DISTINCT a from FishingActivityEntity a " +
                 "LEFT JOIN FETCH a.faReportDocument fa  " +
-                "JOIN FETCH  flux.fluxParty fp   " +
+                "JOIN FETCH  fa.fluxReportDocument_FluxParty fp   " +
                 "JOIN FETCH  fp.fluxPartyIdentifiers fpi  " +
                 "LEFT  JOIN FETCH  a.delimitedPeriods dp   " +
                 "JOIN FETCH fa.vesselTransportMeans vt " +
@@ -116,7 +116,8 @@ public class SearchQueryBuilderTest {
                 "LEFT JOIN FETCH  aprocess.aapProducts aprod   " +
                 "JOIN FETCH vt.contactParty cparty " +
                 "JOIN FETCH  cparty.contactPerson cPerson  " +
-                "WHERE fa.source =:dataSource AND fpi.fluxPartyIdentifierId =:ownerId  " +
+                "WHERE fa.source =:dataSource " +
+                "AND fpi.fluxPartyIdentifierId =:ownerId  " +
                 "AND    a.calculatedStartTime  >= :startDate  " +
                 "AND  (dp.endDate <= :endDate OR  a.calculatedStartTime <= :endDate) " +
                 "AND vi.vesselIdentifierId IN (:vtSchemeId) " +
