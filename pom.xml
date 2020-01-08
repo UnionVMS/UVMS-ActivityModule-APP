@@ -11,7 +11,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>1.1.25-SWE-SNAPSHOT</version>
+    <version>1.1.25-SWE</version>
     <packaging>pom</packaging>
     <description>Swedish version of UnionVms activity module for handling fishing activities.</description>
 
@@ -450,7 +450,7 @@
 
     <scm>
         <connection>${scm.connection}</connection>
-        <tag>HEAD</tag>
+        <tag>activity-1.1.25-SWE</tag>
     </scm>
 
     <build>
