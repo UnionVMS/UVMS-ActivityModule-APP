@@ -13,11 +13,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.search.builder;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterDetails;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -193,17 +193,10 @@ public abstract class SearchQueryBuilder {
             return sql;
         }
         // Make sure that the field which we want to sort, table Join is present for it.
-        if (getFiledCase(sql, field) == 1) {
+        if (SearchFilter.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
             appendLeftJoinFetch(sql);
         }
         return sql;
-    }
-
-    private int getFiledCase(StringBuilder sql, SearchFilter field) {
-        if (SearchFilter.PERIOD_END.equals(field) && sql.indexOf(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS) == -1) {
-            return 1;
-        }
-        return 0;
     }
 
     protected void appendLeftJoinFetch(StringBuilder sql) {
