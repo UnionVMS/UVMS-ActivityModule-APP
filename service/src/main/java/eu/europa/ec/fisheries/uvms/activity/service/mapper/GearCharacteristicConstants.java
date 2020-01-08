@@ -21,9 +21,7 @@ public final class GearCharacteristicConstants {
     public static final String GEAR_CHARAC_TYPE_CODE_NL = "NL";
     public static final String GEAR_CHARAC_TYPE_CODE_QG = "QG";
     public static final String GEAR_CHARAC_TYPE_CODE_GD = "GD";
-    public static final String GEAR_CHARAC_Q_CODE_C62   = "C62";
+    public static final String GEAR_CHARAC_Q_CODE_C62 = "C62";
 
-    private GearCharacteristicConstants() {
-        super();
-    }
+    private GearCharacteristicConstants() {}
 }
