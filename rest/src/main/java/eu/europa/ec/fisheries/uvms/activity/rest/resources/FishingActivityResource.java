@@ -129,13 +129,12 @@ public class FishingActivityResource extends UnionVMSResource {
     public Response getPreviousFishingActivity(@Context HttpServletRequest request,
                                                @Context HttpServletResponse response,
                                                @PathParam("activityId") String activityId) {
-        int converstedActivityId = 0;
-        log.debug("Received ActivityId from frontEnd as: " + activityId);
+        int activityIdInteger = 0;
+        log.debug("Received Activity ID {}", activityId);
         if (activityId != null) {
-
-            converstedActivityId = Integer.parseInt(activityId);
+            activityIdInteger = Integer.parseInt(activityId);
         }
-        int previousFishingActivity = activityService.getPreviousFishingActivity(converstedActivityId);
+        int previousFishingActivity = activityService.getPreviousFishingActivity(activityIdInteger);
         return createSuccessResponse(previousFishingActivity);
     }
 
@@ -147,13 +146,12 @@ public class FishingActivityResource extends UnionVMSResource {
     public Response getNextFishingActivity(@Context HttpServletRequest request,
                                            @Context HttpServletResponse response,
                                            @PathParam("activityId") String activityId) {
-        int converstedActivityId = 0;
-        log.debug("Received ActivityId from frontEnd as: " + activityId);
+        int activityIdInteger = 0;
+        log.debug("Received Activity ID {}", activityId);
         if (activityId != null) {
-
-            converstedActivityId = Integer.parseInt(activityId);
+            activityIdInteger = Integer.parseInt(activityId);
         }
-        int nextFishingActivity = activityService.getNextFishingActivity(converstedActivityId);
+        int nextFishingActivity = activityService.getNextFishingActivity(activityIdInteger);
         return createSuccessResponse(nextFishingActivity);
     }
 }
