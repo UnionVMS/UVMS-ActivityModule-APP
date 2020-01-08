@@ -93,6 +93,13 @@ public interface FishingTripService {
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                                                                Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 
+    /**
+     * Returns TripWidgetDto based on the tripId and activityId
+     *
+     * @param activityEntity
+     * @param tripId
+     * @return
+     */
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;

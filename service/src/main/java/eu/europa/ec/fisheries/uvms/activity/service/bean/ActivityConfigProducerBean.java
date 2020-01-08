@@ -34,7 +34,6 @@ public class ActivityConfigProducerBean extends AbstractProducer implements Conf
     @Resource(mappedName = "java:/" + MessageConstants.QUEUE_ACTIVITY)
     private Queue replyToQueue;
 
-
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String sendConfigMessage(String textMsg) {

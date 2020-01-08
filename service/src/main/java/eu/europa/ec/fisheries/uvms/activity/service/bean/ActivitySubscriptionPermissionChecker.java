@@ -74,7 +74,5 @@ public class ActivitySubscriptionPermissionChecker {
         } catch (JMSException | JAXBException e) {
             throw new ActivityModuleException("Error while trying to check permissions from Subscription Module!", e);
         }
-
     }
-
 }

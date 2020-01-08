@@ -214,7 +214,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
     }
 
-
     @Override
     public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException {
         List<ReportDTO> reportDTOList = new ArrayList<>();
@@ -503,7 +502,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * collectFishingActivities : If the value is TRUE, all fishing Activities for every fishing Trip would be sent in the response.
      * If the value is FALSE, No fishing activities would be sent in the response.
      */
-    FishingTripResponse buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds, boolean collectFishingActivities) throws ServiceException {
+    protected FishingTripResponse buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds, boolean collectFishingActivities) throws ServiceException {
         if (fishingTripIds == null || fishingTripIds.isEmpty()) {
             return new FishingTripResponse();
         }
@@ -594,9 +593,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     @Override
-    /**
-     *  Returns TripWidgetDto based on the tripId and activityId
-     */
     public TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId) {
         if (activityEntity == null) {
             return null;
