@@ -189,16 +189,6 @@ public class BaseMapper {
         return recordMap;
     }
 
-/*
-    protected Map<String, String> getReportIdMapOLD(Collection<FluxReportIdentifierEntity> identifiers) {
-        Map<String, String> recordMap = new HashMap<>();
-        for (FluxReportIdentifierEntity identifier : identifiers) {
-            recordMap.put(identifier.getFluxReportIdentifierId(), identifier.getFluxReportIdentifierSchemeId());
-        }
-        return recordMap;
-    }
-*/
-
     protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList, FishingActivityTypeEnum faTypeToExtract) {
         if (CollectionUtils.isEmpty(fishingActivityList)) {
             return null;
@@ -366,14 +356,6 @@ public class BaseMapper {
         return dateTime.toGregorianCalendar().toInstant();
     }
 
-    @Named("xmlGregorianCalendarToInstant")
-    protected Instant xmlGregorianCalendarToInstant(XMLGregorianCalendar value) {
-        if (value == null) {
-            return null;
-        }
-        return value.toGregorianCalendar().toInstant();
-    }
-
     @Named("singleIDTypeValue")
     protected String singleIDTypeValue(List<IDType> idTypes) {
         return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getValue);
@@ -384,8 +366,7 @@ public class BaseMapper {
         return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getSchemeID);
     }
 
-    @Named("OnlyInvokedByCustomMappers")
-    protected final <O, P> P getObjectPropertyFromListOfObjectsWithMaxOneItem(List<O> listOfO, Function<O, P> getPfromOFunction) {
+    private <O, P> P getObjectPropertyFromListOfObjectsWithMaxOneItem(List<O> listOfO, Function<O, P> getPfromOFunction) {
         if (CollectionUtils.isEmpty(listOfO)) {
             return null;
         }
