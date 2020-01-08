@@ -126,7 +126,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "fromName", source = "faReportDocument.fluxReportDocument.fluxParty.fluxPartyName"),
             @Mapping(target = "vesselTransportMeansName", expression = "java(getFaReportDocVesselTransportMeans(entity).getName())"),
             @Mapping(target = "purposeCode", expression = "java(FaReportStatusType.valueOf(entity.getFaReportDocument().getStatus()).getPurposeCode().toString())"),
-            @Mapping(target = "FAReportType", source = "faReportDocument.typeCode"),
+            @Mapping(target = "faReportType", source = "faReportDocument.typeCode"),
             @Mapping(source = "typeCode", target = "activityType"),
             @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))"),
             @Mapping(target = "port", expression = "java(getPortsForFishingActivity(entity))"),
