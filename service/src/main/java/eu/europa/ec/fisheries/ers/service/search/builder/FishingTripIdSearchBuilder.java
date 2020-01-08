@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -28,6 +29,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
+import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
@@ -66,7 +68,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
-        boolean isSorted = query.getSorting().getSortBy() != null;
+        boolean isSorted = Optional.ofNullable(query.getSorting()).map(SortKey::getSortBy).isPresent();
 
         sql.append(FISHING_TRIP_SELECT);
         if(isSorted) {
