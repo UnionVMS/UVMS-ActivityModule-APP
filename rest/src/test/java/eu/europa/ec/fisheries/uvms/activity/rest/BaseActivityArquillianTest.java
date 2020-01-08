@@ -77,7 +77,6 @@ public abstract class BaseActivityArquillianTest {
 
         File[] dependencyFiles = Maven
                 .configureResolver()
-                .workOffline()
                 .loadPomFromFile("pom.xml")
                 .importRuntimeDependencies()
                 .resolve()
@@ -86,7 +85,6 @@ public abstract class BaseActivityArquillianTest {
         testWar.addAsLibraries(dependencyFiles);
 
         testWar.addAsLibraries(Maven.configureResolver()
-                .workOffline()
                 .loadPomFromFile("pom.xml")
                 .resolve("eu.europa.ec.fisheries.uvms.activity:service")
                 .withTransitivity().asFile());
