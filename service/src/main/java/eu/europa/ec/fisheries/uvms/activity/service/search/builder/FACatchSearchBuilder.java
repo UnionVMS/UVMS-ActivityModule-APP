@@ -171,8 +171,8 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
 
 
     @Override
-    protected void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
-        sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
+    protected void appendLeftJoinFetch(StringBuilder sql) {
+        sql.append(LEFT).append(JOIN).append(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
     }
 
     @Override
