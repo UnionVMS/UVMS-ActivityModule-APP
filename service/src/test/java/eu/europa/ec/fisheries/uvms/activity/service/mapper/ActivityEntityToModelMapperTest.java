@@ -41,7 +41,6 @@ import static junitparams.JUnitParamsRunner.$;
 public class ActivityEntityToModelMapperTest {
 
     private Unmarshaller unmarshaller;
-    private FluxFaReportMessageMapper incomingFAReportMapper = new FluxFaReportMessageMapper();
 
     @Before
     public void setUp() throws Exception {
@@ -54,7 +53,7 @@ public class ActivityEntityToModelMapperTest {
     public void testMapToFLUXFAReportMessage(String resource) throws Exception {
 
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
-        FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL);
+        FluxFaReportMessageEntity entity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL);
 
         FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()));
 

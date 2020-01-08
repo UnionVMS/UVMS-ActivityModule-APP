@@ -19,8 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
@@ -92,8 +90,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
     private GeometryFactory geometryFactory = new GeometryFactory();
 
-    private FluxFaReportMessageMapper fluxFaReportMessageMapper = new FluxFaReportMessageMapper();
-
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
@@ -102,7 +98,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @Override
     public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
         log.info("[START] Going to save [{}] FaReportDocuments.", faReportMessage.getFAReportDocuments().size());
-        FluxFaReportMessageEntity messageEntity = fluxFaReportMessageMapper.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);
+        FluxFaReportMessageEntity messageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             try {
@@ -215,18 +211,17 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      */
     private void updateFaReportCorrectionsOrCancellations(Set<FaReportDocumentEntity> justReceivedAndSavedFaReports) {
         for (FaReportDocumentEntity justSavedReport : justReceivedAndSavedFaReports) {
-            FluxReportDocumentEntity justSavedFluxReport = justSavedReport.getFluxReportDocument();
-            String receivedRefId = justSavedFluxReport.getReferenceId();
-            String receivedRefSchemeId = justSavedFluxReport.getReferenceSchemeId();
-            String justSavedPurposeCode = StringUtils.isNotEmpty(justSavedFluxReport.getPurposeCode()) ? justSavedFluxReport.getPurposeCode() : StringUtils.EMPTY;
+            String receivedRefId = justSavedReport.getFluxReportDocument_ReferenceId();
+            String receivedRefSchemeId = justSavedReport.getFluxReportDocument_ReferenceIdSchemeId();
+            String justSavedPurposeCode = StringUtils.isNotEmpty(justSavedReport.getFluxReportDocument_PurposeCode()) ?
+                    justSavedReport.getFluxReportDocument_PurposeCode() : StringUtils.EMPTY;
 
             // If we received an original report we have to check if we have previously received a correction/deletion/cancellation related to it.
             if (FaReportStatusType.NEW.getPurposeCode().toString().equals(justSavedPurposeCode)) {
-                FluxReportIdentifierEntity faReportIdentifier = justSavedReport.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
-                FaReportDocumentEntity foundRelatedFaReportCorrOrDelOrCanc = faReportDocumentDao.findFaReportByRefIdAndRefScheme(faReportIdentifier.getFluxReportIdentifierId(), faReportIdentifier.getFluxReportIdentifierSchemeId());
+                FaReportDocumentEntity foundRelatedFaReportCorrOrDelOrCanc = faReportDocumentDao.findFaReportByRefIdAndRefScheme(justSavedReport.getFluxReportDocument_Id(), justSavedReport.getFluxReportDocument_IdSchemeId());
 
                 if (foundRelatedFaReportCorrOrDelOrCanc != null) {
-                    String purposeCodeFromDb = foundRelatedFaReportCorrOrDelOrCanc.getFluxReportDocument().getPurposeCode();
+                    String purposeCodeFromDb = foundRelatedFaReportCorrOrDelOrCanc.getFluxReportDocument_PurposeCode();
                     FaReportStatusType faReportStatusEnumFromDb = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(purposeCodeFromDb));
                     FaReportDocumentEntity persistentFaDoc = faReportDocumentDao.findEntityById(FaReportDocumentEntity.class, justSavedReport.getId());
                     persistentFaDoc.setStatus(faReportStatusEnumFromDb.name());

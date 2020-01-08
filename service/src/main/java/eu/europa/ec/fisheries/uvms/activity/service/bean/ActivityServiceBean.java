@@ -244,7 +244,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             }
             // If it is a correction then we need to switch back the purpose code to the one of the original report.
             String correctionPurposeCode = FaReportStatusType.UPDATED.getPurposeCode().toString();
-            if (correctionPurposeCode.equals(entity.getFaReportDocument().getFluxReportDocument().getPurposeCode())) {
+            if (correctionPurposeCode.equals(entity.getFaReportDocument().getFluxReportDocument_PurposeCode())) {
                 fishingActivityReportDTO.setPurposeCode(correctionPurposeCode);
             }
 

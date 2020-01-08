@@ -10,8 +10,8 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxReportIdentifierDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
@@ -33,11 +33,11 @@ import java.util.List;
 @Slf4j
 public class ActivityMatchingIdsService extends BaseActivityBean {
 
-    private FluxReportIdentifierDao fluxReportIdentifierDao;
+    private FaReportDocumentDao faReportDocumentDao;
 
     @PostConstruct
     public void init() {
-        fluxReportIdentifierDao = new FluxReportIdentifierDao(entityManager);
+        faReportDocumentDao = new FaReportDocumentDao(entityManager);
     }
 
     @NotNull
@@ -77,17 +77,17 @@ public class ActivityMatchingIdsService extends BaseActivityBean {
 
     @NotNull
     private List<ActivityIDType> getActivityIDTypesPresentInDatabase(ActivityTableType originalActivityTableType, List<ActivityIDType> originalActivityIdTypeList) {
-        List<FluxReportIdentifierEntity> matchingIdentifiers = fluxReportIdentifierDao.getMatchingIdentifiers(originalActivityIdTypeList, originalActivityTableType);
-        return mapIDsListToActivityIDTypeList(matchingIdentifiers);
+        List<FaReportDocumentEntity> matchingFaReportDocuments = faReportDocumentDao.getMatchingIdentifiers(originalActivityIdTypeList, originalActivityTableType);
+        return mapIDsListToActivityIDTypeList(matchingFaReportDocuments);
     }
 
-    private List<ActivityIDType> mapIDsListToActivityIDTypeList(List<FluxReportIdentifierEntity> identifiersFromDbList) {
+    private List<ActivityIDType> mapIDsListToActivityIDTypeList(List<FaReportDocumentEntity> identifiersFromDbList) {
         if (CollectionUtils.isEmpty(identifiersFromDbList)) {
             return Collections.emptyList();
         }
         List<ActivityIDType> entityIds = new ArrayList<>();
-        for (FluxReportIdentifierEntity fishTripIdentifier : identifiersFromDbList) {
-            ActivityIDType activityIdType = new ActivityIDType(fishTripIdentifier.getFluxReportIdentifierId(), fishTripIdentifier.getFluxReportIdentifierSchemeId());
+        for (FaReportDocumentEntity faReportDocumentEntity : identifiersFromDbList) {
+            ActivityIDType activityIdType = new ActivityIDType(faReportDocumentEntity.getFluxReportDocument_Id(), faReportDocumentEntity.getFluxReportDocument_IdSchemeId());
             entityIds.add(activityIdType);
         }
         return entityIds;

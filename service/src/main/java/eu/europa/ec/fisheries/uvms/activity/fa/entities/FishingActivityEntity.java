@@ -60,7 +60,6 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
 				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
-						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrip ft " +
 						"where (intersects(fa.geom, :area) = true " +
 						"and ft.fishingTripKey.tripId =: fishingTripId) " +
@@ -68,7 +67,6 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 		@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
 				query = "SELECT DISTINCT a from FishingActivityEntity a " +
 						"JOIN FETCH a.faReportDocument fa " +
-						"JOIN FETCH fa.fluxReportDocument flux " +
 						"JOIN FETCH a.fishingTrip ft " +
 						"where ft.fishingTripKey.tripId =:fishingTripId " +
 						"order by a.typeCode,fa.acceptedDatetime")

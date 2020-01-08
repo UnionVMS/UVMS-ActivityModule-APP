@@ -95,8 +95,48 @@ public class SearchQueryBuilderTest {
         // When
         StringBuilder sql = search.createSQL(query);
 
+        String expected =
+                "SELECT DISTINCT a from FishingActivityEntity a " +
+                "LEFT JOIN FETCH a.faReportDocument fa  " +
+                "JOIN FETCH  fa.fluxReportDocument_FluxParty fp   " +
+                "JOIN FETCH  fp.fluxPartyIdentifiers fpi  " +
+                "LEFT  JOIN FETCH  a.delimitedPeriods dp   " +
+                "JOIN FETCH fa.vesselTransportMeans vt " +
+                "JOIN vt.vesselIdentifiers vi  RIGHT  " +
+                "JOIN a.fluxLocations fluxLoc  " +
+                "JOIN FETCH  a.fishingGears fg   " +
+                "RIGHT  JOIN  a.faCatchs faCatch  " +
+                "LEFT JOIN   faCatch.aapProcesses aprocess  " +
+                "LEFT JOIN   aprocess.aapProducts aprod   " +
+                "JOIN FETCH  a.faCatchs faCatch  " +
+                "LEFT JOIN FETCH  faCatch.aapProcesses aprocess  " +
+                "LEFT JOIN FETCH  aprocess.aapProducts aprod   " +
+                "JOIN FETCH vt.contactParty cparty " +
+                "JOIN FETCH  cparty.contactPerson cPerson  " +
+                "WHERE fa.source =:dataSource " +
+                "AND fpi.fluxPartyIdentifierId =:ownerId  " +
+                "AND    a.calculatedStartTime  >= :startDate  " +
+                "AND  (dp.endDate <= :endDate OR  a.calculatedStartTime <= :endDate) " +
+                "AND vi.vesselIdentifierId IN (:vtSchemeId) " +
+                "AND vt.name IN (:vtName) " +
+                "AND fa.fluxReportDocument_PurposeCode IN (:purposeCode) " +
+                "AND fa.typeCode IN (:faReportTypeCode) " +
+                "AND ( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:fluxAreaId ) " +
+                "AND  (fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:fluxPortId ) " +
+                "AND fg.typeCode IN (:fishingGearType) " +
+                "AND ( faCatch.speciesCode IN (:speciesCode)  OR aprod.speciesCode IN (:speciesCode)) " +
+                "AND  (  (faCatch.calculatedWeightMeasure  BETWEEN :minWeight AND   :maxWeight)  OR (aprod.calculatedWeightMeasure BETWEEN :minWeight AND :maxWeight) )  " +
+                "AND (" +
+                    "UPPER(cPerson.title) IN (:agent)  " +
+                    "or UPPER(cPerson.givenName) IN (:agent)  " +
+                    "or UPPER(cPerson.middleName) IN (:agent)  " +
+                    "or UPPER(cPerson.familyName) IN (:agent)  " +
+                    "or UPPER(cPerson.familyNamePrefix) IN (:agent)  " +
+                    "or UPPER(cPerson.nameSuffix) IN (:agent)  " +
+                    "or UPPER(cPerson.alias) IN (:agent) ) " +
+                "and a.relatedFishingActivity IS NULL  ORDER BY fa.acceptedDatetime ASC ";
+
         // Then
-        assertEquals("SELECT DISTINCT a from FishingActivityEntity a LEFT JOIN FETCH a.faReportDocument fa  JOIN FETCH  fa.fluxReportDocument flux  JOIN FETCH  flux.fluxParty fp   JOIN FETCH  fp.fluxPartyIdentifiers fpi  LEFT  JOIN FETCH  a.delimitedPeriods dp   JOIN FETCH fa.vesselTransportMeans vt JOIN vt.vesselIdentifiers vi  RIGHT  JOIN a.fluxLocations fluxLoc  JOIN FETCH  a.fishingGears fg   RIGHT  JOIN  a.faCatchs faCatch  LEFT JOIN   faCatch.aapProcesses aprocess  LEFT JOIN   aprocess.aapProducts aprod   JOIN FETCH  a.faCatchs faCatch  LEFT JOIN FETCH  faCatch.aapProcesses aprocess  LEFT JOIN FETCH  aprocess.aapProducts aprod   JOIN FETCH vt.contactParty cparty JOIN FETCH  cparty.contactPerson cPerson  WHERE fa.source =:dataSource AND fpi.fluxPartyIdentifierId =:ownerId  AND    a.calculatedStartTime  >= :startDate  AND  (dp.endDate <= :endDate OR  a.calculatedStartTime <= :endDate) AND vi.vesselIdentifierId IN (:vtSchemeId) AND vt.name IN (:vtName) AND flux.purposeCode IN (:purposeCode) AND fa.typeCode IN (:faReportTypeCode) AND ( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:fluxAreaId ) AND  (fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:fluxPortId ) AND fg.typeCode IN (:fishingGearType) AND ( faCatch.speciesCode IN (:speciesCode)  OR aprod.speciesCode IN (:speciesCode)) AND  (  (faCatch.calculatedWeightMeasure  BETWEEN :minWeight AND   :maxWeight)  OR (aprod.calculatedWeightMeasure BETWEEN :minWeight AND :maxWeight) )  AND (UPPER(cPerson.title) IN (:agent)  or UPPER(cPerson.givenName) IN (:agent)  or UPPER(cPerson.middleName) IN (:agent)  or UPPER(cPerson.familyName) IN (:agent)  or UPPER(cPerson.familyNamePrefix) IN (:agent)  or UPPER(cPerson.nameSuffix) IN (:agent)  or UPPER(cPerson.alias) IN (:agent) ) and a.relatedFishingActivity IS NULL  ORDER BY fa.acceptedDatetime ASC ",
-                sql.toString());
+        assertEquals(expected, sql.toString());
     }
 }

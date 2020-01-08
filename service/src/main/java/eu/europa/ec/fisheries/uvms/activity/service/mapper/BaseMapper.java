@@ -11,15 +11,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
@@ -30,6 +32,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.PositionDto;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
@@ -42,6 +45,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.mapstruct.Named;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
@@ -57,16 +63,17 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -149,25 +156,16 @@ public class BaseMapper {
     }
 
     public static boolean getCorrection(FishingActivityEntity entity) {
-        if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getFluxReportDocument() == null) {
+        if (entity == null || entity.getFaReportDocument() == null || StringUtils.isEmpty(entity.getFaReportDocument().getFluxReportDocument_Id())) {
             return false;
         }
 
-        FluxReportDocumentEntity fluxReportDocument = entity.getFaReportDocument().getFluxReportDocument();
-        return fluxReportDocument.getReferenceId() != null && fluxReportDocument.getReferenceId().length() != 0;
+        return entity.getFaReportDocument().getFluxReportDocument_ReferenceId() != null &&
+                entity.getFaReportDocument().getFluxReportDocument_ReferenceId().length() != 0;
     }
 
-    public static FluxReportDocumentEntity getFluxReportDocument(FishingActivityEntity activityEntity) {
-        FaReportDocumentEntity faReportDocument = activityEntity.getFaReportDocument();
-        return faReportDocument != null ? faReportDocument.getFluxReportDocument() : null;
-    }
-
-    public static String getIdType(IDType idType) {
+    private static String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
-    }
-
-    public static String getIdTypeSchemaId(IDType idType) {
-        return (idType == null) ? null : idType.getSchemeID();
     }
 
     public static String getCodeType(CodeType codeType) {
@@ -185,11 +183,9 @@ public class BaseMapper {
         return getIdType(country.getID());
     }
 
-    protected Map<String, String> getReportIdMap(Collection<FluxReportIdentifierEntity> identifiers) {
+    protected Map<String, String> getReportIdMap(String fluxReportIdentifierId, String fluxReportIdentifierSchemeId) {
         Map<String, String> recordMap = new HashMap<>();
-        for (FluxReportIdentifierEntity identifier : identifiers) {
-            recordMap.put(identifier.getFluxReportIdentifierId(), identifier.getFluxReportIdentifierSchemeId());
-        }
+        recordMap.put(fluxReportIdentifierId, fluxReportIdentifierSchemeId);
         return recordMap;
     }
 
@@ -299,10 +295,9 @@ public class BaseMapper {
                 break;
             case GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_GD:
                 String description = charac.getDescription();
-                if (StringUtils.isNoneEmpty(description)){
+                if (StringUtils.isNoneEmpty(description)) {
                     gearDto.setDescription(charac.getDescription());
-                }
-                else {
+                } else {
                     gearDto.setDescription(charac.getValueText());
                 }
                 break;
@@ -361,11 +356,127 @@ public class BaseMapper {
         return dateTime.toGregorianCalendar().toInstant();
     }
 
-    @Named("xmlGregorianCalendarToInstant")
-    protected Instant xmlGregorianCalendarToInstant(XMLGregorianCalendar value) {
-        if (value ==  null) {
+    @Named("singleIDTypeValue")
+    protected String singleIDTypeValue(List<IDType> idTypes) {
+        return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getValue);
+    }
+
+    @Named("singleIDTypeSchemeID")
+    protected String singleIDTypeSchemeID(List<IDType> idTypes) {
+        return getObjectPropertyFromListOfObjectsWithMaxOneItem(idTypes, IDType::getSchemeID);
+    }
+
+    private <O, P> P getObjectPropertyFromListOfObjectsWithMaxOneItem(List<O> listOfO, Function<O, P> getPfromOFunction) {
+        if (CollectionUtils.isEmpty(listOfO)) {
             return null;
         }
-        return value.toGregorianCalendar().toInstant();
+        if (listOfO.size() > 1) {
+            String values = listOfO.stream().map(getPfromOFunction).map(Object::toString).collect(Collectors.joining(", "));
+            throw new IllegalArgumentException("Failed to map list of type " + listOfO.getClass().getTypeName() + " since there are more than one value. Values: " + values);
+        }
+        return getPfromOFunction.apply(listOfO.get(0));
+    }
+
+    protected Set<FaReportIdentifierEntity> mapRelatedReportIDs(FAReportDocument faReportDocument) {
+        Set<FaReportIdentifierEntity> faReportIdentifiers = new HashSet<>();
+
+        List<IDType> relatedReportIDs = faReportDocument.getRelatedReportIDs();
+        for (IDType relatedReportID : relatedReportIDs) {
+            FaReportIdentifierEntity faReportIdentifierEntity = new FaReportIdentifierEntity();
+            faReportIdentifierEntity.setFaReportIdentifierId(relatedReportID.getValue());
+            faReportIdentifierEntity.setFaReportIdentifierSchemeId(relatedReportID.getSchemeID());
+
+            faReportIdentifiers.add(faReportIdentifierEntity);
+        }
+
+        return faReportIdentifiers;
+    }
+
+    protected List<RelatedReportDto> mapToRelatedReportDtoList(Set<FaReportIdentifierEntity> faReportIdentifierEntities) {
+        List<RelatedReportDto> relatedReportDtos = new ArrayList<>();
+        for (FaReportIdentifierEntity faReportIdentifierEntity : faReportIdentifierEntities) {
+            RelatedReportDto relatedReportDto = new RelatedReportDto();
+            relatedReportDto.setId(faReportIdentifierEntity.getFaReportIdentifierId());
+            relatedReportDto.setSchemeId(faReportIdentifierEntity.getFaReportIdentifierSchemeId());
+            relatedReportDtos.add(relatedReportDto);
+        }
+
+        return relatedReportDtos;
+    }
+
+    protected FLUXReportDocument mapToFluxReportDocument(FaReportDocumentEntity faReportDocumentEntity) {
+        FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
+
+        Instant fluxReportDocument_creationDatetime = faReportDocumentEntity.getFluxReportDocument_CreationDatetime();
+        DateTimeType creationDateTime = new DateTimeType();
+        XMLGregorianCalendar xmlGregorianCalendar = instantToXMLGregorianCalendarUTC(fluxReportDocument_creationDatetime);
+        creationDateTime.setDateTime(xmlGregorianCalendar);
+
+        String fluxReportDocument_id = faReportDocumentEntity.getFluxReportDocument_Id();
+        String fluxReportDocument_idSchemeId = faReportDocumentEntity.getFluxReportDocument_IdSchemeId();
+
+        IDType idType = new IDType();
+        idType.setValue(fluxReportDocument_id);
+        idType.setSchemeID(fluxReportDocument_idSchemeId);
+        ArrayList<IDType> idTypes = Lists.newArrayList(idType);
+
+        FluxPartyEntity fluxReportDocument_fluxParty = faReportDocumentEntity.getFluxReportDocument_FluxParty();
+        FLUXParty fluxParty = mapToFluxParty(fluxReportDocument_fluxParty);
+
+        String fluxReportDocument_purpose = faReportDocumentEntity.getFluxReportDocument_Purpose();
+        TextType purpose = new TextType();
+        purpose.setValue(fluxReportDocument_purpose);
+
+        String fluxReportDocument_purposeCode = faReportDocumentEntity.getFluxReportDocument_PurposeCode();
+        String fluxReportDocument_purposeCodeListId = faReportDocumentEntity.getFluxReportDocument_PurposeCodeListId();
+        CodeType purposeCode = new CodeType();
+        purposeCode.setValue(fluxReportDocument_purposeCode);
+        purposeCode.setListID(fluxReportDocument_purposeCodeListId);
+
+        String fluxReportDocument_referenceId = faReportDocumentEntity.getFluxReportDocument_ReferenceId();
+        String fluxReportDocument_referenceIdSchemeId = faReportDocumentEntity.getFluxReportDocument_ReferenceIdSchemeId();
+
+        IDType referenceId = new IDType();
+        referenceId.setValue(fluxReportDocument_referenceId);
+        referenceId.setSchemeID(fluxReportDocument_referenceIdSchemeId);
+
+        fluxReportDocument.setCreationDateTime(creationDateTime);
+        fluxReportDocument.setIDS(idTypes);
+        fluxReportDocument.setOwnerFLUXParty(fluxParty);
+        fluxReportDocument.setPurpose(purpose);
+        fluxReportDocument.setPurposeCode(purposeCode);
+        fluxReportDocument.setReferencedID(referenceId);
+
+        return fluxReportDocument;
+    }
+
+    private FLUXParty mapToFluxParty(FluxPartyEntity fluxPartyEntity) {
+        String fluxPartyNameValue = fluxPartyEntity.getFluxPartyName();
+        String nameLanguageId = fluxPartyEntity.getNameLanguageId();
+
+        TextType fluxPartyName = new TextType();
+        fluxPartyName.setValue(fluxPartyNameValue);
+        fluxPartyName.setLanguageID(nameLanguageId);
+        ArrayList<TextType> fluxPartyNameList = Lists.newArrayList(fluxPartyName);
+
+        List<IDType> fluxPartyIdList = new ArrayList<>();
+
+        Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers = fluxPartyEntity.getFluxPartyIdentifiers();
+        for (FluxPartyIdentifierEntity fluxPartyIdentifierEntity : fluxPartyIdentifiers) {
+            String fluxPartyIdentifierId = fluxPartyIdentifierEntity.getFluxPartyIdentifierId();
+            String fluxPartyIdentifierSchemeId = fluxPartyIdentifierEntity.getFluxPartyIdentifierSchemeId();
+
+            IDType fluxPartyIdType = new IDType();
+            fluxPartyIdType.setValue(fluxPartyIdentifierId);
+            fluxPartyIdType.setSchemeID(fluxPartyIdentifierSchemeId);
+
+            fluxPartyIdList.add(fluxPartyIdType);
+        }
+
+        FLUXParty ownerFluxParty = new FLUXParty();
+        ownerFluxParty.setNames(fluxPartyNameList);
+        ownerFluxParty.setIDS(fluxPartyIdList);
+
+        return ownerFluxParty;
     }
 }

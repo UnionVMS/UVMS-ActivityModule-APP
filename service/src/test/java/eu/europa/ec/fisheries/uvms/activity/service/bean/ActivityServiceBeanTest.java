@@ -287,13 +287,13 @@ public class ActivityServiceBeanTest {
         //Test
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOList.get(0);
         assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime().toEpochMilli(), faReportCorrectionDTO.getCreationDate().toInstant().toEpochMilli());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument_CreationDatetime().toEpochMilli(), faReportCorrectionDTO.getCreationDate().toInstant().toEpochMilli());
         assertEquals(faReportDocumentEntity.getAcceptedDatetime().toEpochMilli(), faReportCorrectionDTO.getAcceptedDate().toInstant().toEpochMilli());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId(),
+        assertEquals(faReportDocumentEntity.getFluxReportDocument_Id(),
                 faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierSchemeId(),
+        assertEquals(faReportDocumentEntity.getFluxReportDocument_IdSchemeId(),
                 faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getValue());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument().getFluxParty().getFluxPartyName(), faReportCorrectionDTO.getOwnerFluxPartyName());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument_FluxParty().getFluxPartyName(), faReportCorrectionDTO.getOwnerFluxPartyName());
     }
 
 

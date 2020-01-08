@@ -133,7 +133,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         mapAcceptanceDateTime(target, source.getAcceptedDatetime());
         mapPurposeCode(target, source.getTypeCode(), source.getTypeCodeListId());
         mapFMCMarkerCode(target, source.getFmcMarker(), source.getFmcMarkerListId());
-        target.setRelatedFLUXReportDocument(FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocument(source.getFluxReportDocument()));
+
+        FLUXReportDocument fluxReportDocument = mapToFluxReportDocument(source);
+        target.setRelatedFLUXReportDocument(fluxReportDocument);
+
         mapRelatedReportIDs(target, source.getFaReportIdentifiers());
         mapSpecifiedVesselTransportMeans(target, source.getVesselTransportMeans());
         mapFishingActivities(target, source.getFishingActivities());
