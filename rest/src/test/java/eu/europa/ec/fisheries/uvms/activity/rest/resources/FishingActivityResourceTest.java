@@ -255,7 +255,7 @@ public class FishingActivityResourceTest extends BaseActivityArquillianTest {
         assertEquals(49, resultList.size());
 
         for (FishingActivityReportDTO fishingActivityReportDTO : resultList) {
-            assertEquals("DECLARATION", fishingActivityReportDTO.getFAReportType());
+            assertEquals("DECLARATION", fishingActivityReportDTO.getFaReportType());
         }
     }
 
