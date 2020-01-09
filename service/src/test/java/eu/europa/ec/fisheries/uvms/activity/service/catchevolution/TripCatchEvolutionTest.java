@@ -101,7 +101,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
 
         // Then
         assertFalse(catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().isEmpty());
-        assertEquals(catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().get(0).getSpeciesCode(), "COD");
+        assertEquals("COD", catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().get(0).getSpeciesCode());
         assertEquals(11112d, catchEvolutionProgressDTO.getCatchEvolution().get("onboard").getSpeciesList().get(0).getWeight(), 0.0001d);
     }
 
@@ -127,7 +127,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
 
         // Then
         assertFalse(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().isEmpty());
-        assertEquals(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getSpeciesCode(), "COD");
+        assertEquals("COD", catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getSpeciesCode());
         assertEquals(11112d, catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getWeight(), 0.0001d);
     }
 
@@ -161,7 +161,7 @@ public class TripCatchEvolutionTest extends CatchEvolutionProgressHandler {
 
         // Then
         assertFalse(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().isEmpty());
-        assertEquals(catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getSpeciesCode(), "COD");
+        assertEquals("COD", catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getSpeciesCode());
         assertEquals(0.0d, catchEvolutionProgressDTO.getCatchEvolution().get("cumulated").getSpeciesList().get(0).getWeight(), 0.0001d);
     }
 }
