@@ -44,7 +44,8 @@ import java.util.Set;
 @NamedQuery(name = FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME,
         query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
                 "WHERE fareport.fluxReportDocument_ReferenceId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
-                "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeRefId"
+                "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeRefId " +
+                "ORDER BY fareport.id ASC"
 )
 @NamedQuery(name = FaReportDocumentEntity.LOAD_REPORTS,
         query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +

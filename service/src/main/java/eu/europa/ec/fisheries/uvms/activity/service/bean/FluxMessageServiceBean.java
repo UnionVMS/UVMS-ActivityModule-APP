@@ -218,14 +218,17 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
             // If we received an original report we have to check if we have previously received a correction/deletion/cancellation related to it.
             if (FaReportStatusType.NEW.getPurposeCode().toString().equals(justSavedPurposeCode)) {
-                FaReportDocumentEntity foundRelatedFaReportCorrOrDelOrCanc = faReportDocumentDao.findFaReportByRefIdAndRefScheme(justSavedReport.getFluxReportDocument_Id(), justSavedReport.getFluxReportDocument_IdSchemeId());
+                List<FaReportDocumentEntity> foundRelatedFaReportsCorrOrDelOrCanc = faReportDocumentDao.findFaReportsThatReferTo(justSavedReport.getFluxReportDocument_Id(), justSavedReport.getFluxReportDocument_IdSchemeId());
 
-                if (foundRelatedFaReportCorrOrDelOrCanc != null) {
-                    String purposeCodeFromDb = foundRelatedFaReportCorrOrDelOrCanc.getFluxReportDocument_PurposeCode();
-                    FaReportStatusType faReportStatusEnumFromDb = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(purposeCodeFromDb));
+                if (!foundRelatedFaReportsCorrOrDelOrCanc.isEmpty()) {
                     FaReportDocumentEntity persistentFaDoc = faReportDocumentDao.findEntityById(FaReportDocumentEntity.class, justSavedReport.getId());
-                    persistentFaDoc.setStatus(faReportStatusEnumFromDb.name());
-                    checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(persistentFaDoc, faReportStatusEnumFromDb, foundRelatedFaReportCorrOrDelOrCanc.getId());
+
+                    for (FaReportDocumentEntity foundRelatedFaReportCorrOrDelOrCanc : foundRelatedFaReportsCorrOrDelOrCanc) {
+                        String purposeCodeFromDb = foundRelatedFaReportCorrOrDelOrCanc.getFluxReportDocument_PurposeCode();
+                        FaReportStatusType faReportStatusEnumFromDb = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(purposeCodeFromDb));
+                        persistentFaDoc.setStatus(faReportStatusEnumFromDb.name());
+                        checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(persistentFaDoc, faReportStatusEnumFromDb, foundRelatedFaReportCorrOrDelOrCanc.getId());
+                    }
                 }
             }
 
