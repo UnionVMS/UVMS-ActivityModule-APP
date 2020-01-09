@@ -20,16 +20,12 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
-import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsService;
 import eu.europa.ec.fisheries.uvms.activity.service.bean.FluxReportMessageSaver;
@@ -84,13 +80,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private ActivityErrorMessageServiceBean producer;
 
     @EJB
-    private FaCatchReportService faCatchReportService;
-
-    @EJB
     private ActivityMatchingIdsService matchingIdsService;
-
-    @EJB
-    private ActivityService activityServiceBean;
 
     @Override
     public void onMessage(Message message) {
@@ -124,12 +114,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 case GET_FISHING_TRIPS:
                     getFishingTrips(textMessage);
                     break;
-                case GET_FA_CATCH_SUMMARY_REPORT:
-                    getCatchSummaryReport(textMessage);
-                    break;
                 case GET_NON_UNIQUE_IDS:
                     getNonUniqueIds(textMessage);
                     break;
+                case GET_FA_CATCH_SUMMARY_REPORT:
                 case GET_FISHING_ACTIVITY_FOR_TRIPS:
                 default:
                     log.error("Request method {} is not implemented", method.name());
@@ -151,13 +139,6 @@ public class ActivityMessageConsumerBean implements MessageListener {
         String getNonUniqueIdsResponseString = JAXBMarshaller.marshallJaxBObjectToString(getNonUniqueIdsResponse);
 
         producer.sendResponseMessageToSender(textMessage, getNonUniqueIdsResponseString);
-    }
-
-    private void getCatchSummaryReport(TextMessage textMessage) throws ActivityModelMarshallException, ServiceException, JMSException {
-        FACatchSummaryReportRequest faCatchSummaryReportRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, FACatchSummaryReportRequest.class);
-        FACatchSummaryReportResponse faCatchSummaryReportResponse = faCatchReportService.getFACatchSummaryReportResponse(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(faCatchSummaryReportRequest));
-        String faCatchSummaryReportResponseString = JAXBMarshaller.marshallJaxBObjectToString(faCatchSummaryReportResponse);
-        producer.sendResponseMessageToSender(textMessage, faCatchSummaryReportResponseString);
     }
 
     private void getFishingTrips(TextMessage textMessage) throws ActivityModelMarshallException, ServiceException, JMSException {

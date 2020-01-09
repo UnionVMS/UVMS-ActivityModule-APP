@@ -30,7 +30,7 @@ import javax.jms.Queue;
 @LocalBean
 public class ConfigMessageProducerBean extends AbstractProducer {
 
-    final static Logger LOG = LoggerFactory.getLogger(ConfigMessageProducerBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigMessageProducerBean.class);
 
     @Resource(mappedName =  "java:/" + MessageConstants.QUEUE_CONFIG)
     private Queue destination;
@@ -43,7 +43,7 @@ public class ConfigMessageProducerBean extends AbstractProducer {
         try {
             return sendModuleMessage(text, replyToQueue);
         } catch (RuntimeException | JMSException e) {
-            LOG.error("[ Error when sending config message. ] {}", e);
+            LOG.error("[ Error when sending config message. ]", e);
             throw new ConfigMessageException("[ Error when sending config message. ]");
         }
     }

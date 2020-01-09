@@ -18,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityConfigService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.PreferenceConfigMapper;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 

@@ -11,15 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.facatch;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FACatchSummaryMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishSizeClassEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

@@ -42,7 +42,6 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     private static final String STATUSES = "statuses";
     private static final String START_DATE = "startDate";
     private static final String END_DATE = "endDate";
-    private static final String AREA = "area";
 
     private EntityManager em;
 
