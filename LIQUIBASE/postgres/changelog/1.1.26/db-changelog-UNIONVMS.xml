@@ -47,4 +47,10 @@
         <dropTable tableName="activity_flux_party"/>
     </changeSet>
 
+    <changeSet author="robmil" id="ERS-291-add-flux-report-id-unique-constraint">
+        <addUniqueConstraint tableName="activity_fa_report_document"
+                             columnNames="flux_report_document_id, flux_report_document_id_scheme_id"
+                             constraintName="flux_report_document_id_unique_constraint"/>
+    </changeSet>
+
 </databaseChangeLog>

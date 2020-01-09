@@ -23,7 +23,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -65,12 +64,14 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         history.add(faReportEntity);
 
         // Find reports that refer to this report
-        FaReportDocumentEntity reportThatRefersToThisOne = findFaReportByRefIdAndRefScheme(faReportEntity.getFluxReportDocument_Id(), faReportEntity.getFluxReportDocument_IdSchemeId());
-        if (reportThatRefersToThisOne != null && !history.contains(reportThatRefersToThisOne)) {
-            populateHistoryOfFaReport(reportThatRefersToThisOne, history);
+        List<FaReportDocumentEntity> reportsThatRefersToThisOne = findFaReportsThatReferTo(faReportEntity.getFluxReportDocument_Id(), faReportEntity.getFluxReportDocument_IdSchemeId());
+        for (FaReportDocumentEntity reportThatRefersToThisOne : reportsThatRefersToThisOne) {
+            if (!history.contains(reportThatRefersToThisOne)) {
+                populateHistoryOfFaReport(reportThatRefersToThisOne, history);
+            }
         }
 
-        // Find reports that this report refers to
+        // Find report that this report refers to
         String repRefId = faReportEntity.getFluxReportDocument_ReferenceId();
         String repRefSchemeId = faReportEntity.getFluxReportDocument_ReferenceIdSchemeId();
         if (StringUtils.isNotEmpty(repRefId) && StringUtils.isNotEmpty(repRefSchemeId)) {
@@ -82,7 +83,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     }
 
     /**
-     * Load FaReportDocument by one or more Report identifiers
+     * Load FaReportDocument by report identifier
      *
      * @param reportId
      * @param schemeId
@@ -93,33 +94,29 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
         query.setParameter(REPORT_ID, reportId);
         query.setParameter(SCHEME_ID, schemeId);
-        FaReportDocumentEntity singleResult;
-        try {
-            singleResult = query.getSingleResult();
-        } catch (NoResultException ex) {
-            singleResult = null; // no need to log this exception!
+
+        // note: report ID and scheme ID column is under a uniqueness constraint, so no more than one result
+        List<FaReportDocumentEntity> resultList = query.getResultList();
+        if (resultList.isEmpty()) {
+            return null;
         }
-        return singleResult;
+
+        return resultList.get(0);
     }
 
     /**
-     * Load FaReportDocument by one or more Report identifiers
+     * Load FaReportDocuments by referenced report identifiers
      *
-     * @param reportReferenceId
+     * @param reportId
      * @param reportSchemeId
      * @return FaReportDocumentEntity
      */
-    public FaReportDocumentEntity findFaReportByRefIdAndRefScheme(String reportReferenceId, String reportSchemeId) {
+    public List<FaReportDocumentEntity> findFaReportsThatReferTo(String reportId, String reportSchemeId) {
         TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
-        query.setParameter(REPORT_REF_ID, reportReferenceId);
+        query.setParameter(REPORT_REF_ID, reportId);
         query.setParameter(SCHEME_REF_ID, reportSchemeId);
-        FaReportDocumentEntity singleResult;
-        try {
-            singleResult = query.getSingleResult();
-        } catch (NoResultException ex) {
-            singleResult = null; // no need to log this exception!
-        }
-        return singleResult;
+
+        return query.getResultList();
     }
 
     public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated) {
