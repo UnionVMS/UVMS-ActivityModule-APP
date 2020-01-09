@@ -63,16 +63,19 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         createWherePartForQueryForFilters(sql, query);
     }
 
+    @Override
     protected void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN).append(valueToFindAndApply);
         }
     }
 
+    @Override
     protected  void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
+    @Override
     protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
