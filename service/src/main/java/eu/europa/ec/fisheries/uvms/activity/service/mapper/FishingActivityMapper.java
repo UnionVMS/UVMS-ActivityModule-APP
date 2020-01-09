@@ -21,7 +21,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
@@ -123,7 +122,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             @Mapping(target = "uniqueFAReportId", expression = "java(getUniqueId(entity))"),
             @Mapping(target = "faReportID", source = "faReportDocument.id"),
             @Mapping(target = "fromId", expression = "java(getFromId(entity))"),
-            @Mapping(target = "fromName", source = "faReportDocument.fluxReportDocument_FluxParty.fluxPartyName"),
+            @Mapping(target = "fromName", source = "faReportDocument.fluxParty_name"),
             @Mapping(target = "vesselTransportMeansName", expression = "java(getFaReportDocVesselTransportMeans(entity).getName())"),
             @Mapping(target = "purposeCode", expression = "java(FaReportStatusType.valueOf(entity.getFaReportDocument().getStatus()).getPurposeCode().toString())"),
             @Mapping(target = "faReportType", source = "faReportDocument.typeCode"),
@@ -415,18 +414,13 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected List<String> getFromId(FishingActivityEntity entity) {
-        if (entity == null || entity.getFaReportDocument() == null
-                || entity.getFaReportDocument().getFluxReportDocument_FluxParty() == null
-                || entity.getFaReportDocument().getFluxReportDocument_FluxParty().getFluxPartyIdentifiers() == null) {
+        if (entity == null ||
+                entity.getFaReportDocument() == null ||
+                entity.getFaReportDocument().getFluxParty_identifier() == null) {
             return Collections.emptyList();
         }
-        Set<String> fromIdList = new HashSet<>();
-        Set<FluxPartyIdentifierEntity> idSet = entity.getFaReportDocument().getFluxReportDocument_FluxParty().getFluxPartyIdentifiers();
-        for (FluxPartyIdentifierEntity fluxPartyIdentifierEntity : idSet) {
-            fromIdList.add(fluxPartyIdentifierEntity.getFluxPartyIdentifierId());
-        }
-        fromIdList.remove(null);
-        return new ArrayList<>(fromIdList);
+
+        return Lists.newArrayList(entity.getFaReportDocument().getFluxParty_identifier());
     }
 
     protected Map<String, String> getVesselIdType(FishingActivityEntity entity) {

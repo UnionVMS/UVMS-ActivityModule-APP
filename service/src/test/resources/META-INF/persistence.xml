@@ -10,8 +10,6 @@
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharCodeEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemRecoveryEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FlapDocumentEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity</class>

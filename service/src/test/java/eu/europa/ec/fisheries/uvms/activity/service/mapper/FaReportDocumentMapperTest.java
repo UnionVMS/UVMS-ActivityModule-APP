@@ -47,7 +47,7 @@ public class FaReportDocumentMapperTest {
 
         assertEquals(faReportDocumentEntity.getFluxReportDocument_Id(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
         assertEquals(faReportDocumentEntity.getFluxReportDocument_IdSchemeId(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getValue());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument_FluxParty().getFluxPartyName(), faReportCorrectionDTO.getOwnerFluxPartyName());
+        assertEquals(faReportDocumentEntity.getFluxParty_name(), faReportCorrectionDTO.getOwnerFluxPartyName());
     }
 
     @Test
@@ -61,7 +61,7 @@ public class FaReportDocumentMapperTest {
 
         assertEquals(faReportDocumentEntity.getFluxReportDocument_Id(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
         assertEquals(faReportDocumentEntity.getFluxReportDocument_IdSchemeId(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getValue());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument_FluxParty().getFluxPartyName(), faReportCorrectionDTO.getOwnerFluxPartyName());
+        assertEquals(faReportDocumentEntity.getFluxParty_name(), faReportCorrectionDTO.getOwnerFluxPartyName());
     }
 
     @Test

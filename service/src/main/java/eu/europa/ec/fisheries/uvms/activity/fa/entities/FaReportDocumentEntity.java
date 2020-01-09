@@ -28,7 +28,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -45,7 +44,8 @@ import java.util.Set;
 @NamedQuery(name = FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME,
         query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
                 "WHERE fareport.fluxReportDocument_ReferenceId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
-                "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeRefId"
+                "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeRefId " +
+                "ORDER BY fareport.id ASC"
 )
 @NamedQuery(name = FaReportDocumentEntity.LOAD_REPORTS,
         query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
@@ -80,6 +80,11 @@ import java.util.Set;
                 "WHERE fareport.fluxReportDocument_ReferenceId = :reportId " +
                 "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeId"
 )
+@NamedQuery(name = FaReportDocumentEntity.MESSAGE_OWNER_FROM_TRIP_ID,
+        query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                "LEFT JOIN fareport.fishingActivities fishActivities " +
+                "LEFT JOIN fishActivities.fishingTrip fishTrip " +
+                "WHERE fishTrip.fishingTripKey.tripId = :fishingTripId")
 @Entity
 @Table(name = "activity_fa_report_document")
 @Getter
@@ -96,6 +101,7 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
     public static final String FIND_MATCHING_IDENTIFIER = "findMatchingIdentifier";
     public static final String FIND_RELATED_MATCHING_IDENTIFIER = "findRelatedMatchingIdentifier";
+    public static final String MESSAGE_OWNER_FROM_TRIP_ID = "findMessageOwnerFromTripId";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
@@ -127,9 +133,17 @@ public class FaReportDocumentEntity implements Serializable {
     @Column(name = "flux_report_document_purpose")
     private String fluxReportDocument_Purpose;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "flux_report_document_flux_party_id")
-    private FluxPartyEntity fluxReportDocument_FluxParty;
+    @Column(name = "flux_party_identifier", nullable = false)
+    private String fluxParty_identifier;
+
+    @Column(name = "flux_party_scheme_id", nullable = false)
+    private String fluxParty_schemeId;
+
+    @Column(name = "flux_party_name")
+    private String fluxParty_name;
+
+    @Column(name = "flux_party_name_language_id")
+    private String fluxParty_nameLanguageId;
 
     @Column(name = "geom", columnDefinition = "Geometry")
     private Geometry geom;

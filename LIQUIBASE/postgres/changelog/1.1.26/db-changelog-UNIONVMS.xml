@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.1.26/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="robmil" id="ERS-459-add-flux-party-columns-to-fa-report-document">
+        <addColumn tableName="activity_fa_report_document">
+            <column name="flux_party_identifier" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_party_scheme_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_party_name" type="VARCHAR(255)"/>
+            <column name="flux_party_name_language_id" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="ERS-459-remove-flux-party-fk-from-fa-report-document">
+        <dropColumn tableName="activity_fa_report_document" columnName="flux_report_document_flux_party_id" />
+    </changeSet>
+
+    <changeSet author="robmil" id="ERS-459-add-flux-party-columns-to-flux-fa-report-message">
+        <addColumn tableName="activity_flux_fa_report_message">
+            <column name="flux_party_identifier" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_party_scheme_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="flux_party_name" type="VARCHAR(255)"/>
+            <column name="flux_party_name_language_id" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="robmil" id="ERS-459-remove-flux-party-fk-from-flux-fa-report-message">
+        <dropColumn tableName="activity_flux_fa_report_message" columnName="flux_report_document_flux_party_id" />
+    </changeSet>
+
+    <changeSet author="robmil" id="ERS-459-drop-activity-flux-party-identifier-table">
+        <dropTable tableName="activity_flux_party_identifier"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="ERS-459-drop-activity-flux-party-table">
+        <dropTable tableName="activity_flux_party"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="ERS-291-add-flux-report-id-unique-constraint">
+        <addUniqueConstraint tableName="activity_fa_report_document"
+                             columnNames="flux_report_document_id, flux_report_document_id_scheme_id"
+                             constraintName="flux_report_document_id_unique_constraint"/>
+    </changeSet>
+
+</databaseChangeLog>
