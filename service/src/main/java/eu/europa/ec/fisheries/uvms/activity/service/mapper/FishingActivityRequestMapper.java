@@ -10,13 +10,12 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ListValueTypeFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SingleValueTypeFilter;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -30,22 +29,6 @@ import java.util.Set;
 public abstract class FishingActivityRequestMapper {
 
     public static final FishingActivityRequestMapper INSTANCE = Mappers.getMapper(FishingActivityRequestMapper.class);
-
-    /**
-     * Backend API expects input as FishingActivityQuery. This method maps FACatchSummaryReportRequest to FishingActivityQuery object
-     *
-     * @param baseRequest
-     * @return FishingActivityQuery
-     * @throws ServiceException
-     */
-    public static FishingActivityQuery buildFishingActivityQueryFromRequest(FACatchSummaryReportRequest baseRequest) throws ServiceException {
-        FishingActivityQuery query = new FishingActivityQuery();
-        query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest.getSingleValueFilters()));
-        query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest.getListValueFilters()));
-        query.setGroupByFields(baseRequest.getGroupCriterias());
-        return query;
-    }
-
 
     public static FishingActivityQuery buildFishingActivityQueryFromRequest(FishingTripRequest baseRequest) throws ServiceException {
         FishingActivityQuery query = new FishingActivityQuery();
