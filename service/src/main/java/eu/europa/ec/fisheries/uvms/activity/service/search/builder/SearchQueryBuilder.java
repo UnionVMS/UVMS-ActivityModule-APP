@@ -43,7 +43,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 public abstract class SearchQueryBuilder {
-    private static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
     private static final String JOIN_FETCH = " JOIN FETCH ";
     static final String LEFT = " LEFT ";
     private static final String RIGHT = " RIGHT ";
@@ -222,7 +222,7 @@ public abstract class SearchQueryBuilder {
         for (SearchFilter key : keySet) {
             hasAppendedAtLeastOne |= appendWhereQueryPart(sql, filterMappings, keySet, hasAppendedAtLeastOne, key);
         }
-        LOG.debug("Generated Query After Where :" + sql);
+        LOG.debug("Generated Query after WHERE : {}", sql);
     }
 
     private boolean appendWhereQueryPart(StringBuilder sql, Map<SearchFilter, FilterDetails> filterMappings, Set<SearchFilter> keySet, boolean hasAppendedAtLeastOne, SearchFilter key) {

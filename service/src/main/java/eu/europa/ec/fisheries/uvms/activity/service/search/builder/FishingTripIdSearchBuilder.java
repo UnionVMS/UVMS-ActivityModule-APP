@@ -16,12 +16,9 @@ package eu.europa.ec.fisheries.uvms.activity.service.search.builder;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdSearchBuilder.class);
     private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ft.fishingTripKey.tripId, ft.fishingTripKey.tripSchemeId from FishingTripEntity ft JOIN ft.fishingActivities a LEFT JOIN a.faReportDocument fa ";
     private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ft) from FishingTripEntity ft JOIN ft.fishingActivities a LEFT JOIN a.faReportDocument fa ";
 
@@ -43,7 +40,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        LOG.debug("sql :" + sql);
+        LOG.debug("SQL : {}", sql);
         return sql;
     }
 
@@ -53,7 +50,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         sql.append(FISHING_TRIP_COUNT_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        LOG.debug("sql :" + sql);
+        LOG.debug("SQL : {}", sql);
         return sql;
     }
 
