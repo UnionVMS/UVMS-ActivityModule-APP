@@ -79,41 +79,43 @@ public class ActivityDetailsDto {
 
     @JsonProperty("characteristics")
     public Map<String, Set<Object>> getCharacteristics() {
-        Map<String, Set<Object>> characMap = null;
-        if (fluxCharacteristics != null) {
-            characMap = Maps.newHashMap();
-            for (FluxCharacteristicsDto fluxCharacteristicsDto : fluxCharacteristics) {
-
-                Double calculatedValueMeasure = fluxCharacteristicsDto.getCalculatedValueMeasure();
-                add("calculatedValueMeasure", calculatedValueMeasure, characMap);
-                Double calculatedValueQuantity = fluxCharacteristicsDto.getCalculatedValueQuantity();
-                add("calculatedValueQuantity", calculatedValueQuantity, characMap);
-                String description = fluxCharacteristicsDto.getDescription();
-                add("description", description, characMap);
-                String descriptionLanguageId = fluxCharacteristicsDto.getDescriptionLanguageId();
-                add("descriptionLanguageId", descriptionLanguageId, characMap);
-                String typeCode = fluxCharacteristicsDto.getTypeCode();
-                add("typeCode", typeCode, characMap);
-                String typeCodeListId = fluxCharacteristicsDto.getTypeCodeListId();
-                add("typeCodeListId", typeCodeListId, characMap);
-                Date valueDateTime = fluxCharacteristicsDto.getValueDateTime();
-                add("valueDateTime", valueDateTime, characMap);
-                String valueIndicator = fluxCharacteristicsDto.getValueIndicator();
-                add("valueIndicator", valueIndicator, characMap);
-                Double valueMeasure = fluxCharacteristicsDto.getValueMeasure();
-                add("valueMeasure", valueMeasure, characMap);
-                String valueMeasureUnitCode = fluxCharacteristicsDto.getValueMeasureUnitCode();
-                add("valueMeasureUnitCode", valueMeasureUnitCode, characMap);
-                Double valueQuantity = fluxCharacteristicsDto.getValueQuantity();
-                add("valueQuantity", valueQuantity, characMap);
-                String valueQuantityCode = fluxCharacteristicsDto.getValueQuantityCode();
-                add("valueQuantityCode", valueQuantityCode, characMap);
-                String valueLanguageId = fluxCharacteristicsDto.getValueLanguageId();
-                add("valueLanguageId", valueLanguageId, characMap);
-                String valueCode = fluxCharacteristicsDto.getValueCode();
-                add("valueCode", valueCode, characMap);
-            }
+        if (fluxCharacteristics == null) {
+            return null;
         }
+
+        Map<String, Set<Object>> characMap = Maps.newHashMap();
+
+        for (FluxCharacteristicsDto fluxCharacteristicsDto : fluxCharacteristics) {
+            Double calculatedValueMeasure = fluxCharacteristicsDto.getCalculatedValueMeasure();
+            add("calculatedValueMeasure", calculatedValueMeasure, characMap);
+            Double calculatedValueQuantity = fluxCharacteristicsDto.getCalculatedValueQuantity();
+            add("calculatedValueQuantity", calculatedValueQuantity, characMap);
+            String description = fluxCharacteristicsDto.getDescription();
+            add("description", description, characMap);
+            String descriptionLanguageId = fluxCharacteristicsDto.getDescriptionLanguageId();
+            add("descriptionLanguageId", descriptionLanguageId, characMap);
+            String typeCode = fluxCharacteristicsDto.getTypeCode();
+            add("typeCode", typeCode, characMap);
+            String typeCodeListId = fluxCharacteristicsDto.getTypeCodeListId();
+            add("typeCodeListId", typeCodeListId, characMap);
+            Date valueDateTime = fluxCharacteristicsDto.getValueDateTime();
+            add("valueDateTime", valueDateTime, characMap);
+            String valueIndicator = fluxCharacteristicsDto.getValueIndicator();
+            add("valueIndicator", valueIndicator, characMap);
+            Double valueMeasure = fluxCharacteristicsDto.getValueMeasure();
+            add("valueMeasure", valueMeasure, characMap);
+            String valueMeasureUnitCode = fluxCharacteristicsDto.getValueMeasureUnitCode();
+            add("valueMeasureUnitCode", valueMeasureUnitCode, characMap);
+            Double valueQuantity = fluxCharacteristicsDto.getValueQuantity();
+            add("valueQuantity", valueQuantity, characMap);
+            String valueQuantityCode = fluxCharacteristicsDto.getValueQuantityCode();
+            add("valueQuantityCode", valueQuantityCode, characMap);
+            String valueLanguageId = fluxCharacteristicsDto.getValueLanguageId();
+            add("valueLanguageId", valueLanguageId, characMap);
+            String valueCode = fluxCharacteristicsDto.getValueCode();
+            add("valueCode", valueCode, characMap);
+        }
+
         return characMap;
     }
 
@@ -255,14 +257,9 @@ public class ActivityDetailsDto {
     }
 
     private void add(String key, Object value, Map<String, Set<Object>> map) {
-        if(key !=null) {
-            Set<Object> valueSet = map.get(key);
-            if (valueSet == null) {
-                valueSet = new HashSet<>();
-            } else if (value != null) {
-                    valueSet.add(value);
-            }
-            map.put(key, valueSet);
+        if (value != null) {
+            map.putIfAbsent(key, new HashSet<>());
+            map.get(key).add(value);
         }
     }
 
