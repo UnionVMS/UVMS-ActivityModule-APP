@@ -260,14 +260,6 @@ public class FishingActivityEntity implements Serializable {
         flapDocumentEntity.setFishingActivity(this);
     }
 
-    public Set<FluxLocationDto> getLocations() {
-        Set<FluxLocationDto> locationDtos = newHashSet();
-        if (isNotEmpty(fluxLocations)) {
-             locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocations);
-        }
-        return locationDtos;
-    }
-
     public Optional<Date> getOccurrenceAsDate() {
     	if (occurence == null) {
     		return Optional.empty();
