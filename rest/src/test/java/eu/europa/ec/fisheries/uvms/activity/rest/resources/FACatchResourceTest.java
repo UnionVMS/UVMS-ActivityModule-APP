@@ -74,8 +74,8 @@ public class FACatchResourceTest extends BaseActivityArquillianTest {
         Map<String, Double> lscFishMap = (Map<String, Double>) catchesTotal.getSummaryFishSize().get(FishSizeClassEnum.LSC);
         assertEquals(3, lscFishMap.size());
 
-        assertEquals(lscFishMap.get("HER"), 114923.9, 0.0);
-        assertEquals(lscFishMap.get("SPR"), 617.84, 0.0);
-        assertEquals(lscFishMap.get("MXV"), 1442.54, 0.0);
+        assertEquals(114923.9, lscFishMap.get("HER"), 0.0);
+        assertEquals(617.84, lscFishMap.get("SPR"), 0.0);
+        assertEquals(1442.54, lscFishMap.get("MXV"), 0.0);
     }
 }

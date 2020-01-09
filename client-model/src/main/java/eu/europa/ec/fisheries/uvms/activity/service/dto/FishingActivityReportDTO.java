@@ -45,7 +45,7 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private String vesselTransportMeansName;
 
     @JsonProperty("FAReportType")
-    private String FAReportType;
+    private String faReportType;
 
     @JsonProperty("areas")
     private List<String> areas;
@@ -94,13 +94,13 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     }
 
     @JsonProperty("FAReportType")
-    public String getFAReportType() {
-        return FAReportType;
+    public String getFaReportType() {
+        return faReportType;
     }
 
     @JsonProperty("FAReportType")
-    public void setFAReportType(String FAReportType) {
-        this.FAReportType = FAReportType;
+    public void setFaReportType(String faReportType) {
+        this.faReportType = faReportType;
     }
 
     @JsonProperty("areas")

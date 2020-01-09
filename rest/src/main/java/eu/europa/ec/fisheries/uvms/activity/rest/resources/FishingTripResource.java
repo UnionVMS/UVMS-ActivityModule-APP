@@ -24,8 +24,6 @@ import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -47,8 +45,6 @@ import java.util.List;
 @Slf4j
 @Stateless
 public class FishingTripResource extends UnionVMSResource {
-
-    private final static Logger LOG = LoggerFactory.getLogger(FishingTripResource.class);
 
     @Context
     private UriInfo context;
@@ -73,7 +69,7 @@ public class FishingTripResource extends UnionVMSResource {
                                           @HeaderParam("roleName") String roleName,
                                           @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.debug("Fishing Trip summary from fishing trip: {}", fishingTripId);
+        log.debug("Fishing Trip summary from fishing trip: {}", fishingTripId);
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId, datasets));
@@ -88,7 +84,7 @@ public class FishingTripResource extends UnionVMSResource {
                                      @Context HttpServletResponse response,
                                      @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
-        LOG.debug("Getting Vessels details for trip: {}", fishingTripId);
+        log.debug("Getting Vessels details for trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.getVesselDetailsForFishingTrip(fishingTripId));
     }
 
@@ -101,7 +97,7 @@ public class FishingTripResource extends UnionVMSResource {
                                                  @Context HttpServletResponse response,
                                                  @PathParam("fishingTripId") String fishingTripId) {
 
-        LOG.debug("Message counters for fishing trip: {}", fishingTripId);
+        log.debug("Message counters for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.getMessageCountersForTripId(fishingTripId));
     }
 
@@ -114,7 +110,7 @@ public class FishingTripResource extends UnionVMSResource {
                                                @Context HttpServletResponse response,
                                                @PathParam("fishingTripId") String fishingTripId) {
 
-        LOG.debug("Catches for fishing trip: {}", fishingTripId);
+        log.debug("Catches for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveFaCatchesForFishingTrip(fishingTripId));
     }
 
@@ -137,7 +133,7 @@ public class FishingTripResource extends UnionVMSResource {
     public Response getFishingTripCatchEvolution(@Context HttpServletRequest request,
                                                  @Context HttpServletResponse response,
                                                  @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
-        LOG.debug("Catch evolution for fishing trip: {}", fishingTripId);
+        log.debug("Catch evolution for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId));
     }
 
@@ -149,7 +145,7 @@ public class FishingTripResource extends UnionVMSResource {
     public Response requestTripUpdateFromTripId(@Context HttpServletRequest request,
                                                 @Context HttpServletResponse response,
                                                 @PathParam("fishingTripId") String fishingTripId) {
-        LOG.debug("Going to send FaQuery related to Trip with id: {}", fishingTripId);
+        log.debug("Going to send FaQuery related to Trip with id: {}", fishingTripId);
         try {
             rulesService.composeAndSendTripUpdateFaQueryToRules(fishingTripId);
         } catch (ActivityModuleException e) {
