@@ -82,7 +82,7 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     }
 
     /**
-     * Load FaReportDocument by one or more Report identifiers
+     * Load FaReportDocument by report identifier
      *
      * @param reportId
      * @param schemeId
@@ -93,17 +93,18 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
         query.setParameter(REPORT_ID, reportId);
         query.setParameter(SCHEME_ID, schemeId);
-        FaReportDocumentEntity singleResult;
-        try {
-            singleResult = query.getSingleResult();
-        } catch (NoResultException ex) {
-            singleResult = null; // no need to log this exception!
+
+        // note: report ID and scheme ID column is under a uniqueness constraint, so no more than one result
+        List<FaReportDocumentEntity> resultList = query.getResultList();
+        if (resultList.isEmpty()) {
+            return null;
         }
-        return singleResult;
+
+        return resultList.get(0);
     }
 
     /**
-     * Load FaReportDocument by one or more Report identifiers
+     * Load FaReportDocument by referenced report identifiers
      *
      * @param reportReferenceId
      * @param reportSchemeId
