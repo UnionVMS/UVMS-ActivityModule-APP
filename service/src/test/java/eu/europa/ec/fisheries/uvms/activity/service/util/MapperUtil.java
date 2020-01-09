@@ -20,8 +20,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;

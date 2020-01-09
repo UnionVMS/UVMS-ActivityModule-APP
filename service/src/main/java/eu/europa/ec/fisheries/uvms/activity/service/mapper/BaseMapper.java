@@ -20,8 +20,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
@@ -430,15 +428,15 @@ public class BaseMapper {
         idType.setSchemeID(fluxReportDocument_idSchemeId);
         ArrayList<IDType> idTypes = Lists.newArrayList(idType);
 
-        FluxPartyEntity fluxReportDocument_fluxParty = new FluxPartyEntity();
-        FluxPartyIdentifierEntity fluxReportDocument_fluxPartyIdentifier = new FluxPartyIdentifierEntity(-1,
-                fluxReportDocument_fluxParty,
-                faReportDocumentEntity.getFluxParty_identifier(),
-                faReportDocumentEntity.getFluxParty_schemeId());
-        fluxReportDocument_fluxParty.setFluxPartyIdentifiers(Sets.newHashSet(fluxReportDocument_fluxPartyIdentifier));
-        fluxReportDocument_fluxParty.setFluxPartyName(faReportDocumentEntity.getFluxParty_name());
-        fluxReportDocument_fluxParty.setNameLanguageId(faReportDocumentEntity.getFluxParty_nameLanguageId());
-        FLUXParty fluxParty = mapToFluxParty(fluxReportDocument_fluxParty);
+        IDType ownerFluxPartyId = new IDType();
+        ownerFluxPartyId.setValue(faReportDocumentEntity.getFluxParty_identifier());
+        ownerFluxPartyId.setSchemeID(faReportDocumentEntity.getFluxParty_schemeId());
+
+        TextType ownerFluxPartyName = new TextType();
+        ownerFluxPartyName.setValue(faReportDocumentEntity.getFluxParty_name());
+        ownerFluxPartyName.setLanguageID(faReportDocumentEntity.getFluxParty_nameLanguageId());
+
+        FLUXParty ownerFluxParty = new FLUXParty(Lists.newArrayList(ownerFluxPartyId), Lists.newArrayList(ownerFluxPartyName));
 
         String fluxReportDocument_purpose = faReportDocumentEntity.getFluxReportDocument_Purpose();
         TextType purpose = new TextType();
@@ -459,41 +457,11 @@ public class BaseMapper {
 
         fluxReportDocument.setCreationDateTime(creationDateTime);
         fluxReportDocument.setIDS(idTypes);
-        fluxReportDocument.setOwnerFLUXParty(fluxParty);
+        fluxReportDocument.setOwnerFLUXParty(ownerFluxParty);
         fluxReportDocument.setPurpose(purpose);
         fluxReportDocument.setPurposeCode(purposeCode);
         fluxReportDocument.setReferencedID(referenceId);
 
         return fluxReportDocument;
-    }
-
-    private FLUXParty mapToFluxParty(FluxPartyEntity fluxPartyEntity) {
-        String fluxPartyNameValue = fluxPartyEntity.getFluxPartyName();
-        String nameLanguageId = fluxPartyEntity.getNameLanguageId();
-
-        TextType fluxPartyName = new TextType();
-        fluxPartyName.setValue(fluxPartyNameValue);
-        fluxPartyName.setLanguageID(nameLanguageId);
-        ArrayList<TextType> fluxPartyNameList = Lists.newArrayList(fluxPartyName);
-
-        List<IDType> fluxPartyIdList = new ArrayList<>();
-
-        Set<FluxPartyIdentifierEntity> fluxPartyIdentifiers = fluxPartyEntity.getFluxPartyIdentifiers();
-        for (FluxPartyIdentifierEntity fluxPartyIdentifierEntity : fluxPartyIdentifiers) {
-            String fluxPartyIdentifierId = fluxPartyIdentifierEntity.getFluxPartyIdentifierId();
-            String fluxPartyIdentifierSchemeId = fluxPartyIdentifierEntity.getFluxPartyIdentifierSchemeId();
-
-            IDType fluxPartyIdType = new IDType();
-            fluxPartyIdType.setValue(fluxPartyIdentifierId);
-            fluxPartyIdType.setSchemeID(fluxPartyIdentifierSchemeId);
-
-            fluxPartyIdList.add(fluxPartyIdType);
-        }
-
-        FLUXParty ownerFluxParty = new FLUXParty();
-        ownerFluxParty.setNames(fluxPartyNameList);
-        ownerFluxParty.setIDS(fluxPartyIdList);
-
-        return ownerFluxParty;
     }
 }

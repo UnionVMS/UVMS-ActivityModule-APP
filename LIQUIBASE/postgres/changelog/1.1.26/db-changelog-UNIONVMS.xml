@@ -39,4 +39,12 @@
         <dropColumn tableName="activity_flux_fa_report_message" columnName="flux_report_document_flux_party_id" />
     </changeSet>
 
+    <changeSet author="robmil" id="ERS-459-drop-activity-flux-party-identifier-table">
+        <dropTable tableName="activity_flux_party_identifier"/>
+    </changeSet>
+
+    <changeSet author="robmil" id="ERS-459-drop-activity-flux-party-table">
+        <dropTable tableName="activity_flux_party"/>
+    </changeSet>
+
 </databaseChangeLog>
