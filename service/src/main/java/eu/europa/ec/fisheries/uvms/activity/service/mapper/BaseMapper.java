@@ -23,25 +23,20 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.PositionDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.locationtech.jts.geom.Geometry;
 import org.mapstruct.Named;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
@@ -185,50 +180,6 @@ public class BaseMapper {
         Map<String, String> recordMap = new HashMap<>();
         recordMap.put(fluxReportIdentifierId, fluxReportIdentifierSchemeId);
         return recordMap;
-    }
-
-    protected FishingActivityEntity extractSubFishingActivity(Set<FishingActivityEntity> fishingActivityList, FishingActivityTypeEnum faTypeToExtract) {
-        if (CollectionUtils.isEmpty(fishingActivityList)) {
-            return null;
-        }
-        for (FishingActivityEntity fishingActivityEntity : fishingActivityList) {
-            if (faTypeToExtract.toString().equalsIgnoreCase(fishingActivityEntity.getTypeCode())) {
-                return fishingActivityEntity;
-            }
-        }
-        return null;
-    }
-
-    protected FluxLocationEntity extractFLUXPosition(Set<FluxLocationEntity> fluxLocationEntityList) {
-        if (CollectionUtils.isEmpty(fluxLocationEntityList)) {
-            return null;
-        }
-        for (FluxLocationEntity locationEntity : fluxLocationEntityList) {
-            if (FluxLocationEnum.POSITION.toString().equalsIgnoreCase(locationEntity.getTypeCode())) {
-                return locationEntity;
-            }
-        }
-        return null;
-    }
-
-    protected String extractGeometryWkt(Double longitude, Double latitude) {
-        Geometry geom = GeometryUtils.createPoint(longitude, latitude);
-        return GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
-    }
-
-    protected PositionDto extractPositionDtoFromFishingActivity(FishingActivityEntity faEntity) {
-        if (faEntity == null) {
-            return null;
-        }
-        PositionDto positionDto = new PositionDto();
-        positionDto.setOccurence(faEntity.getOccurrenceAsDate().orElse(null));
-        if (CollectionUtils.isNotEmpty(faEntity.getFluxLocations())) {
-            FluxLocationEntity locationEntity = extractFLUXPosition(faEntity.getFluxLocations());
-            if (locationEntity != null && locationEntity.getGeom() != null) {
-                positionDto.setGeometry(GeometryMapper.INSTANCE.geometryToWkt(locationEntity.getGeom()).getValue());
-            }
-        }
-        return positionDto;
     }
 
     @Named("instantToDate")
