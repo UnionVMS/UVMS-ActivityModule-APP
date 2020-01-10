@@ -180,7 +180,6 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     public List<FaReportDocumentEntity> getMatchingIdentifiers(List<ActivityIDType> ids, ActivityTableType tableType) {
         String namedQueryToSelect = tableType == ActivityTableType.FLUX_REPORT_DOCUMENT_ENTITY ? FaReportDocumentEntity.FIND_MATCHING_IDENTIFIER : FaReportDocumentEntity.FIND_RELATED_MATCHING_IDENTIFIER;
         List<FaReportDocumentEntity> resultList = new ArrayList<>();
-        // FIXME avoid looping and querying
         for (ActivityIDType idType : ids) {
             TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(namedQueryToSelect, FaReportDocumentEntity.class);
             query.setParameter(REPORT_ID, idType.getValue());
@@ -190,5 +189,4 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         resultList.removeAll(Collections.singleton(null));
         return resultList;
     }
-
 }
