@@ -16,7 +16,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
@@ -41,7 +40,7 @@ import java.util.stream.Collectors;
 @Stateless
 @Transactional
 @Slf4j
-public class AssetModuleServiceBean extends ModuleService implements AssetModuleService {
+public class AssetModuleServiceBean implements AssetModuleService {
 
     @EJB
     private AssetClient assetClient;

@@ -14,7 +14,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.MovementModuleService;
 import eu.europa.ec.fisheries.uvms.movement.client.MovementRestClient;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
 @Stateless
 @Transactional
 @Slf4j
-public class MovementModuleServiceBean extends ModuleService implements MovementModuleService {
+public class MovementModuleServiceBean implements MovementModuleService {
 
     @EJB
     private MovementRestClient movementClient;

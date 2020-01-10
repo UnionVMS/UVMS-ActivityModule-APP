@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.service.MdrModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.mdr.client.MdrRestClient;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.mdr.communication.ColumnDataType;
@@ -19,7 +18,7 @@ import java.util.Map;
 @Stateless
 @Transactional
 @Slf4j
-public class MdrModuleServiceBean extends ModuleService implements MdrModuleService {
+public class MdrModuleServiceBean implements MdrModuleService {
 
     @EJB
     private MdrRestClient mdrRestClient;

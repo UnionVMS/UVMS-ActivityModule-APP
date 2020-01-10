@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.service.ModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.spatial.client.SpatialRestClient;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
@@ -28,7 +27,7 @@ import java.util.Collection;
 @Stateless
 @Transactional
 @Slf4j
-public class SpatialModuleServiceBean extends ModuleService implements SpatialModuleService {
+public class SpatialModuleServiceBean implements SpatialModuleService {
 
     @EJB
     private SpatialRestClient spatialRestClient;

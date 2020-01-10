@@ -14,15 +14,14 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
-import eu.europa.ec.fisheries.uvms.activity.service.ModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FaQueryFactory;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
+import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
+import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FaQueryFactory;
+import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionParameter;
@@ -47,7 +46,7 @@ import java.util.List;
 @Stateless
 @Transactional
 @Slf4j
-public class ActivityRulesModuleServiceBean extends ModuleService implements ActivityRulesModuleService {
+public class ActivityRulesModuleServiceBean implements ActivityRulesModuleService {
 
     @EJB
     private ActivityRulesProducerBean rulesProducerBean;
