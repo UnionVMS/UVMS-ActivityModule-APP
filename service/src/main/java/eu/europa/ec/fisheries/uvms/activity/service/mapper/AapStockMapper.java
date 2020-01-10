@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
@@ -24,11 +23,9 @@ public interface AapStockMapper {
 
     AapStockMapper INSTANCE = Mappers.getMapper(AapStockMapper.class);
 
-    @Mappings({
-            @Mapping(target = "stockId", source = "ID.value"),
-            @Mapping(target = "stockSchemeId", source = "ID.schemeID"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "faCatch", ignore = true),
-    })
+    @Mapping(target = "stockId", source = "ID.value")
+    @Mapping(target = "stockSchemeId", source = "ID.schemeID")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "faCatch", ignore = true)
     AapStockEntity mapToAapStockEntity(AAPStock aapStock);
 }

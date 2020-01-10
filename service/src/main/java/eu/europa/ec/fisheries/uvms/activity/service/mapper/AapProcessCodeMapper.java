@@ -14,7 +14,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
@@ -27,25 +26,22 @@ public interface AapProcessCodeMapper {
 
     AapProcessCodeMapper INSTANCE = Mappers.getMapper(AapProcessCodeMapper.class);
 
-    @Mappings({
-            @Mapping(target = "value", source = "typeCode"),
-            @Mapping(target = "listID", source = "typeCodeListId"),
-            @Mapping(target = "listAgencyID", ignore = true),
-            @Mapping(target = "listAgencyName", ignore = true),
-            @Mapping(target = "listName", ignore = true),
-            @Mapping(target = "listVersionID", ignore = true),
-            @Mapping(target = "name", ignore = true),
-            @Mapping(target = "languageID", ignore = true),
-            @Mapping(target = "listURI", ignore = true),
-            @Mapping(target = "listSchemeURI", ignore = true),
-    })
+
+    @Mapping(target = "value", source = "typeCode")
+    @Mapping(target = "listID", source = "typeCodeListId")
+    @Mapping(target = "listAgencyID", ignore = true)
+    @Mapping(target = "listAgencyName", ignore = true)
+    @Mapping(target = "listName", ignore = true)
+    @Mapping(target = "listVersionID", ignore = true)
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "languageID", ignore = true)
+    @Mapping(target = "listURI", ignore = true)
+    @Mapping(target = "listSchemeURI", ignore = true)
     CodeType mapToCodeType(AapProcessCodeEntity aapProcessCodeEntity);
 
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "aapProcess", ignore = true)
-    })
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "aapProcess", ignore = true)
     AapProcessCodeEntity mapToAapProcessCodeEntity(CodeType codeType);
 
     Set<AapProcessCodeEntity> mapToAapProcessCodeEntitySet(List<CodeType> codeType);

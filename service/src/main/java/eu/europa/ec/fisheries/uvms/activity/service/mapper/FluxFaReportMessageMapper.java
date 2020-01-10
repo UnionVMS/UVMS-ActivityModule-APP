@@ -21,7 +21,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.FishingTripCache;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -37,25 +36,24 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
 
     public static final FluxFaReportMessageMapper INSTANCE = Mappers.getMapper(FluxFaReportMessageMapper.class);
 
-    @Mappings({
-            @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxFaReportMessage.getFLUXReportDocument().getIDS()))"),
-            @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(fluxFaReportMessage.getFLUXReportDocument().getIDS()))"),
 
-            @Mapping(target = "fluxReportDocument_ReferenceId", source = "FLUXReportDocument.referencedID.value"),
-            @Mapping(target = "fluxReportDocument_ReferenceIdSchemeId", source = "FLUXReportDocument.referencedID.schemeID"),
-            @Mapping(target = "fluxReportDocument_CreationDatetime", source = "FLUXReportDocument.creationDateTime.dateTime"),
-            @Mapping(target = "fluxReportDocument_PurposeCode", source = "FLUXReportDocument.purposeCode.value"),
-            @Mapping(target = "fluxReportDocument_PurposeCodeListId", source = "FLUXReportDocument.purposeCode.listID"),
-            @Mapping(target = "fluxReportDocument_Purpose", source = "FLUXReportDocument.purpose.value"),
+    @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxFaReportMessage.getFLUXReportDocument().getIDS()))")
+    @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(fluxFaReportMessage.getFLUXReportDocument().getIDS()))")
 
-            @Mapping(target = "fluxParty_identifier", source = "FLUXReportDocument.ownerFLUXParty.IDS", qualifiedByName = "singleIDTypeValue"),
-            @Mapping(target = "fluxParty_schemeId", source = "FLUXReportDocument.ownerFLUXParty.IDS", qualifiedByName = "singleIDTypeSchemeID"),
-            @Mapping(target = "fluxParty_name", source = "FLUXReportDocument.ownerFLUXParty.names", qualifiedByName = "singleTextTypeValue"),
-            @Mapping(target = "fluxParty_nameLanguageId", source = "FLUXReportDocument.ownerFLUXParty.names", qualifiedByName = "singleTextTypeLanguageId"),
+    @Mapping(target = "fluxReportDocument_ReferenceId", source = "FLUXReportDocument.referencedID.value")
+    @Mapping(target = "fluxReportDocument_ReferenceIdSchemeId", source = "FLUXReportDocument.referencedID.schemeID")
+    @Mapping(target = "fluxReportDocument_CreationDatetime", source = "FLUXReportDocument.creationDateTime.dateTime")
+    @Mapping(target = "fluxReportDocument_PurposeCode", source = "FLUXReportDocument.purposeCode.value")
+    @Mapping(target = "fluxReportDocument_PurposeCodeListId", source = "FLUXReportDocument.purposeCode.listID")
+    @Mapping(target = "fluxReportDocument_Purpose", source = "FLUXReportDocument.purpose.value")
 
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "faReportDocuments", ignore = true)
-    })
+    @Mapping(target = "fluxParty_identifier", source = "FLUXReportDocument.ownerFLUXParty.IDS", qualifiedByName = "singleIDTypeValue")
+    @Mapping(target = "fluxParty_schemeId", source = "FLUXReportDocument.ownerFLUXParty.IDS", qualifiedByName = "singleIDTypeSchemeID")
+    @Mapping(target = "fluxParty_name", source = "FLUXReportDocument.ownerFLUXParty.names", qualifiedByName = "singleTextTypeValue")
+    @Mapping(target = "fluxParty_nameLanguageId", source = "FLUXReportDocument.ownerFLUXParty.names", qualifiedByName = "singleTextTypeLanguageId")
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "faReportDocuments", ignore = true)
     public abstract FluxFaReportMessageEntity mapButExcludeFaReportDocuments(FLUXFAReportMessage fluxFaReportMessage);
 
     public FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxFaReportMessage, FaReportSourceEnum faReportSourceEnum) {
