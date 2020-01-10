@@ -17,9 +17,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by kovian on 10/10/2016.
- */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SpeciesQuantityDTO {
 
@@ -78,7 +75,6 @@ public class SpeciesQuantityDTO {
         SpeciesQuantityDTO that = (SpeciesQuantityDTO) o;
 
         return getSpeciesCode() != null ? getSpeciesCode().equals(that.getSpeciesCode()) : that.getSpeciesCode() == null;
-
     }
 
     @Override

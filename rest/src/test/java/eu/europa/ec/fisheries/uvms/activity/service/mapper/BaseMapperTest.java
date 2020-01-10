@@ -14,12 +14,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
@@ -90,29 +88,6 @@ public class BaseMapperTest {
 
         assertEquals(1, fluxLocationDtos.size());
         assertEquals("RFMO1", fluxLocationDtos.iterator().next().getRfmoCode());
-    }
-
-    @Test
-    @SneakyThrows
-    public void calculateFishingActivity() {
-        DelimitedPeriodEntity period1 = new DelimitedPeriodEntity();
-        period1.setStartDate(Instant.parse("2011-12-21T12:00:00Z"));
-        period1.setEndDate(Instant.parse("2013-12-21T12:00:00Z"));
-        period1.setCalculatedDuration(22.22d);
-        period1.getDurationMeasure().setUnitCode("MIN");
-
-        DelimitedPeriodEntity period2 = new DelimitedPeriodEntity();
-        period2.setStartDate(Instant.parse("2010-11-21T12:00:00Z"));
-        period2.setEndDate(Instant.parse("2012-11-21T12:00:00Z"));
-        period2.setCalculatedDuration(2.24d);
-        period2.getDurationMeasure().setUnitCode("HOU");
-
-        DelimitedPeriodDTO periodDTO = BaseMapper.calculateFishingTime(newSet(period1, period2));
-
-        assertEquals(24.46d, (double)periodDTO.getDuration(), 0.01d);
-        assertEquals(period2.getStartDate(), periodDTO.getStartDate().toInstant());
-        assertEquals(period1.getEndDate(), periodDTO.getEndDate().toInstant());
-        assertEquals(UnitCodeEnum.MIN.getUnit(), periodDTO.getUnitCode());
     }
 
     @Test

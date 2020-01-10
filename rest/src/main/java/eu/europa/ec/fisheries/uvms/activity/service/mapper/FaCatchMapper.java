@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
@@ -27,6 +28,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummary
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.FluxCharacteristicsViewDtoMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
+import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritInverseConfiguration;
@@ -43,16 +45,18 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(uses = {CustomBigDecimal.class, SizeDistributionMapper.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
+@Mapper(uses = {CustomBigDecimal.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 
@@ -72,7 +76,10 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "usageCodeListId", source = "faCatch.usageCode.listID"),
             @Mapping(target = "weighingMeansCode", source = "faCatch.weighingMeansCode.value"),
             @Mapping(target = "weighingMeansCodeListId", source = "faCatch.weighingMeansCode.listID"),
-            @Mapping(target = "sizeDistribution", ignore = true),
+            @Mapping(target = "sizeDistributionCategoryCode", expression = "java(getSizeDistributionCategoryCode(faCatch.getSpecifiedSizeDistribution()))"),
+            @Mapping(target = "sizeDistributionCategoryCodeListId", expression = "java(getSizeDistributionCategoryCodeListId(faCatch.getSpecifiedSizeDistribution()))"),
+            @Mapping(target = "sizeDistributionClassCode", expression = "java(getSizeDistributionClassCode(faCatch.getSpecifiedSizeDistribution()))"),
+            @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))"),
             @Mapping(target = "aapProcesses", ignore = true),
             @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))"),
             @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))"),
@@ -86,7 +93,6 @@ public abstract class FaCatchMapper extends BaseMapper {
             @Mapping(target = "faoArea", ignore = true),
             @Mapping(target = "icesStatRectangle", ignore = true),
             @Mapping(target = "effortZone", ignore = true),
-            @Mapping(target = "rfmo", ignore = true),
             @Mapping(target = "gfcmGsa", ignore = true),
             @Mapping(target = "gfcmStatRectangle", ignore = true),
             @Mapping(target = "presentation", ignore = true),
@@ -99,8 +105,7 @@ public abstract class FaCatchMapper extends BaseMapper {
     @InheritInverseConfiguration
     @Mappings({
             @Mapping(target = "appliedAAPProcesses", source = "aapProcesses"),
-            @Mapping(target = "specifiedSizeDistribution", source = "sizeDistribution"),
-            @Mapping(target = "specifiedSizeDistribution.classCodes", source = "sizeDistribution.sizeDistributionClassCodeEntities"),
+            @Mapping(target = "specifiedSizeDistribution", expression="java(getSizeDistribution(faCatch))"),
             @Mapping(target = "relatedFishingTrips", ignore = true),
             @Mapping(target = "relatedAAPStocks", ignore = true),
             @Mapping(target = "relatedSalesBatches", ignore = true),
@@ -150,7 +155,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         List<AssetIdentifierDto> assetIdentifierDtos = new ArrayList<>();
         if (faCatch != null && faCatch.getFishingActivity() != null && CollectionUtils.isNotEmpty(faCatch.getFishingActivity().getVesselTransportMeans())) {
             VesselTransportMeansEntity vesselTransportMeans = faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
-            Map<VesselIdentifierSchemeIdEnum, String> vesselIdentifiers = vesselTransportMeans.getVesselIdentifiersMap();
+            EnumMap<VesselIdentifierSchemeIdEnum, String> vesselIdentifiers = vesselTransportMeans.getVesselIdentifiersMap();
             // Set IRCS always if present
             if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.IRCS) != null) {
                 assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.IRCS, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.IRCS)));
@@ -165,7 +170,7 @@ public abstract class FaCatchMapper extends BaseMapper {
     }
 
     protected FishingTripEntity getFishingTripEntity(List<FishingTrip> relatedFishingTrips) {
-        if(relatedFishingTrips == null || relatedFishingTrips.size() == 0) {
+        if (CollectionUtils.isEmpty(relatedFishingTrips)) {
             return null;
         }
         FishingTrip fishingTrip = relatedFishingTrips.get(0);
@@ -178,6 +183,61 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
 
         return faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
+    }
+
+    protected SizeDistribution getSizeDistribution(FaCatchEntity faCatch) {
+        if (faCatch == null) {
+            return null;
+        }
+
+        SizeDistribution result = new SizeDistribution();
+        if (faCatch.getSizeDistributionCategoryCode() != null && faCatch.getSizeDistributionCategoryCodeListId() != null) {
+            CodeType code = new CodeType();
+            code.setValue(faCatch.getSizeDistributionCategoryCode());
+            code.setListID(faCatch.getSizeDistributionCategoryCodeListId());
+            result.setCategoryCode(code);
+        }
+
+        if (faCatch.getSizeDistributionClassCode() != null && faCatch.getSizeDistributionClassCodeListId() != null) {
+            CodeType code = new CodeType();
+            code.setValue(faCatch.getSizeDistributionClassCode());
+            code.setListID(faCatch.getSizeDistributionClassCodeListId());
+            result.setClassCodes(Lists.newArrayList(code));
+        }
+
+        return result;
+    }
+
+    protected String getSizeDistributionCategoryCode(SizeDistribution sizeDistribution) {
+        if (sizeDistribution == null || sizeDistribution.getCategoryCode() == null) {
+            return null;
+        }
+
+        return sizeDistribution.getCategoryCode().getValue();
+    }
+
+    protected String getSizeDistributionCategoryCodeListId(SizeDistribution sizeDistribution) {
+        if (sizeDistribution == null || sizeDistribution.getCategoryCode() == null) {
+            return null;
+        }
+
+        return sizeDistribution.getCategoryCode().getListID();
+    }
+
+    protected String getSizeDistributionClassCode(SizeDistribution sizeDistribution) {
+        if (sizeDistribution == null || sizeDistribution.getClassCodes() == null || sizeDistribution.getClassCodes().isEmpty()) {
+            return null;
+        }
+
+        return sizeDistribution.getClassCodes().get(0).getValue();
+    }
+
+    protected String getSizeDistributionClassCodeListId(SizeDistribution sizeDistribution) {
+        if (sizeDistribution == null || sizeDistribution.getClassCodes() == null || sizeDistribution.getClassCodes().isEmpty()) {
+            return null;
+        }
+
+        return sizeDistribution.getClassCodes().get(0).getListID();
     }
 
     protected Set<AapStockEntity> getAapStockEntities(List<AAPStock> aapStocks, FaCatchEntity faCatchEntity) {
@@ -208,47 +268,41 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> specifiedFluxLocations, List<FLUXLocation> destFluxLocations, FaCatchEntity faCatchEntity) {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
-        if (specifiedFluxLocations != null && !specifiedFluxLocations.isEmpty()) {
-            for (FLUXLocation fluxLocation : specifiedFluxLocations) {
-                FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+        for (FLUXLocation fluxLocation : Utils.safeIterable(specifiedFluxLocations)) {
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
 
-                Set<StructuredAddressEntity> structuredAddressEntitySet = new HashSet<>();
+            Set<StructuredAddressEntity> structuredAddressEntitySet = new HashSet<>();
 
-                StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
-                StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(physicalStructuredAddress);
+            StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
+            StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(physicalStructuredAddress);
 
-                if (physicalStructuredAddressEntity != null){
-                    physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                    physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
-                    structuredAddressEntitySet.add(physicalStructuredAddressEntity);
-                }
-
-                List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
-                if (postalStructuredAddresses != null && !postalStructuredAddresses.isEmpty()) {
-                    for (StructuredAddress structuredAddress : postalStructuredAddresses) {
-                        StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
-                        if (structuredAddressEntity != null){
-                            structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
-                            structuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                            structuredAddressEntitySet.add(structuredAddressEntity);
-                        }
-                    }
-                }
-
-                fluxLocationEntity.setStructuredAddresses(structuredAddressEntitySet);
-                fluxLocationEntity.setFaCatch(faCatchEntity);
-                fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED);
-                fluxLocationEntities.add(fluxLocationEntity);
+            if (physicalStructuredAddressEntity != null) {
+                physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
+                physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
+                structuredAddressEntitySet.add(physicalStructuredAddressEntity);
             }
+
+            List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
+            for (StructuredAddress structuredAddress : Utils.safeIterable(postalStructuredAddresses)) {
+                StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
+                if (structuredAddressEntity != null) {
+                    structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
+                    structuredAddressEntity.setFluxLocation(fluxLocationEntity);
+                    structuredAddressEntitySet.add(structuredAddressEntity);
+                }
+            }
+
+            fluxLocationEntity.setStructuredAddresses(structuredAddressEntitySet);
+            fluxLocationEntity.setFaCatch(faCatchEntity);
+            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED);
+            fluxLocationEntities.add(fluxLocationEntity);
         }
 
-        if (destFluxLocations != null && !destFluxLocations.isEmpty()) {
-            for (FLUXLocation fluxLocation : destFluxLocations) {
-                FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-                fluxLocationEntity.setFaCatch(faCatchEntity);
-                fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION);
-                fluxLocationEntities.add(fluxLocationEntity);
-            }
+        for (FLUXLocation fluxLocation : Utils.safeIterable(destFluxLocations)) {
+            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+            fluxLocationEntity.setFaCatch(faCatchEntity);
+            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION);
+            fluxLocationEntities.add(fluxLocationEntity);
         }
 
         return fluxLocationEntities;

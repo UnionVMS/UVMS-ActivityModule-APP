@@ -3,48 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0">
-
-	<persistence-unit name="activityConfig" transaction-type="JTA">
-		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-		<jta-data-source>jdbc/uvms_config</jta-data-source>
-		<class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
-		<properties>
-			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-			<property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
-		</properties>
-	</persistence-unit>
-
-	<persistence-unit name="activityPUpostgres" transaction-type="JTA">
-		<jta-data-source>java:jboss/datasources/uvms_activity</jta-data-source>
-		<properties>
-			<property name="hibernate.dialect" value="${hibernate.spatial.dialect}"/>
-			<property name="hibernate.event.merge.entity_copy_observer" value="allow"/>
-			<property name="hibernate.default_schema" value="activity"/>
-			<property name="show_sql" value="false"/>
-			<property name="format_sql" value="true"/>
-			<property name="use_sql_comments" value="false"/>
-			<property name="hibernate.cache.use_second_level_cache" value="true"/>
-			<property name="hibernate.generate_statistics" value="true"/>
-			<property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy"/>
-			<property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
-			<property name="hibernate.hbm2ddl.auto" value="validate"/>
-		</properties>
-	</persistence-unit>
-
-	<!--persistence-unit name="activityPUpostgres" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="testPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+		<!-- ERS Activity entities -->
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharCodeEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionClassCodeEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemRecoveryEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyIdentifierEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxPartyEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FlapDocumentEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.SizeDistributionEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity</class>
@@ -58,10 +27,7 @@
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPersonEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportDocumentEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxReportIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity</class>
@@ -70,7 +36,6 @@
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselPositionEventEntity</class>
-		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.CodeType</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.QuantityType</class>
 		<class>eu.europa.ec.fisheries.uvms.activity.fa.entities.MeasureType</class>
 
@@ -95,11 +60,12 @@
 			<property name="format_sql" value="false" />
 			<property name="use_sql_comments" value="false" />
 
+			<!--HIBERNATE SEARCH PROPS-->
 			<property name="hibernate.search.default.directory_provider"
 					  value="filesystem"/>
 
 			<property name="hibernate.search.default.indexBase"
 					  value="target"/>
 		</properties>
-	</persistence-unit -->
+	</persistence-unit>
 </persistence>

@@ -22,9 +22,6 @@ import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by sanera on 04/08/2016.
- */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ReportDTO extends FishingActivityDTO {
 

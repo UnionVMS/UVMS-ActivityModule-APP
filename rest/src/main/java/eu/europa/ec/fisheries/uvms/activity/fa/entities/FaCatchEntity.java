@@ -25,12 +25,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -39,18 +36,16 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-@NamedQueries({
-		@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
-				query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " +
-						"FROM FaCatchEntity faCatch " +
-						"JOIN faCatch.fluxLocations fluxLoc " +
-						"JOIN faCatch.fishingActivity fishAct " +
-						"JOIN fishAct.faReportDocument fa " +
-						"JOIN fishAct.fishingTrip fishTrip " +
-						"WHERE fishTrip.fishingTripKey.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
-						"GROUP BY faCatch.speciesCode, faCatch.typeCode,fluxLoc.fluxLocationIdentifier " +
-						"ORDER BY faCatch.typeCode, faCatch.speciesCode")
-})
+@NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
+		query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " +
+				"FROM FaCatchEntity faCatch " +
+				"JOIN faCatch.fluxLocations fluxLoc " +
+				"JOIN faCatch.fishingActivity fishAct " +
+				"JOIN fishAct.faReportDocument fa " +
+				"JOIN fishAct.fishingTrip fishTrip " +
+				"WHERE fishTrip.fishingTripKey.tripId =:tripId and faCatch.typeCode IN ('UNLOADED','ONBOARD','KEPT_IN_NET','TAKEN_ONBOARD')" +
+				"GROUP BY faCatch.speciesCode, faCatch.typeCode,fluxLoc.fluxLocationIdentifier " +
+				"ORDER BY faCatch.typeCode, faCatch.speciesCode")
 @Entity
 @Table(name = "activity_fa_catch")
 @NoArgsConstructor
@@ -70,10 +65,6 @@ public class FaCatchEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
-
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "size_distribution_id")
-	private SizeDistributionEntity sizeDistribution;
 
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
@@ -129,9 +120,6 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "effort_zone")
 	private String effortZone;
 
-    @Column(name = "rfmo")
-    private String rfmo;
-
     @Column(name = "gfcm_gsa")
     private String gfcmGsa;
 
@@ -146,6 +134,18 @@ public class FaCatchEntity implements Serializable {
 
 	@Column(name = "fish_class_code")
 	private String fishClassCode;
+
+	@Column(name = "size_distribution_class_code")
+	private String sizeDistributionClassCode;
+
+	@Column(name = "size_distribution_class_code_list_id")
+	private String sizeDistributionClassCodeListId;
+
+	@Column(name = "size_distribution_category_code")
+	private String sizeDistributionCategoryCode;
+
+	@Column(name = "size_distribution_category_code_list_id")
+	private String sizeDistributionCategoryCodeListId;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<AapProcessEntity> aapProcesses = new HashSet<>();
@@ -163,15 +163,13 @@ public class FaCatchEntity implements Serializable {
 	private Set<AapStockEntity> aapStocks = new HashSet<>();
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-			@JoinColumn(name = "trip_id", referencedColumnName = "trip_id"),
-			@JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
-	})
+	@JoinColumn(name = "trip_id", referencedColumnName = "trip_id")
+	@JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
 	private FishingTripEntity fishingTrip;
 
 	@PrePersist
-	public void prePersist(){
-		if (unitQuantity != null && unitQuantityCode != null){
+	public void prePersist() {
+		if (unitQuantity != null && unitQuantityCode != null) {
 			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitQuantityCode);
 			if (unitCodeEnum != null) {
 				BigDecimal quantity = new BigDecimal(unitQuantity);
@@ -179,7 +177,7 @@ public class FaCatchEntity implements Serializable {
 				calculatedUnitQuantity =  result.doubleValue();
 			}
 		}
-		if (weightMeasure != null && weightMeasureUnitCode != null){
+		if (weightMeasure != null && weightMeasureUnitCode != null) {
 			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(weightMeasureUnitCode);
 			if (unitCodeEnum != null) {
 				BigDecimal quantity = new BigDecimal(weightMeasure);

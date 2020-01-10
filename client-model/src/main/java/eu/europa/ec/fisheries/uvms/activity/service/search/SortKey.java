@@ -12,9 +12,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.search;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 
-/**
- * Created by sanera on 01/07/2016.
- */
 public class SortKey {
 
     private SearchFilter sortBy;

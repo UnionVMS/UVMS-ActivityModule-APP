@@ -24,9 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by sanera on 20/01/2017.
- */
 @Slf4j
 public class FACatchSearchBuilder extends SearchQueryBuilder {
 
@@ -171,8 +168,8 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
 
 
     @Override
-    protected void appendLeftJoinFetch(StringBuilder sql, String delimitedPeriodTableAlias) {
-        sql.append(LEFT).append(JOIN).append(delimitedPeriodTableAlias);
+    protected void appendLeftJoinFetch(StringBuilder sql) {
+        sql.append(LEFT).append(JOIN).append(FilterMap.DELIMITED_PERIOD_TABLE_ALIAS);
     }
 
     @Override
@@ -182,6 +179,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         }
     }
 
+    @Override
     protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }

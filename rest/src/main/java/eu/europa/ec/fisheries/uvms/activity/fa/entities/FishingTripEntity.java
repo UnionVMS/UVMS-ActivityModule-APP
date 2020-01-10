@@ -11,8 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.DelimitedPeriodMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -38,8 +38,6 @@ import java.util.Set;
 @Entity
 @Table(name = "activity_fishing_trip")
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"delimitedPeriods"})
-@ToString(exclude = {"delimitedPeriods"})
 @Data
 public class FishingTripEntity implements Serializable {
 
@@ -58,24 +56,11 @@ public class FishingTripEntity implements Serializable {
 	@Column(name = "type_code_list_id")
 	private String typeCodeListId;
 
-	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<>();
-
     @Column(name = "calculated_trip_start_date")
     private Instant calculatedTripStartDate;
 
     @Column(name = "calculated_trip_end_date")
     private Instant calculatedTripEndDate;
-
-    public void addDelimitedPeriods(DelimitedPeriodEntity periodEntity) {
-        delimitedPeriods.add(periodEntity);
-        periodEntity.setFishingTrip(this);
-    }
-
-    public void removeDelimitedPeriods(DelimitedPeriodEntity area) {
-        delimitedPeriods.remove(area);
-        area.setFishingTrip(null);
-    }
 
     public static FishingTripEntity create(FishingTrip fishingTrip) {
         if (fishingTrip == null) {
@@ -92,8 +77,22 @@ public class FishingTripEntity implements Serializable {
         }
 
         List<DelimitedPeriod> specifiedDelimitedPeriods = fishingTrip.getSpecifiedDelimitedPeriods();
-        for (DelimitedPeriod delimitedPeriod : Utils.safeIterable(specifiedDelimitedPeriods)) {
-            fishingTripEntity.addDelimitedPeriods(DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodEntity(delimitedPeriod));
+        if (specifiedDelimitedPeriods.size() > 1) {
+            throw new IllegalArgumentException("Received more than one DelimitedPeriod in FishingTrip" + (idType != null ? " with id " + idType.getValue() : ""));
+        }
+
+        if (!specifiedDelimitedPeriods.isEmpty()) {
+            DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
+            Instant startDate = DelimitedPeriodMapper.getStartDate(delimitedPeriod);
+            Instant endDate = DelimitedPeriodMapper.getEndDate(delimitedPeriod);
+
+            if (startDate != null) {
+                fishingTripEntity.setCalculatedTripStartDate(startDate);
+            }
+
+            if (endDate != null) {
+                fishingTripEntity.setCalculatedTripEndDate(endDate);
+            }
         }
 
         CodeType typeCode = fishingTrip.getTypeCode();
@@ -116,8 +115,8 @@ public class FishingTripEntity implements Serializable {
 
         fishingTrip.setIDS(idTypes);
 
-        List<DelimitedPeriod> convertedDelimitedPeriods = DelimitedPeriodMapper.INSTANCE.mapToDelimitedPeriodList(this.delimitedPeriods);
-        fishingTrip.setSpecifiedDelimitedPeriods(convertedDelimitedPeriods);
+        DelimitedPeriod delimitedPeriod = DelimitedPeriodMapper.convert(calculatedTripStartDate, calculatedTripEndDate);
+        fishingTrip.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
 
         if (typeCode != null && typeCodeListId != null) {
             CodeType codeType = new CodeType();

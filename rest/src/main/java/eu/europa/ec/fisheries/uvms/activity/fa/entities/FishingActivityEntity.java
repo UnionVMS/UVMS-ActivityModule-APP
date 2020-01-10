@@ -12,20 +12,15 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxLocationMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.commons.collections.CollectionUtils;
 import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -35,9 +30,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -54,27 +47,21 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
-@NamedQueries({
-		@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
-				query = "SELECT DISTINCT a from FishingActivityEntity a " +
-						"JOIN FETCH a.faReportDocument fa " +
-						"JOIN FETCH fa.fluxReportDocument flux " +
-						"JOIN FETCH a.fishingTrip ft " +
-						"where (intersects(fa.geom, :area) = true " +
-						"and ft.fishingTripKey.tripId =:fishingTripId) " +
-						"order by a.typeCode,fa.acceptedDatetime"),
-		@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
-				query = "SELECT DISTINCT a from FishingActivityEntity a " +
-						"JOIN FETCH a.faReportDocument fa " +
-						"JOIN FETCH fa.fluxReportDocument flux " +
-						"JOIN FETCH a.fishingTrip ft " +
-						"where ft.fishingTripKey.tripId =:fishingTripId " +
-						"order by a.typeCode,fa.acceptedDatetime")
-})
+@NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
+		query = "SELECT DISTINCT a from FishingActivityEntity a " +
+				"JOIN FETCH a.faReportDocument fa " +
+				"JOIN FETCH a.fishingTrip ft " +
+				"where (intersects(fa.geom, :area) = true " +
+				"and ft.fishingTripKey.tripId =: fishingTripId) " +
+				"order by a.calculatedStartTime ASC, fa.fluxReportDocument_PurposeCode DESC")
+@NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
+		query = "SELECT DISTINCT a from FishingActivityEntity a " +
+				"JOIN FETCH a.faReportDocument fa " +
+				"JOIN FETCH a.fishingTrip ft " +
+				"where ft.fishingTripKey.tripId =:fishingTripId " +
+				"order by a.calculatedStartTime ASC, fa.fluxReportDocument_PurposeCode DESC")
 
 @Entity
 @Table(name = "activity_fishing_activity")
@@ -143,11 +130,9 @@ public class FishingActivityEntity implements Serializable {
 	private String speciesTargetCodeListId;
 
 	@Embedded
-	@AttributeOverrides({
-			@AttributeOverride( name = "value", column = @Column(name = "operationsquantity_value")),
-			@AttributeOverride( name = "unitCode", column = @Column(name = "operationsquantity_unitCode")),
-			@AttributeOverride( name = "unitCodeListID", column = @Column(name = "operationsquantity_unitCodeListID"))
-	})
+	@AttributeOverride( name = "value", column = @Column(name = "operationsquantity_value"))
+	@AttributeOverride( name = "unitCode", column = @Column(name = "operationsquantity_unitCode"))
+	@AttributeOverride( name = "unitCodeListID", column = @Column(name = "operationsquantity_unitCodeListID"))
 	private QuantityType operationsQuantity;
 
 	@Column(name = "calculated_operation_quantity")
@@ -183,6 +168,9 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name = "calculated_start_time")
 	private Instant calculatedStartTime;
 
+	@Column(name = "calculated_end_time")
+	private Instant calculatedEndTime;
+
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "related_fishing_activity_id")
 	private FishingActivityEntity relatedFishingActivity;
@@ -190,14 +178,9 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<FaCatchEntity> faCatchs;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
-	private Set<DelimitedPeriodEntity> delimitedPeriods;
-
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumns({
-			@JoinColumn(name = "trip_id", referencedColumnName = "trip_id"),
-			@JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
-	})
+	@JoinColumn(name = "trip_id", referencedColumnName = "trip_id")
+	@JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
 	private FishingTripEntity fishingTrip;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
@@ -233,11 +216,11 @@ public class FishingActivityEntity implements Serializable {
     }
 
     @PrePersist
-    public void prePersist(){
-        if (operationsQuantity != null){
+    public void prePersist() {
+        if (operationsQuantity != null) {
             Double value = operationsQuantity.getValue();
             String unitCode = operationsQuantity.getUnitCode();
-            if (value != null || unitCode != null){
+            if (value != null || unitCode != null) {
                 UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitCode);
                 if (unitCodeEnum != null && value != null) {
                     BigDecimal quantity = new BigDecimal(value);
@@ -271,43 +254,6 @@ public class FishingActivityEntity implements Serializable {
     public void addFlapDocuments(FlapDocumentEntity flapDocumentEntity){
         flapDocuments.add(flapDocumentEntity);
         flapDocumentEntity.setFishingActivity(this);
-    }
-
-    public Double getCalculatedDuration(){
-        if (isEmpty(delimitedPeriods)) {
-            return null;
-        }
-        Double durationSubTotal = null;
-        for (DelimitedPeriodEntity period : delimitedPeriods) {
-            durationSubTotal = Utils.addDoubles(period.getCalculatedDuration(), durationSubTotal);
-        }
-        return durationSubTotal;
-	}
-
-	public Double getDuration(){
-		if (isEmpty(delimitedPeriods)) {
-			return null;
-		}
-		Double durationSubTotal = null;
-		for (DelimitedPeriodEntity period : delimitedPeriods) {
-			durationSubTotal = Utils.addDoubles(period.getDurationMeasure().getValue(), durationSubTotal);
-		}
-		return durationSubTotal;
-	}
-
-	public String getDurationMeasure(){
-        if (CollectionUtils.isEmpty(delimitedPeriods)) {
-            return null;
-        }
-        return delimitedPeriods.iterator().next().getDurationMeasure().getUnitCode(); // As per rules only MIN is allowed
-    }
-
-    public Set<FluxLocationDto> getLocations_() {
-        Set<FluxLocationDto> locationDtos = newHashSet();
-        if (isNotEmpty(fluxLocations)) {
-             locationDtos = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocations);
-        }
-        return locationDtos;
     }
 
     public Optional<Date> getOccurrenceAsDate() {

@@ -1,57 +1,135 @@
-/*
-Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
-
-This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it 
-and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of 
-the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
-details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
-
- */
-
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 
-import java.util.List;
-import java.util.Set;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 
-@Mapper(uses = {XMLDateUtils.class, CustomBigDecimal.class},
-        unmappedTargetPolicy = ReportingPolicy.ERROR)
-public abstract class DelimitedPeriodMapper extends BaseMapper {
+public class DelimitedPeriodMapper {
+    private DelimitedPeriodMapper() {
+        // Util class, no public constructor
+    }
 
-    public static final DelimitedPeriodMapper INSTANCE = Mappers.getMapper(DelimitedPeriodMapper.class);
+    public static Instant getStartDate(DelimitedPeriod delimitedPeriod) {
+        if (delimitedPeriod == null) {
+            return null;
+        }
 
-    @Mappings({
-            @Mapping(target = "startDate", source = "startDateTime.dateTime"),
-            @Mapping(target = "endDate", source = "endDateTime.dateTime"),
-            @Mapping(target = "durationMeasure", source = "durationMeasure"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "fishingActivity", ignore = true),
-            @Mapping(target = "fishingTrip", ignore = true),
-            @Mapping(target = "calculatedDuration", ignore = true)
-    })
-    public abstract DelimitedPeriodEntity mapToDelimitedPeriodEntity(DelimitedPeriod delimitedPeriod);
+        DateTimeType startDateTime = delimitedPeriod.getStartDateTime();
+        DateTimeType endDateTime = delimitedPeriod.getEndDateTime();
+        MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
 
-    @InheritInverseConfiguration
-    public abstract DelimitedPeriod mapToDelimitedPeriod(DelimitedPeriodEntity delimitedPeriod);
+        if (startDateTime != null) {
+            Date date = XMLDateUtils.xmlGregorianCalendarToDate(startDateTime.getDateTime());
+            return date.toInstant();
+        }
 
-    public abstract List<DelimitedPeriod> mapToDelimitedPeriodList(Set<DelimitedPeriodEntity> delimitedPeriod);
+        if (endDateTime == null || durationMeasure == null) {
+            return null;
+        }
 
-    @Mappings({
-            @Mapping(target = "duration", ignore = true),
-            @Mapping(target = "unitCode", ignore = true)
-    })
-    public abstract DelimitedPeriodDTO mapToDelimitedPeriodDTO(DelimitedPeriodEntity delimitedPeriodEntity);
+        Date endDate = XMLDateUtils.xmlGregorianCalendarToDate(endDateTime.getDateTime());
+        Instant endDateInstant = endDate.toInstant();
 
+        BigDecimal bigDecimalDuration = durationMeasure.getValue();
+        if (bigDecimalDuration == null) {
+            return null;
+        }
+
+        int durationInMinutes = bigDecimalDuration.intValue();
+        return endDateInstant.minus(durationInMinutes, ChronoUnit.MINUTES);
+    }
+
+    public static Instant getEndDate(DelimitedPeriod delimitedPeriod) {
+        if (delimitedPeriod == null) {
+            return null;
+        }
+
+        DateTimeType startDateTime = delimitedPeriod.getStartDateTime();
+        DateTimeType endDateTime = delimitedPeriod.getEndDateTime();
+        MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
+
+        if (endDateTime != null) {
+            Date date = XMLDateUtils.xmlGregorianCalendarToDate(endDateTime.getDateTime());
+            return date.toInstant();
+        }
+
+        if (startDateTime == null || durationMeasure == null) {
+            return null;
+        }
+
+        Date startDate = XMLDateUtils.xmlGregorianCalendarToDate(startDateTime.getDateTime());
+        Instant startDateInstant = startDate.toInstant();
+
+        BigDecimal bigDecimalDuration = durationMeasure.getValue();
+        if (bigDecimalDuration == null) {
+            return null;
+        }
+
+        int durationInMinutes = bigDecimalDuration.intValue();
+        return startDateInstant.plus(durationInMinutes, ChronoUnit.MINUTES);
+    }
+
+    public static Duration getDuration(DelimitedPeriod delimitedPeriod) {
+        if (delimitedPeriod == null) {
+            return null;
+        }
+
+        MeasureType durationMeasure = delimitedPeriod.getDurationMeasure();
+        if (durationMeasure == null) {
+            return null;
+        }
+
+        BigDecimal bigDecimalDuration = durationMeasure.getValue();
+        if (bigDecimalDuration == null) {
+            return null;
+        }
+
+        int durationInMinutes = bigDecimalDuration.intValue();
+        return Duration.of(durationInMinutes, ChronoUnit.MINUTES);
+    }
+
+    public static DelimitedPeriod convert(Instant startDate, Instant endDate) {
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+
+        if (startDate != null) {
+            Date from = Date.from(startDate);
+            XMLGregorianCalendar xmlGregorianCalendar = XMLDateUtils.dateToXmlGregorian(from);
+            DateTimeType dateTimeType = new DateTimeType();
+            dateTimeType.setDateTime(xmlGregorianCalendar);
+            delimitedPeriod.setStartDateTime(dateTimeType);
+        }
+
+        if (endDate != null) {
+            Date from = Date.from(endDate);
+            XMLGregorianCalendar xmlGregorianCalendar = XMLDateUtils.dateToXmlGregorian(from);
+            DateTimeType dateTimeType = new DateTimeType();
+            dateTimeType.setDateTime(xmlGregorianCalendar);
+            delimitedPeriod.setEndDateTime(dateTimeType);
+        }
+
+        if (startDate != null && endDate != null) {
+            Duration duration = Duration.between(startDate, endDate);
+            long durationInMinutes = duration.toMinutes();
+
+            un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType measureType = new un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType();
+            CustomBigDecimal customBigDecimal = new CustomBigDecimal();
+            BigDecimal bigDecimal = customBigDecimal.createBigDecimal((double) durationInMinutes);
+
+            measureType.setValue(bigDecimal);
+            measureType.setUnitCode("MIN");
+
+            delimitedPeriod.setDurationMeasure(measureType);
+        }
+
+        return delimitedPeriod;
+    }
 }

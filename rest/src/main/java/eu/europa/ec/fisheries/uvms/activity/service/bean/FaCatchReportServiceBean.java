@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.FaCatchReportService;
@@ -22,8 +21,8 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatch
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchSummaryRecordDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.SummaryTableDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryHelper;
-import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryHelperFactory;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FACatchSummaryMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryPresentationHelper;
+import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryReportHelper;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -93,11 +92,11 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         groupByFields.add(GroupCriteria.GFCM_GSA);
         groupByFields.add(GroupCriteria.GFCM_STAT_RECTANGLE);
         groupByFields.add(GroupCriteria.ICES_STAT_RECTANGLE);
-        groupByFields.add(GroupCriteria.RFMO);
         groupByFields.add(GroupCriteria.SPECIES);
 
-        if(isLanding)
-             groupByFields.add(GroupCriteria.PRESENTATION);
+        if (isLanding) {
+            groupByFields.add(GroupCriteria.PRESENTATION);
+        }
 
         return groupByFields;
     }
@@ -117,7 +116,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = faCatchDao.getGroupedFaCatchData(query, isLanding);
 
         // post process data to create Summary table part of Catch summary Report
-        FACatchSummaryHelper faCatchSummaryHelper = isLanding ? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION) : FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+        FACatchSummaryHelper faCatchSummaryHelper = isLanding ? new FACatchSummaryPresentationHelper() : new FACatchSummaryReportHelper();
         List<FACatchSummaryRecordDTO> catchSummaryList = faCatchSummaryHelper.buildFACatchSummaryRecordDTOList(groupedData);
 
         // Post process data to calculate Totals for each column
@@ -130,35 +129,4 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
 
         return faCatchSummaryDTO;
     }
-
-    /**
-     * This method is used to create Catch Details page from Run Report.
-     * So, To display summary  of catches, we need to consider all fishing Activity filters as well as aggregation factors specified by user .
-     * Aggregation factors could be dynamically selected by user like veesel,period,area etc.
-     * @param query
-     * @throws ServiceException
-     */
-    @Override
-    public FACatchSummaryReportResponse getFACatchSummaryReportResponse(FishingActivityQuery query) throws ServiceException {
-        log.debug("FACatchSummaryReportResponse creation starts");
-
-        //get processed information in the form of DTO
-        FACatchSummaryDTO faCatchSummaryDTO = getCatchSummaryReport(query,false);
-        log.debug("FACatchSummaryDTO created");
-
-        // We can not transfter DTO as it is over JMS because of JAVA maps.so, Map DTO to the type transferrable over JMS
-        FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
-
-        // Create response object for JMS
-        FACatchSummaryReportResponse faCatchSummaryReportResponse = new FACatchSummaryReportResponse();
-        faCatchSummaryReportResponse.setSummaryRecords(faCatchSummaryHelper.buildFACatchSummaryRecordList(faCatchSummaryDTO.getRecordDTOs()));
-        faCatchSummaryReportResponse.setTotal(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getTotal()));
-
-        log.debug("SummaryTable XML Schema response---->"+FACatchSummaryHelper.printJsonstructure(faCatchSummaryReportResponse));
-
-        return faCatchSummaryReportResponse;
-    }
-
-
-
 }

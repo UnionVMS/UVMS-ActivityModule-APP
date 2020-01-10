@@ -29,11 +29,11 @@ import java.util.List;
 @Slf4j
 public class FAQueryServiceBean extends BaseActivityBean implements FaQueryService {
 
-    private FaReportDocumentDao FAReportDAO;
+    private FaReportDocumentDao faReportDao;
 
     @PostConstruct
     public void init() {
-        FAReportDAO = new FaReportDocumentDao(entityManager);
+        faReportDao = new FaReportDocumentDao(entityManager);
     }
 
     @Override
@@ -52,13 +52,11 @@ public class FAQueryServiceBean extends BaseActivityBean implements FaQueryServi
                 } else if (subCriteria == SubCriteriaType.START_DATE) {
                     startDate = Instant.parse(value);
                 }
-
             }
 
-            List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(null, "N", startDate, endDate);
+            List<FaReportDocumentEntity> faReportDocumentsForTrip = faReportDao.loadReports(null, "N", startDate, endDate);
             return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
         }
-
         return null;
     }
 }

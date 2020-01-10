@@ -27,23 +27,16 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
-import lombok.SneakyThrows;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 import org.mockito.runners.MockitoJUnitRunner;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -55,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -159,7 +151,7 @@ public class FluxMessageServiceBeanTest {
         String startDate = simpleDateFormat.format(Date.from(fishingTrip.getCalculatedTripStartDate()));
         String endDate = simpleDateFormat.format(Date.from(fishingTrip.getCalculatedTripEndDate()));
 
-        assertEquals("2016-07-01 09:15:00", startDate);
+        assertEquals("2011-07-01 11:15:00", startDate);
         assertEquals("2016-07-01 11:15:00", endDate);
     }
 

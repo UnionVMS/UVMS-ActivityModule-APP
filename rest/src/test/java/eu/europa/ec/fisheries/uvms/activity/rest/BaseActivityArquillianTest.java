@@ -77,7 +77,6 @@ public abstract class BaseActivityArquillianTest {
 
         File[] dependencyFiles = Maven
                 .configureResolver()
-                .workOffline()
                 .loadPomFromFile("pom.xml")
                 .importRuntimeDependencies()
                 .resolve()

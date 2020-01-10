@@ -33,5 +33,4 @@ public class FaMessageSaverBean extends BaseActivityBean {
     public FluxFaReportMessageEntity saveReportMessageNow(FluxFaReportMessageEntity messageEntity) {
         return fluxReportMessageDao.createEntity(messageEntity);
     }
-
 }

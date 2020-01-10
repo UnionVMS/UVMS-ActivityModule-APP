@@ -1,21 +1,17 @@
 package eu.europa.ec.fisheries.uvms.activity.service.search.builder;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
-import eu.europa.ec.fisheries.uvms.activity.service.search.GroupCriteriaMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.service.search.GroupCriteriaMapper;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by sanera on 01/03/2017.
- */
 public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
 
     private static final String FA_CATCH_JOIN = " from FaCatchEntity faCatch JOIN faCatch.fishingActivity a " +
@@ -25,6 +21,7 @@ public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
 
     private static final String SUM_WEIGHT = " SUM(aprod.calculatedWeightMeasure)  " ;
 
+    @Override
     protected void createJoinPartOfTheQuery(FishingActivityQuery query, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings, List<GroupCriteria> groupByFieldList) {
         // Below is default JOIN for the query
         sql.append(FA_CATCH_JOIN);
@@ -42,6 +39,7 @@ public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
         }
     }
 
+    @Override
     protected void appendSelectGroupColumns(List<GroupCriteria> groupByFieldList, StringBuilder sql, Map<GroupCriteria, GroupCriteriaMapper> groupMAppings) throws ServiceException {
         if (groupByFieldList == null || Collections.isEmpty(groupByFieldList))
             throw new ServiceException(" No Group information present to aggregate report.");
@@ -54,14 +52,27 @@ public class FACatchSearchBuilder_Landing extends FACatchSearchBuilder {
         sql.append(SUM_WEIGHT);
     }
 
-    protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql){
-        sql.append(" and ( a.typeCode ='").append(FishingActivityTypeEnum.LANDING).append("' and faCatch.typeCode IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("')) ");
+    @Override
+    protected void enrichWherePartOFQueryForDISOrDIM(StringBuilder sql) {
+        sql
+            .append(" and ( a.typeCode ='")
+            .append(FishingActivityTypeEnum.LANDING)
+            .append("' and faCatch.typeCode IN ('")
+            .append(FaCatchTypeEnum.DEMINIMIS)
+            .append("','")
+            .append(FaCatchTypeEnum.DISCARDED)
+            .append("')) ");
     }
 
-
-
-    protected void conditionsForFACatchSummaryReport(StringBuilder sql){
-        sql.append(" and ( a.typeCode ='").append(FishingActivityTypeEnum.LANDING).append("') and faCatch.typeCode NOT IN ('").append(FaCatchTypeEnum.DEMINIMIS).append("','").append(FaCatchTypeEnum.DISCARDED).append("') ");
+    @Override
+    protected void conditionsForFACatchSummaryReport(StringBuilder sql) {
+        sql
+            .append(" and ( a.typeCode ='")
+            .append(FishingActivityTypeEnum.LANDING)
+            .append("') and faCatch.typeCode NOT IN ('")
+            .append(FaCatchTypeEnum.DEMINIMIS)
+            .append("','")
+            .append(FaCatchTypeEnum.DISCARDED)
+            .append("') ");
     }
-
 }

@@ -15,17 +15,16 @@ package eu.europa.ec.fisheries.uvms.activity.service;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CronologyTripDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import org.locationtech.jts.geom.Geometry;
@@ -33,9 +32,6 @@ import org.locationtech.jts.geom.Geometry;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by padhyad on 9/22/2016.
- */
 public interface FishingTripService {
 
     /**
@@ -93,6 +89,13 @@ public interface FishingTripService {
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                                                                Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 
+    /**
+     * Returns TripWidgetDto based on the tripId and activityId
+     *
+     * @param activityEntity
+     * @param tripId
+     * @return
+     */
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
@@ -100,6 +103,4 @@ public interface FishingTripService {
     CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
 
     String getOwnerFluxPartyFromTripId(String tripId);
-
-
 }

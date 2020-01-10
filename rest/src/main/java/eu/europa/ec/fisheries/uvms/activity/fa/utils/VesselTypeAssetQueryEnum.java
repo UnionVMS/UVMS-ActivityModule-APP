@@ -15,9 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.fa.utils;
 
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 
-/**
- * Created by padhyad on 10/12/2016.
- */
 public enum VesselTypeAssetQueryEnum {
 
     CFR("CFR", ConfigSearchField.CFR),

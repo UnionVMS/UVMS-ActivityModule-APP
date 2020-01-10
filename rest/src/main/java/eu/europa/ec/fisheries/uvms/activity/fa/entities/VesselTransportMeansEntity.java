@@ -28,27 +28,23 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 import java.util.Set;
 
-@NamedQueries({
-        @NamedQuery(name = VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
-                query = "SELECT vt FROM FishingTripEntity ft " +
-                        "INNER JOIN ft.fishingActivities fa " +
-                        "INNER JOIN fa.faReportDocument frd " +
-                        "INNER JOIN frd.vesselTransportMeans vt " +
-                        "INNER JOIN vt.vesselIdentifiers vi " +
-                        "WHERE ft.fishingTripKey.tripId = :tripId " +
-                        "ORDER BY frd.acceptedDatetime DESC")
-})
+@NamedQuery(name = VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
+        query = "SELECT vt FROM FishingTripEntity ft " +
+                "INNER JOIN ft.fishingActivities fa " +
+                "INNER JOIN fa.faReportDocument frd " +
+                "INNER JOIN frd.vesselTransportMeans vt " +
+                "INNER JOIN vt.vesselIdentifiers vi " +
+                "WHERE ft.fishingTripKey.tripId = :tripId " +
+                "ORDER BY frd.acceptedDatetime DESC")
 @Entity
 @Table(name = "activity_vessel_transport_means")
 @Builder
@@ -107,8 +103,8 @@ public class VesselTransportMeansEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<VesselPositionEventEntity> vesselPositionEvents;
 
-    public Map<VesselIdentifierSchemeIdEnum, String> getVesselIdentifiersMap() {
-        Map<VesselIdentifierSchemeIdEnum, String> idMap = new HashMap<>();
+    public EnumMap<VesselIdentifierSchemeIdEnum, String> getVesselIdentifiersMap() {
+        EnumMap<VesselIdentifierSchemeIdEnum, String> idMap = new EnumMap<>(VesselIdentifierSchemeIdEnum.class);
         for (VesselIdentifierEntity entity :vesselIdentifiers) {
             idMap.put(Enum.valueOf(VesselIdentifierSchemeIdEnum.class, entity.getVesselIdentifierSchemeId()), entity.getVesselIdentifierId());
         }

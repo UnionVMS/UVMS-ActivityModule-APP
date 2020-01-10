@@ -1,4 +1,3 @@
-
 /*
 Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
 
@@ -7,19 +6,18 @@ and/or modify it under the terms of the GNU General Public License as published 
 the License, or any later version. The IFDM Suite is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
 without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more 
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
-
  */
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
-
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryHelper;
-import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryHelperFactory;
+import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryPresentationHelper;
+import eu.europa.ec.fisheries.uvms.activity.service.facatch.FACatchSummaryReportHelper;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FACatchSearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FACatchSearchBuilder_Landing;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import io.jsonwebtoken.lang.Collections;
@@ -31,9 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by padhyad on 5/3/2016.
- */
 @Slf4j
 public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
@@ -69,7 +64,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
             throw new ServiceException(" No Group information present to aggregate report.");
         }
 
-        FACatchSummaryHelper faCatchSummaryHelper = isLanding ? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION) : FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+        FACatchSummaryHelper faCatchSummaryHelper = isLanding ? new FACatchSummaryPresentationHelper() : new FACatchSummaryReportHelper();
         // By default FishSize(LSC/BMS etc) and FACatch(DIS/DIM etc) type should be present in the summary table. First Query db with group FishClass
         faCatchSummaryHelper.enrichGroupCriteriaWithFishSizeAndSpecies(groupByFieldList);
         List<FaCatchSummaryCustomProxy> customEntities = getRecordsForFishClassOrFACatchType(query, isLanding); // get data with FishClass grouping factor
@@ -99,7 +94,7 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
 
         // Map Raw data received from database to custom entity which will help identifing correct groups
         List<FaCatchSummaryCustomProxy> customEntities = new ArrayList<>();
-        FACatchSummaryHelper faCatchSummaryHelper = isLanding ? FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.PRESENTATION) : FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
+        FACatchSummaryHelper faCatchSummaryHelper = isLanding ? new FACatchSummaryPresentationHelper() : new FACatchSummaryReportHelper();
         List<GroupCriteria> groupCriterias = query.getGroupByFields();
         for (Object[] objArr : list) {
             try {
