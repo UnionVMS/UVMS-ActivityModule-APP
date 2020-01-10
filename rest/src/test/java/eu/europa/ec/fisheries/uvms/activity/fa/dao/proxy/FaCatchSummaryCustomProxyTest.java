@@ -10,14 +10,14 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy;
 
-import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomChildProxy;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.unitils.UnitilsJUnit4TestClassRunner;
 
 import static junit.framework.TestCase.assertTrue;
 
-public class FaCatchSummaryCustomProxyTest extends BaseUnitilsTest {
+@RunWith(UnitilsJUnit4TestClassRunner.class)
+public class FaCatchSummaryCustomProxyTest {
 
     @Test
     public void testEqualsAndHashCode1() {

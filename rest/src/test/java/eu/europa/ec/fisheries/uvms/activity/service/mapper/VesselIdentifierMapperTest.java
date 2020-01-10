@@ -12,9 +12,10 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.unitils.UnitilsJUnit4TestClassRunner;
 
 import java.util.Set;
 
@@ -23,7 +24,8 @@ import static eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselIdentifi
 import static org.junit.Assert.assertEquals;
 import static org.unitils.util.CollectionUtils.asSet;
 
-public class VesselIdentifierMapperTest extends BaseUnitilsTest {
+@RunWith(UnitilsJUnit4TestClassRunner.class)
+public class VesselIdentifierMapperTest {
 
     @Test
     public void testMapToIdentifierDtoSet() {

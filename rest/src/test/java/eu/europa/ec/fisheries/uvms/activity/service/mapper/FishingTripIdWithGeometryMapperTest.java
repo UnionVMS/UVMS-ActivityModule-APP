@@ -1,12 +1,13 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.unitils.UnitilsJUnit4TestClassRunner;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -15,7 +16,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class FishingTripIdWithGeometryMapperTest extends BaseUnitilsTest {
+@RunWith(UnitilsJUnit4TestClassRunner.class)
+public class FishingTripIdWithGeometryMapperTest {
 
     private FishingTripId fishingTripId;
     private List<FishingActivityEntity> fishingActivities;

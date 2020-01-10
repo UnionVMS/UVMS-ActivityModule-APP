@@ -85,18 +85,14 @@ public abstract class BaseActivityArquillianTest {
                 .asFile();
         testWar.addAsLibraries(dependencyFiles);
 
-        testWar.addAsLibraries(Maven.configureResolver()
-                .workOffline()
-                .loadPomFromFile("pom.xml")
-                .resolve("eu.europa.ec.fisheries.uvms.activity:service")
-                .withTransitivity().asFile());
-
         testWar.addPackages(true,
-                "eu.europa.ec.fisheries.uvms.activity.rest");
+                "eu.europa.ec.fisheries.uvms.activity");
 
         testWar.deleteClass(UserRoleInterceptor.class);
 
         testWar.addAsResource("logback-test.xml");
+        testWar.addAsResource("persistence.xml", "META-INF/persistence.xml");
+
 
         for (String anonymizedFluxMessageFileName : ANONYMIZED_FLUX_MESSAGES) {
             testWar.addAsResource(ANONYMIZED_FLUX_MESSAGES_FOLDER_NAME + "/" + anonymizedFluxMessageFileName);

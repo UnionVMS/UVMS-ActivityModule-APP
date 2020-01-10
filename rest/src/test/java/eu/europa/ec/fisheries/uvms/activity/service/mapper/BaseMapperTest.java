@@ -14,7 +14,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import eu.europa.ec.fisheries.uvms.BaseUnitilsTest;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
@@ -27,6 +26,8 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.unitils.UnitilsJUnit4TestClassRunner;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -45,7 +46,8 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static org.junit.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
-public class BaseMapperTest extends BaseUnitilsTest {
+@RunWith(UnitilsJUnit4TestClassRunner.class)
+public class BaseMapperTest {
 
     BaseMapper baseMapper;
 
