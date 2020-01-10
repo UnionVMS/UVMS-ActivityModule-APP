@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
@@ -25,13 +24,12 @@ public interface RegistrationEventMapper {
 
     RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
 
-    @Mappings({
-            @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationEvent.getDescriptions()))"),
-            @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationEvent.getDescriptions()))"),
-            @Mapping(target = "occurrenceDatetime", source = "occurrenceDateTime.dateTime"),
-            @Mapping(target = "registrationLocation", expression = "java(BaseMapper.mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "vesselTransportMeanses", ignore = true),
-    })
+
+    @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationEvent.getDescriptions()))")
+    @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationEvent.getDescriptions()))")
+    @Mapping(target = "occurrenceDatetime", source = "occurrenceDateTime.dateTime")
+    @Mapping(target = "registrationLocation", expression = "java(BaseMapper.mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "vesselTransportMeanses", ignore = true)
     RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent);
 }

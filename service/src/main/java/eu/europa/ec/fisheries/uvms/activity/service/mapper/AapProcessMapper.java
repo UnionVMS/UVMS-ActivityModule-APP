@@ -15,7 +15,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
@@ -26,21 +25,18 @@ public interface AapProcessMapper {
 
     AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
 
-    @Mappings({
-            @Mapping(target = "conversionFactor", source = "conversionFactorNumeric.value"),
-            @Mapping(target = "aapProcessCode", ignore = true),
-            @Mapping(target = "aapProducts", ignore = true),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "faCatch", ignore = true)
-    })
+
+    @Mapping(target = "conversionFactor", source = "conversionFactorNumeric.value")
+    @Mapping(target = "aapProcessCode", ignore = true)
+    @Mapping(target = "aapProducts", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "faCatch", ignore = true)
     AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
 
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(source = "aapProducts", target = "resultAAPProducts"),
-            @Mapping(source = "aapProcessCode", target = "typeCodes"),
-            @Mapping(target = "usedFACatches", ignore = true)
-    })
+    @Mapping(source = "aapProducts", target = "resultAAPProducts")
+    @Mapping(source = "aapProcessCode", target = "typeCodes")
+    @Mapping(target = "usedFACatches", ignore = true)
     AAPProcess mapToAapProcess(AapProcessEntity aapProcess);
 
 }

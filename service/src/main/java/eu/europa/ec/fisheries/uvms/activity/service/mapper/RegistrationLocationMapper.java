@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
@@ -25,19 +24,17 @@ public interface RegistrationLocationMapper {
 
     RegistrationLocationMapper INSTANCE = Mappers.getMapper(RegistrationLocationMapper.class);
 
-    @Mappings({
-            @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationLocation.getDescriptions()))"),
-            @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationLocation.getDescriptions()))"),
-            @Mapping(target = "regionCode", source = "geopoliticalRegionCode.value"),
-            @Mapping(target = "regionCodeListId", source = "geopoliticalRegionCode.listID"),
-            @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(registrationLocation.getNames()))"),
-            @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationLocation.getNames()))"),
-            @Mapping(target = "typeCode", source = "typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
-            @Mapping(target = "locationCountryId", source = "countryID.value"),
-            @Mapping(target = "locationCountrySchemeId", source = "countryID.schemeID"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "registrationEvent", ignore = true),
-    })
+    @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationLocation.getDescriptions()))")
+    @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationLocation.getDescriptions()))")
+    @Mapping(target = "regionCode", source = "geopoliticalRegionCode.value")
+    @Mapping(target = "regionCodeListId", source = "geopoliticalRegionCode.listID")
+    @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(registrationLocation.getNames()))")
+    @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationLocation.getNames()))")
+    @Mapping(target = "typeCode", source = "typeCode.value")
+    @Mapping(target = "typeCodeListId", source = "typeCode.listID")
+    @Mapping(target = "locationCountryId", source = "countryID.value")
+    @Mapping(target = "locationCountrySchemeId", source = "countryID.schemeID")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "registrationEvent", ignore = true)
     RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation);
 }

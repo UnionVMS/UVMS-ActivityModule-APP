@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
@@ -39,57 +38,54 @@ public abstract class AapProductMapper {
 
     public static final String FISH_FRESHNESS = "FISH_FRESHNESS";
 
-    @Mappings({
-            @Mapping(target = "packagingTypeCode", source = "packagingTypeCode.value"),
-            @Mapping(target = "packagingTypeCodeListId", source = "packagingTypeCode.listID"),
-            @Mapping(target = "packagingUnitAverageWeight", source = "packagingUnitAverageWeightMeasure.value"),
-            @Mapping(target = "packagingWeightUnitCode", source = "packagingUnitAverageWeightMeasure.unitCode"),
-            @Mapping(target = "packagingUnitCount", source = "packagingUnitQuantity.value"),
-            @Mapping(target = "packagingUnitCountCode", source = "packagingUnitQuantity.unitCode"),
-            @Mapping(target = "speciesCode", source = "speciesCode.value"),
-            @Mapping(target = "speciesCodeListId", source = "speciesCode.listID"),
-            @Mapping(target = "unitQuantity", source = "unitQuantity.value"),
-            @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode"),
-            @Mapping(target = "weightMeasure", source = "weightMeasure.value"),
-            @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode"),
-            @Mapping(target = "weighingMeansCode", source = "weighingMeansCode.value"),
-            @Mapping(target = "weighingMeansCodeListId", source = "weighingMeansCode.listID"),
-            @Mapping(target = "usageCode", source = "usageCode.value"),
-            @Mapping(target = "usageCodeListId", source = "usageCode.listID"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "calculatedPackagingWeight", ignore = true),
-            @Mapping(target = "calculatedPackagingUnitCount", ignore = true),
-            @Mapping(target = "calculatedUnitQuantity", ignore = true),
-            @Mapping(target = "calculatedWeightMeasure", ignore = true),
-            @Mapping(target = "aapProcess", ignore = true)
-    })
+
+    @Mapping(target = "packagingTypeCode", source = "packagingTypeCode.value")
+    @Mapping(target = "packagingTypeCodeListId", source = "packagingTypeCode.listID")
+    @Mapping(target = "packagingUnitAverageWeight", source = "packagingUnitAverageWeightMeasure.value")
+    @Mapping(target = "packagingWeightUnitCode", source = "packagingUnitAverageWeightMeasure.unitCode")
+    @Mapping(target = "packagingUnitCount", source = "packagingUnitQuantity.value")
+    @Mapping(target = "packagingUnitCountCode", source = "packagingUnitQuantity.unitCode")
+    @Mapping(target = "speciesCode", source = "speciesCode.value")
+    @Mapping(target = "speciesCodeListId", source = "speciesCode.listID")
+    @Mapping(target = "unitQuantity", source = "unitQuantity.value")
+    @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode")
+    @Mapping(target = "weightMeasure", source = "weightMeasure.value")
+    @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode")
+    @Mapping(target = "weighingMeansCode", source = "weighingMeansCode.value")
+    @Mapping(target = "weighingMeansCodeListId", source = "weighingMeansCode.listID")
+    @Mapping(target = "usageCode", source = "usageCode.value")
+    @Mapping(target = "usageCodeListId", source = "usageCode.listID")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "calculatedPackagingWeight", ignore = true)
+    @Mapping(target = "calculatedPackagingUnitCount", ignore = true)
+    @Mapping(target = "calculatedUnitQuantity", ignore = true)
+    @Mapping(target = "calculatedWeightMeasure", ignore = true)
+    @Mapping(target = "aapProcess", ignore = true)
     public abstract AapProductEntity mapToAapProductEntity(AAPProduct aapProduct);
 
-    @Mappings({
-            @Mapping(target = "totalSalesPrice", ignore = true),
-            @Mapping(target = "specifiedSizeDistribution", ignore = true),
-            @Mapping(target = "originFishingActivity", ignore = true),
-            @Mapping(target = "appliedAAPProcesses", ignore = true),
-            @Mapping(target = "originFLUXLocations", ignore = true)
-    })
+
     @InheritInverseConfiguration
+    @Mapping(target = "totalSalesPrice", ignore = true)
+    @Mapping(target = "specifiedSizeDistribution", ignore = true)
+    @Mapping(target = "originFishingActivity", ignore = true)
+    @Mapping(target = "appliedAAPProcesses", ignore = true)
+    @Mapping(target = "originFLUXLocations", ignore = true)
     public abstract AAPProduct mapToAapProduct(AapProductEntity aapProductEntity);
 
-    @Mappings({
-            @Mapping(target = "type", source = "aapProcess.faCatch.typeCode"),
-            @Mapping(target = "locations", expression = "java(getDenormalizedLocations(aapProduct))"),
-            @Mapping(target = "species", source = "aapProcess.faCatch.speciesCode"),
-            @Mapping(target = "gear", source = "aapProcess.faCatch.gearTypeCode"),
-            @Mapping(target = "presentation", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_PRESENTATION))"),
-            @Mapping(target = "preservation", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_PRESERVATION))"),
-            @Mapping(target = "freshness", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_FRESHNESS))"),
-            @Mapping(target = "conversionFactor", source = "aapProcess.conversionFactor"),
-            @Mapping(target = "weight", source = "weightMeasure"),
-            @Mapping(target = "quantity", source = "unitQuantity"),
-            @Mapping(target = "packageWeight", source = "packagingUnitAverageWeight"),
-            @Mapping(target = "packageQuantity", source = "packagingUnitCount"),
-            @Mapping(target = "packagingType", source = "packagingTypeCode")
-    })
+
+    @Mapping(target = "type", source = "aapProcess.faCatch.typeCode")
+    @Mapping(target = "locations", expression = "java(getDenormalizedLocations(aapProduct))")
+    @Mapping(target = "species", source = "aapProcess.faCatch.speciesCode")
+    @Mapping(target = "gear", source = "aapProcess.faCatch.gearTypeCode")
+    @Mapping(target = "presentation", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_PRESENTATION))")
+    @Mapping(target = "preservation", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_PRESERVATION))")
+    @Mapping(target = "freshness", expression = "java(getAapProcessTypeByCode(aapProduct.getAapProcess(), FISH_FRESHNESS))")
+    @Mapping(target = "conversionFactor", source = "aapProcess.conversionFactor")
+    @Mapping(target = "weight", source = "weightMeasure")
+    @Mapping(target = "quantity", source = "unitQuantity")
+    @Mapping(target = "packageWeight", source = "packagingUnitAverageWeight")
+    @Mapping(target = "packageQuantity", source = "packagingUnitCount")
+    @Mapping(target = "packagingType", source = "packagingTypeCode")
     public abstract ProcessingProductsDto mapToProcessingProduct(AapProductEntity aapProduct);
 
     protected Map<String, String> getDenormalizedLocations(AapProductEntity aapProduct) {

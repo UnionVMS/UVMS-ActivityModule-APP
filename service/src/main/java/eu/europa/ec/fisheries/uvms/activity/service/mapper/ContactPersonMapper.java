@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.Contact
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
@@ -29,36 +28,31 @@ public interface ContactPersonMapper {
 
     ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
 
-    @Mappings({
-            @Mapping(target = "title", source = "title.value"),
-            @Mapping(target = "givenName", source = "givenName.value"),
-            @Mapping(target = "middleName", source = "middleName.value"),
-            @Mapping(target = "familyName", source = "familyName.value"),
-            @Mapping(target = "familyNamePrefix", source = "familyNamePrefix.value"),
-            @Mapping(target = "nameSuffix", source = "nameSuffix.value"),
-            @Mapping(target = "gender", source = "genderCode.value"),
-            @Mapping(target = "alias", source = "alias.value"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "contactParty", ignore = true),
-    })
+
+    @Mapping(target = "title", source = "title.value")
+    @Mapping(target = "givenName", source = "givenName.value")
+    @Mapping(target = "middleName", source = "middleName.value")
+    @Mapping(target = "familyName", source = "familyName.value")
+    @Mapping(target = "familyNamePrefix", source = "familyNamePrefix.value")
+    @Mapping(target = "nameSuffix", source = "nameSuffix.value")
+    @Mapping(target = "gender", source = "genderCode.value")
+    @Mapping(target = "alias", source = "alias.value")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "contactParty", ignore = true)
     ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
 
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "birthDateTime", ignore = true),
-            @Mapping(target = "birthplaceName", ignore = true),
-            @Mapping(target = "telephoneTelecommunicationCommunication", ignore = true),
-            @Mapping(target = "faxTelecommunicationCommunication", ignore = true),
-            @Mapping(target = "emailURIEmailCommunication", ignore = true),
-            @Mapping(target = "websiteURIWebsiteCommunication", ignore = true),
-            @Mapping(target = "specifiedUniversalCommunications", ignore = true)
-    })
+    @Mapping(target = "birthDateTime", ignore = true)
+    @Mapping(target = "birthplaceName", ignore = true)
+    @Mapping(target = "telephoneTelecommunicationCommunication", ignore = true)
+    @Mapping(target = "faxTelecommunicationCommunication", ignore = true)
+    @Mapping(target = "emailURIEmailCommunication", ignore = true)
+    @Mapping(target = "websiteURIWebsiteCommunication", ignore = true)
+    @Mapping(target = "specifiedUniversalCommunications", ignore = true)
     ContactPerson mapToContactPerson(ContactPersonEntity contactPerson);
 
     List<ContactPerson> mapToContactPersonList(Set<ContactPersonEntity> contactPerson);
 
-    @Mappings({
-            @Mapping(target = "characteristicsMap", ignore = true)
-    })
+    @Mapping(target = "characteristicsMap", ignore = true)
     ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
 }

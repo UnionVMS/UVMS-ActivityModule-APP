@@ -18,7 +18,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
@@ -32,47 +31,43 @@ public interface FlapDocumentMapper {
 
     FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
 
-    @Mappings({
-            @Mapping(target = "flapDocumentId", source = "ID.value"),
-            @Mapping(target = "flapDocumentSchemeId", source = "ID.schemeID"),
-            @Mapping(target = "flapTypeCode", source = "typeCode.value"),
-            @Mapping(target = "flapTypeCodeListId", source = "typeCode.listID"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "fishingActivity", ignore = true),
-            @Mapping(target = "vesselTransportMeans", ignore = true),
-            @Mapping(target = "fluxCharacteristic", ignore = true)
-    })
+
+    @Mapping(target = "flapDocumentId", source = "ID.value")
+    @Mapping(target = "flapDocumentSchemeId", source = "ID.schemeID")
+    @Mapping(target = "flapTypeCode", source = "typeCode.value")
+    @Mapping(target = "flapTypeCodeListId", source = "typeCode.listID")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fishingActivity", ignore = true)
+    @Mapping(target = "vesselTransportMeans", ignore = true)
+    @Mapping(target = "fluxCharacteristic", ignore = true)
     FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument);
 
-    @Mappings({
-            @Mapping(target = "name", ignore = true),
-            @Mapping(target = "firstApplicationIndicator", ignore = true),
-            @Mapping(target = "remarks", ignore = true),
-            @Mapping(target = "decisionDateTime", ignore = true),
-            @Mapping(target = "entryIntoForceDelimitedPeriod", ignore = true),
-            @Mapping(target = "vesselIDs", ignore = true),
-            @Mapping(target = "joinedVesselIDs", ignore = true),
-            @Mapping(target = "specifiedFLUXCharacteristics", ignore = true),
-            @Mapping(target = "specifiedVesselCrews", ignore = true),
-            @Mapping(target = "applicableDelimitedPeriods", ignore = true),
-            @Mapping(target = "specifiedVesselTransportCharters", ignore = true),
-            @Mapping(target = "specifiedContactParties", ignore = true),
-            @Mapping(target = "specifiedTargetedQuotas", ignore = true),
-            @Mapping(target = "attachedFLUXBinaryFiles", ignore = true),
-            @Mapping(target = "specifiedFLUXLocations", ignore = true),
-            @Mapping(target = "relatedValidationResultDocuments", ignore = true),
-            @Mapping(target = "relatedFLAPRequestDocuments", ignore = true),
-            @Mapping(target = "specifiedAuthorizationStatuses", ignore = true)
-    })
     @InheritInverseConfiguration
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "firstApplicationIndicator", ignore = true)
+    @Mapping(target = "remarks", ignore = true)
+    @Mapping(target = "decisionDateTime", ignore = true)
+    @Mapping(target = "entryIntoForceDelimitedPeriod", ignore = true)
+    @Mapping(target = "vesselIDs", ignore = true)
+    @Mapping(target = "joinedVesselIDs", ignore = true)
+    @Mapping(target = "specifiedFLUXCharacteristics", ignore = true)
+    @Mapping(target = "specifiedVesselCrews", ignore = true)
+    @Mapping(target = "applicableDelimitedPeriods", ignore = true)
+    @Mapping(target = "specifiedVesselTransportCharters", ignore = true)
+    @Mapping(target = "specifiedContactParties", ignore = true)
+    @Mapping(target = "specifiedTargetedQuotas", ignore = true)
+    @Mapping(target = "attachedFLUXBinaryFiles", ignore = true)
+    @Mapping(target = "specifiedFLUXLocations", ignore = true)
+    @Mapping(target = "relatedValidationResultDocuments", ignore = true)
+    @Mapping(target = "relatedFLAPRequestDocuments", ignore = true)
+    @Mapping(target = "specifiedAuthorizationStatuses", ignore = true)
     FLAPDocument mapToFlapDocument(FlapDocumentEntity flapDocument);
 
     List<FLAPDocument> mapToFlapDocumentList(Set<FlapDocumentEntity> flapDocument);
 
-    @Mappings({
-            @Mapping(target = "faIdentifierId", source = "flapDocumentId"),
-            @Mapping(target = "faIdentifierSchemeId", source = "flapDocumentSchemeId")
-    })
+
+    @Mapping(target = "faIdentifierId", source = "flapDocumentId")
+    @Mapping(target = "faIdentifierSchemeId", source = "flapDocumentSchemeId")
     FlapDocumentDto mapToFlapDocumentDto(FlapDocumentEntity entity);
 
     Set<FlapDocumentDto> mapToFlapDocumentDto(Set<FlapDocumentEntity> entity);
