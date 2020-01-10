@@ -12,8 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,9 +47,7 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.google.common.collect.Sets.newHashSet;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
 		query = "SELECT DISTINCT a from FishingActivityEntity a " +
@@ -59,13 +55,13 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 				"JOIN FETCH a.fishingTrip ft " +
 				"where (intersects(fa.geom, :area) = true " +
 				"and ft.fishingTripKey.tripId =: fishingTripId) " +
-				"order by a.typeCode,fa.acceptedDatetime")
+				"order by a.calculatedStartTime ASC, fa.fluxReportDocument_PurposeCode DESC")
 @NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
 		query = "SELECT DISTINCT a from FishingActivityEntity a " +
 				"JOIN FETCH a.faReportDocument fa " +
 				"JOIN FETCH a.fishingTrip ft " +
 				"where ft.fishingTripKey.tripId =:fishingTripId " +
-				"order by a.typeCode,fa.acceptedDatetime")
+				"order by a.calculatedStartTime ASC, fa.fluxReportDocument_PurposeCode DESC")
 
 @Entity
 @Table(name = "activity_fishing_activity")
