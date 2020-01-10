@@ -8,7 +8,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class FluxLocationSchemeIdTest {
     @Test
@@ -22,12 +23,12 @@ public class FluxLocationSchemeIdTest {
 
         Iterator<FluxLocationSchemeId> fluxLocationSchemeIdIterator = fluxLocationSchemeIds.iterator();
 
-        assertEquals(fluxLocationSchemeIdIterator.next(), FluxLocationSchemeId.TERRITORY);
-        assertEquals(fluxLocationSchemeIdIterator.next(), FluxLocationSchemeId.MANAGEMENT_AREA);
-        assertEquals(fluxLocationSchemeIdIterator.next(), FluxLocationSchemeId.EFFORT_ZONE);
-        assertEquals(fluxLocationSchemeIdIterator.next(), FluxLocationSchemeId.FAO_AREA);
-        assertEquals(fluxLocationSchemeIdIterator.next(), FluxLocationSchemeId.GFCM_GSA);
-        assertEquals(fluxLocationSchemeIdIterator.next(), FluxLocationSchemeId.ICES_STAT_RECTANGLE);
+        assertEquals(FluxLocationSchemeId.TERRITORY, fluxLocationSchemeIdIterator.next());
+        assertEquals(FluxLocationSchemeId.MANAGEMENT_AREA, fluxLocationSchemeIdIterator.next());
+        assertEquals(FluxLocationSchemeId.EFFORT_ZONE, fluxLocationSchemeIdIterator.next());
+        assertEquals(FluxLocationSchemeId.FAO_AREA, fluxLocationSchemeIdIterator.next());
+        assertEquals(FluxLocationSchemeId.GFCM_GSA, fluxLocationSchemeIdIterator.next());
+        assertEquals(FluxLocationSchemeId.ICES_STAT_RECTANGLE, fluxLocationSchemeIdIterator.next());
         assertNull(fluxLocationSchemeIdIterator.next());
     }
 }

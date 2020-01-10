@@ -14,6 +14,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class DelimitedPeriodMapper {
+    private DelimitedPeriodMapper() {
+        // Util class, no public constructor
+    }
+
     public static Instant getStartDate(DelimitedPeriod delimitedPeriod) {
         if (delimitedPeriod == null) {
             return null;

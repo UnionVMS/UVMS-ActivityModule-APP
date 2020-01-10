@@ -278,10 +278,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
         List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
         for (FishingActivity relatedFishingActivity : relatedFishingActivities) {
             Instant calculatedStartTime = getCalculatedStartTime(relatedFishingActivity);
-
-            if (startTimeInstant == null) {
-                startTimeInstant = calculatedStartTime;
-            } else if (calculatedStartTime != null && calculatedStartTime.isBefore(startTimeInstant)) {
+            if (startTimeInstant == null ||
+                    calculatedStartTime != null && calculatedStartTime.isBefore(startTimeInstant)) {
                 startTimeInstant = calculatedStartTime;
             }
         }
@@ -318,10 +316,8 @@ public abstract class FishingActivityMapper extends BaseMapper {
         List<FishingActivity> relatedFishingActivities = fishingActivity.getRelatedFishingActivities();
         for (FishingActivity relatedFishingActivity : relatedFishingActivities) {
             Instant calculatedEndTime = getCalculatedEndTime(relatedFishingActivity);
-
-            if (relatedFishingActivityEndDate == null) {
-                relatedFishingActivityEndDate = calculatedEndTime;
-            } else if (calculatedEndTime != null && calculatedEndTime.isAfter(relatedFishingActivityEndDate)) {
+            if (relatedFishingActivityEndDate == null ||
+                    calculatedEndTime != null && calculatedEndTime.isAfter(relatedFishingActivityEndDate)) {
                 relatedFishingActivityEndDate = calculatedEndTime;
             }
         }
