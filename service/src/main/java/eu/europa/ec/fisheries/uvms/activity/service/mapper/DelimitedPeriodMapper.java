@@ -122,7 +122,7 @@ public class DelimitedPeriodMapper {
 
             un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType measureType = new un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType();
             CustomBigDecimal customBigDecimal = new CustomBigDecimal();
-            BigDecimal bigDecimal = customBigDecimal.createBigDecimal(Long.valueOf(durationInMinutes).doubleValue());
+            BigDecimal bigDecimal = customBigDecimal.createBigDecimal((double) durationInMinutes);
 
             measureType.setValue(bigDecimal);
             measureType.setUnitCode("MIN");

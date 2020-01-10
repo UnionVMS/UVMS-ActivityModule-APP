@@ -35,7 +35,7 @@ import java.util.Set;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FluxFaReportMessageMapper extends BaseMapper {
 
-    public static FluxFaReportMessageMapper INSTANCE = Mappers.getMapper(FluxFaReportMessageMapper.class);
+    public static final FluxFaReportMessageMapper INSTANCE = Mappers.getMapper(FluxFaReportMessageMapper.class);
 
     @Mappings({
             @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxFaReportMessage.getFLUXReportDocument().getIDS()))"),
