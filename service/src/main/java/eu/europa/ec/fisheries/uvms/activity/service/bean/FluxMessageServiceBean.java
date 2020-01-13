@@ -96,7 +96,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     @Override
-    public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
+    public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) {
         log.info("[START] Going to save [{}] FaReportDocuments.", faReportMessage.getFAReportDocuments().size());
         FluxFaReportMessageEntity messageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
@@ -195,13 +195,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      * @param
      */
     private void enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) {
-        try {
-            List<String> guids = assetService.getAssetGuids(vesselTransport.getVesselIdentifiers());
-            if (CollectionUtils.isNotEmpty(guids)) {
-                vesselTransport.setGuid(guids.get(0));
-            }
-        } catch (ServiceException e) {
-            log.error("Error while trying to get guids from Assets Module", e);
+        List<String> guids = assetService.getAssetGuids(vesselTransport.getVesselIdentifiers());
+        if (CollectionUtils.isNotEmpty(guids)) {
+            vesselTransport.setGuid(guids.get(0));
         }
     }
 
@@ -431,7 +427,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return geometry;
     }
 
-    private List<MicroMovement> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
+    private List<MicroMovement> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) {
         if (CollectionUtils.isEmpty(faReportDocumentEntity.getVesselTransportMeans())) {
             return Collections.emptyList();
         }
@@ -457,7 +453,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private List<MicroMovement> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers,
-                                                            Instant startDate, Instant endDate) throws ServiceException {
+                                                            Instant startDate, Instant endDate) {
         List<String> assetGuids = assetService.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
         return movementModule.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
     }

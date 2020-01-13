@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service;
 
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 
 import java.util.Collection;
@@ -28,5 +27,5 @@ public interface SpatialModuleService {
      */
     String getFilteredAreaGeom(Collection<AreaIdentifierType> areaIdentifiers);
 
-    String getGeometryForPortCode(String portCode) throws ServiceException;
+    String getGeometryForPortCode(String portCode);
 }

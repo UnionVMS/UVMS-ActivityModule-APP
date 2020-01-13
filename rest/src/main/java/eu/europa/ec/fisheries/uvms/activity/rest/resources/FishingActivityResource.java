@@ -115,7 +115,7 @@ public class FishingActivityResource extends UnionVMSResource {
     public Response getAllCorrections(@Context HttpServletRequest request,
                                       @Context HttpServletResponse response,
                                       @PathParam("referenceId") String referenceId,
-                                      @PathParam("schemeId") String schemeId) throws ServiceException {
+                                      @PathParam("schemeId") String schemeId) {
 
         List<FaReportCorrectionDTO> faReportHistory = activityService.getFaReportHistory(referenceId, schemeId);
         return createSuccessResponse(faReportHistory);
