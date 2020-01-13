@@ -18,7 +18,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
@@ -30,31 +29,28 @@ public abstract class GearCharacteristicsMapper extends BaseMapper {
 
     public static final GearCharacteristicsMapper INSTANCE = Mappers.getMapper(GearCharacteristicsMapper.class);
 
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
-            @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(gearCharacteristic.getDescriptions()))"),
-            @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(gearCharacteristic.getDescriptions()))"),
-            @Mapping(target = "valueMeasure", source = "valueMeasure.value"),
-            @Mapping(target = "valueMeasureUnitCode", source = "valueMeasure.unitCode"),
-            @Mapping(target = "valueDateTime", source = "valueDateTime.dateTime"),
-            @Mapping(target = "valueIndicator", source = "valueIndicator.indicatorString.value"),
-            @Mapping(target = "valueCode", source = "valueCode.value"),
-            @Mapping(target = "valueText", source = "value.value"),
-            @Mapping(target = "valueQuantity", source = "valueQuantity.value"),
-            @Mapping(target = "valueQuantityCode", source = "valueQuantity.unitCode"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "calculatedValueMeasure", ignore = true),
-            @Mapping(target = "calculatedValueQuantity", ignore = true),
-            @Mapping(target = "fishingGear", ignore = true)
-    })
+
+    @Mapping(target = "typeCode", source = "typeCode.value")
+    @Mapping(target = "typeCodeListId", source = "typeCode.listID")
+    @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(gearCharacteristic.getDescriptions()))")
+    @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(gearCharacteristic.getDescriptions()))")
+    @Mapping(target = "valueMeasure", source = "valueMeasure.value")
+    @Mapping(target = "valueMeasureUnitCode", source = "valueMeasure.unitCode")
+    @Mapping(target = "valueDateTime", source = "valueDateTime.dateTime")
+    @Mapping(target = "valueIndicator", source = "valueIndicator.indicatorString.value")
+    @Mapping(target = "valueCode", source = "valueCode.value")
+    @Mapping(target = "valueText", source = "value.value")
+    @Mapping(target = "valueQuantity", source = "valueQuantity.value")
+    @Mapping(target = "valueQuantityCode", source = "valueQuantity.unitCode")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "calculatedValueMeasure", ignore = true)
+    @Mapping(target = "calculatedValueQuantity", ignore = true)
+    @Mapping(target = "fishingGear", ignore = true)
     public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic);
 
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "descriptions", ignore = true),
-            @Mapping(target = "specifiedFLUXLocations", ignore = true),
-    })
+    @Mapping(target = "descriptions", ignore = true)
+    @Mapping(target = "specifiedFLUXLocations", ignore = true)
     public abstract GearCharacteristic mapToGearCharacteristic(GearCharacteristicEntity gearCharacteristic);
 
     public GearDto mapGearDtoToFishingGearEntity(FishingGearEntity fishingGearEntity) {

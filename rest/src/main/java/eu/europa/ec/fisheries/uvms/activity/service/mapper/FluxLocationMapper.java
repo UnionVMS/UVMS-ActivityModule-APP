@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
@@ -31,27 +30,26 @@ public interface FluxLocationMapper {
 
     FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
 
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode.value"),
-            @Mapping(target = "fluxLocationCatchTypeMapperInfo", ignore = true), // Stored but only used for mapping decisions
-            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
-            @Mapping(target = "countryId", source = "countryID.value"),
-            @Mapping(target = "longitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value"),
-            @Mapping(target = "latitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value"),
-            @Mapping(target = "altitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.altitudeMeasure.value"),
-            @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID"),
-            @Mapping(target = "fluxLocationIdentifier", source = "ID.value"),
-            @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID"),
-            @Mapping(target = "geopoliticalRegionCode", source = "geopoliticalRegionCode.value"),
-            @Mapping(target = "geopoliticalRegionCodeListId", source = "geopoliticalRegionCode.listID"),
-            @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(fluxLocation.getNames()))"),
-            @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxLocation.getNames()))"),
-            @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryID.value"),
-            @Mapping(target = "jurisdictionCountryCode", source = "jurisdictionCountryID.value"),
-            @Mapping(target = "systemId", source = "specifiedPhysicalFLUXGeographicalCoordinate.systemID.value"),
-            @Mapping(target = "regionalFisheriesManagementOrganizationCode", source = "regionalFisheriesManagementOrganizationCode.value"),
-            @Mapping(target = "regionalFisheriesManagementOrganizationCodeListId", source = "regionalFisheriesManagementOrganizationCode.listID")
-    })
+
+    @Mapping(target = "typeCode", source = "typeCode.value")
+    @Mapping(target = "fluxLocationCatchTypeMapperInfo", ignore = true) // Stored but only used for mapping decisions
+    @Mapping(target = "typeCodeListId", source = "typeCode.listID")
+    @Mapping(target = "countryId", source = "countryID.value")
+    @Mapping(target = "longitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value")
+    @Mapping(target = "latitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value")
+    @Mapping(target = "altitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.altitudeMeasure.value")
+    @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID")
+    @Mapping(target = "fluxLocationIdentifier", source = "ID.value")
+    @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID")
+    @Mapping(target = "geopoliticalRegionCode", source = "geopoliticalRegionCode.value")
+    @Mapping(target = "geopoliticalRegionCodeListId", source = "geopoliticalRegionCode.listID")
+    @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(fluxLocation.getNames()))")
+    @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxLocation.getNames()))")
+    @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryID.value")
+    @Mapping(target = "jurisdictionCountryCode", source = "jurisdictionCountryID.value")
+    @Mapping(target = "systemId", source = "specifiedPhysicalFLUXGeographicalCoordinate.systemID.value")
+    @Mapping(target = "regionalFisheriesManagementOrganizationCode", source = "regionalFisheriesManagementOrganizationCode.value")
+    @Mapping(target = "regionalFisheriesManagementOrganizationCodeListId", source = "regionalFisheriesManagementOrganizationCode.listID")
     FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
 
     @InheritInverseConfiguration
@@ -59,12 +57,11 @@ public interface FluxLocationMapper {
 
     List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
 
-    @Mappings({
-            @Mapping(target = "geometry", source = "wkt"),
-            @Mapping(target = "sovereignCountry", source = "sovereignRightsCountryCode"),
-            @Mapping(target = "jurisdictionCountry", source = "jurisdictionCountryCode"),
-            @Mapping(target = "rfmoCode", source = "regionalFisheriesManagementOrganizationCode")
-    })
+
+    @Mapping(target = "geometry", source = "wkt")
+    @Mapping(target = "sovereignCountry", source = "sovereignRightsCountryCode")
+    @Mapping(target = "jurisdictionCountry", source = "jurisdictionCountryCode")
+    @Mapping(target = "rfmoCode", source = "regionalFisheriesManagementOrganizationCode")
     FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
 
     Set<FluxLocationDto> mapEntityToFluxLocationDto(Set<FluxLocationEntity> fluxLocation);

@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
@@ -38,24 +37,22 @@ public abstract class GearProblemMapper extends BaseMapper {
 
     public static final GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
 
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
-            @Mapping(target = "affectedQuantity", source = "affectedQuantity.value"),
-            @Mapping(target = "gearProblemRecovery", expression = "java(mapToGearProblemRecoveries(gearProblem.getRecoveryMeasureCodes(), gearProblemEntity))"),
-            @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))"),
-            @Mapping(target = "locations", expression = "java(mapToFluxLocations(gearProblem.getSpecifiedFLUXLocations(), gearProblemEntity))"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "fishingActivity", ignore = true),
-    })
+
+    @Mapping(target = "typeCode", source = "typeCode.value")
+    @Mapping(target = "typeCodeListId", source = "typeCode.listID")
+    @Mapping(target = "affectedQuantity", source = "affectedQuantity.value")
+    @Mapping(target = "gearProblemRecovery", expression = "java(mapToGearProblemRecoveries(gearProblem.getRecoveryMeasureCodes(), gearProblemEntity))")
+    @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))")
+    @Mapping(target = "locations", expression = "java(mapToFluxLocations(gearProblem.getSpecifiedFLUXLocations(), gearProblemEntity))")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fishingActivity", ignore = true)
     public abstract GearProblemEntity mapToGearProblemEntity(GearProblem gearProblem);
 
-    @Mappings({
-            @Mapping(target = "recoveryMeasureCode", source = "value"),
-            @Mapping(target = "recoveryMeasureCodeListId", source = "listID"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "gearProblem", ignore = true),
-    })
+
+    @Mapping(target = "recoveryMeasureCode", source = "value")
+    @Mapping(target = "recoveryMeasureCodeListId", source = "listID")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "gearProblem", ignore = true)
     public abstract GearProblemRecoveryEntity mapToGearProblemRecoveryEntity(CodeType codeType);
 
     protected Set<FluxLocationEntity> mapToFluxLocations(List<FLUXLocation> flLocList, GearProblemEntity gearProbEntity){

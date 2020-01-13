@@ -21,7 +21,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.Contact
 import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
@@ -40,20 +39,18 @@ public abstract class ContactPartyMapper extends BaseMapper {
 
     public static final ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);
 
-    @Mappings({
-            @Mapping(target = "contactPerson", expression = "java(getContactPersonEntity(contactParty.getSpecifiedContactPersons(), contactPartyEntity))"),
-            @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntity(contactParty.getSpecifiedStructuredAddresses(), contactPartyEntity))"),
-            @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)"),
-            @Mapping(target = "contactPartyRole", expression = "java(getContactPartyRoles(contactParty.getRoleCodes(), contactPartyEntity))")
-    })
+
+    @Mapping(target = "contactPerson", expression = "java(getContactPersonEntity(contactParty.getSpecifiedContactPersons(), contactPartyEntity))")
+    @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntity(contactParty.getSpecifiedStructuredAddresses(), contactPartyEntity))")
+    @Mapping(target = "vesselTransportMeans", expression = "java(vesselTransportMeansEntity)")
+    @Mapping(target = "contactPartyRole", expression = "java(getContactPartyRoles(contactParty.getRoleCodes(), contactPartyEntity))")
     public abstract ContactPartyEntity mapToContactPartyEntity(ContactParty contactParty, VesselTransportMeansEntity vesselTransportMeansEntity);
 
-    @Mappings({
-            @Mapping(target = "roleCode", source = "value"),
-            @Mapping(target = "roleCodeListId", source = "listID"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "contactParty", ignore = true),
-    })
+
+    @Mapping(target = "roleCode", source = "value")
+    @Mapping(target = "roleCodeListId", source = "listID")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "contactParty", ignore = true)
     public abstract ContactPartyRoleEntity mapToContactPartyRoleEntity(CodeType codeType);
 
     protected Set<ContactPartyRoleEntity> getContactPartyRoles(List<CodeType> codeTypes, ContactPartyEntity contactPartyEntity) {
@@ -93,9 +90,8 @@ public abstract class ContactPartyMapper extends BaseMapper {
         return structuredAddressEntities;
     }
 
-    @Mappings({
-            @Mapping(target = "role", expression = "java(getFirstRoleCode(entity))")
-    })
+
+    @Mapping(target = "role", expression = "java(getFirstRoleCode(entity))")
     public abstract ContactPartyDetailsDTO map(ContactPartyEntity entity);
 
     public abstract Set<ContactPartyDetailsDTO> map(Set<ContactPartyEntity> entities);

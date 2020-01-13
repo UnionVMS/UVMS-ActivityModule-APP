@@ -34,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
@@ -62,84 +61,80 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
 
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
-            @Mapping(target = "speciesCode", source = "speciesCode.value"),
-            @Mapping(target = "speciesCodeListid", source = "speciesCode.listID"),
-            @Mapping(target = "unitQuantity", source = "unitQuantity.value"),
-            @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode"),
-            @Mapping(target = "fishClassCode", expression = "java(mapToFishClassCode(faCatch.getSpecifiedSizeDistribution()))"),
-            @Mapping(target = "weightMeasure", source = "weightMeasure.value"),
-            @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode"),
-            @Mapping(target = "usageCode", source = "faCatch.usageCode.value"),
-            @Mapping(target = "usageCodeListId", source = "faCatch.usageCode.listID"),
-            @Mapping(target = "weighingMeansCode", source = "faCatch.weighingMeansCode.value"),
-            @Mapping(target = "weighingMeansCodeListId", source = "faCatch.weighingMeansCode.listID"),
-            @Mapping(target = "sizeDistributionCategoryCode", expression = "java(getSizeDistributionCategoryCode(faCatch.getSpecifiedSizeDistribution()))"),
-            @Mapping(target = "sizeDistributionCategoryCodeListId", expression = "java(getSizeDistributionCategoryCodeListId(faCatch.getSpecifiedSizeDistribution()))"),
-            @Mapping(target = "sizeDistributionClassCode", expression = "java(getSizeDistributionClassCode(faCatch.getSpecifiedSizeDistribution()))"),
-            @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))"),
-            @Mapping(target = "aapProcesses", ignore = true),
-            @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))"),
-            @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))"),
-            @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))"),
-            @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "fishingActivity", ignore = true),
-            @Mapping(target = "calculatedUnitQuantity", ignore = true),
-            @Mapping(target = "calculatedWeightMeasure", ignore = true),
-            @Mapping(target = "territory", ignore = true),
-            @Mapping(target = "faoArea", ignore = true),
-            @Mapping(target = "icesStatRectangle", ignore = true),
-            @Mapping(target = "effortZone", ignore = true),
-            @Mapping(target = "gfcmGsa", ignore = true),
-            @Mapping(target = "gfcmStatRectangle", ignore = true),
-            @Mapping(target = "presentation", ignore = true),
-            //TODO: Fix this
-            @Mapping(target = "fishingTrip", expression = "java(getFishingTripEntity(faCatch.getRelatedFishingTrips()))"),
-            @Mapping(target = "gearTypeCode", ignore = true)
-    })
+
+    @Mapping(target = "typeCode", source = "typeCode.value")
+    @Mapping(target = "typeCodeListId", source = "typeCode.listID")
+    @Mapping(target = "speciesCode", source = "speciesCode.value")
+    @Mapping(target = "speciesCodeListid", source = "speciesCode.listID")
+    @Mapping(target = "unitQuantity", source = "unitQuantity.value")
+    @Mapping(target = "unitQuantityCode", source = "unitQuantity.unitCode")
+    @Mapping(target = "fishClassCode", expression = "java(mapToFishClassCode(faCatch.getSpecifiedSizeDistribution()))")
+    @Mapping(target = "weightMeasure", source = "weightMeasure.value")
+    @Mapping(target = "weightMeasureUnitCode", source = "weightMeasure.unitCode")
+    @Mapping(target = "usageCode", source = "faCatch.usageCode.value")
+    @Mapping(target = "usageCodeListId", source = "faCatch.usageCode.listID")
+    @Mapping(target = "weighingMeansCode", source = "faCatch.weighingMeansCode.value")
+    @Mapping(target = "weighingMeansCodeListId", source = "faCatch.weighingMeansCode.listID")
+    @Mapping(target = "sizeDistributionCategoryCode", expression = "java(getSizeDistributionCategoryCode(faCatch.getSpecifiedSizeDistribution()))")
+    @Mapping(target = "sizeDistributionCategoryCodeListId", expression = "java(getSizeDistributionCategoryCodeListId(faCatch.getSpecifiedSizeDistribution()))")
+    @Mapping(target = "sizeDistributionClassCode", expression = "java(getSizeDistributionClassCode(faCatch.getSpecifiedSizeDistribution()))")
+    @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))")
+    @Mapping(target = "aapProcesses", ignore = true)
+    @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))")
+    @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))")
+    @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))")
+    @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fishingActivity", ignore = true)
+    @Mapping(target = "calculatedUnitQuantity", ignore = true)
+    @Mapping(target = "calculatedWeightMeasure", ignore = true)
+    @Mapping(target = "territory", ignore = true)
+    @Mapping(target = "faoArea", ignore = true)
+    @Mapping(target = "icesStatRectangle", ignore = true)
+    @Mapping(target = "effortZone", ignore = true)
+    @Mapping(target = "gfcmGsa", ignore = true)
+    @Mapping(target = "gfcmStatRectangle", ignore = true)
+    @Mapping(target = "presentation", ignore = true)
+    //TODO: Fix this
+    @Mapping(target = "fishingTrip", expression = "java(getFishingTripEntity(faCatch.getRelatedFishingTrips()))")
+    @Mapping(target = "gearTypeCode", ignore = true)
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "appliedAAPProcesses", source = "aapProcesses"),
-            @Mapping(target = "specifiedSizeDistribution", expression="java(getSizeDistribution(faCatch))"),
-            @Mapping(target = "relatedFishingTrips", ignore = true),
-            @Mapping(target = "relatedAAPStocks", ignore = true),
-            @Mapping(target = "relatedSalesBatches", ignore = true),
-            @Mapping(target = "specifiedFLUXLocations", ignore = true),
-            @Mapping(target = "usedFishingGears", ignore = true),
-            @Mapping(target = "applicableFLUXCharacteristics", ignore = true),
-            @Mapping(target = "destinationFLUXLocations", ignore = true)
-    })
+
+    @Mapping(target = "appliedAAPProcesses", source = "aapProcesses")
+    @Mapping(target = "specifiedSizeDistribution", expression="java(getSizeDistribution(faCatch))")
+    @Mapping(target = "relatedFishingTrips", ignore = true)
+    @Mapping(target = "relatedAAPStocks", ignore = true)
+    @Mapping(target = "relatedSalesBatches", ignore = true)
+    @Mapping(target = "specifiedFLUXLocations", ignore = true)
+    @Mapping(target = "usedFishingGears", ignore = true)
+    @Mapping(target = "applicableFLUXCharacteristics", ignore = true)
+    @Mapping(target = "destinationFLUXLocations", ignore = true)
     public abstract FACatch mapToFaCatch(FaCatchEntity faCatch);
 
-    @Mappings({
-            @Mapping(target = "listID", ignore = true),
-            @Mapping(target = "listAgencyID", ignore = true),
-            @Mapping(target = "listAgencyName", ignore = true),
-            @Mapping(target = "listName", ignore = true),
-            @Mapping(target = "listVersionID", ignore = true),
-            @Mapping(target = "name", ignore = true),
-            @Mapping(target = "languageID", ignore = true),
-            @Mapping(target = "listURI", ignore = true),
-            @Mapping(target = "listSchemeURI", ignore = true)
-    })
+
+    @Mapping(target = "listID", ignore = true)
+    @Mapping(target = "listAgencyID", ignore = true)
+    @Mapping(target = "listAgencyName", ignore = true)
+    @Mapping(target = "listName", ignore = true)
+    @Mapping(target = "listVersionID", ignore = true)
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "languageID", ignore = true)
+    @Mapping(target = "listURI", ignore = true)
+    @Mapping(target = "listSchemeURI", ignore = true)
     public abstract un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType map(java.lang.String value);
 
-    @Mappings({
-            @Mapping(target = "roleName", expression = "java(getVesselTransportMeansForRelocation(faCatch).getRoleCode())"),
-            @Mapping(target = "country", expression = "java(getVesselTransportMeansForRelocation(faCatch).getCountry())"),
-            @Mapping(target = "vesselIdentifiers", expression = "java(mapToAssetIdentifiers(faCatch))"),
-            @Mapping(target = "name", expression = "java(getVesselTransportMeansForRelocation(faCatch).getName())"),
-            @Mapping(target = "speciesCode", source = "speciesCode"),
-            @Mapping(target = "type", source = "typeCode"),
-            @Mapping(target = "weight", source = "calculatedWeightMeasure"),
-            @Mapping(target = "unit", source = "calculatedUnitQuantity"),
-            @Mapping(target = "characteristics", source = "fishingActivity.fluxCharacteristics")
-    })
+
+    @Mapping(target = "roleName", expression = "java(getVesselTransportMeansForRelocation(faCatch).getRoleCode())")
+    @Mapping(target = "country", expression = "java(getVesselTransportMeansForRelocation(faCatch).getCountry())")
+    @Mapping(target = "vesselIdentifiers", expression = "java(mapToAssetIdentifiers(faCatch))")
+    @Mapping(target = "name", expression = "java(getVesselTransportMeansForRelocation(faCatch).getName())")
+    @Mapping(target = "speciesCode", source = "speciesCode")
+    @Mapping(target = "type", source = "typeCode")
+    @Mapping(target = "weight", source = "calculatedWeightMeasure")
+    @Mapping(target = "unit", source = "calculatedUnitQuantity")
+    @Mapping(target = "characteristics", source = "fishingActivity.fluxCharacteristics")
     public abstract RelocationDto mapToRelocationDto(FaCatchEntity faCatch);
 
     public abstract List<RelocationDto> mapToRelocationDtoList(Set<FaCatchEntity> faCatches);

@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingGearDTO;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
@@ -32,53 +31,44 @@ public interface FishingGearMapper {
 
     FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);
 
-    @Mappings({
-            @Mapping(target = "typeCode", source = "typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
-            @Mapping(target = "fishingGearRole", ignore = true),
-            @Mapping(target = "gearCharacteristics", ignore = true),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "faCatch", ignore = true),
-            @Mapping(target = "fishingActivity", ignore = true),
-            @Mapping(target = "gearProblem", ignore = true)
-    })
+
+    @Mapping(target = "typeCode", source = "typeCode.value")
+    @Mapping(target = "typeCodeListId", source = "typeCode.listID")
+    @Mapping(target = "fishingGearRole", ignore = true)
+    @Mapping(target = "gearCharacteristics", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "faCatch", ignore = true)
+    @Mapping(target = "fishingActivity", ignore = true)
+    @Mapping(target = "gearProblem", ignore = true)
     FishingGearEntity mapToFishingGearEntity(FishingGear fishingGear);
 
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "roleCodes", source = "fishingGearRole"),
-            @Mapping(target = "applicableGearCharacteristics", source = "gearCharacteristics"),
-            @Mapping(target = "illustrateFLUXPictures", ignore = true)
-    })
+    @Mapping(target = "roleCodes", source = "fishingGearRole")
+    @Mapping(target = "applicableGearCharacteristics", source = "gearCharacteristics")
+    @Mapping(target = "illustrateFLUXPictures", ignore = true)
     FishingGear mapToFishingGear(FishingGearEntity fishingGearEntity);
 
     List<FishingGear> mapToFishingGearList(Set<FishingGearEntity> fishingGearEntitySet);
 
-    @Mappings({
-            @Mapping(source = "typeCode",target = "gearTypeCode"),
-            @Mapping(target = "gearRoleCode", ignore = true)
-    })
+    @Mapping(source = "typeCode",target = "gearTypeCode")
+    @Mapping(target = "gearRoleCode", ignore = true)
     FishingGearDTO mapToFishingGearDTO(FishingGearEntity fishingGearEntity);
 
-    @Mappings({
-            @Mapping(target = "roleCode", source = "value"),
-            @Mapping(target = "roleCodeListId", source = "listID"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "fishingGear", ignore = true)
-    })
+    @Mapping(target = "roleCode", source = "value")
+    @Mapping(target = "roleCodeListId", source = "listID")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fishingGear", ignore = true)
     FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
 
     @InheritInverseConfiguration
-    @Mappings({
-            @Mapping(target = "listAgencyID", ignore = true),
-            @Mapping(target = "listAgencyName", ignore = true),
-            @Mapping(target = "listName", ignore = true),
-            @Mapping(target = "listVersionID", ignore = true),
-            @Mapping(target = "name", ignore = true),
-            @Mapping(target = "languageID", ignore = true),
-            @Mapping(target = "listURI", ignore = true),
-            @Mapping(target = "listSchemeURI", ignore = true)
-    })
+    @Mapping(target = "listAgencyID", ignore = true)
+    @Mapping(target = "listAgencyName", ignore = true)
+    @Mapping(target = "listName", ignore = true)
+    @Mapping(target = "listVersionID", ignore = true)
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "languageID", ignore = true)
+    @Mapping(target = "listURI", ignore = true)
+    @Mapping(target = "listSchemeURI", ignore = true)
     CodeType mapToFishingGearRole(FishingGearRoleEntity codeType);
 
 }

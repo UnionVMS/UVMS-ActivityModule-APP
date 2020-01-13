@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.Address
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
@@ -29,33 +28,32 @@ public interface StructuredAddressMapper {
 
     StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
 
-    @Mappings({
-            @Mapping(target = "blockName", source = "blockName.value"),
-            @Mapping(target = "buildingName", source = "buildingName.value"),
-            @Mapping(target = "buildingNumber", source = "buildingNumber.value"),
-            @Mapping(target = "cityName", source = "cityName.value"),
-            @Mapping(target = "citySubdivisionName", source = "citySubDivisionName.value"),
-            @Mapping(target = "countryIDValue", source = "countryID.value"),
-            @Mapping(target = "countryIDSchemeID", source = "countryID.schemeID"),
-            @Mapping(target = "countryName", source = "countryName.value"),
-            @Mapping(target = "countrySubdivisionName", source = "countrySubDivisionName.value"),
-            @Mapping(target = "addressId", source = "ID.value"),
-            @Mapping(target = "plotId", source = "plotIdentification.value"),
-            @Mapping(target = "postOfficeBox", source = "postOfficeBox.value"),
-            @Mapping(target = "postcode", source = "postcodeCode.value"),
-            @Mapping(target = "postcodeListID", source = "postcodeCode.listID"),
-            @Mapping(target = "postalAreaValue", source = "postalArea.value"),
-            @Mapping(target = "postalAreaLanguageLocaleID", source = "postalArea.languageLocaleID"),
-            @Mapping(target = "postalAreaLanguageID", source = "postalArea.languageID"),
-            @Mapping(target = "streetName", source = "streetName.value"),
-            @Mapping(target = "staircaseNumberValue", source = "staircaseNumber.value"),
-            @Mapping(target = "floorIdentificationValue", source = "floorIdentification.value"),
-            @Mapping(target = "roomIdentificationValue", source = "roomIdentification.value"),
-            @Mapping(target = "id", ignore = true),
-            @Mapping(target = "structuredAddressType", ignore = true),
-            @Mapping(target = "contactParty", ignore = true),
-            @Mapping(target = "fluxLocation", ignore = true)
-    })
+
+    @Mapping(target = "blockName", source = "blockName.value")
+    @Mapping(target = "buildingName", source = "buildingName.value")
+    @Mapping(target = "buildingNumber", source = "buildingNumber.value")
+    @Mapping(target = "cityName", source = "cityName.value")
+    @Mapping(target = "citySubdivisionName", source = "citySubDivisionName.value")
+    @Mapping(target = "countryIDValue", source = "countryID.value")
+    @Mapping(target = "countryIDSchemeID", source = "countryID.schemeID")
+    @Mapping(target = "countryName", source = "countryName.value")
+    @Mapping(target = "countrySubdivisionName", source = "countrySubDivisionName.value")
+    @Mapping(target = "addressId", source = "ID.value")
+    @Mapping(target = "plotId", source = "plotIdentification.value")
+    @Mapping(target = "postOfficeBox", source = "postOfficeBox.value")
+    @Mapping(target = "postcode", source = "postcodeCode.value")
+    @Mapping(target = "postcodeListID", source = "postcodeCode.listID")
+    @Mapping(target = "postalAreaValue", source = "postalArea.value")
+    @Mapping(target = "postalAreaLanguageLocaleID", source = "postalArea.languageLocaleID")
+    @Mapping(target = "postalAreaLanguageID", source = "postalArea.languageID")
+    @Mapping(target = "streetName", source = "streetName.value")
+    @Mapping(target = "staircaseNumberValue", source = "staircaseNumber.value")
+    @Mapping(target = "floorIdentificationValue", source = "floorIdentification.value")
+    @Mapping(target = "roomIdentificationValue", source = "roomIdentification.value")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "structuredAddressType", ignore = true)
+    @Mapping(target = "contactParty", ignore = true)
+    @Mapping(target = "fluxLocation", ignore = true)
     StructuredAddressEntity mapToStructuredAddressEntity(StructuredAddress structuredAddress);
 
     @InheritInverseConfiguration

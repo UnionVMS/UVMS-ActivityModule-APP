@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselPositionEventEntit
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselPositionEvent;
@@ -27,18 +26,17 @@ public interface VesselPositionEventMapper {
 
     VesselPositionEventMapper INSTANCE = Mappers.getMapper(VesselPositionEventMapper.class);
 
-    @Mappings({
-            @Mapping(target = "typeCode", source = "vesselPositionEvent.typeCode.value"),
-            @Mapping(target = "obtainedOccurrenceDateTime", source = "vesselPositionEvent.obtainedOccurrenceDateTime.dateTime"),
-            @Mapping(target = "speedValueMeasure", source = "vesselPositionEvent.speedValueMeasure.value"),
-            @Mapping(target = "courseValueMeasure", source = "vesselPositionEvent.courseValueMeasure.value"),
-            @Mapping(target = "latitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.latitudeMeasure.value"),
-            @Mapping(target = "altitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.altitudeMeasure.value"),
-            @Mapping(target = "longitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.longitudeMeasure.value"),
-            @Mapping(target = "activityTypeCode", source = "vesselPositionEvent.activityTypeCode.value"),
-            @Mapping(target = "vesselTransportMeans", source = "vesselTransportMeansEntity"),
-            @Mapping(target = "geom", ignore = true),
-    })
+
+    @Mapping(target = "typeCode", source = "vesselPositionEvent.typeCode.value")
+    @Mapping(target = "obtainedOccurrenceDateTime", source = "vesselPositionEvent.obtainedOccurrenceDateTime.dateTime")
+    @Mapping(target = "speedValueMeasure", source = "vesselPositionEvent.speedValueMeasure.value")
+    @Mapping(target = "courseValueMeasure", source = "vesselPositionEvent.courseValueMeasure.value")
+    @Mapping(target = "latitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.latitudeMeasure.value")
+    @Mapping(target = "altitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.altitudeMeasure.value")
+    @Mapping(target = "longitude", source = "vesselPositionEvent.specifiedVesselGeographicalCoordinate.longitudeMeasure.value")
+    @Mapping(target = "activityTypeCode", source = "vesselPositionEvent.activityTypeCode.value")
+    @Mapping(target = "vesselTransportMeans", source = "vesselTransportMeansEntity")
+    @Mapping(target = "geom", ignore = true)
     VesselPositionEventEntity mapToVesselPositionEventEntity(VesselPositionEvent vesselPositionEvent, VesselTransportMeansEntity vesselTransportMeansEntity);
 
 }

@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
@@ -38,17 +37,15 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
 
     public static final FACatchSummaryMapper INSTANCE = Mappers.getMapper(FACatchSummaryMapper.class);
 
-    @Mappings({
-            @Mapping(target = "groups", expression = "java(populateGroupCriteriaWithValue(customEntity))"),
-            @Mapping(target = "summaryTable", expression = "java(getSummaryTableDTO(catchSummaryEntityList))")
-    })
+
+    @Mapping(target = "groups", expression = "java(populateGroupCriteriaWithValue(customEntity))")
+    @Mapping(target = "summaryTable", expression = "java(getSummaryTableDTO(catchSummaryEntityList))")
     public abstract FACatchSummaryRecordDTO mapToFACatchSummaryRecordDTO(FaCatchSummaryCustomProxy customEntity, List<FaCatchSummaryCustomProxy> catchSummaryEntityList);
 
 
-    @Mappings({
-            @Mapping(target = "groups", expression = "java(populateGroupCriteriaWithValue(customEntity))"),
-            @Mapping(target = "summaryTable", expression = "java(getSummaryTableDTOWithPresentation(catchSummaryEntityList))")
-    })
+
+    @Mapping(target = "groups", expression = "java(populateGroupCriteriaWithValue(customEntity))")
+    @Mapping(target = "summaryTable", expression = "java(getSummaryTableDTOWithPresentation(catchSummaryEntityList))")
     public abstract FACatchSummaryRecordDTO mapToFACatchSummaryRecordDTOWithPresentation(FaCatchSummaryCustomProxy customEntity, List<FaCatchSummaryCustomProxy> catchSummaryEntityList);
 
     /**
