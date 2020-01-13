@@ -90,7 +90,7 @@ public abstract class BaseActivityArquillianTest {
         testWar.deleteClass(UserRoleInterceptor.class);
 
         testWar.addAsResource("logback-test.xml");
-        testWar.addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml");
+        testWar.addAsResource("META-INF/persistence.xml");
 
 
         for (String anonymizedFluxMessageFileName : ANONYMIZED_FLUX_MESSAGES) {
