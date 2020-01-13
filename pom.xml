@@ -46,7 +46,7 @@
 
         <uvms.commons.version>4.0.7</uvms.commons.version>
         <usm4uvms.version>4.0.21</usm4uvms.version>
-        <uvms.maven.version>2.1</uvms.maven.version>
+        <uvms.maven.version>2.4</uvms.maven.version>
 
         <spatialSwe.model.version>2.0.8-UVMS</spatialSwe.model.version>
         <exchange.model.version>5.0.19-UVMS</exchange.model.version>
@@ -91,12 +91,6 @@
             </dependency>
 
             <!-- PROJECT DEPENDENCIES -->
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>service</artifactId>
-                <version>${project.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -329,11 +323,11 @@
                 <version>${guava.version}</version>
             </dependency>
 
-            <dependency>
+            <!--dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.api.version}</version>
-            </dependency>
+            </dependency-->
 
             <dependency>
                 <groupId>org.jetbrains</groupId>
@@ -343,41 +337,6 @@
 
 
             <!-- TEST DEPENDENCIES -->
-
-            <dependency>
-                <groupId>fish.focus.uvms.maven</groupId>
-                <artifactId>uvms-pom-test-deps</artifactId>
-                <version>${uvms.maven.version}</version>
-                <type>pom</type>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.powermock</groupId>
-                        <artifactId>powermock-api-mockito</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.powermock</groupId>
-                        <artifactId>powermock-module-junit4-common</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.powermock</groupId>
-                        <artifactId>powermock-module-junit4</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms</groupId>
-                <artifactId>uvms-test</artifactId>
-                <version>${uvms.test.version}</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.ninja-squad</groupId>
-                        <artifactId>DbSetup</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
 
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
@@ -575,9 +534,7 @@
 
     <modules>
         <module>LIQUIBASE</module>
-        <module>rest</module>
-        <module>service</module>
-        <module>module</module>
+        <module>application</module>
         <module>client-model</module>
     </modules>
 </project>

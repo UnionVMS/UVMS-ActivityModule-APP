@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+        <artifactId>activity</artifactId>
+        <version>1.1.27-SWE-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>application</artifactId>
+    <name>${project.parent.artifactId}-rest</name>
+    <packaging>war</packaging>
+
+    <properties>
+        <docker.dev.start.phase>test-compile</docker.dev.start.phase>
+        <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
+    </properties>
+
+    <dependencies>
+
+        <!-- PROJECT DEPENDENCIES -->
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
+            <artifactId>client-model</artifactId>
+        </dependency>
+
+
+        <!-- UVMS COMMONS DEPENDENCIES -->
+
+        <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-monitoring-deps</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-message</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-date</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-service</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-dao</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-geometry</artifactId>
+        </dependency>
+
+        <!-- UVMS DEPENDENCIES -->
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+            <artifactId>spatial-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>activity-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-gis-deps</artifactId>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.exchange</groupId>
+            <artifactId>exchange-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.rules</groupId>
+            <artifactId>rules-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+            <artifactId>mdr-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
+            <artifactId>mdr-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
+            <artifactId>spatial-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+            <artifactId>movement-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
+            <artifactId>movement-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+            <artifactId>asset-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+            <artifactId>asset-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
+            <artifactId>subscription-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>usm4uvms</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms</groupId>
+            <artifactId>uvms-config</artifactId>
+        </dependency>
+
+
+        <!-- THIRD-PARTY DEPENDENCIES -->
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics-runtime</artifactId>
+            <version>0.6.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations-java5</artifactId>
+        </dependency>
+
+
+
+        <!-- TEST DEPENDENCIES -->
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-arquillian-deps</artifactId>
+            <type>pom</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.unitils/unitils-core -->
+        <dependency>
+            <groupId>org.unitils</groupId>
+            <artifactId>unitils-core</artifactId>
+            <version>3.4.6</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/pl.pragmatists/JUnitParams -->
+        <dependency>
+            <groupId>pl.pragmatists</groupId>
+            <artifactId>JUnitParams</artifactId>
+            <version>1.1.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>xmlunit</groupId>
+            <artifactId>xmlunit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-jms-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.name}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>wildfly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>weblogic</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <classifier>weblogic</classifier>
+                            <failOnMissingWebXml>false</failOnMissingWebXml>
+                            <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- USE following command to run this profile: mvn clean install -P generate-rest-doc -Dhostname=127.0.0.1 -Dport=8080  -->
+    <profiles>
+        <profile>
+            <id>generate-rest-doc</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <executions>
+                            <execution>
+                                <id>generate-service-docs</id>
+                                <phase>generate-resources</phase>
+                                <configuration>
+                                    <doclet>com.carma.swagger.doclet.ServiceDoclet</doclet>
+                                    <docletArtifact>
+                                        <groupId>com.carma</groupId>
+                                        <artifactId>swagger-doclet</artifactId>
+                                        <version>1.1.2</version>
+                                    </docletArtifact>
+                                    <reportOutputDirectory>src/main/webapp</reportOutputDirectory>
+                                    <useStandardDocletOptions>false</useStandardDocletOptions>
+                                    <additionalparam>-apiVersion ${project.version}
+                                        -docBasePath /${project.parent.artifactId}/apidocs
+                                        -apiBasePath /${project.parent.artifactId}/rest</additionalparam>
+                                </configuration>
+                                <goals>
+                                    <goal>javadoc</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
