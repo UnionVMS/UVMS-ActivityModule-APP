@@ -69,6 +69,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -220,15 +221,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected List<String> getFishingGearTypeCodeList(FishingActivityEntity entity) {
-        if (entity == null || entity.getFishingGears() == null || entity.getFishingGears().isEmpty()) {
+        if (entity == null || entity.getFishingGears() == null) {
             return Collections.emptyList();
         }
-        List<String> fishingGearTypecodeList = new ArrayList<>();
-        for (FishingGearEntity fishingGear : entity.getFishingGears()) {
-            if (!isItDupicateOrNull(fishingGear.getTypeCode(), fishingGearTypecodeList))
-                fishingGearTypecodeList.add(fishingGear.getTypeCode());
-        }
-        return fishingGearTypecodeList;
+
+        return entity.getFishingGears().stream()
+                .map(FishingGearEntity::getTypeCode)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     protected Instant getCalculatedStartTime(FishingActivity fishingActivity) {
@@ -755,14 +755,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
 
         return vesselList.iterator().next().getCountry();
-    }
-
-    private boolean isItDupicateOrNull(String valueTocheck, List<String> listTobeCheckedAgainst) {
-        if (valueTocheck == null)
-            return true;
-        if (CollectionUtils.isNotEmpty(listTobeCheckedAgainst) && listTobeCheckedAgainst.contains(valueTocheck))
-            return true;
-        return false;
     }
 
     protected String getRole(ContactPartyEntity entity) {
