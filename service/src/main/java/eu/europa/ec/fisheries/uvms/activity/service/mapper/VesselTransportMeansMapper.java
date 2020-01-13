@@ -71,8 +71,6 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
     @Mapping(target = "storageDto", ignore = true)
     public abstract VesselDetailsDTO map(VesselTransportMeansEntity entity);
 
-    public abstract List<VesselDetailsDTO> map(Set<VesselTransportMeansEntity> entity);
-
     protected Set<VesselPositionEventEntity> getVesselPositionEventEntities(List<VesselPositionEvent> specifiedVesselPositionEvents, VesselTransportMeansEntity vesselTransportMeansEntity) {
         if (specifiedVesselPositionEvents == null || specifiedVesselPositionEvents.isEmpty()) {
             return Collections.emptySet();

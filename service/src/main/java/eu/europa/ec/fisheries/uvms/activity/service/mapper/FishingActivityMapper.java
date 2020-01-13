@@ -37,7 +37,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.ReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -197,14 +196,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mapping(target = "faReportID", source = "faReportDocument.id")
     @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
-
-
-    @Mapping(target = "type", source = "typeCode")
-    @Mapping(target = "occurrence", source = "entity.occurence", qualifiedByName = "instantToDate")
-    @Mapping(target = "nrOfOperation", source = "operationsQuantity.value")
-    @Mapping(target = "reason", source = "reasonCode")
-    @Mapping(target = "vesselActivity", source = "vesselActivityCode")
-    public abstract ActivityDetailsDto mapFishingActivityEntityToActivityDetailsDto(FishingActivityEntity entity);
 
     protected Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity fishingActivityEntity) {
         List<VesselTransportMeans> vesselList = fishingActivity.getRelatedVesselTransportMeans();

@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingGearDTO;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -49,10 +48,6 @@ public interface FishingGearMapper {
     FishingGear mapToFishingGear(FishingGearEntity fishingGearEntity);
 
     List<FishingGear> mapToFishingGearList(Set<FishingGearEntity> fishingGearEntitySet);
-
-    @Mapping(source = "typeCode",target = "gearTypeCode")
-    @Mapping(target = "gearRoleCode", ignore = true)
-    FishingGearDTO mapToFishingGearDTO(FishingGearEntity fishingGearEntity);
 
     @Mapping(target = "roleCode", source = "value")
     @Mapping(target = "roleCodeListId", source = "listID")

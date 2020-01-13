@@ -249,21 +249,6 @@ public class FilterMap {
         filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS, "fishingTrip.fishingTripKey.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
     }
 
-    /**
-     * Same as populateFilterMappings() but woth the DELIMITED_PERIOD_TABLE_ALIAS alias changed.
-     * <p>
-     * Below method stores mapping for each Filter criteria. Mapping will provide information on table joins
-     * required for the criteria and Where conditions which needs to be applied for the criteria
-     */
-    public void populateFilterMappingsForFilterFishingTrips() {
-         filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "ftripId.calculatedTripStartDate <= :"+FilterMap.OCCURENCE_END_DATE));
-         filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(" ", "ftripId.calculatedTripEndDate >= :"+FilterMap.OCCURENCE_START_DATE));
-
-         filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
-                     "cRole.roleCode IN (:" + CONTACT_ROLE_CODE + ") "));
-    }
-
-
     public void populateFilterMappingsForFilterFishingTripIds() {
 
         filterMappings.put(SearchFilter.CONTACT_ROLE_CODE, new FilterDetails(" cparty.contactPartyRole cRole ",
