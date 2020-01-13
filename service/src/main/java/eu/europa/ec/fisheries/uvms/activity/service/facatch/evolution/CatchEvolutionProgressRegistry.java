@@ -3,11 +3,11 @@ package eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
 import org.apache.commons.collections.MapUtils;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public abstract class CatchEvolutionProgressRegistry {
-    private Map<FishingActivityTypeEnum, CatchEvolutionProgressHandler> registry = new HashMap<>(FishingActivityTypeEnum.values().length);
+    private Map<FishingActivityTypeEnum, CatchEvolutionProgressHandler> registry = new EnumMap<>(FishingActivityTypeEnum.class);
 
     public CatchEvolutionProgressRegistry(){
         initRegistry();

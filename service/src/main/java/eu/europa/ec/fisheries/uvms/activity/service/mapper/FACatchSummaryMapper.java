@@ -275,7 +275,7 @@ public abstract class FACatchSummaryMapper extends BaseMapper {
     private Map<FishSizeClassEnum, Object> populateFishSizeClassMapForOnlyForFishClass(FaCatchSummaryCustomProxy customEntity, Double speciesCnt, Map<FishSizeClassEnum, Object> fishSizeSummaryMap) {
         String fishClass = customEntity.getFishClass().toUpperCase();
         if (fishSizeSummaryMap == null) {
-            fishSizeSummaryMap = new HashMap<>();
+            fishSizeSummaryMap = new EnumMap<>(FishSizeClassEnum.class);
             fishSizeSummaryMap.put(FishSizeClassEnum.valueOf(fishClass), speciesCnt);
         } else {
             Object count = fishSizeSummaryMap.get(FishSizeClassEnum.valueOf(fishClass));
