@@ -22,7 +22,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.StructuredAddressEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.FluxCharacteristicsViewDtoMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(uses = {CustomBigDecimal.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
+@Mapper(uses = {CustomBigDecimal.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, VesselIdentifierMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 
