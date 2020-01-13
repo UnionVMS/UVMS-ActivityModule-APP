@@ -101,7 +101,6 @@ public abstract class FaCatchMapper extends BaseMapper {
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
     @InheritInverseConfiguration
-
     @Mapping(target = "appliedAAPProcesses", source = "aapProcesses")
     @Mapping(target = "specifiedSizeDistribution", expression="java(getSizeDistribution(faCatch))")
     @Mapping(target = "relatedFishingTrips", ignore = true)
@@ -112,32 +111,6 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "applicableFLUXCharacteristics", ignore = true)
     @Mapping(target = "destinationFLUXLocations", ignore = true)
     public abstract FACatch mapToFaCatch(FaCatchEntity faCatch);
-
-
-    @Mapping(target = "listID", ignore = true)
-    @Mapping(target = "listAgencyID", ignore = true)
-    @Mapping(target = "listAgencyName", ignore = true)
-    @Mapping(target = "listName", ignore = true)
-    @Mapping(target = "listVersionID", ignore = true)
-    @Mapping(target = "name", ignore = true)
-    @Mapping(target = "languageID", ignore = true)
-    @Mapping(target = "listURI", ignore = true)
-    @Mapping(target = "listSchemeURI", ignore = true)
-    public abstract un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType map(java.lang.String value);
-
-
-    @Mapping(target = "roleName", expression = "java(getVesselTransportMeansForRelocation(faCatch).getRoleCode())")
-    @Mapping(target = "country", expression = "java(getVesselTransportMeansForRelocation(faCatch).getCountry())")
-    @Mapping(target = "vesselIdentifiers", expression = "java(mapToAssetIdentifiers(faCatch))")
-    @Mapping(target = "name", expression = "java(getVesselTransportMeansForRelocation(faCatch).getName())")
-    @Mapping(target = "speciesCode", source = "speciesCode")
-    @Mapping(target = "type", source = "typeCode")
-    @Mapping(target = "weight", source = "calculatedWeightMeasure")
-    @Mapping(target = "unit", source = "calculatedUnitQuantity")
-    @Mapping(target = "characteristics", source = "fishingActivity.fluxCharacteristics")
-    public abstract RelocationDto mapToRelocationDto(FaCatchEntity faCatch);
-
-    public abstract List<RelocationDto> mapToRelocationDtoList(Set<FaCatchEntity> faCatches);
 
     protected String mapToFishClassCode(SizeDistribution sizeDistrib){
         if(sizeDistrib != null && CollectionUtils.isNotEmpty(sizeDistrib.getClassCodes())){
