@@ -542,7 +542,7 @@
 
     <modules>
         <module>LIQUIBASE</module>
-        <module>rest</module>
+        <module>application</module>
         <module>client-model</module>
     </modules>
 </project>

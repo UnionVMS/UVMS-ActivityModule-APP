@@ -8,7 +8,7 @@
         <version>1.1.27-SWE-SNAPSHOT</version>
     </parent>
 
-    <artifactId>rest</artifactId>
+    <artifactId>application</artifactId>
     <name>${project.parent.artifactId}-rest</name>
     <packaging>war</packaging>
 
