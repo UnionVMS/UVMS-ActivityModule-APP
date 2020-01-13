@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>application</artifactId>
-    <name>${project.parent.artifactId}-rest</name>
+    <name>${project.parent.artifactId}-application</name>
     <packaging>war</packaging>
 
     <properties>
@@ -252,30 +252,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>wildfly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                        <configuration>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>weblogic</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>weblogic</classifier>
-                            <failOnMissingWebXml>false</failOnMissingWebXml>
-                            <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
