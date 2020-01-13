@@ -19,14 +19,9 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.StructuredAddressTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelocationDto;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.view.FluxCharacteristicsViewDtoMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
@@ -46,16 +41,14 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(uses = {CustomBigDecimal.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, FluxCharacteristicsViewDtoMapper.class, VesselIdentifierMapper.class},
+@Mapper(uses = {CustomBigDecimal.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, VesselIdentifierMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 
@@ -101,7 +94,6 @@ public abstract class FaCatchMapper extends BaseMapper {
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
     @InheritInverseConfiguration
-
     @Mapping(target = "appliedAAPProcesses", source = "aapProcesses")
     @Mapping(target = "specifiedSizeDistribution", expression="java(getSizeDistribution(faCatch))")
     @Mapping(target = "relatedFishingTrips", ignore = true)
@@ -113,55 +105,11 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "destinationFLUXLocations", ignore = true)
     public abstract FACatch mapToFaCatch(FaCatchEntity faCatch);
 
-
-    @Mapping(target = "listID", ignore = true)
-    @Mapping(target = "listAgencyID", ignore = true)
-    @Mapping(target = "listAgencyName", ignore = true)
-    @Mapping(target = "listName", ignore = true)
-    @Mapping(target = "listVersionID", ignore = true)
-    @Mapping(target = "name", ignore = true)
-    @Mapping(target = "languageID", ignore = true)
-    @Mapping(target = "listURI", ignore = true)
-    @Mapping(target = "listSchemeURI", ignore = true)
-    public abstract un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType map(java.lang.String value);
-
-
-    @Mapping(target = "roleName", expression = "java(getVesselTransportMeansForRelocation(faCatch).getRoleCode())")
-    @Mapping(target = "country", expression = "java(getVesselTransportMeansForRelocation(faCatch).getCountry())")
-    @Mapping(target = "vesselIdentifiers", expression = "java(mapToAssetIdentifiers(faCatch))")
-    @Mapping(target = "name", expression = "java(getVesselTransportMeansForRelocation(faCatch).getName())")
-    @Mapping(target = "speciesCode", source = "speciesCode")
-    @Mapping(target = "type", source = "typeCode")
-    @Mapping(target = "weight", source = "calculatedWeightMeasure")
-    @Mapping(target = "unit", source = "calculatedUnitQuantity")
-    @Mapping(target = "characteristics", source = "fishingActivity.fluxCharacteristics")
-    public abstract RelocationDto mapToRelocationDto(FaCatchEntity faCatch);
-
-    public abstract List<RelocationDto> mapToRelocationDtoList(Set<FaCatchEntity> faCatches);
-
     protected String mapToFishClassCode(SizeDistribution sizeDistrib){
         if(sizeDistrib != null && CollectionUtils.isNotEmpty(sizeDistrib.getClassCodes())){
             return sizeDistrib.getClassCodes().iterator().next().getValue();
         }
         return StringUtils.EMPTY;
-    }
-
-    protected List<AssetIdentifierDto> mapToAssetIdentifiers(FaCatchEntity faCatch) {
-        List<AssetIdentifierDto> assetIdentifierDtos = new ArrayList<>();
-        if (faCatch != null && faCatch.getFishingActivity() != null && CollectionUtils.isNotEmpty(faCatch.getFishingActivity().getVesselTransportMeans())) {
-            VesselTransportMeansEntity vesselTransportMeans = faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
-            EnumMap<VesselIdentifierSchemeIdEnum, String> vesselIdentifiers = vesselTransportMeans.getVesselIdentifiersMap();
-            // Set IRCS always if present
-            if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.IRCS) != null) {
-                assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.IRCS, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.IRCS)));
-            }
-            if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.ICCAT) != null) {
-                assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.ICCAT, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.ICCAT)));
-            } else if (vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.CFR) != null) {
-                assetIdentifierDtos.add(new AssetIdentifierDto(VesselIdentifierSchemeIdEnum.CFR, vesselIdentifiers.get(VesselIdentifierSchemeIdEnum.CFR)));
-            }
-        }
-        return assetIdentifierDtos;
     }
 
     protected FishingTripEntity getFishingTripEntity(List<FishingTrip> relatedFishingTrips) {
@@ -170,14 +118,6 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         FishingTrip fishingTrip = relatedFishingTrips.get(0);
         return FishingTripEntity.create(fishingTrip);
-    }
-
-    protected VesselTransportMeansEntity getVesselTransportMeansForRelocation(FaCatchEntity faCatch) {
-        if (faCatch == null || faCatch.getFishingActivity() == null || CollectionUtils.isEmpty(faCatch.getFishingActivity().getVesselTransportMeans())) {
-            return null;
-        }
-
-        return faCatch.getFishingActivity().getVesselTransportMeans().iterator().next();
     }
 
     protected SizeDistribution getSizeDistribution(FaCatchEntity faCatch) {

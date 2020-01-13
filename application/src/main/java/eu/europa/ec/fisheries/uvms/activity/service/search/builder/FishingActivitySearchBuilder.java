@@ -52,7 +52,7 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
         return sql;
     }
 
-    public StringBuilder createCountingSql(FishingActivityQuery query) throws ServiceException {
+    public StringBuilder createCountingSql(FishingActivityQuery query) {
         LOG.debug("Start building SQL depending upon Filter criteria");
         StringBuilder sql = new StringBuilder();
         sql.append(FISHING_ACTIVITY_COUNT_JOIN); // Common Join for all filters

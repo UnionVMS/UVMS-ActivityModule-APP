@@ -133,7 +133,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     @Override
-    public VesselDetailsDTO getVesselDetailsForFishingTrip(final String fishingTripId) throws ServiceException {
+    public VesselDetailsDTO getVesselDetailsForFishingTrip(final String fishingTripId) {
         if (fishingTripId == null) {
             throw new IllegalArgumentException("PARAMETER CANNOT BE NULL");
         }
@@ -172,45 +172,41 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             return;
         }
         List<String> codeList;
-        try {
-            codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "code").get("code");
-            Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
-            if (vesselIdentifiers == null || codeList == null) {
-                return;
-            }
-            AssetQuery assetQuery = new AssetQuery();
-            for (AssetIdentifierDto assetIdentifierDto : vesselIdentifiers) {
-                if (codeList.contains(assetIdentifierDto.getIdentifierSchemeId().name())) {
-                    final List<String> idValueAsList = Arrays.asList(assetIdentifierDto.getFaIdentifierId());
-                    switch (assetIdentifierDto.getIdentifierSchemeId()) {
-                        case CFR:
-                            assetQuery.setCfr(idValueAsList);
-                            break;
-                        case EXT_MARK:
-                            assetQuery.setExternalMarking(idValueAsList);
-                            break;
-                        case GFCM:
-                            assetQuery.setGfcm(idValueAsList);
-                            break;
-                        case ICCAT:
-                            assetQuery.setIccat(idValueAsList);
-                            break;
-                        case IRCS:
-                            assetQuery.setIrcs(idValueAsList);
-                            break;
-                        case UVI:
-                            assetQuery.setUvi(idValueAsList);
-                            break;
-                        default:
-                    }
+        codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "code").get("code");
+        Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
+        if (vesselIdentifiers == null || codeList == null) {
+            return;
+        }
+        AssetQuery assetQuery = new AssetQuery();
+        for (AssetIdentifierDto assetIdentifierDto : vesselIdentifiers) {
+            if (codeList.contains(assetIdentifierDto.getIdentifierSchemeId().name())) {
+                final List<String> idValueAsList = Arrays.asList(assetIdentifierDto.getFaIdentifierId());
+                switch (assetIdentifierDto.getIdentifierSchemeId()) {
+                    case CFR:
+                        assetQuery.setCfr(idValueAsList);
+                        break;
+                    case EXT_MARK:
+                        assetQuery.setExternalMarking(idValueAsList);
+                        break;
+                    case GFCM:
+                        assetQuery.setGfcm(idValueAsList);
+                        break;
+                    case ICCAT:
+                        assetQuery.setIccat(idValueAsList);
+                        break;
+                    case IRCS:
+                        assetQuery.setIrcs(idValueAsList);
+                        break;
+                    case UVI:
+                        assetQuery.setUvi(idValueAsList);
+                        break;
+                    default:
                 }
             }
-            List<AssetDTO> assetList = assetModuleService.getAssets(assetQuery);
-            if (!CollectionUtils.isEmpty(assetList)) {
-                vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetList.get(0));
-            }
-        } catch (ServiceException e) {
-            log.error("Error while trying to send message to Assets module.", e);
+        }
+        List<AssetDTO> assetList = assetModuleService.getAssets(assetQuery);
+        if (!CollectionUtils.isEmpty(assetList)) {
+            vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetList.get(0));
         }
     }
 

@@ -188,11 +188,10 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             log.info("ARRIVAL is not yet received for the trip");
 
             // find out date of last activity for the trip
-            Instant lastActivityDate = fishingActivities.get(fishingActivities.size() - 1).getCalculatedStartTime();
-            if (lastActivityDate != null) {
-                Instant lastActivityInstant = lastActivityDate;
-                if (lastActivityInstant.isAfter(startDate)) { // If last activity date is later than start date
-                    return Duration.between(startDate, lastActivityInstant);
+            Instant lastActivity = fishingActivities.get(fishingActivities.size() - 1).getCalculatedStartTime();
+            if (lastActivity != null) {
+                if (lastActivity.isAfter(startDate)) { // If last activity date is later than start date
+                    return Duration.between(startDate, lastActivity);
                 }
             }
         }

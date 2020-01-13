@@ -82,7 +82,7 @@ public class FishingTripResource extends UnionVMSResource {
     @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
     public Response getVesselDetails(@Context HttpServletRequest request,
                                      @Context HttpServletResponse response,
-                                     @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
+                                     @PathParam("fishingTripId") String fishingTripId) {
 
         log.debug("Getting Vessels details for trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.getVesselDetailsForFishingTrip(fishingTripId));

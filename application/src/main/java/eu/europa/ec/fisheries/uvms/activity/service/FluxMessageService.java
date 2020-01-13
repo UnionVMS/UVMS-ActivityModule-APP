@@ -27,5 +27,5 @@ public interface FluxMessageService {
      * @param faReportSourceEnum
      * @throws ServiceException
      */
-    FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException;
+    FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum);
 }

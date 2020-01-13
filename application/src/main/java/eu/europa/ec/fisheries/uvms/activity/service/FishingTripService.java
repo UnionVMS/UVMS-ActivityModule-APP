@@ -49,7 +49,7 @@ public interface FishingTripService {
      *
      * @param fishingTripId
      */
-    VesselDetailsDTO getVesselDetailsForFishingTrip(String fishingTripId) throws ServiceException;
+    VesselDetailsDTO getVesselDetailsForFishingTrip(String fishingTripId);
 
 
     /**

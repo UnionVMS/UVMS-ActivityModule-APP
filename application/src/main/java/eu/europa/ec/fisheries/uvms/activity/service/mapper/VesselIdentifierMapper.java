@@ -14,7 +14,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -39,29 +38,9 @@ public interface VesselIdentifierMapper {
 
     Set<AssetIdentifierDto> mapToIdentifierDotSet(Set<VesselIdentifierEntity> entity);
 
-    @ValueMapping(target = "EXT_MARK", source = "EXTERNAL_MARKING")
-    @ValueMapping(target = MappingConstants.NULL, source = "FLAG_STATE")
-    @ValueMapping(target = MappingConstants.NULL, source = "NAME")
-    @ValueMapping(target = MappingConstants.NULL, source = "MMSI")
-    @ValueMapping(target = MappingConstants.NULL, source = "GUID")
-    @ValueMapping(target = MappingConstants.NULL, source = "HOMEPORT")
-    @ValueMapping(target = MappingConstants.NULL, source = "ASSET_TYPE")
-    @ValueMapping(target = MappingConstants.NULL, source = "LICENSE_TYPE")
-    @ValueMapping(target = MappingConstants.NULL, source = "PRODUCER_NAME")
-    @ValueMapping(target = MappingConstants.NULL, source = "IMO")
-    @ValueMapping(target = MappingConstants.NULL, source = "GEAR_TYPE")
-    @ValueMapping(target = MappingConstants.NULL, source = "MIN_LENGTH")
-    @ValueMapping(target = MappingConstants.NULL, source = "MAX_LENGTH")
-    @ValueMapping(target = MappingConstants.NULL, source = "MIN_POWER")
-    @ValueMapping(target = MappingConstants.NULL, source = "MAX_POWER")
-    @ValueMapping(target = MappingConstants.NULL, source = "HIST_GUID")
-    VesselIdentifierSchemeIdEnum map(ConfigSearchField searchField);
-
-    @InheritInverseConfiguration
+    @ValueMapping(source = "EXT_MARK", target = "EXTERNAL_MARKING")
     @ValueMapping(source = "UVI", target = MappingConstants.NULL)
     @ValueMapping(source = "ICCAT", target = MappingConstants.NULL)
-
     @ValueMapping(source = "GFCM", target = MappingConstants.NULL)
     ConfigSearchField map(VesselIdentifierSchemeIdEnum schemeIdEnum);
-
 }

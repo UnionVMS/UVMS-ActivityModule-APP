@@ -30,9 +30,9 @@ public interface AssetModuleService {
      * @return asset GUIDs
      * @throws ServiceException
      */
-    List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException;
+    List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers);
 
     List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearchName) throws ServiceException;
 
-    List<AssetDTO> getAssets(AssetQuery assetQuery) throws ServiceException;
+    List<AssetDTO> getAssets(AssetQuery assetQuery);
 }

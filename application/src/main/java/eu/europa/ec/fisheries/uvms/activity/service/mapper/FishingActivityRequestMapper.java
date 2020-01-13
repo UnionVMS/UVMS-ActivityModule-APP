@@ -18,7 +18,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -27,8 +26,6 @@ import java.util.Set;
 
 @Mapper
 public abstract class FishingActivityRequestMapper {
-
-    public static final FishingActivityRequestMapper INSTANCE = Mappers.getMapper(FishingActivityRequestMapper.class);
 
     public static FishingActivityQuery buildFishingActivityQueryFromRequest(FishingTripRequest baseRequest) throws ServiceException {
         FishingActivityQuery query = new FishingActivityQuery();

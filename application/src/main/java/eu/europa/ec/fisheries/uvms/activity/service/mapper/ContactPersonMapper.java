@@ -20,9 +20,6 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 
-import java.util.List;
-import java.util.Set;
-
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface ContactPersonMapper {
 
@@ -50,8 +47,6 @@ public interface ContactPersonMapper {
     @Mapping(target = "websiteURIWebsiteCommunication", ignore = true)
     @Mapping(target = "specifiedUniversalCommunications", ignore = true)
     ContactPerson mapToContactPerson(ContactPersonEntity contactPerson);
-
-    List<ContactPerson> mapToContactPersonList(Set<ContactPersonEntity> contactPerson);
 
     @Mapping(target = "characteristicsMap", ignore = true)
     ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);

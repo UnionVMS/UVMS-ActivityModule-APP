@@ -37,7 +37,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.ReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +69,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -198,14 +198,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
 
-
-    @Mapping(target = "type", source = "typeCode")
-    @Mapping(target = "occurrence", source = "entity.occurence", qualifiedByName = "instantToDate")
-    @Mapping(target = "nrOfOperation", source = "operationsQuantity.value")
-    @Mapping(target = "reason", source = "reasonCode")
-    @Mapping(target = "vesselActivity", source = "vesselActivityCode")
-    public abstract ActivityDetailsDto mapFishingActivityEntityToActivityDetailsDto(FishingActivityEntity entity);
-
     protected Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity fishingActivityEntity) {
         List<VesselTransportMeans> vesselList = fishingActivity.getRelatedVesselTransportMeans();
         if (vesselList == null || vesselList.isEmpty()) {
@@ -229,15 +221,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
     protected List<String> getFishingGearTypeCodeList(FishingActivityEntity entity) {
-        if (entity == null || entity.getFishingGears() == null || entity.getFishingGears().isEmpty()) {
+        if (entity == null || entity.getFishingGears() == null) {
             return Collections.emptyList();
         }
-        List<String> fishingGearTypecodeList = new ArrayList<>();
-        for (FishingGearEntity fishingGear : entity.getFishingGears()) {
-            if (!isItDupicateOrNull(fishingGear.getTypeCode(), fishingGearTypecodeList))
-                fishingGearTypecodeList.add(fishingGear.getTypeCode());
-        }
-        return fishingGearTypecodeList;
+
+        return entity.getFishingGears().stream()
+                .map(FishingGearEntity::getTypeCode)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     protected Instant getCalculatedStartTime(FishingActivity fishingActivity) {
@@ -764,14 +755,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
 
         return vesselList.iterator().next().getCountry();
-    }
-
-    private boolean isItDupicateOrNull(String valueTocheck, List<String> listTobeCheckedAgainst) {
-        if (valueTocheck == null)
-            return true;
-        if (CollectionUtils.isNotEmpty(listTobeCheckedAgainst) && listTobeCheckedAgainst.contains(valueTocheck))
-            return true;
-        return false;
     }
 
     protected String getRole(ContactPartyEntity entity) {
