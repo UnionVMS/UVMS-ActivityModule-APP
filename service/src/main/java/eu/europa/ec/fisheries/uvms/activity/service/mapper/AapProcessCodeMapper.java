@@ -18,9 +18,6 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import java.util.List;
-import java.util.Set;
-
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public interface AapProcessCodeMapper {
 
@@ -43,7 +40,4 @@ public interface AapProcessCodeMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "aapProcess", ignore = true)
     AapProcessCodeEntity mapToAapProcessCodeEntity(CodeType codeType);
-
-    Set<AapProcessCodeEntity> mapToAapProcessCodeEntitySet(List<CodeType> codeType);
-
 }
