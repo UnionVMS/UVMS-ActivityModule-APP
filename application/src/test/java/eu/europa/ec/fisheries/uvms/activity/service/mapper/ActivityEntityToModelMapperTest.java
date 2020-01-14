@@ -33,8 +33,6 @@ import javax.xml.bind.Unmarshaller;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 
 import static junit.framework.TestCase.assertFalse;
 
@@ -83,8 +81,8 @@ public class ActivityEntityToModelMapperTest {
 
         assertFalse("XML similar " + myDiffSimilar.toString(), myDiffSimilar.hasDifferences());    }
 
-    private Collection<Object[]> resources() {
-        return Arrays.asList(new Object[][] {
+    private Object[] resources() {
+        return new Object[][] {
                 {"fa_flux_message4.xml"},
                 {"fa_flux_message5.xml"},
                 {"fa_flux_message6.xml"},
@@ -108,7 +106,7 @@ public class ActivityEntityToModelMapperTest {
                 //{"UNFA_IRCS6_04_FOP2PAIR_CYP-TRP-20170608000000000010.xml"},
                 {"multipleReports.xml"},
                 {"multipleReports2.xml"}
-        });
+        };
     }
 
     private String clearEmptyTags(String testSource) {
