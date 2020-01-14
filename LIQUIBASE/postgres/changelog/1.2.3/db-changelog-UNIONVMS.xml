@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.2.3/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="robmil" id="ers-460-add-flux-report-id-unique-constraint">
+        <addUniqueConstraint tableName="activity_flux_fa_report_message"
+                             columnNames="flux_report_document_id, flux_report_document_id_scheme_id"
+                             constraintName="flux_fa_report_message_unique_constraint_report_document_id"/>
+    </changeSet>
+
+</databaseChangeLog>
