@@ -37,7 +37,6 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +44,6 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FluxMessageServiceBeanTest {
@@ -83,7 +81,7 @@ public class FluxMessageServiceBeanTest {
         fluxFaReportMessage = new FLUXFAReportMessage();
         faReportDocuments = Arrays.asList(faReportDocument1, faReportDocument2);
         fluxFaReportMessage.setFAReportDocuments(faReportDocuments);
-        fluxFaReportMessage.setFLUXReportDocument(MapperUtil.getFluxReportDocument());
+        fluxFaReportMessage.setFLUXReportDocument(MapperUtil.getFluxReportDocumentLowerCase());
 
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(any(String.class), any(String.class));
         Mockito.when(faMessageSaverBean.saveReportMessageNow(any(FluxFaReportMessageEntity.class))).then(invocation -> invocation.getArguments()[0]);

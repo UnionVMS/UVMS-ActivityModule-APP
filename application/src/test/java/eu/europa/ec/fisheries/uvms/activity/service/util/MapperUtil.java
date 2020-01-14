@@ -518,7 +518,7 @@ public class MapperUtil {
         return fluxLocation;
     }
 
-    public static FLUXReportDocument getFluxReportDocument() {
+    public static FLUXReportDocument getFluxReportDocumentLowerCase() {
         List<IDType> ids = Collections.singletonList(getIdType("flux_report_doc_1", "fhty58-gh586t-5tjf8-t58rjewe"));
         IDType referencedID = getIdType("Ref ID 1", "fhty58-gh586t-5tjf8-t58rjewe");
         DateTimeType creationDateTime = getDateTimeType("2016-07-01 11:15:00");
@@ -561,10 +561,10 @@ public class MapperUtil {
     }
 
     public static FLUXFAReportMessage getFLUXFAReportMessage() {
-        return new FLUXFAReportMessage(getFLUXReportDocument(), Collections.singletonList(getFaReportDocument()));
+        return new FLUXFAReportMessage(getFluxReportDocumentUpperCase(), Collections.singletonList(getFaReportDocument()));
     }
 
-    public static FLUXReportDocument getFLUXReportDocument(){
+    public static FLUXReportDocument getFluxReportDocumentUpperCase(){
         new FLUXReportDocument();
         List<IDType> ids = Collections.singletonList(getIdType("FLUX_REPORT_ID_1", "FLUX_SCHEME_ID1"));
         IDType referenceId=getIdType("REF_ID 1", "47rfh-5hry4-thfur75-4hf743");
@@ -583,7 +583,7 @@ public class MapperUtil {
         CodeType fmcMarkerCode = getCodeType("Fmz marker 1", "h49rh-fhrus33-fj84hjs82-4h84hw82");
         List<IDType> relatedReportIDs = Collections.singletonList(getIdType("ID 1", "47rfh-5hry4-thfur75-4hf743"));
         DateTimeType acceptanceDateTime = getDateTimeType("2016-07-01 11:15:00");
-        FLUXReportDocument relatedFLUXReportDocument = getFluxReportDocument();
+        FLUXReportDocument relatedFLUXReportDocument = getFluxReportDocumentLowerCase();
         List<FishingActivity> specifiedFishingActivities = Collections.singletonList(getFishingActivity());
         VesselTransportMeans specifiedVesselTransportMeans = getVesselTransportMeans();
         return new FAReportDocument(typeCode, fmcMarkerCode, relatedReportIDs, acceptanceDateTime,
