@@ -15,9 +15,7 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
-import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
-import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
@@ -51,9 +49,6 @@ public class FishingTripResource extends UnionVMSResource {
 
     @EJB
     private FishingTripService fishingTripService;
-
-    @EJB
-    private ActivityRulesModuleService rulesService;
 
     @EJB
     private USMService usmService;
@@ -135,22 +130,5 @@ public class FishingTripResource extends UnionVMSResource {
                                                  @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
         log.debug("Catch evolution for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId));
-    }
-
-    @GET
-    @Path("/requestupdate/{fishingTripId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Interceptors(ActivityExceptionInterceptor.class)
-    //@IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.SEND_UPDATE_TRIP_REQUEST})
-    public Response requestTripUpdateFromTripId(@Context HttpServletRequest request,
-                                                @Context HttpServletResponse response,
-                                                @PathParam("fishingTripId") String fishingTripId) {
-        log.debug("Going to send FaQuery related to Trip with id: {}", fishingTripId);
-        try {
-            rulesService.composeAndSendTripUpdateFaQueryToRules(fishingTripId);
-        } catch (ActivityModuleException e) {
-            return createErrorResponse("Error while trying to send Update Trip Query!" + e.getMessage());
-        }
-        return createSuccessResponse();
     }
 }

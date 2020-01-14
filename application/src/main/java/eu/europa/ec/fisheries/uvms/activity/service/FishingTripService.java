@@ -101,6 +101,4 @@ public interface FishingTripService {
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 
     CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
-
-    String getOwnerFluxPartyFromTripId(String tripId);
 }
