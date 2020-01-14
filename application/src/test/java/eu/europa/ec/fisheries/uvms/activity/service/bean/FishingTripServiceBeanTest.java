@@ -30,15 +30,12 @@ import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import lombok.SneakyThrows;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,9 +73,6 @@ public class FishingTripServiceBeanTest {
 
     @Mock
     private MdrModuleService mdrModuleService;
-
-    @Mock
-    private AssetModuleServiceBean assetModule;
 
     @Mock
     private VesselTransportMeansDao vesselTransportMeansDao;
@@ -175,12 +169,9 @@ public class FishingTripServiceBeanTest {
     @SneakyThrows
     public void getVesselDetailsForFishingTrip() {
         // Given
-        Map<String, List<String>> returnMap = new HashMap<>();
-        returnMap.put("code", new ArrayList<>());
         VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();
         vesselTransportMeansEntity.setName("MyFirstVessel");
         when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(vesselTransportMeansEntity);
-        when(mdrModuleService.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<>(), 9999999, "code")).thenReturn(returnMap);
 
         // When
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");

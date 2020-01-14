@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -314,7 +314,6 @@ public class ActivityServiceBeanTest {
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
-        when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
         when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(MapperUtil.getFishingActivityEntityList());
         //Trigger
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, null);
@@ -347,16 +346,15 @@ public class ActivityServiceBeanTest {
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
-        when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
-
         when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(new ArrayList<FishingActivityEntity>());
 
         //Trigger
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, new ArrayList<Dataset>());
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
+
         //Verify
-         assertNotNull(filterFishingActivityReportResultDTO);
+        assertNotNull(filterFishingActivityReportResultDTO);
     }
 }
 
