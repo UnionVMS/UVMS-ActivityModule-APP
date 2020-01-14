@@ -23,7 +23,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.service.MdrModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
@@ -46,7 +45,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -65,14 +64,8 @@ public class FishingTripServiceBeanTest {
     @Mock
     private FaCatchDao faCatchDao;
 
-    @Mock
-    private ActivityServiceBean activityServiceBean;
-
     @InjectMocks
     private FishingTripServiceBean fishingTripService;
-
-    @Mock
-    private MdrModuleService mdrModuleService;
 
     @Mock
     private VesselTransportMeansDao vesselTransportMeansDao;
@@ -85,7 +78,7 @@ public class FishingTripServiceBeanTest {
         //Trigger
         Map<String, CatchSummaryListDTO> faCatchesMap = fishingTripService.retrieveFaCatchesForFishingTrip("NOR-TRP-20160517234053706");
         //Verify
-        Mockito.verify(faCatchDao, times(1)).findFaCatchesByFishingTrip(Mockito.any(String.class));
+        Mockito.verify(faCatchDao, times(1)).findFaCatchesByFishingTrip(any(String.class));
 
         assertNotNull(faCatchesMap.get("landed"));
         assertNotNull(faCatchesMap.get("onboard"));
@@ -103,7 +96,7 @@ public class FishingTripServiceBeanTest {
         when(faReportDocumentDao.loadReports("NOR-TRP-20160517234053706", "Y")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
         //Trigger
         ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
-        Mockito.verify(faReportDocumentDao, times(1)).loadReports(Mockito.any(String.class), Mockito.any(String.class));
+        Mockito.verify(faReportDocumentDao, times(1)).loadReports(any(String.class), any(String.class));
 
         ObjectMapper objectMapper = new ObjectMapper();
         //Verify
