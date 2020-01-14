@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
 import com.google.common.collect.Lists;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivitySubscriptionCheckMessageConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
@@ -18,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
