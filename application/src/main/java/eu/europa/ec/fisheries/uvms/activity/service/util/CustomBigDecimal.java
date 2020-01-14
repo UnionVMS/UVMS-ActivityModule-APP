@@ -11,6 +11,7 @@
 package eu.europa.ec.fisheries.uvms.activity.service.util;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CustomBigDecimal extends BigDecimal {
 
@@ -21,7 +22,7 @@ public class CustomBigDecimal extends BigDecimal {
     public BigDecimal createBigDecimal(Double d){
         if (d != null){
             BigDecimal bigDecimal = new BigDecimal(d);
-            return bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
+            return bigDecimal.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros();
         }
         else {
            return null;

@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +31,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyListOf;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,7 +47,7 @@ public class ActivityMatchingIdsServiceTest {
     @Test
     public void getMatchingIdsResponse() throws Exception {
         // Given
-        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+        when(faReportDocumentDao.getMatchingIdentifiers(anyList(), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
         List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 
@@ -60,7 +61,7 @@ public class ActivityMatchingIdsServiceTest {
     @Test
     public void getMatchingIds_simpleListOfIds() {
         // Given
-        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+        when(faReportDocumentDao.getMatchingIdentifiers(anyList(), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
         List<ActivityIDType> activityIDTypes = new ArrayList<>();
         activityIDTypes.add(new ActivityIDType("46DCC44C-0AE2-434C-BC14-B85D86B29512iiiii", "scheme-idvv"));
@@ -75,9 +76,6 @@ public class ActivityMatchingIdsServiceTest {
 
     @Test
     public void getMatchingIdsResponseNullPointer() {
-        // Given
-        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
-
         // When
         List<ActivityUniquinessList> matchingIds = matchingBean.getMatchingIds(null);
 
@@ -88,7 +86,7 @@ public class ActivityMatchingIdsServiceTest {
     @Test
     public void getMatchingIdsResponseNullMap() throws Exception {
         // Given
-        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(null);
+        when(faReportDocumentDao.getMatchingIdentifiers(anyList(), Mockito.any(ActivityTableType.class))).thenReturn(null);
 
         List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 
@@ -102,7 +100,7 @@ public class ActivityMatchingIdsServiceTest {
     @Test
     public void getMatchingIdsResponseMappingEmptyList() throws Exception {
         // Given
-        when(faReportDocumentDao.getMatchingIdentifiers(anyListOf(ActivityIDType.class), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
+        when(faReportDocumentDao.getMatchingIdentifiers(anyList(), Mockito.any(ActivityTableType.class))).thenReturn(getMockedIdentifiers());
 
         List<ActivityUniquinessList> inputActivityUniquenessList = createInputActivityUniquenessList();
 

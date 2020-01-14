@@ -106,8 +106,8 @@ public class AapProductEntity implements Serializable {
 	private AapProcessEntity aapProcess;
 
 	@PrePersist
-	public void prePersist(){ // TODO test me
-		if (unitQuantity != null || unitQuantityCode != null){
+	public void prePersist() {
+		if (unitQuantity != null && unitQuantityCode != null) {
 			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitQuantityCode);
 			if (unitCodeEnum != null) {
 				BigDecimal quantity = new BigDecimal(unitQuantity);
@@ -115,7 +115,7 @@ public class AapProductEntity implements Serializable {
 				calculatedUnitQuantity =  result.doubleValue();
 			}
 		}
-        if (packagingUnitCountCode != null || packagingUnitCount != null){
+        if (packagingUnitCountCode != null && packagingUnitCount != null) {
             UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(packagingUnitCountCode);
             if (unitCodeEnum != null) {
                 BigDecimal quantity = new BigDecimal(packagingUnitCount);

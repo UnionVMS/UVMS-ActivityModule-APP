@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
@@ -29,16 +30,14 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummary
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
-import lombok.SneakyThrows;
-import org.junit.Rule;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +48,9 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -69,29 +70,31 @@ public class FishingTripServiceBeanTest {
     private FaCatchDao faCatchDao;
 
     @Mock
-    private ActivityServiceBean activityServiceBean;
+    private VesselTransportMeansDao vesselTransportMeansDao;
 
-    @InjectMocks
-    private FishingTripServiceBean fishingTripService;
+    @Mock
+    private ActivityServiceBean activityServiceBean;
 
     @Mock
     private MdrModuleService mdrModuleService;
 
-    @Mock
-    private AssetModuleServiceBean assetModule;
+    @InjectMocks
+    private FishingTripServiceBean fishingTripService;
 
-    @Mock
-    private VesselTransportMeansDao vesselTransportMeansDao;
+    @Before
+    public void setUp() throws ServiceException {
+        when(activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(any())).thenReturn(true);
+        when(mdrModuleService.getAcronymFromMdr(anyString(), anyString(), any(), anyInt(), anyString())).thenReturn(new HashMap<>());
+    }
 
     @Test
-    @SneakyThrows
     public void retrieveFaCatchesForFishingTrip() {
 
         when(faCatchDao.findFaCatchesByFishingTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getFaCaches());
         //Trigger
         Map<String, CatchSummaryListDTO> faCatchesMap = fishingTripService.retrieveFaCatchesForFishingTrip("NOR-TRP-20160517234053706");
         //Verify
-        Mockito.verify(faCatchDao, times(1)).findFaCatchesByFishingTrip(Mockito.any(String.class));
+        Mockito.verify(faCatchDao, times(1)).findFaCatchesByFishingTrip(any(String.class));
 
         assertNotNull(faCatchesMap.get("landed"));
         assertNotNull(faCatchesMap.get("onboard"));
@@ -103,13 +106,12 @@ public class FishingTripServiceBeanTest {
 
 
     @Test
-    @SneakyThrows
-    public void getTripMapDetailsForTripId() {
+    public void getTripMapDetailsForTripId() throws JsonProcessingException {
         String expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[[-10,40],[-40,30],[-20,20],[-30,10]]},\"properties\":{}}]}";
         when(faReportDocumentDao.loadReports("NOR-TRP-20160517234053706", "Y")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
         //Trigger
         ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
-        Mockito.verify(faReportDocumentDao, times(1)).loadReports(Mockito.any(String.class), Mockito.any(String.class));
+        Mockito.verify(faReportDocumentDao, times(1)).loadReports(any(String.class), any(String.class));
 
         ObjectMapper objectMapper = new ObjectMapper();
         //Verify
@@ -118,14 +120,11 @@ public class FishingTripServiceBeanTest {
     }
 
     @Test
-    @SneakyThrows
-    public void filterFishingTrips() {
-
+    public void filterFishingTrips() throws ServiceException {
         Map<SearchFilter, String> searchMap = new HashMap<>();
         searchMap.put(SearchFilter.REPORT_TYPE, "NOTIFICATION");
         searchMap.put(SearchFilter.PERIOD_START, "2012-05-27T07:47:31");
         searchMap.put(SearchFilter.PERIOD_END, "2017-05-27T07:47:31");
-
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
         List<String> activityTypeValues = new ArrayList<>();
@@ -137,21 +136,14 @@ public class FishingTripServiceBeanTest {
         query.setSearchCriteriaMap(searchMap);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
-
-        when(fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingTripIdSet());
-        when(fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(any(FishingActivityQuery.class))).thenReturn(2);
-        when(fishingActivityDao.getFishingActivityListByQuery(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingActivityEntityList());
         //Trigger
         FishingTripResponse response = fishingTripService.filterFishingTrips(query);
 
         assertNotNull(response);
-
     }
 
     @Test
-    @SneakyThrows
-    public void buildFishingTripSearchResponse() {
-
+    public void buildFishingTripSearchResponse() throws ServiceException {
         FishingActivityQuery query = new FishingActivityQuery();
         Map<SearchFilter, String> searchCriteriaMap = new EnumMap<>(SearchFilter.class);
         searchCriteriaMap.put(SearchFilter.TRIP_ID, "NOR-TRP-20160517234053706");
@@ -162,25 +154,19 @@ public class FishingTripServiceBeanTest {
         sortKey.setReversed(false);
         query.setSorting(sortKey);
 
-
         when(fishingActivityDao.getFishingActivityListByQuery(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingActivityEntityList());
         //Trigger
         FishingTripResponse response = fishingTripService.buildFishingTripSearchRespose(MapperUtil.getFishingTripIdSet(), false);
 
         assertNotNull(response);
-
     }
 
     @Test
-    @SneakyThrows
     public void getVesselDetailsForFishingTrip() {
         // Given
-        Map<String, List<String>> returnMap = new HashMap<>();
-        returnMap.put("code", new ArrayList<>());
         VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();
         vesselTransportMeansEntity.setName("MyFirstVessel");
         when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(vesselTransportMeansEntity);
-        when(mdrModuleService.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<>(), 9999999, "code")).thenReturn(returnMap);
 
         // When
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");

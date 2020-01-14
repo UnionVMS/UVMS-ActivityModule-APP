@@ -23,7 +23,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import org.apache.activemq.artemis.jms.client.ActiveMQTextMessage;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +32,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
 import javax.jms.JMSException;
@@ -43,7 +42,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -63,14 +62,6 @@ public class ActivityMessageConsumerBeanTest {
 
     @Mock
     private ActivityErrorMessageServiceBean producer;
-
-    @Mock
-    private ActivityService activityService;
-
-    @Before
-    public void initMocks() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void wrongRequestType_expectError() throws Exception {

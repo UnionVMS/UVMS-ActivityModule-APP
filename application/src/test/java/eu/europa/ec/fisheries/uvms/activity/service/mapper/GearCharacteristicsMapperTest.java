@@ -21,7 +21,6 @@ import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
@@ -29,7 +28,7 @@ import static org.mockito.internal.util.collections.Sets.newSet;
 public class GearCharacteristicsMapperTest {
 
     @Test
-    @Parameters(method = "methodName")
+    @Parameters(method = "gearEntities")
     public void testMapGearDtoToFishingGearEntityWithTypeCodeDG(GearCharacteristicEntity entity, String typeCode, GearDto expectedDto) {
         entity.setTypeCode(typeCode);
         FishingGearEntity fishingGearEntity = new FishingGearEntity();
@@ -38,7 +37,7 @@ public class GearCharacteristicsMapperTest {
         assertEquals(expectedDto, mappedDto);
     }
 
-    protected Object[] methodName(){
+    private Object[] gearEntities() {
         GearCharacteristicEntity entity = new GearCharacteristicEntity().
                 toBuilder(). // weird way of creating the builder, but otherwise Lombok removes field initializers
                         valueMeasure(20.25).
@@ -47,10 +46,9 @@ public class GearCharacteristicsMapperTest {
                         description("Trawls & Seines")
                 .build();
 
-        return $(
-                $(entity, GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_GD, GearDto.builder().description("Trawls & Seines").build()),
-                $(entity, GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_ME, GearDto.builder().meshSize("20.25kg").build())
-                // TODO TEST ALL CASES
-        );
+        return new Object[][] {
+                {entity, GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_GD, GearDto.builder().description("Trawls & Seines").build()},
+                {entity, GearCharacteristicConstants.GEAR_CHARAC_TYPE_CODE_ME, GearDto.builder().meshSize("20.25kg").build()}
+        };
     }
 }
