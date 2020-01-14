@@ -10,49 +10,51 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import lombok.SneakyThrows;
-import org.junit.Before;
+import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
+import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
-import javax.jms.TextMessage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AssetModuleServiceTest {
 
-    ConnectionFactory connectionFactory;
+    @Mock
+    private AssetClient assetClient;
 
-    AssetProducerBean assetProducer;
-
-    ActivityConsumerBean activityConsumer;
-
-    AssetModuleServiceBean assetsModuleBean;
-
-    @Before
-    public void prepare() {
-        assetProducer     = mock(AssetProducerBean.class);
-        activityConsumer  = mock(ActivityConsumerBean.class);
-        connectionFactory = mock(ConnectionFactory.class);
-        assetsModuleBean  = mock(AssetModuleServiceBean.class);
-    }
+    @InjectMocks
+    private AssetModuleServiceBean assetsModuleBean;
 
     @Test
-    @SneakyThrows
-    public void testGetGuidsFromAssets(){//
-        doReturn("12222-4rrr-566t-dwq11").when(assetProducer).sendModuleMessage(Mockito.anyString(), any(Destination.class));
-        doReturn(null).when(activityConsumer).getMessage("12222-4rrr-566t-dwq11", TextMessage.class);
-        assetsModuleBean.getAssetGuids("JEANNE", "test-group");
+    public void testGetGuidsFromAssets() throws ServiceException {
+        // Given
+        AssetDTO assetDTO = new AssetDTO();
+        UUID assetGuid = UUID.randomUUID();
+        assetDTO.setId(assetGuid);
+
+        List<AssetDTO> assetList = new ArrayList<>();
+        assetList.add(assetDTO);
+
+        when(assetClient.getAssetList(any(AssetQuery.class), eq(false))).thenReturn(assetList);
+
+        // When
+        List<String> assetGuids = assetsModuleBean.getAssetGuids("JEANNE", UUID.randomUUID().toString());
 
         // Verify
-        Mockito.verify(assetsModuleBean, Mockito.times(1)).getAssetGuids(any(String.class), any(String.class));
+        assertEquals(1, assetGuids.size());
+        assertEquals(assetGuid.toString(), assetGuids.get(0));
     }
-
-
 }
