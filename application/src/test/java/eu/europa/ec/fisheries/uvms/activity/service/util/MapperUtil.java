@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.util;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
@@ -84,10 +83,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class MapperUtil {
@@ -751,32 +748,5 @@ public class MapperUtil {
         faCatch_4[0] = 150.1;
 
         return new ArrayList<>(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));
-    }
-
-    public static Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> getGroupedFaCatchSummaryCustomEntityData() {
-        FaCatchSummaryCustomProxy customEntityKey = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "GUT",
-                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
-        FaCatchSummaryCustomProxy customEntityValue1 = new FaCatchSummaryCustomProxy("15", null, null, null, null,null, null, "GUT",
-                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
-        FaCatchSummaryCustomProxy customEntityValue2 = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "GUT",
-                "37F8", "XEU", "27.4.b", "A", null, null, null, "BMS", "SOL", null,200);
-        FaCatchSummaryCustomProxy customEntityValue3 = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "WHL",
-                "37F8", "XEU", "27.4.b", "A", null, null, null, "BMS", "PLE", null,200);
-        FaCatchSummaryCustomProxy customEntityValue4 = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "ROE-C",
-                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "PLE", null,200);
-        FaCatchSummaryCustomProxy customEntityValue5 = new FaCatchSummaryCustomProxy("15", null, null, null,null, null, null, "GUT",
-                "37F8", "XEU", "27.4.b", "A", null, null, null, "LSC", "COD", null,200);
-
-        Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = new HashMap<>();
-
-        List<FaCatchSummaryCustomProxy> valueList1 = new ArrayList<>();
-        valueList1.add(customEntityValue1);
-        valueList1.add(customEntityValue2);
-        valueList1.add(customEntityValue3);
-        valueList1.add(customEntityValue4);
-        valueList1.add(customEntityValue5);
-        groupedData.put(customEntityKey,valueList1);
-
-        return groupedData;
     }
 }
