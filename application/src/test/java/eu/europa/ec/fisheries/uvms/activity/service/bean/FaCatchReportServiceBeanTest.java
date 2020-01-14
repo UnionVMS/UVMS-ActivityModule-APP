@@ -63,9 +63,6 @@ public class FaCatchReportServiceBeanTest {
         searchCriteriaMap.put(SearchFilter.TRIP_ID,"NOR-TRP-20160517234053706");
         query.setSearchCriteriaMap(searchCriteriaMap);
 
-        when(faCatchDao.getGroupedFaCatchData(query,Boolean.FALSE)).thenReturn(MapperUtil.getGroupedFaCatchSummaryCustomEntityData());
-        when(faCatchDao.getGroupedFaCatchData(query,Boolean.TRUE)).thenReturn(MapperUtil.getGroupedFaCatchSummaryCustomEntityData());
-
         //Trigger
         FACatchDetailsDTO faCatchDetailsDTO= faCatchReportService.getCatchDetailsScreen("NOR-TRP-20160517234053706");
 
