@@ -12,46 +12,41 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.proxy.FaCatchSummaryCustomProxy;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchDetailsDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchSummaryDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchDetailsDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.summary.FACatchSummaryDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import lombok.SneakyThrows;
-import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FaCatchReportServiceBeanTest {
 
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
     @Mock
-    EntityManager em;
-    @Mock
-    FaCatchDao faCatchDao;
+    private FaCatchDao faCatchDao;
+
     @InjectMocks
-    FaCatchReportServiceBean faCatchReportService;
+    private FaCatchReportServiceBean faCatchReportService;
 
     @Test
     @SneakyThrows
-    public void testGetCatchesTableForCatchDetailsScreen() throws ServiceException {
+    public void testGetCatchesTableForCatchDetailsScreen() {
         FishingActivityQuery query = new FishingActivityQuery();
         List<GroupCriteria> groupByFields = new ArrayList<>();
         groupByFields.add(GroupCriteria.DATE_DAY);
@@ -70,22 +65,20 @@ public class FaCatchReportServiceBeanTest {
 
         when(faCatchDao.getGroupedFaCatchData(query,Boolean.FALSE)).thenReturn(MapperUtil.getGroupedFaCatchSummaryCustomEntityData());
         when(faCatchDao.getGroupedFaCatchData(query,Boolean.TRUE)).thenReturn(MapperUtil.getGroupedFaCatchSummaryCustomEntityData());
-     //   when(vesselIdentifiersDao.getLatestVesselIdByTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getVesselIdentifiersList());
 
         //Trigger
         FACatchDetailsDTO faCatchDetailsDTO= faCatchReportService.getCatchDetailsScreen("NOR-TRP-20160517234053706");
 
-        Mockito.verify(faCatchDao, Mockito.times(2)).getGroupedFaCatchData(Mockito.any(FishingActivityQuery.class),Mockito.any(Boolean.class));
+        Mockito.verify(faCatchDao, Mockito.times(2)).getGroupedFaCatchData(any(FishingActivityQuery.class), any(Boolean.class));
+
         //Verify
-
         assertNotNull( faCatchDetailsDTO);
-
     }
 
 
     @Test
     @SneakyThrows
-    public void testGetCatchSummaryReport() throws ServiceException {
+    public void testGetCatchSummaryReport() {
         FishingActivityQuery query = new FishingActivityQuery();
         List<GroupCriteria> groupByFields = new ArrayList<>();
         groupByFields.add(GroupCriteria.DATE_DAY);
@@ -104,16 +97,12 @@ public class FaCatchReportServiceBeanTest {
         Map<FaCatchSummaryCustomProxy, List<FaCatchSummaryCustomProxy>> groupedData = MapperUtil.getGroupedFaCatchSummaryCustomEntityData();
         when((faCatchDao).getGroupedFaCatchData(any(FishingActivityQuery.class),any(Boolean.class))).thenReturn(groupedData);
 
-   //     when(faCatchDao.getGroupedFaCatchData(query,true)).thenReturn(MapperUtil.getGroupedFaCatchSummaryCustomEntityData());
-        //   when(vesselIdentifiersDao.getLatestVesselIdByTrip("NOR-TRP-20160517234053706")).thenReturn(MapperUtil.getVesselIdentifiersList());
-
         //Trigger
         FACatchSummaryDTO fACatchSummaryDTO= faCatchReportService.getCatchSummaryReport(query,false);
 
-        Mockito.verify(faCatchDao, Mockito.times(1)).getGroupedFaCatchData(Mockito.any(FishingActivityQuery.class),Mockito.any(Boolean.class));
+        Mockito.verify(faCatchDao, Mockito.times(1)).getGroupedFaCatchData(any(FishingActivityQuery.class), any(Boolean.class));
+
         //Verify
         assertNotNull( fACatchSummaryDTO);
     }
-
-
 }
