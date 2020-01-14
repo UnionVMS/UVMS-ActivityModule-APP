@@ -49,11 +49,11 @@ public class FluxFaReportMessageEntity implements Serializable {
     @Column(name = "flux_report_document_id_scheme_id")
     private String fluxReportDocument_IdSchemeId;
 
-    @Column(name = "flux_report_document_reference_id")
-    private String fluxReportDocument_ReferenceId;
+    @Column(name = "flux_report_document_referenced_fa_query_message_id")
+    private String fluxReportDocument_ReferencedFaQueryMessageId;
 
-    @Column(name = "flux_report_document_reference_scheme_id")
-    private String fluxReportDocument_ReferenceIdSchemeId;
+    @Column(name = "flux_report_document_referenced_fa_query_message_scheme_id")
+    private String fluxReportDocument_ReferencedFaQueryMessageSchemeId;
 
     @Column(name = "flux_report_document_creation_datetime", nullable = false)
     private Instant fluxReportDocument_CreationDatetime;

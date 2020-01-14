@@ -28,11 +28,11 @@ import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "activity_fa_report_identifier")
+@Table(name = "activity_fa_report_document_related_fa_reports")
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"faReportIdentifierId","faReportIdentifierSchemeId"})
-public class FaReportIdentifierEntity implements Serializable {
+public class FaReportDocumentRelatedFaReportEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)

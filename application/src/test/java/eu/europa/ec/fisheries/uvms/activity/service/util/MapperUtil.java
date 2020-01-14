@@ -15,7 +15,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.util;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentRelatedFaReportEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripKey;
@@ -268,11 +268,11 @@ public class MapperUtil {
 
         faReportDocumentEntity.setGeom(geometry);
 
-        FaReportIdentifierEntity faReportIdentifierEntity = new FaReportIdentifierEntity();
-        faReportIdentifierEntity.setFaReportIdentifierId("Identifier Id 1");
-        faReportIdentifierEntity.setFaReportIdentifierSchemeId("57th785-tjf845-tjfui5-tjfuir8");
-        faReportIdentifierEntity.setFaReportDocument(faReportDocumentEntity);
-        faReportDocumentEntity.setFaReportIdentifiers(new HashSet<>(Collections.singletonList(faReportIdentifierEntity)));
+        FaReportDocumentRelatedFaReportEntity faReportDocumentRelatedFaReportEntity = new FaReportDocumentRelatedFaReportEntity();
+        faReportDocumentRelatedFaReportEntity.setFaReportIdentifierId("Identifier Id 1");
+        faReportDocumentRelatedFaReportEntity.setFaReportIdentifierSchemeId("57th785-tjf845-tjfui5-tjfuir8");
+        faReportDocumentRelatedFaReportEntity.setFaReportDocument(faReportDocumentEntity);
+        faReportDocumentEntity.setRelatedFaReportIdentifiers(new HashSet<>(Collections.singletonList(faReportDocumentRelatedFaReportEntity)));
 
         faReportDocumentEntity.setFluxReportDocument_Id("Report Id 1");
         faReportDocumentEntity.setFluxReportDocument_IdSchemeId("Scheme Id 1");
@@ -285,7 +285,7 @@ public class MapperUtil {
         faReportDocumentEntity.setFluxReportDocument_Purpose("Test purpose");
         faReportDocumentEntity.setFluxReportDocument_PurposeCode("5");
         faReportDocumentEntity.setFluxReportDocument_PurposeCodeListId("57thf-58fj88-4d9834-thdue");
-        faReportDocumentEntity.setFluxReportDocument_ReferenceId("Ref Id 1");
+        faReportDocumentEntity.setFluxReportDocument_ReferencedFaReportDocumentId("Ref Id 1");
 
         faReportDocumentEntity.setFluxReportDocument_CreationDatetime(Instant.now());
         return faReportDocumentEntity;
@@ -736,7 +736,7 @@ public class MapperUtil {
         faCatch_1[1] = "BEAGLE";
         faCatch_2[1] = "SEAFOOD";
         faCatch_3[1] = "BEAGLE";
-        faCatch_4[0] = "BEAGLE";
+        faCatch_4[1] = "BEAGLE";
 
         faCatch_1[2] = "J";
         faCatch_2[2] = "27.7.j";
@@ -745,7 +745,7 @@ public class MapperUtil {
         faCatch_1[3] = 50.1;
         faCatch_2[3] = 100.1;
         faCatch_3[3] = 100.1;
-        faCatch_4[0] = 150.1;
+        faCatch_4[3] = 150.1;
 
         return new ArrayList<>(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));
     }

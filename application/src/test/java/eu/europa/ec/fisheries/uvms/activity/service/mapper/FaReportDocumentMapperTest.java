@@ -14,7 +14,7 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentRelatedFaReportEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
@@ -95,17 +95,17 @@ public class FaReportDocumentMapperTest {
         // Then
         assertEquals(faReportDocumentEntity.getTypeCode(), dto.getType());
         assertEquals(faReportDocumentEntity.getFluxReportDocument_PurposeCode(), dto.getPurposeCode());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument_ReferenceId(), dto.getRefId());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument_ReferencedFaReportDocumentId(), dto.getReferencedFaReportDocumentId());
         assertEquals(faReportDocumentEntity.getFmcMarker(), dto.getFmcMark());
 
         assertEquals("2016-07-01T11:15:00", dto.getAcceptedDate());
         assertEquals("2016-07-01T11:15:00", dto.getCreationDate());
 
-        FaReportIdentifierEntity faReportIdentifier = faReportDocumentEntity.getFaReportIdentifiers().iterator().next();
+        FaReportDocumentRelatedFaReportEntity relatedFaReportIdentifier = faReportDocumentEntity.getRelatedFaReportIdentifiers().iterator().next();
         assertEquals(1, dto.getRelatedReports().size());
         RelatedReportDto relatedReport = dto.getRelatedReports().get(0);
-        assertEquals(faReportIdentifier.getFaReportIdentifierId(), relatedReport.getId());
-        assertEquals(faReportIdentifier.getFaReportIdentifierSchemeId(), relatedReport.getSchemeId());
+        assertEquals(relatedFaReportIdentifier.getFaReportIdentifierId(), relatedReport.getId());
+        assertEquals(relatedFaReportIdentifier.getFaReportIdentifierSchemeId(), relatedReport.getSchemeId());
     }
 
     private void assertFaReportDocumentFields(FAReportDocument faReportDocument, FaReportDocumentEntity faReportDocumentEntity) {
