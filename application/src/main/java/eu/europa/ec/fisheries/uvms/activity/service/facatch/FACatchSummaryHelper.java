@@ -58,55 +58,57 @@ public abstract class FACatchSummaryHelper {
      * @throws ServiceException
      */
     public FaCatchSummaryCustomProxy mapObjectArrayToFaCatchSummaryCustomEntity(Object[] catchSummaryArr, List<GroupCriteria> groupList, boolean isLanding) throws ServiceException {
-
-        if (ArrayUtils.isEmpty(catchSummaryArr))
+        if (ArrayUtils.isEmpty(catchSummaryArr)) {
             return new FaCatchSummaryCustomProxy();
-        int objectArrSize = catchSummaryArr.length - 1;
-        if (objectArrSize != groupList.size())  // do not include count field from object array
-            throw new ServiceException("selected number of SQL fields do not match with grouping criterias asked by user ");
-
-        try {
-            Class cls = Class.forName(faCatchSummaryCustomClassName);
-
-
-        Object faCatchSummaryCustomEntityObj = cls.newInstance();
-        Class parameterType = String.class;
-
-        Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
-        for (int i = 0; i < objectArrSize; i++) {
-            GroupCriteria criteria = groupList.get(i);
-            Object value = catchSummaryArr[i];
-            if (value == null) {
-                continue;
-            }
-
-            if (GroupCriteria.DATE_DAY.equals(criteria) || GroupCriteria.DATE_MONTH.equals(criteria) ||
-                    GroupCriteria.DATE_YEAR.equals(criteria) || GroupCriteria.DATE.equals(criteria)) {
-
-                Instant instant;
-                if (value instanceof Instant) {
-                    instant = (Instant)value;
-                } else if (value instanceof Date) {
-                    instant = ((Date)value).toInstant();
-                } else {
-                    throw new ServiceException("Object is not a supported time/date class");
-                }
-
-                value = instantToString(instant, criteria);
-            }
-
-            GroupCriteriaMapper mapper = groupMappings.get(criteria);
-            Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
-            method.invoke(faCatchSummaryCustomEntityObj, value);
         }
 
-        Method method = cls.getDeclaredMethod("setCount", Double.TYPE);
-        method.invoke(faCatchSummaryCustomEntityObj, catchSummaryArr[objectArrSize]);
+        int objectArrSize = catchSummaryArr.length - 1;
+        if (objectArrSize != groupList.size()) {  // do not include count field from object array
+            throw new ServiceException("selected number of SQL fields do not match with grouping criterias asked by user ");
+        }
 
-        if (isLanding)
-            return (FaCatchSummaryCustomChildProxy) faCatchSummaryCustomEntityObj;
-        else
-            return (FaCatchSummaryCustomProxy) faCatchSummaryCustomEntityObj;
+        try {
+            Class<?> cls = Class.forName(faCatchSummaryCustomClassName);
+
+            Object faCatchSummaryCustomEntityObj = cls.getDeclaredConstructor().newInstance();
+            Class<String> parameterType = String.class;
+
+            Map<GroupCriteria, GroupCriteriaMapper> groupMappings = FilterMap.getGroupByMapping();
+            for (int i = 0; i < objectArrSize; i++) {
+                GroupCriteria criteria = groupList.get(i);
+                Object value = catchSummaryArr[i];
+                if (value == null) {
+                    continue;
+                }
+
+                if (GroupCriteria.DATE_DAY.equals(criteria) || GroupCriteria.DATE_MONTH.equals(criteria) ||
+                        GroupCriteria.DATE_YEAR.equals(criteria) || GroupCriteria.DATE.equals(criteria)) {
+
+                    Instant instant;
+                    if (value instanceof Instant) {
+                        instant = (Instant) value;
+                    } else if (value instanceof Date) {
+                        instant = ((Date)value).toInstant();
+                    } else {
+                        throw new ServiceException("Object is not a supported time/date class");
+                    }
+
+                    value = instantToString(instant, criteria);
+                }
+
+                GroupCriteriaMapper mapper = groupMappings.get(criteria);
+                Method method = cls.getDeclaredMethod(mapper.getMethodName(), parameterType);
+                method.invoke(faCatchSummaryCustomEntityObj, value);
+            }
+
+            Method method = cls.getDeclaredMethod("setCount", Double.TYPE);
+            method.invoke(faCatchSummaryCustomEntityObj, catchSummaryArr[objectArrSize]);
+
+            if (isLanding) {
+                return (FaCatchSummaryCustomChildProxy) faCatchSummaryCustomEntityObj;
+            } else {
+                return (FaCatchSummaryCustomProxy) faCatchSummaryCustomEntityObj;
+            }
         } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             log.debug("Error while trying to map FaCatchSummaryCustomProxy. ",e);
         }
