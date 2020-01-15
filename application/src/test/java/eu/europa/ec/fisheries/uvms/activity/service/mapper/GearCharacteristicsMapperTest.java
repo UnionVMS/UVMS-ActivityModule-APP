@@ -16,20 +16,29 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
-@RunWith(JUnitParamsRunner.class)
+@RunWith(Parameterized.class)
 public class GearCharacteristicsMapperTest {
 
+    @Parameter
+    public GearCharacteristicEntity entity;
+
+    @Parameter(1)
+    public String typeCode;
+
+    @Parameter(2)
+    public GearDto expectedDto;
+
     @Test
-    @Parameters(method = "gearEntities")
-    public void testMapGearDtoToFishingGearEntityWithTypeCodeDG(GearCharacteristicEntity entity, String typeCode, GearDto expectedDto) {
+    public void testMapGearDtoToFishingGearEntityWithTypeCodeDG() {
         entity.setTypeCode(typeCode);
         FishingGearEntity fishingGearEntity = new FishingGearEntity();
         fishingGearEntity.setGearCharacteristics(newSet(entity));
@@ -37,7 +46,8 @@ public class GearCharacteristicsMapperTest {
         assertEquals(expectedDto, mappedDto);
     }
 
-    private Object[] gearEntities() {
+    @Parameters
+    public static Object[] gearEntities() {
         GearCharacteristicEntity entity = new GearCharacteristicEntity().
                 toBuilder(). // weird way of creating the builder, but otherwise Lombok removes field initializers
                         valueMeasure(20.25).
