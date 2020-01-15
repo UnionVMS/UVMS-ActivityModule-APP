@@ -43,8 +43,8 @@ import java.util.Set;
 )
 @NamedQuery(name = FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME,
         query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
-                "WHERE fareport.fluxReportDocument_ReferenceId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
-                "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeRefId " +
+                "WHERE fareport.fluxReportDocument_ReferencedFaReportDocumentId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
+                "AND fareport.fluxReportDocument_ReferencedFaReportDocumentSchemeId = :schemeRefId " +
                 "ORDER BY fareport.id ASC"
 )
 @NamedQuery(name = FaReportDocumentEntity.LOAD_REPORTS,
@@ -77,8 +77,8 @@ import java.util.Set;
 )
 @NamedQuery(name = FaReportDocumentEntity.FIND_RELATED_MATCHING_IDENTIFIER,
         query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
-                "WHERE fareport.fluxReportDocument_ReferenceId = :reportId " +
-                "AND fareport.fluxReportDocument_ReferenceIdSchemeId = :schemeId"
+                "WHERE fareport.fluxReportDocument_ReferencedFaReportDocumentId = :reportId " +
+                "AND fareport.fluxReportDocument_ReferencedFaReportDocumentSchemeId = :schemeId"
 )
 @NamedQuery(name = FaReportDocumentEntity.MESSAGE_OWNER_FROM_TRIP_ID,
         query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
@@ -115,11 +115,11 @@ public class FaReportDocumentEntity implements Serializable {
     @Column(name = "flux_report_document_id_scheme_id")
     private String fluxReportDocument_IdSchemeId;
 
-    @Column(name = "flux_report_document_reference_id")
-    private String fluxReportDocument_ReferenceId;
+    @Column(name = "flux_report_document_referenced_fa_report_document_id")
+    private String fluxReportDocument_ReferencedFaReportDocumentId;
 
-    @Column(name = "flux_report_document_reference_scheme_id")
-    private String fluxReportDocument_ReferenceIdSchemeId;
+    @Column(name = "flux_report_document_referenced_fa_report_document_scheme_id")
+    private String fluxReportDocument_ReferencedFaReportDocumentSchemeId;
 
     @Column(name = "flux_report_document_creation_datetime", nullable = false)
     private Instant fluxReportDocument_CreationDatetime;
@@ -174,7 +174,7 @@ public class FaReportDocumentEntity implements Serializable {
     private FluxFaReportMessageEntity fluxFaReportMessage;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
-    private Set<FaReportIdentifierEntity> faReportIdentifiers;
+    private Set<FaReportDocumentRelatedFaReportEntity> relatedFaReportIdentifiers;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<FishingActivityEntity> fishingActivities;

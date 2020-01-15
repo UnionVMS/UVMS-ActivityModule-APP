@@ -72,10 +72,10 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         }
 
         // Find report that this report refers to
-        String repRefId = faReportEntity.getFluxReportDocument_ReferenceId();
-        String repRefSchemeId = faReportEntity.getFluxReportDocument_ReferenceIdSchemeId();
-        if (StringUtils.isNotEmpty(repRefId) && StringUtils.isNotEmpty(repRefSchemeId)) {
-            FaReportDocumentEntity referredReport = findFaReportByIdAndScheme(repRefId, repRefSchemeId);
+        String referencedFaReportDocumentId = faReportEntity.getFluxReportDocument_ReferencedFaReportDocumentId();
+        String referencedFaReportDocumentSchemeId = faReportEntity.getFluxReportDocument_ReferencedFaReportDocumentSchemeId();
+        if (StringUtils.isNotEmpty(referencedFaReportDocumentId) && StringUtils.isNotEmpty(referencedFaReportDocumentSchemeId)) {
+            FaReportDocumentEntity referredReport = findFaReportByIdAndScheme(referencedFaReportDocumentId, referencedFaReportDocumentSchemeId);
             if (referredReport != null && !history.contains(referredReport)) {
                 populateHistoryOfFaReport(referredReport, history);
             }

@@ -41,8 +41,8 @@ public class FluxFaReportMessageMapperTest {
         // Then
         assertEquals("FLUX_REPORT_ID_1", mapped.getFluxReportDocument_Id());
         assertEquals("FLUX_SCHEME_ID1", mapped.getFluxReportDocument_IdSchemeId());
-        assertEquals("REF_ID 1", mapped.getFluxReportDocument_ReferenceId());
-        assertEquals("47rfh-5hry4-thfur75-4hf743", mapped.getFluxReportDocument_ReferenceIdSchemeId());
+        assertEquals("REF_ID 1", mapped.getFluxReportDocument_ReferencedFaQueryMessageId());
+        assertEquals("47rfh-5hry4-thfur75-4hf743", mapped.getFluxReportDocument_ReferencedFaQueryMessageSchemeId());
         assertEquals(Instant.parse("2016-07-01T11:14:00Z"), mapped.getFluxReportDocument_CreationDatetime());
         assertEquals("9", mapped.getFluxReportDocument_PurposeCode());
         assertEquals("Purpose", mapped.getFluxReportDocument_Purpose());
@@ -57,8 +57,8 @@ public class FluxFaReportMessageMapperTest {
         assertEquals("fhr574fh-thrud754-kgitjf754-gjtufe89", mappedFAReportDocument.getTypeCodeListId());
         assertTrue(mappedFAReportDocument.getFmcMarker().contains("Fmz marker"));
         assertEquals("h49rh-fhrus33-fj84hjs82-4h84hw82", mappedFAReportDocument.getFmcMarkerListId());
-        assertEquals("ID 1", mappedFAReportDocument.getFaReportIdentifiers().iterator().next().getFaReportIdentifierId());
-        assertEquals("47rfh-5hry4-thfur75-4hf743", mappedFAReportDocument.getFaReportIdentifiers().iterator().next().getFaReportIdentifierSchemeId());
+        assertEquals("ID 1", mappedFAReportDocument.getRelatedFaReportIdentifiers().iterator().next().getFaReportIdentifierId());
+        assertEquals("47rfh-5hry4-thfur75-4hf743", mappedFAReportDocument.getRelatedFaReportIdentifiers().iterator().next().getFaReportIdentifierSchemeId());
         assertEquals(Instant.parse("2016-07-01T11:14:00Z"), mappedFAReportDocument.getAcceptedDatetime());
     }
 

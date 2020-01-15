@@ -76,7 +76,7 @@ public class FluxMessageServiceBeanTest {
         fluxFaReportMessage = new FLUXFAReportMessage();
         faReportDocuments = Arrays.asList(faReportDocument1, faReportDocument2);
         fluxFaReportMessage.setFAReportDocuments(faReportDocuments);
-        fluxFaReportMessage.setFLUXReportDocument(MapperUtil.getFluxReportDocument());
+        fluxFaReportMessage.setFLUXReportDocument(MapperUtil.getFluxReportDocumentCorrection());
 
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(any(String.class), any(String.class));
         Mockito.when(faMessageSaverBean.saveReportMessageNow(any(FluxFaReportMessageEntity.class))).then(invocation -> invocation.getArguments()[0]);

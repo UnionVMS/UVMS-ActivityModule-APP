@@ -11,4 +11,29 @@
                              constraintName="flux_fa_report_message_unique_constraint_report_document_id"/>
     </changeSet>
 
+    <changeSet author="pesjob" id="ERS-461-rename-column-1">
+        <renameColumn tableName="activity_flux_fa_report_message"
+                      oldColumnName="flux_report_document_reference_id"
+                      newColumnName="flux_report_document_referenced_fa_query_message_id"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-461-rename-column-2">
+        <renameColumn tableName="activity_flux_fa_report_message"
+                      oldColumnName="flux_report_document_reference_scheme_id"
+                      newColumnName="flux_report_document_referenced_fa_query_message_scheme_id"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-461-rename-column-3">
+        <renameColumn tableName="activity_fa_report_document"
+                      oldColumnName="flux_report_document_reference_id"
+                      newColumnName="flux_report_document_referenced_fa_report_document_id"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-461-rename-column-4">
+        <renameColumn tableName="activity_fa_report_document"
+                      oldColumnName="flux_report_document_reference_scheme_id"
+                      newColumnName="flux_report_document_referenced_fa_report_document_scheme_id"/>
+    </changeSet>
+    <changeSet author="pesjob" id="ERS-461-rename-table">
+        <renameTable oldTableName="activity_fa_report_identifier"
+                     newTableName="activity_fa_report_document_related_fa_reports"/>
+    </changeSet>
+
 </databaseChangeLog>
