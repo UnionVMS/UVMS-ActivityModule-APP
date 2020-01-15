@@ -480,7 +480,6 @@
             <id>postgres</id>
             <properties>
                 <database.dialect>${application.database.dialect}</database.dialect>
-                <!-- the record -->
             </properties>
         </profile>
         <profile>
