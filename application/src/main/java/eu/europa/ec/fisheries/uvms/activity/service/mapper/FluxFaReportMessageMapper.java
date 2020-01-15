@@ -40,8 +40,8 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
     @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxFaReportMessage.getFLUXReportDocument().getIDS()))")
     @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(fluxFaReportMessage.getFLUXReportDocument().getIDS()))")
 
-    @Mapping(target = "fluxReportDocument_ReferenceId", source = "FLUXReportDocument.referencedID.value")
-    @Mapping(target = "fluxReportDocument_ReferenceIdSchemeId", source = "FLUXReportDocument.referencedID.schemeID")
+    @Mapping(target = "fluxReportDocument_ReferencedFaQueryMessageId", source = "FLUXReportDocument.referencedID.value")
+    @Mapping(target = "fluxReportDocument_ReferencedFaQueryMessageSchemeId", source = "FLUXReportDocument.referencedID.schemeID")
     @Mapping(target = "fluxReportDocument_CreationDatetime", source = "FLUXReportDocument.creationDateTime.dateTime")
     @Mapping(target = "fluxReportDocument_PurposeCode", source = "FLUXReportDocument.purposeCode.value")
     @Mapping(target = "fluxReportDocument_PurposeCodeListId", source = "FLUXReportDocument.purposeCode.listID")

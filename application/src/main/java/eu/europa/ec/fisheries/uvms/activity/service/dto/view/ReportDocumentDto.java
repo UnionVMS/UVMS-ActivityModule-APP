@@ -30,7 +30,7 @@ public class ReportDocumentDto {
 
     private String id;
 
-    private String refId;
+    private String referencedFaReportDocumentId;
 
     private String acceptedDate;
 
@@ -62,12 +62,12 @@ public class ReportDocumentDto {
         this.id = id;
     }
 
-    public String getRefId() {
-        return refId;
+    public String getReferencedFaReportDocumentId() {
+        return referencedFaReportDocumentId;
     }
 
-    public void setRefId(String refId) {
-        this.refId = refId;
+    public void setReferencedFaReportDocumentId(String referencedFaReportDocumentId) {
+        this.referencedFaReportDocumentId = referencedFaReportDocumentId;
     }
 
     public String getCreationDate() {

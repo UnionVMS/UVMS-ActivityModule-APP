@@ -29,9 +29,9 @@ import java.util.Set;
 
 public class ActivityDataUtil {
 
-    public static void addFluxReportFieldsToFaReportDocumentEntity(FaReportDocumentEntity faReportDocumentEntity, String fluxDocumentID, String referenceID, Instant creationDateTime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName) {
+    public static void addFluxReportFieldsToFaReportDocumentEntity(FaReportDocumentEntity faReportDocumentEntity, String fluxDocumentID, String referencedFaReportDocumentId, Instant creationDateTime, String purposeCode, String purposeCodeListId, String purpose, String ownerFluxPartyId, String ownerFluxPartyName) {
         faReportDocumentEntity.setFluxReportDocument_Id(fluxDocumentID);
-        faReportDocumentEntity.setFluxReportDocument_ReferenceId(referenceID);
+        faReportDocumentEntity.setFluxReportDocument_ReferencedFaReportDocumentId(referencedFaReportDocumentId);
         faReportDocumentEntity.setFluxReportDocument_CreationDatetime(creationDateTime);
         faReportDocumentEntity.setFluxReportDocument_PurposeCode(purposeCode);
         faReportDocumentEntity.setFluxReportDocument_PurposeCodeListId(purposeCodeListId);
