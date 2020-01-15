@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselTransportMeansDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
@@ -31,7 +30,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
@@ -503,60 +501,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         response.setFishingActivityLists(fishingActivitySummaries);
         response.setFishingTripIdLists(fishingTripIdLists);
         return response;
-    }
-
-    private List<FishingActivityEntity> cleanFromDeletionsAndCancellations(List<FishingActivityEntity> fishingActivityEntityList) {
-        List<FishingActivityEntity> cleanList = new ArrayList<>();
-        final String DELETED_STR = FaReportStatusType.DELETED.name();
-        final String CANCELLED_STR = FaReportStatusType.CANCELED.name();
-        for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
-            String status = fishingActivityEntity.getFaReportDocument().getStatus();
-            if (!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && Boolean.TRUE.equals(fishingActivityEntity.getLatest())) {
-                cleanList.add(fishingActivityEntity);
-            }
-        }
-
-        return cleanList;
-    }
-
-
-    /**
-     * This method creates FishingActivitySummary object from FishingActivityEntity object retrieved from database.
-     *
-     * @param uniqueActivityIdList      This method helps parent function to collect FishingActivities for all the fishingTrips. In order to avoid duplicate fishing Activities, we need to maintain uniqueActivityIdList
-     * @param fishingActivityEntityList
-     */
-    private List<FishingActivitySummary> getFishingActivitySummaryList(List<FishingActivityEntity> fishingActivityEntityList, List<Integer> uniqueActivityIdList) {
-        List<FishingActivitySummary> fishingActivitySummaryList = new ArrayList<>();
-        if (CollectionUtils.isEmpty(uniqueActivityIdList)) {
-            uniqueActivityIdList = new ArrayList<>();
-        }
-        for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
-            if (fishingActivityEntity != null) {
-                uniqueActivityIdList.add(fishingActivityEntity.getId());
-                FishingActivitySummary fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(fishingActivityEntity);
-                ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
-                if (contactParty != null) {
-                    VesselContactPartyType vesselContactParty = FishingActivityMapper.INSTANCE.mapToVesselContactParty(contactParty);
-                    fishingActivitySummary.setVesselContactParty(vesselContactParty);
-                }
-                if (fishingActivitySummary != null) {
-                    fishingActivitySummaryList.add(fishingActivitySummary);
-                }
-            }
-        }
-        return fishingActivitySummaryList;
-    }
-
-    private ContactPartyEntity getContactParty(FishingActivityEntity fishingActivity) {
-        if ((fishingActivity.getFaReportDocument() != null)
-                && (fishingActivity.getFaReportDocument().getVesselTransportMeans() != null)
-                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().isEmpty())
-                && (fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty() != null)
-                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().isEmpty())) {
-            return fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().iterator().next();
-        }
-        return null;
     }
 
     private TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId) {
