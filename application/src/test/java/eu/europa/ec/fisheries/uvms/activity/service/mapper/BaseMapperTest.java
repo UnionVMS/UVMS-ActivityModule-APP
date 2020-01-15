@@ -23,8 +23,6 @@ import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.unitils.UnitilsJUnit4TestClassRunner;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -43,10 +41,9 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static org.junit.Assert.assertEquals;
 import static org.mockito.internal.util.collections.Sets.newSet;
 
-@RunWith(UnitilsJUnit4TestClassRunner.class)
 public class BaseMapperTest {
 
-    BaseMapper baseMapper;
+    private BaseMapper baseMapper;
 
     @Before
     public void setUp() {
@@ -55,24 +52,20 @@ public class BaseMapperTest {
 
     @Test
     public void mapFromFluxLocation() {
-
+        // Given
         FluxLocationEntity locationEntity_1 = FluxLocationEntity.builder().fluxLocationIdentifier("id1").fluxLocationIdentifierSchemeId("scheme1").build();
-        FluxLocationEntity locationEntity_2 = FluxLocationEntity.builder().fluxLocationIdentifier("id1").fluxLocationIdentifierSchemeId("scheme1").build();
+        HashSet<FluxLocationEntity> fluxLocationEntities = Sets.newHashSet(locationEntity_1);
 
-        HashSet<FluxLocationEntity> fluxLocationEntities = Sets.newHashSet(locationEntity_1, locationEntity_2);
-
-        assertEquals(1, fluxLocationEntities.size());
-
+        // When
         Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(fluxLocationEntities);
 
+        // Then
         assertEquals(1, fluxLocationDtos.size());
-
     }
 
     @Test
-    @SneakyThrows
     public void mapFluxLocations() {
-
+        // Given
         FluxLocationEntity entity1 = new FluxLocationEntity();
         entity1.setTypeCode("LOCATION");
         entity1.setRegionalFisheriesManagementOrganizationCode("RFMO1");
@@ -83,15 +76,17 @@ public class BaseMapperTest {
         entity2.setRegionalFisheriesManagementOrganizationCode("RFMO2");
         entity2.setRegionalFisheriesManagementOrganizationCodeListId("RFMO");
 
+        // When
         Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(newSet(entity1, entity2), FluxLocationEnum.LOCATION);
 
+        // Then
         assertEquals(1, fluxLocationDtos.size());
         assertEquals("RFMO1", fluxLocationDtos.iterator().next().getRfmoCode());
     }
 
     @Test
     public void mapToAssetListCriteriaPairList() {
-
+        // Given
         AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
         cfr.setFaIdentifierId("cfrValue");
         AssetIdentifierDto gfmc = new AssetIdentifierDto(GFCM);
@@ -105,12 +100,7 @@ public class BaseMapperTest {
 
         List<AssetListCriteriaPair> pairs = BaseMapper.mapToAssetListCriteriaPairList(identifierDtos);
 
-        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs,
-                new Function<AssetListCriteriaPair, ConfigSearchField>() {
-                    public ConfigSearchField apply(AssetListCriteriaPair from) {
-                        return from.getKey();
-                    }
-                });
+        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs, from -> from.getKey());
 
         assertEquals(3, map.size());
         AssetListCriteriaPair cfrPair = map.get(ConfigSearchField.CFR);

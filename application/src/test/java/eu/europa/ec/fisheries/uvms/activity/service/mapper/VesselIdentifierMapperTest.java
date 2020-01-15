@@ -10,21 +10,18 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.unitils.UnitilsJUnit4TestClassRunner;
 
 import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity.builder;
 import static eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselIdentifierMapper.INSTANCE;
 import static org.junit.Assert.assertEquals;
-import static org.unitils.util.CollectionUtils.asSet;
 
-@RunWith(UnitilsJUnit4TestClassRunner.class)
 public class VesselIdentifierMapperTest {
 
     @Test
@@ -35,7 +32,7 @@ public class VesselIdentifierMapperTest {
                 .vesselIdentifierId("schemeId")
                 .build();
 
-        Set<AssetIdentifierDto> identifierDtos = INSTANCE.mapToIdentifierDotSet(asSet(entity));
+        Set<AssetIdentifierDto> identifierDtos = INSTANCE.mapToIdentifierDotSet(Sets.newHashSet(entity));
 
         assertEquals(1, identifierDtos.size());
         assertEquals("schemeId", identifierDtos.iterator().next().getFaIdentifierId());
@@ -50,7 +47,7 @@ public class VesselIdentifierMapperTest {
                 .vesselIdentifierSchemeId("UNDEFINED")
                 .build();
 
-        INSTANCE.mapToIdentifierDotSet(asSet(entity));
+        INSTANCE.mapToIdentifierDotSet(Sets.newHashSet(entity));
     }
 
 }

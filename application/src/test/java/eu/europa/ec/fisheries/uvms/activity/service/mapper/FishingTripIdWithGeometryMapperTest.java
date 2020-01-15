@@ -6,8 +6,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeome
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.unitils.UnitilsJUnit4TestClassRunner;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -16,7 +14,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(UnitilsJUnit4TestClassRunner.class)
 public class FishingTripIdWithGeometryMapperTest {
 
     private FishingTripId fishingTripId;
