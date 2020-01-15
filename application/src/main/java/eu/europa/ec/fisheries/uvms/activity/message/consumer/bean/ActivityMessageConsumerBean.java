@@ -19,19 +19,10 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
-import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
-import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsService;
 import eu.europa.ec.fisheries.uvms.activity.service.bean.FluxReportMessageSaver;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.ActivationConfigProperty;
@@ -39,11 +30,9 @@ import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import java.util.List;
 
 @MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
@@ -58,23 +47,12 @@ import java.util.List;
 @Slf4j
 public class ActivityMessageConsumerBean implements MessageListener {
 
-    private static final long RESPONSE_TTL = 3_600_000L;
-
     @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
     @EJB
     private FluxReportMessageSaver fluxReportMessageSaver;
-
-    @EJB
-    private FishingTripService fishingTripService;
-
-    @EJB
-    private ActivityErrorMessageServiceBean producer;
-
-    @EJB
-    private ActivityMatchingIdsService matchingIdsService;
 
     @Override
     public void onMessage(Message message) {
@@ -103,11 +81,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     saveReport(textMessage);
                     break;
                 case GET_FISHING_TRIPS:
-                    getFishingTrips(textMessage);
-                    break;
                 case GET_NON_UNIQUE_IDS:
-                    getNonUniqueIds(textMessage);
-                    break;
                 case GET_FLUX_FA_QUERY:
                 case GET_FA_CATCH_SUMMARY_REPORT:
                 case GET_FISHING_ACTIVITY_FOR_TRIPS:
@@ -115,29 +89,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     log.error("Request method {} is not implemented", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Request method " + method.name() + " is not implemented")));
             }
-        } catch (ActivityModelMarshallException | ClassCastException | JMSException | ServiceException e) {
+        } catch (ActivityModelMarshallException | ClassCastException e) {
             log.error("Error when receiving message in activity", e);
             errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message: " + e.getMessage())));
         }
-    }
-
-    private void getNonUniqueIds(TextMessage textMessage) throws ActivityModelMarshallException, JMSException {
-        GetNonUniqueIdsRequest getNonUniqueIdsRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, GetNonUniqueIdsRequest.class);
-        List<ActivityUniquinessList> matchingIds = matchingIdsService.getMatchingIds(getNonUniqueIdsRequest.getActivityUniquinessLists());
-
-        GetNonUniqueIdsResponse getNonUniqueIdsResponse = new GetNonUniqueIdsResponse();
-        getNonUniqueIdsResponse.setMethod(ActivityModuleMethod.GET_NON_UNIQUE_IDS);
-        getNonUniqueIdsResponse.setActivityUniquinessLists(matchingIds);
-        String getNonUniqueIdsResponseString = JAXBMarshaller.marshallJaxBObjectToString(getNonUniqueIdsResponse);
-
-        producer.sendResponseMessageToSender(textMessage, getNonUniqueIdsResponseString);
-    }
-
-    private void getFishingTrips(TextMessage textMessage) throws ActivityModelMarshallException, ServiceException, JMSException {
-        FishingTripRequest fishingTripRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, FishingTripRequest.class);
-        FishingTripResponse fishingTripResponse = fishingTripService.filterFishingTripsForReporting(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(fishingTripRequest));
-        String fishingTripResponseString = JAXBMarshaller.marshallJaxBObjectToString(fishingTripResponse);
-        producer.sendResponseMessageToSender(textMessage, fishingTripResponseString, RESPONSE_TTL);
     }
 
     private void saveReport(TextMessage textMessage) throws ActivityModelMarshallException {

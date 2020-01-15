@@ -74,18 +74,6 @@ public interface FishingTripService {
      */
     ObjectNode getTripMapDetailsForTripId(String tripId);
 
-    /**
-     * This method will Return filtered FishingTrips which match with provided filter criterias
-     *
-     * @param query Filter criterias
-     * @return List of unique Fishing tripIds with their Geometries
-     * List of Fishing Activities which happened duriong those fishing trips
-     * @throws ServiceException
-     */
-
-    FishingTripResponse filterFishingTripsForReporting(FishingActivityQuery query) throws ServiceException;
-
-
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                                                                Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 

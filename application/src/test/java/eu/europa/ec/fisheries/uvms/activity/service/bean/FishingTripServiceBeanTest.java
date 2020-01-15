@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
@@ -62,9 +61,6 @@ public class FishingTripServiceBeanTest {
 
     @Mock
     private FishingActivityDao fishingActivityDao;
-
-    @Mock
-    private FishingTripDao fishingTripDao;
 
     @Mock
     private FaCatchDao faCatchDao;
@@ -156,7 +152,7 @@ public class FishingTripServiceBeanTest {
 
         when(fishingActivityDao.getFishingActivityListByQuery(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingActivityEntityList());
         //Trigger
-        FishingTripResponse response = fishingTripService.buildFishingTripSearchRespose(MapperUtil.getFishingTripIdSet(), false);
+        FishingTripResponse response = fishingTripService.buildFishingTripSearchRespose(MapperUtil.getFishingTripIdSet());
 
         assertNotNull(response);
     }

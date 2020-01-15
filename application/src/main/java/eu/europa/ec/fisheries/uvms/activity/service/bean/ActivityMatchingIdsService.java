@@ -50,32 +50,6 @@ public class ActivityMatchingIdsService extends BaseActivityBean {
     }
 
     @NotNull
-    public List<ActivityUniquinessList> getMatchingIds(List<ActivityUniquinessList> activityUniquenessLists) {
-        if (CollectionUtils.isEmpty(activityUniquenessLists)) {
-            return Collections.emptyList();
-        }
-        List<ActivityUniquinessList> matchingIdsList = new ArrayList<>();
-
-        for (ActivityUniquinessList activityUniquinessList : activityUniquenessLists) {
-            ActivityUniquinessList activityNonUniqueIdsList = getActivityNonUniqueIdsList(activityUniquinessList);
-            matchingIdsList.add(activityNonUniqueIdsList);
-        }
-        return matchingIdsList;
-    }
-
-    private ActivityUniquinessList getActivityNonUniqueIdsList(ActivityUniquinessList originalUniquenessList) {
-        ActivityTableType originalActivityTableType = originalUniquenessList.getActivityTableType();
-        List<ActivityIDType> originalActivityIdTypeList = originalUniquenessList.getIds();
-
-        List<ActivityIDType> updatedActivityIdTypeList = getActivityIDTypesPresentInDatabase(originalActivityTableType, originalActivityIdTypeList);
-
-        ActivityUniquinessList updatedUniquenessList = new ActivityUniquinessList();
-        updatedUniquenessList.setIds(updatedActivityIdTypeList);
-        updatedUniquenessList.setActivityTableType(originalActivityTableType);
-        return updatedUniquenessList;
-    }
-
-    @NotNull
     private List<ActivityIDType> getActivityIDTypesPresentInDatabase(ActivityTableType originalActivityTableType, List<ActivityIDType> originalActivityIdTypeList) {
         List<FaReportDocumentEntity> matchingFaReportDocuments = faReportDocumentDao.getMatchingIdentifiers(originalActivityIdTypeList, originalActivityTableType);
         return mapIDsListToActivityIDTypeList(matchingFaReportDocuments);
