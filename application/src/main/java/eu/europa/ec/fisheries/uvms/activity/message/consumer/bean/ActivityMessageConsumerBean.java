@@ -25,17 +25,14 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
-import eu.europa.ec.fisheries.uvms.activity.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityMatchingIdsService;
 import eu.europa.ec.fisheries.uvms.activity.service.bean.FluxReportMessageSaver;
-import eu.europa.ec.fisheries.uvms.activity.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.EJB;
@@ -69,9 +66,6 @@ public class ActivityMessageConsumerBean implements MessageListener {
 
     @EJB
     private FluxReportMessageSaver fluxReportMessageSaver;
-
-    @EJB
-    private ActivityRulesModuleService activityRulesModuleServiceBean;
 
     @EJB
     private FishingTripService fishingTripService;
@@ -108,22 +102,20 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 case GET_FLUX_FA_REPORT:
                     saveReport(textMessage);
                     break;
-                case GET_FLUX_FA_QUERY:
-                    getReport(textMessage);
-                    break;
                 case GET_FISHING_TRIPS:
                     getFishingTrips(textMessage);
                     break;
                 case GET_NON_UNIQUE_IDS:
                     getNonUniqueIds(textMessage);
                     break;
+                case GET_FLUX_FA_QUERY:
                 case GET_FA_CATCH_SUMMARY_REPORT:
                 case GET_FISHING_ACTIVITY_FOR_TRIPS:
                 default:
                     log.error("Request method {} is not implemented", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Request method " + method.name() + " is not implemented")));
             }
-        } catch (ActivityModelMarshallException | ClassCastException | JMSException | ActivityModuleException | ServiceException e) {
+        } catch (ActivityModelMarshallException | ClassCastException | JMSException | ServiceException e) {
             log.error("Error when receiving message in activity", e);
             errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message: " + e.getMessage())));
         }
@@ -146,12 +138,6 @@ public class ActivityMessageConsumerBean implements MessageListener {
         FishingTripResponse fishingTripResponse = fishingTripService.filterFishingTripsForReporting(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(fishingTripRequest));
         String fishingTripResponseString = JAXBMarshaller.marshallJaxBObjectToString(fishingTripResponse);
         producer.sendResponseMessageToSender(textMessage, fishingTripResponseString, RESPONSE_TTL);
-    }
-
-    private void getReport(TextMessage textMessage) throws ActivityModelMarshallException, ActivityModuleException, JMSException {
-        SetFLUXFAReportOrQueryMessageRequest getReportRequest = JAXBMarshaller.unmarshallTextMessage(textMessage, SetFLUXFAReportOrQueryMessageRequest.class);
-        FLUXFAReportMessage faRepQueryResponseAfterMapping = new FLUXFAReportMessage();
-        activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faRepQueryResponseAfterMapping, "getTheOnValueFromSomewhere", getReportRequest.getRequestType(), textMessage.getJMSMessageID());
     }
 
     private void saveReport(TextMessage textMessage) throws ActivityModelMarshallException {
