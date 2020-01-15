@@ -695,9 +695,4 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
         }
     }
-
-    @Override
-    public String getOwnerFluxPartyFromTripId(String tripId) {
-        return fishingTripDao.getOwnerFluxPartyFromTripId(tripId);
-    }
 }

@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
@@ -23,7 +22,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -45,13 +43,6 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     @Override
     public EntityManager getEntityManager() {
         return em;
-    }
-
-    public String getOwnerFluxPartyFromTripId(String fishingTripId) {
-        TypedQuery<String> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.MESSAGE_OWNER_FROM_TRIP_ID, String.class);
-        query.setParameter("fishingTripId", fishingTripId).setMaxResults(1).getResultList();
-        List<String> resultList = query.getResultList();
-        return CollectionUtils.isNotEmpty(resultList) ? resultList.get(0) : StringUtils.EMPTY;
     }
 
     /**
