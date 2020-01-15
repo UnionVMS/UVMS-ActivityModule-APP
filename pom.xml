@@ -74,6 +74,9 @@
         <uvms.test.version>0.0.4</uvms.test.version>
         <activemq.artemis.version>1.1.0.wildfly-008</activemq.artemis.version>
 
+        <!-- Test filter -->
+        <activity.integration.test.filter>**/*IntegrationTest.java</activity.integration.test.filter>
+
         <!-- Sonar (used invisibly)-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
@@ -451,7 +454,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/*IntegrationTest.java</exclude>
+                        <exclude>${activity.integration.test.filter}</exclude>
                     </excludes>
                 </configuration>
             </plugin>
@@ -460,7 +463,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <includes>
-                        <include>**/*IntegrationTest.java</include>
+                        <include>${activity.integration.test.filter}</include>
                     </includes>
                 </configuration>
                 <executions>
