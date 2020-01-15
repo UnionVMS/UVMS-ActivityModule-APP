@@ -12,7 +12,6 @@
  */
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -35,9 +34,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import java.sql.Date;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,16 +42,12 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 
 @RunWith(MockitoJUnitRunner.class)
 public class FluxMessageServiceBeanTest {
 
     @Mock
     private FaReportDocumentDao faReportDocumentDao;
-
-    @Mock
-    private MovementModuleServiceBean movementModule;
 
     @Mock
     private FaMessageSaverBean faMessageSaverBean;
@@ -67,7 +60,7 @@ public class FluxMessageServiceBeanTest {
     private FLUXFAReportMessage fluxFaReportMessage;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         FAReportDocument faReportDocument2 = MapperUtil.getFaReportDocument();
         faReportDocument2.getRelatedFLUXReportDocument().setPurposeCode(MapperUtil.getCodeType("9", "list-id-1"));
         IDType id = faReportDocument2.getRelatedFLUXReportDocument().getReferencedID();
@@ -142,28 +135,5 @@ public class FluxMessageServiceBeanTest {
     private FaReportDocumentEntity getMockedFishingActivityReportEntity() {
         FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
         return FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, FaReportSourceEnum.MANUAL);
-    }
-
-    private List<String> getMockedAssets() {
-        List<String> assets = new ArrayList<>();
-        assets.add("ASSET1");
-        assets.add("ASSET2");
-        return assets;
-    }
-
-    private List<MovementType> getMockedMovements() throws ParseException {
-        MovementType movementType1 = new MovementType();
-        movementType1.setCalculatedCourse(1.0);
-        movementType1.setCalculatedSpeed(1.0);
-        movementType1.setWkt("MULTIPOINT(11.09245 58.8386666666667,675 859)");
-        movementType1.setPositionTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-07-01 09:15:00"));
-
-        MovementType movementType2 = new MovementType();
-        movementType2.setCalculatedCourse(1.0);
-        movementType2.setCalculatedSpeed(1.0);
-        movementType2.setWkt("MULTIPOINT(11.09245 58.8386666666667,675 859)");
-        movementType2.setPositionTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2016-07-01 12:15:00"));
-
-        return Arrays.asList(movementType1, movementType2);
     }
 }
