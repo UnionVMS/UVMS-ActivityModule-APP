@@ -13,6 +13,7 @@
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
@@ -50,7 +51,7 @@ public class FluxMessageServiceBeanTest {
     private FaReportDocumentDao faReportDocumentDao;
 
     @Mock
-    private FaMessageSaverBean faMessageSaverBean;
+    private FluxFaReportMessageDao fluxFaReportMessageDao;
 
     @InjectMocks
     private FluxMessageServiceBean fluxMessageService;
@@ -79,7 +80,7 @@ public class FluxMessageServiceBeanTest {
         fluxFaReportMessage.setFLUXReportDocument(MapperUtil.getFluxReportDocument());
 
         Mockito.doReturn(getMockedFishingActivityReportEntity()).when(faReportDocumentDao).findFaReportByIdAndScheme(any(String.class), any(String.class));
-        Mockito.when(faMessageSaverBean.saveReportMessageNow(any(FluxFaReportMessageEntity.class))).then(invocation -> invocation.getArguments()[0]);
+        Mockito.when(fluxFaReportMessageDao.createEntity(any(FluxFaReportMessageEntity.class))).then(invocation -> invocation.getArguments()[0]);
     }
 
     @Test
@@ -89,7 +90,7 @@ public class FluxMessageServiceBeanTest {
 
         //Verify
         ArgumentCaptor<FluxFaReportMessageEntity> argumentCaptor = ArgumentCaptor.forClass(FluxFaReportMessageEntity.class);
-        Mockito.verify(faMessageSaverBean).saveReportMessageNow(argumentCaptor.capture());
+        Mockito.verify(fluxFaReportMessageDao).createEntity(argumentCaptor.capture());
 
         FluxFaReportMessageEntity fluxFaReportMessageEntity = argumentCaptor.getValue();
 
@@ -110,7 +111,7 @@ public class FluxMessageServiceBeanTest {
 
         //Verify
         ArgumentCaptor<FluxFaReportMessageEntity> argumentCaptor = ArgumentCaptor.forClass(FluxFaReportMessageEntity.class);
-        Mockito.verify(faMessageSaverBean).saveReportMessageNow(argumentCaptor.capture());
+        Mockito.verify(fluxFaReportMessageDao).createEntity(argumentCaptor.capture());
 
         FluxFaReportMessageEntity fluxFaReportMessageEntity = argumentCaptor.getValue();
 

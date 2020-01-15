@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
@@ -72,6 +73,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private static final String END_DATE = "END_DATE";
 
     private FaReportDocumentDao faReportDocumentDao;
+    private FluxFaReportMessageDao fluxFaReportMessageDao;
 
     @EJB
     private MovementModuleService movementModule;
@@ -85,14 +87,12 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @EJB
     private SpatialModuleService spatialModuleService;
 
-    @EJB
-    private FaMessageSaverBean faMessageSaverBean;
-
     private GeometryFactory geometryFactory = new GeometryFactory();
 
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
+        fluxFaReportMessageDao = new FluxFaReportMessageDao(entityManager);
     }
 
     @Override
@@ -108,7 +108,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 log.error("Could not update Geometry OR enrichActivities for faReportDocument: {}", faReportDocument.getId());
             }
         }
-        FluxFaReportMessageEntity entity = faMessageSaverBean.saveReportMessageNow(messageEntity);
+        FluxFaReportMessageEntity entity = fluxFaReportMessageDao.createEntity(messageEntity);
         log.debug("Saved partial FluxFaReportMessage before further processing");
         updateFaReportCorrectionsOrCancellations(entity.getFaReportDocuments());
         log.debug("Updating FaReport Corrections is complete.");
