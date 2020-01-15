@@ -76,18 +76,11 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 return;
             }
 
-            switch (method) {
-                case GET_FLUX_FA_REPORT:
-                    saveReport(textMessage);
-                    break;
-                case GET_FISHING_TRIPS:
-                case GET_NON_UNIQUE_IDS:
-                case GET_FLUX_FA_QUERY:
-                case GET_FA_CATCH_SUMMARY_REPORT:
-                case GET_FISHING_ACTIVITY_FOR_TRIPS:
-                default:
-                    log.error("Request method {} is not implemented", method.name());
-                    errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Request method " + method.name() + " is not implemented")));
+            if (method == ActivityModuleMethod.GET_FLUX_FA_REPORT) {
+                saveReport(textMessage);
+            } else {
+                log.error("Request method {} is not implemented", method.name());
+                errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Request method " + method.name() + " is not implemented")));
             }
         } catch (ActivityModelMarshallException | ClassCastException e) {
             log.error("Error when receiving message in activity", e);
