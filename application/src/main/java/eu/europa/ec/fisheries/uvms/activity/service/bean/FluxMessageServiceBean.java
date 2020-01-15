@@ -24,7 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.MicroMovementComparator;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
@@ -316,17 +315,22 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
         for (FluxLocationEntity fluxLocation : fishingActivityEntity.getFluxLocations()) {
             Geometry point = null;
-            String fluxLocationStr = fluxLocation.getTypeCode();
-            if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) {
-                point = interpolatedPoint;
-                fluxLocation.setGeom(point);
-            } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) {
-                point = getGeometryForLocation(fluxLocation);
-                log.debug("Geometry calculated for location is: {}", point);
-                fluxLocation.setGeom(point);
-            } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) {
-                point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
-                fluxLocation.setGeom(point);
+            switch(fluxLocation.getTypeCode()) {
+                case AREA:
+                    point = interpolatedPoint;
+                    fluxLocation.setGeom(point);
+                    break;
+                case LOCATION:
+                    point = getGeometryForLocation(fluxLocation);
+                    log.debug("Geometry calculated for location is: {}", point);
+                    fluxLocation.setGeom(point);
+                    break;
+                case POSITION:
+                    point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                    fluxLocation.setGeom(point);
+                    break;
+                default:
+                    // do nothing
             }
             if (point != null) {
                 multiPointForFa.add(point);

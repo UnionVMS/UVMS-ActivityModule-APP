@@ -82,7 +82,7 @@ public class BaseMapper {
 
     public static Set<FluxLocationDto> mapFromFluxLocation(Set<FluxLocationEntity> fLocEntities, final FluxLocationEnum typeCode) {
         Set<FluxLocationEntity> filtered = fLocEntities.stream()
-                .filter(p -> typeCode.name().equals(p.getTypeCode()))
+                .filter(p -> typeCode == p.getTypeCode())
                 .collect(Collectors.toSet());
         return mapFromFluxLocation(filtered);
     }
