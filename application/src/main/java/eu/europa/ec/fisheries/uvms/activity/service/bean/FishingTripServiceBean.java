@@ -256,9 +256,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * @param isOnlyTripSummary - This method you could reuse to only get Fishing trip summary as well
      * @throws ServiceException
      */
-
-    @Override
-    public Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
+    private Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                                                                       Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
         fishingActivityList.addAll(getReportsThatWereCancelledOrDeleted(fishingActivityList));
@@ -561,8 +559,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return null;
     }
 
-    @Override
-    public TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId) {
+    private TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId) {
         if (activityEntity == null) {
             return null;
         }
