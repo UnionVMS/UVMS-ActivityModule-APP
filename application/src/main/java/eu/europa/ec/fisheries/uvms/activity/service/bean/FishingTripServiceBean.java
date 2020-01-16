@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.VesselTransportMeansDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
@@ -31,7 +30,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
@@ -256,9 +254,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * @param isOnlyTripSummary - This method you could reuse to only get Fishing trip summary as well
      * @throws ServiceException
      */
-
-    @Override
-    public Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
+    private Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
                                                                                                       Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException {
         List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
         fishingActivityList.addAll(getReportsThatWereCancelledOrDeleted(fishingActivityList));
@@ -453,28 +449,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     /**
-     * This method filters fishing Trips for Reporting module
-     */
-    @Override
-    public FishingTripResponse filterFishingTripsForReporting(FishingActivityQuery query) throws ServiceException {
-        log.info("getFishingTripResponse For Filter");
-        if ((MapUtils.isEmpty(query.getSearchCriteriaMap()) && MapUtils.isEmpty(query.getSearchCriteriaMapMultipleValues()))
-                || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
-            return new FishingTripResponse();
-        }
-        // As per business usecase, period_start and period_end date is MUST to filter fishing trip Ids on Reporting.
-        Map<SearchFilter, String> searchFilters = query.getSearchCriteriaMap();
-        if (searchFilters.get(SearchFilter.PERIOD_START) == null || searchFilters.get(SearchFilter.PERIOD_END) == null) {
-            throw new ServiceException("Either PERIOD_START or PERIOD_END not present. Please provide values for both.");
-        }
-        Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
-        // checkThresholdForFishingTripList(fishingTripIds); // If size of Ids retrieved is more than threshold, Error will be thrown and then user would need to apply more filters to retrict the data.
-        log.debug("Fishing trips received from db:" + fishingTripIds.size());
-        // build Fishing trip response from FishingTripEntityList and return
-        return buildFishingTripSearchRespose(fishingTripIds, true);
-    }
-
-    /**
      * This method filters fishing Trips for Activity tab
      */
     @Override
@@ -487,7 +461,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
         Integer totalCountOfRecords = fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
-        FishingTripResponse fishingTripResponse = buildFishingTripSearchRespose(fishingTripIds, false);
+        FishingTripResponse fishingTripResponse = buildFishingTripSearchRespose(fishingTripIds);
         fishingTripResponse.setTotalCountOfRecords(BigInteger.valueOf(totalCountOfRecords));
         return fishingTripResponse;
     }
@@ -498,11 +472,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * collectFishingActivities : If the value is TRUE, all fishing Activities for every fishing Trip would be sent in the response.
      * If the value is FALSE, No fishing activities would be sent in the response.
      */
-    protected FishingTripResponse buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds, boolean collectFishingActivities) throws ServiceException {
+    protected FishingTripResponse buildFishingTripSearchRespose(Set<FishingTripId> fishingTripIds) throws ServiceException {
         if (fishingTripIds == null || fishingTripIds.isEmpty()) {
             return new FishingTripResponse();
         }
-        List<Integer> uniqueActivityIdList = new ArrayList<>();
         List<FishingActivitySummary> fishingActivitySummaries = new ArrayList<>();
 
         List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
@@ -518,10 +491,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             sortKey.setReversed(false);
             query.setSorting(sortKey);
             List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
-            if (collectFishingActivities) {
-                List<FishingActivityEntity> cleanedList = cleanFromDeletionsAndCancellations(fishingActivityEntityList);
-                fishingActivitySummaries.addAll(getFishingActivitySummaryList(cleanedList, uniqueActivityIdList));
-            }
 
             FishingTripIdWithGeometry fishingTripIdWithGeometry = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList);
             fishingTripIdLists.add(fishingTripIdWithGeometry);
@@ -534,62 +503,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return response;
     }
 
-    private List<FishingActivityEntity> cleanFromDeletionsAndCancellations(List<FishingActivityEntity> fishingActivityEntityList) {
-        List<FishingActivityEntity> cleanList = new ArrayList<>();
-        final String DELETED_STR = FaReportStatusType.DELETED.name();
-        final String CANCELLED_STR = FaReportStatusType.CANCELED.name();
-        for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
-            String status = fishingActivityEntity.getFaReportDocument().getStatus();
-            if (!DELETED_STR.equals(status) && !CANCELLED_STR.equals(status) && Boolean.TRUE.equals(fishingActivityEntity.getLatest())) {
-                cleanList.add(fishingActivityEntity);
-            }
-        }
-
-        return cleanList;
-    }
-
-
-    /**
-     * This method creates FishingActivitySummary object from FishingActivityEntity object retrieved from database.
-     *
-     * @param uniqueActivityIdList      This method helps parent function to collect FishingActivities for all the fishingTrips. In order to avoid duplicate fishing Activities, we need to maintain uniqueActivityIdList
-     * @param fishingActivityEntityList
-     */
-    private List<FishingActivitySummary> getFishingActivitySummaryList(List<FishingActivityEntity> fishingActivityEntityList, List<Integer> uniqueActivityIdList) {
-        List<FishingActivitySummary> fishingActivitySummaryList = new ArrayList<>();
-        if (CollectionUtils.isEmpty(uniqueActivityIdList)) {
-            uniqueActivityIdList = new ArrayList<>();
-        }
-        for (FishingActivityEntity fishingActivityEntity : fishingActivityEntityList) {
-            if (fishingActivityEntity != null) {
-                uniqueActivityIdList.add(fishingActivityEntity.getId());
-                FishingActivitySummary fishingActivitySummary = FishingActivityMapper.INSTANCE.mapToFishingActivitySummary(fishingActivityEntity);
-                ContactPartyEntity contactParty = getContactParty(fishingActivityEntity);
-                if (contactParty != null) {
-                    VesselContactPartyType vesselContactParty = FishingActivityMapper.INSTANCE.mapToVesselContactParty(contactParty);
-                    fishingActivitySummary.setVesselContactParty(vesselContactParty);
-                }
-                if (fishingActivitySummary != null) {
-                    fishingActivitySummaryList.add(fishingActivitySummary);
-                }
-            }
-        }
-        return fishingActivitySummaryList;
-    }
-
-    private ContactPartyEntity getContactParty(FishingActivityEntity fishingActivity) {
-        if ((fishingActivity.getFaReportDocument() != null)
-                && (fishingActivity.getFaReportDocument().getVesselTransportMeans() != null)
-                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().isEmpty())
-                && (fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty() != null)
-                && (!fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().isEmpty())) {
-            return fishingActivity.getFaReportDocument().getVesselTransportMeans().iterator().next().getContactParty().iterator().next();
-        }
-        return null;
-    }
-
-    @Override
-    public TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId) {
+    private TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId) {
         if (activityEntity == null) {
             return null;
         }
