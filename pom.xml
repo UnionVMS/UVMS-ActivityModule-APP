@@ -73,6 +73,7 @@
         <!-- Test dependency versions -->
         <uvms.test.version>0.0.4</uvms.test.version>
         <activemq.artemis.version>1.1.0.wildfly-008</activemq.artemis.version>
+        <arquillian.jacoco.version>1.0.0</arquillian.jacoco.version>
 
         <!-- Test filter -->
         <activity.integration.test.filter>**/*IntegrationTest.java</activity.integration.test.filter>
@@ -327,12 +328,6 @@
                 <version>${guava.version}</version>
             </dependency>
 
-            <!--dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.api.version}</version>
-            </dependency-->
-
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations-java5</artifactId>
@@ -368,6 +363,13 @@
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-jms-client</artifactId>
                 <version>${activemq.artemis.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-jacoco</artifactId>
+                <version>${arquillian.jacoco.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
