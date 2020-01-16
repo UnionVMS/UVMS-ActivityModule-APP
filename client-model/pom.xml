@@ -12,6 +12,10 @@
     <name>${project.parent.artifactId}-client-model</name>
     <packaging>jar</packaging>
 
+<!--    <properties>-->
+<!--        <sonar.coverage.jacoco.xmlReportPaths>${basedir}/../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>-->
+<!--    </properties>-->
+
     <dependencies>
         <!-- UVMS COMMONS DEPENDENCIES -->
 

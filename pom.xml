@@ -80,8 +80,9 @@
         <!-- Sonar (used invisibly)-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.coverage.jacoco.xmlReportPaths>
+<!--        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.coverage.jacoco.xmlReportPaths>-->
         <sonar.language>java</sonar.language>
+<!--        <aggregate.report.dir>target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>-->
     </properties>
 
     <dependencyManagement>
