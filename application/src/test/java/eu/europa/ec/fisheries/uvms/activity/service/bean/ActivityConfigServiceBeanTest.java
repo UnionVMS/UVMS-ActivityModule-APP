@@ -15,13 +15,8 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.bean.ActivityConfigServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
-import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
 
 import java.io.IOException;
 
@@ -30,67 +25,7 @@ import static org.junit.Assert.assertNull;
 
 public class ActivityConfigServiceBeanTest {
 
-    @InjectMocks
-    private ActivityConfigServiceBean preferenceConfigService;
-
-    @Rule
-    public MockitoRule mockitoRule = MockitoJUnit.rule();
-
-    private String adminConfig = "{\n" +
-            "                    \"fishingActivityConfig\": {\n" +
-            "                        \"summaryReport\": {\n" +
-            "                        }\n" +
-            "                    }\n" +
-            "                }";
-
-    private String userConfig = "{\n" +
-            "                    \"fishingActivityConfig\": {\n" +
-            "                        \"summaryReport\": {\n" +
-            "                            \"values\": [\n" +
-            "                                \"FAReportType\",\n" +
-            "                                \"activityType\",\n" +
-            "                                \"occurrence\",\n" +
-            "                                \"purposeCode\",\n" +
-            "                                \"dataSource\",\n" +
-            "                                \"fromName\",\n" +
-            "                                \"startDate\",\n" +
-            "                                \"endDate\",\n" +
-            "                                \"cfr\",\n" +
-            "                                \"ircs\",\n" +
-            "                                \"extMark\",\n" +
-            "                                \"uvi\",\n" +
-            "                                \"iccat\",\n" +
-            "                                \"gfcm\",\n" +
-            "                                \"areas\",\n" +
-            "                                \"port\",\n" +
-            "                                \"fishingGear\",\n" +
-            "                                \"speciesCode\",\n" +
-            "                                \"quantity\"\n" +
-            "                            ],\n" +
-            "                            \"order\": [\n" +
-            "                                \"FAReportType\",\n" +
-            "                                \"activityType\",\n" +
-            "                                \"occurrence\",\n" +
-            "                                \"purposeCode\",\n" +
-            "                                \"dataSource\",\n" +
-            "                                \"fromName\",\n" +
-            "                                \"startDate\",\n" +
-            "                                \"endDate\",\n" +
-            "                                \"cfr\",\n" +
-            "                                \"ircs\",\n" +
-            "                                \"extMark\",\n" +
-            "                                \"uvi\",\n" +
-            "                                \"iccat\",\n" +
-            "                                \"gfcm\",\n" +
-            "                                \"areas\",\n" +
-            "                                \"port\",\n" +
-            "                                \"fishingGear\",\n" +
-            "                                \"speciesCode\",\n" +
-            "                                \"quantity\"\n" +
-            "                            ]\n" +
-            "                        }\n" +
-            "                    }\n" +
-            "                }";
+    private ActivityConfigServiceBean preferenceConfigService = new ActivityConfigServiceBean();
 
     @Test
     public void getAdminConfig() throws Exception {
@@ -173,4 +108,60 @@ public class ActivityConfigServiceBeanTest {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(config);
     }
+
+    private String adminConfig = "{\n" +
+            "                    \"fishingActivityConfig\": {\n" +
+            "                        \"summaryReport\": {\n" +
+            "                        }\n" +
+            "                    }\n" +
+            "                }";
+
+    private String userConfig = "{\n" +
+            "                    \"fishingActivityConfig\": {\n" +
+            "                        \"summaryReport\": {\n" +
+            "                            \"values\": [\n" +
+            "                                \"FAReportType\",\n" +
+            "                                \"activityType\",\n" +
+            "                                \"occurrence\",\n" +
+            "                                \"purposeCode\",\n" +
+            "                                \"dataSource\",\n" +
+            "                                \"fromName\",\n" +
+            "                                \"startDate\",\n" +
+            "                                \"endDate\",\n" +
+            "                                \"cfr\",\n" +
+            "                                \"ircs\",\n" +
+            "                                \"extMark\",\n" +
+            "                                \"uvi\",\n" +
+            "                                \"iccat\",\n" +
+            "                                \"gfcm\",\n" +
+            "                                \"areas\",\n" +
+            "                                \"port\",\n" +
+            "                                \"fishingGear\",\n" +
+            "                                \"speciesCode\",\n" +
+            "                                \"quantity\"\n" +
+            "                            ],\n" +
+            "                            \"order\": [\n" +
+            "                                \"FAReportType\",\n" +
+            "                                \"activityType\",\n" +
+            "                                \"occurrence\",\n" +
+            "                                \"purposeCode\",\n" +
+            "                                \"dataSource\",\n" +
+            "                                \"fromName\",\n" +
+            "                                \"startDate\",\n" +
+            "                                \"endDate\",\n" +
+            "                                \"cfr\",\n" +
+            "                                \"ircs\",\n" +
+            "                                \"extMark\",\n" +
+            "                                \"uvi\",\n" +
+            "                                \"iccat\",\n" +
+            "                                \"gfcm\",\n" +
+            "                                \"areas\",\n" +
+            "                                \"port\",\n" +
+            "                                \"fishingGear\",\n" +
+            "                                \"speciesCode\",\n" +
+            "                                \"quantity\"\n" +
+            "                            ]\n" +
+            "                        }\n" +
+            "                    }\n" +
+            "                }";
 }

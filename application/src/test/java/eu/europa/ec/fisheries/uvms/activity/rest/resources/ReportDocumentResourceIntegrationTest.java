@@ -34,7 +34,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
-public class ReportDocumentResourceTest extends BaseActivityArquillianTest {
+public class ReportDocumentResourceIntegrationTest extends BaseActivityArquillianTest {
 
     @Before
     public void setUp() throws NamingException, IOException, JAXBException, ServiceException, NotSupportedException, SystemException {
