@@ -84,6 +84,8 @@
         <sonar.language>java</sonar.language>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco-output/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.jacoco.generatedReportPath>${project.basedir}/../target/jacoco-output/coverage-report</sonar.jacoco.generatedReportPath>
+
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/jacoco-output/coverage-report</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
