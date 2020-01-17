@@ -27,9 +27,9 @@ import java.util.Set;
 
 @Mapper(uses = BaseMapper.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface FlapDocumentMapper {
+public abstract class FlapDocumentMapper {
 
-    FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
+    public static final FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
 
 
     @Mapping(target = "flapDocumentId", source = "ID.value")
@@ -40,7 +40,7 @@ public interface FlapDocumentMapper {
     @Mapping(target = "fishingActivity", ignore = true)
     @Mapping(target = "vesselTransportMeans", ignore = true)
     @Mapping(target = "fluxCharacteristic", ignore = true)
-    FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument);
+    public abstract FlapDocumentEntity mapToFlapDocumentEntity(FLAPDocument flapDocument);
 
     @InheritInverseConfiguration
     @Mapping(target = "name", ignore = true)
@@ -61,15 +61,15 @@ public interface FlapDocumentMapper {
     @Mapping(target = "relatedValidationResultDocuments", ignore = true)
     @Mapping(target = "relatedFLAPRequestDocuments", ignore = true)
     @Mapping(target = "specifiedAuthorizationStatuses", ignore = true)
-    FLAPDocument mapToFlapDocument(FlapDocumentEntity flapDocument);
+    public abstract FLAPDocument mapToFlapDocument(FlapDocumentEntity flapDocument);
 
-    List<FLAPDocument> mapToFlapDocumentList(Set<FlapDocumentEntity> flapDocument);
+    public abstract List<FLAPDocument> mapToFlapDocumentList(Set<FlapDocumentEntity> flapDocument);
 
 
     @Mapping(target = "faIdentifierId", source = "flapDocumentId")
     @Mapping(target = "faIdentifierSchemeId", source = "flapDocumentSchemeId")
-    FlapDocumentDto mapToFlapDocumentDto(FlapDocumentEntity entity);
+    public abstract FlapDocumentDto mapToFlapDocumentDto(FlapDocumentEntity entity);
 
-    Set<FlapDocumentDto> mapToFlapDocumentDto(Set<FlapDocumentEntity> entity);
+    public abstract Set<FlapDocumentDto> mapToFlapDocumentDto(Set<FlapDocumentEntity> entity);
 
 }

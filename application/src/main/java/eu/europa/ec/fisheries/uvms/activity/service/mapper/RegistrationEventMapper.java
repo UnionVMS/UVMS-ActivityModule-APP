@@ -20,9 +20,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 
 @Mapper(imports = BaseMapper.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface RegistrationEventMapper {
+public abstract class RegistrationEventMapper {
 
-    RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
+    public static final RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
 
 
     @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationEvent.getDescriptions()))")
@@ -31,5 +31,5 @@ public interface RegistrationEventMapper {
     @Mapping(target = "registrationLocation", expression = "java(BaseMapper.mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "vesselTransportMeanses", ignore = true)
-    RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent);
+    public abstract RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent);
 }

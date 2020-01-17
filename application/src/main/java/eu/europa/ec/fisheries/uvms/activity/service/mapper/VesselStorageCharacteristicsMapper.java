@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.StorageDto;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.VesselStorageCharCodeDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -26,8 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = {VesselStorageCharCodeMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class VesselStorageCharacteristicsMapper {
 
     public static final VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
@@ -68,4 +68,5 @@ public abstract class VesselStorageCharacteristicsMapper {
     @Mapping(target = "identifiers", ignore = true)
     public abstract StorageDto mapToStorageDto(VesselStorageCharacteristicsEntity entity);
 
+    public abstract VesselStorageCharCodeDto mapToVesselStorageCharCodeDto(VesselStorageCharCodeEntity entity);
 }

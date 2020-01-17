@@ -21,9 +21,9 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface ContactPersonMapper {
+public abstract class ContactPersonMapper {
 
-    ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
+    public static final ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
 
 
     @Mapping(target = "title", source = "title.value")
@@ -36,7 +36,7 @@ public interface ContactPersonMapper {
     @Mapping(target = "alias", source = "alias.value")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "contactParty", ignore = true)
-    ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
+    public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
 
     @InheritInverseConfiguration
     @Mapping(target = "birthDateTime", ignore = true)
@@ -46,8 +46,8 @@ public interface ContactPersonMapper {
     @Mapping(target = "emailURIEmailCommunication", ignore = true)
     @Mapping(target = "websiteURIWebsiteCommunication", ignore = true)
     @Mapping(target = "specifiedUniversalCommunications", ignore = true)
-    ContactPerson mapToContactPerson(ContactPersonEntity contactPerson);
+    public abstract ContactPerson mapToContactPerson(ContactPersonEntity contactPerson);
 
     @Mapping(target = "characteristicsMap", ignore = true)
-    ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
+    public abstract ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
 }
