@@ -22,4 +22,8 @@
         <dropColumn tableName="activity_flux_location" columnName="jurisdiction_country_code" />
     </changeSet>
 
+    <changeSet author="robmil" id="ers-473-drop-system_id-column">
+        <dropColumn tableName="activity_flux_location" columnName="system_id" />
+    </changeSet>
+
 </databaseChangeLog>
