@@ -109,12 +109,6 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "flux_location_identifier_scheme_id")
 	private String fluxLocationIdentifierSchemeId;
 
-	@Column(name = "geopolitical_region_code")
-	private String geopoliticalRegionCode;
-
-	@Column(name = "geopolitical_region_code_list_id")
-	private String geopoliticalRegionCodeListId;
-
 	@Column(columnDefinition = "text", name = "namevalue")
 	private String name;
 

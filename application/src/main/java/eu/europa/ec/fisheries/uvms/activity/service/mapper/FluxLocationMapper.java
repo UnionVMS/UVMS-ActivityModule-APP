@@ -40,8 +40,6 @@ public interface FluxLocationMapper {
     @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID")
     @Mapping(target = "fluxLocationIdentifier", source = "ID.value")
     @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID")
-    @Mapping(target = "geopoliticalRegionCode", source = "geopoliticalRegionCode.value")
-    @Mapping(target = "geopoliticalRegionCodeListId", source = "geopoliticalRegionCode.listID")
     @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(fluxLocation.getNames()))")
     @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxLocation.getNames()))")
     @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryID.value")
