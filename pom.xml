@@ -82,10 +82,10 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
-        <sonar.jacoco.coverageReportPath>${project.basedir}/../target/jacoco-output/jacoco.exec</sonar.jacoco.coverageReportPath>
-        <sonar.jacoco.generatedReportPath>${project.basedir}/../target/jacoco-output/coverage-report</sonar.jacoco.generatedReportPath>
+        <sonar.jacoco.coverageReportPath>${project.basedir}/target/jacoco-output/jacoco.exec</sonar.jacoco.coverageReportPath>
+        <sonar.jacoco.generatedReportPath>${project.basedir}/target/jacoco-output/coverage-report</sonar.jacoco.generatedReportPath>
 
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/jacoco-output/coverage-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/jacoco-output/coverage-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
