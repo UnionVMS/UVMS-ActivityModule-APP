@@ -42,7 +42,6 @@ public interface FluxLocationMapper {
     @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID")
     @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(fluxLocation.getNames()))")
     @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxLocation.getNames()))")
-    @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryID.value")
     @Mapping(target = "jurisdictionCountryCode", source = "jurisdictionCountryID.value")
     @Mapping(target = "systemId", source = "specifiedPhysicalFLUXGeographicalCoordinate.systemID.value")
     @Mapping(target = "regionalFisheriesManagementOrganizationCode", source = "regionalFisheriesManagementOrganizationCode.value")
@@ -56,7 +55,6 @@ public interface FluxLocationMapper {
 
 
     @Mapping(target = "geometry", source = "wkt")
-    @Mapping(target = "sovereignCountry", source = "sovereignRightsCountryCode")
     @Mapping(target = "jurisdictionCountry", source = "jurisdictionCountryCode")
     @Mapping(target = "rfmoCode", source = "regionalFisheriesManagementOrganizationCode")
     FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
