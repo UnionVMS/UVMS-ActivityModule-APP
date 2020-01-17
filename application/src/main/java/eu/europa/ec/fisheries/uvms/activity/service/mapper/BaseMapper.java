@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentRelatedFaReportEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
@@ -153,8 +153,8 @@ public class BaseMapper {
             return false;
         }
 
-        return entity.getFaReportDocument().getFluxReportDocument_ReferenceId() != null &&
-                entity.getFaReportDocument().getFluxReportDocument_ReferenceId().length() != 0;
+        return entity.getFaReportDocument().getFluxReportDocument_ReferencedFaReportDocumentId() != null &&
+                entity.getFaReportDocument().getFluxReportDocument_ReferencedFaReportDocumentId().length() != 0;
     }
 
     private static String getIdType(IDType idType) {
@@ -336,27 +336,27 @@ public class BaseMapper {
         return getPfromOFunction.apply(listOfO.get(0));
     }
 
-    protected Set<FaReportIdentifierEntity> mapRelatedReportIDs(FAReportDocument faReportDocument) {
-        Set<FaReportIdentifierEntity> faReportIdentifiers = new HashSet<>();
+    protected Set<FaReportDocumentRelatedFaReportEntity> mapRelatedReportIDs(FAReportDocument faReportDocument) {
+        Set<FaReportDocumentRelatedFaReportEntity> relatedFaReportIdentifiers = new HashSet<>();
 
         List<IDType> relatedReportIDs = faReportDocument.getRelatedReportIDs();
         for (IDType relatedReportID : relatedReportIDs) {
-            FaReportIdentifierEntity faReportIdentifierEntity = new FaReportIdentifierEntity();
-            faReportIdentifierEntity.setFaReportIdentifierId(relatedReportID.getValue());
-            faReportIdentifierEntity.setFaReportIdentifierSchemeId(relatedReportID.getSchemeID());
+            FaReportDocumentRelatedFaReportEntity faReportDocumentRelatedFaReportEntity = new FaReportDocumentRelatedFaReportEntity();
+            faReportDocumentRelatedFaReportEntity.setFaReportIdentifierId(relatedReportID.getValue());
+            faReportDocumentRelatedFaReportEntity.setFaReportIdentifierSchemeId(relatedReportID.getSchemeID());
 
-            faReportIdentifiers.add(faReportIdentifierEntity);
+            relatedFaReportIdentifiers.add(faReportDocumentRelatedFaReportEntity);
         }
 
-        return faReportIdentifiers;
+        return relatedFaReportIdentifiers;
     }
 
-    protected List<RelatedReportDto> mapToRelatedReportDtoList(Set<FaReportIdentifierEntity> faReportIdentifierEntities) {
+    protected List<RelatedReportDto> mapToRelatedReportDtoList(Set<FaReportDocumentRelatedFaReportEntity> relatedFaReportEntities) {
         List<RelatedReportDto> relatedReportDtos = new ArrayList<>();
-        for (FaReportIdentifierEntity faReportIdentifierEntity : faReportIdentifierEntities) {
+        for (FaReportDocumentRelatedFaReportEntity faReportDocumentRelatedFaReportEntity : relatedFaReportEntities) {
             RelatedReportDto relatedReportDto = new RelatedReportDto();
-            relatedReportDto.setId(faReportIdentifierEntity.getFaReportIdentifierId());
-            relatedReportDto.setSchemeId(faReportIdentifierEntity.getFaReportIdentifierSchemeId());
+            relatedReportDto.setId(faReportDocumentRelatedFaReportEntity.getFaReportIdentifierId());
+            relatedReportDto.setSchemeId(faReportDocumentRelatedFaReportEntity.getFaReportIdentifierSchemeId());
             relatedReportDtos.add(relatedReportDto);
         }
 
@@ -399,19 +399,19 @@ public class BaseMapper {
         purposeCode.setValue(fluxReportDocument_purposeCode);
         purposeCode.setListID(fluxReportDocument_purposeCodeListId);
 
-        String fluxReportDocument_referenceId = faReportDocumentEntity.getFluxReportDocument_ReferenceId();
-        String fluxReportDocument_referenceIdSchemeId = faReportDocumentEntity.getFluxReportDocument_ReferenceIdSchemeId();
+        String fluxReportDocument_referencedFaReportDocumentId = faReportDocumentEntity.getFluxReportDocument_ReferencedFaReportDocumentId();
+        String fluxReportDocument_referencedFaReportDocumentSchemeId = faReportDocumentEntity.getFluxReportDocument_ReferencedFaReportDocumentSchemeId();
 
-        IDType referenceId = new IDType();
-        referenceId.setValue(fluxReportDocument_referenceId);
-        referenceId.setSchemeID(fluxReportDocument_referenceIdSchemeId);
+        IDType referencedId = new IDType();
+        referencedId.setValue(fluxReportDocument_referencedFaReportDocumentId);
+        referencedId.setSchemeID(fluxReportDocument_referencedFaReportDocumentSchemeId);
 
         fluxReportDocument.setCreationDateTime(creationDateTime);
         fluxReportDocument.setIDS(idTypes);
         fluxReportDocument.setOwnerFLUXParty(ownerFluxParty);
         fluxReportDocument.setPurpose(purpose);
         fluxReportDocument.setPurposeCode(purposeCode);
-        fluxReportDocument.setReferencedID(referenceId);
+        fluxReportDocument.setReferencedID(referencedId);
 
         return fluxReportDocument;
     }

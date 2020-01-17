@@ -14,12 +14,13 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntit
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
+import org.junit.runners.Parameterized.Parameter;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
@@ -36,10 +37,13 @@ import java.util.ArrayList;
 
 import static junit.framework.TestCase.assertFalse;
 
-@RunWith(JUnitParamsRunner.class)
+@RunWith(Parameterized.class)
 public class ActivityEntityToModelMapperTest {
 
     private Unmarshaller unmarshaller;
+
+    @Parameter
+    public String resource;
 
     @Before
     public void setUp() throws Exception {
@@ -48,8 +52,7 @@ public class ActivityEntityToModelMapperTest {
     }
 
     @Test
-    @Parameters(method = "resources")
-    public void testMapToFLUXFAReportMessage(String resource) throws Exception {
+    public void testMapToFLUXFAReportMessage() throws Exception {
 
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
         FluxFaReportMessageEntity entity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL);
@@ -79,9 +82,11 @@ public class ActivityEntityToModelMapperTest {
                                  ElementSelectors.byNameAndAllAttributes)))
                 .build();
 
-        assertFalse("XML similar " + myDiffSimilar.toString(), myDiffSimilar.hasDifferences());    }
+        assertFalse("XML similar " + myDiffSimilar.toString(), myDiffSimilar.hasDifferences());
+    }
 
-    private Object[] resources() {
+    @Parameters(name = "{index}: {0}")
+    public static Object[] resources() {
         return new Object[][] {
                 {"fa_flux_message4.xml"},
                 {"fa_flux_message5.xml"},

@@ -21,7 +21,7 @@
 		</init-param>
 		<init-param>
 			<param-name>storage-directory</param-name>
-			<param-value>javamelody-mobilterminal</param-value>
+			<param-value>javamelody-activity</param-value>
 		</init-param>
 		<init-param>
 			<param-name>datasources</param-name>

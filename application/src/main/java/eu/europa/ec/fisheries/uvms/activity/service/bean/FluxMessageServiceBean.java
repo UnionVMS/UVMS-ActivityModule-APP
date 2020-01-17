@@ -206,8 +206,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      */
     private void updateFaReportCorrectionsOrCancellations(Set<FaReportDocumentEntity> justReceivedAndSavedFaReports) {
         for (FaReportDocumentEntity justSavedReport : justReceivedAndSavedFaReports) {
-            String receivedRefId = justSavedReport.getFluxReportDocument_ReferenceId();
-            String receivedRefSchemeId = justSavedReport.getFluxReportDocument_ReferenceIdSchemeId();
+            String receivedReferencedFaReportDocumentId = justSavedReport.getFluxReportDocument_ReferencedFaReportDocumentId();
+            String receivedReferencedFaReportDocumentSchemeId = justSavedReport.getFluxReportDocument_ReferencedFaReportDocumentSchemeId();
             String justSavedPurposeCode = StringUtils.isNotEmpty(justSavedReport.getFluxReportDocument_PurposeCode()) ?
                     justSavedReport.getFluxReportDocument_PurposeCode() : StringUtils.EMPTY;
 
@@ -228,15 +228,15 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             }
 
             // If it has a refId it means that it is a correction/deletion or cancellation message, so we should update the referred entity STATUS (FaReportDocument)..
-            if (StringUtils.isNotEmpty(receivedRefId) && !StringUtils.EMPTY.equals(justSavedPurposeCode)) {
+            if (StringUtils.isNotEmpty(receivedReferencedFaReportDocumentId) && !StringUtils.EMPTY.equals(justSavedPurposeCode)) {
                 // Get the document(s) that have the same id as the just received msg's ReferenceId.
-                FaReportDocumentEntity foundRelatedFaReport = faReportDocumentDao.findFaReportByIdAndScheme(receivedRefId, receivedRefSchemeId);
-                if (foundRelatedFaReport != null) { // Means that the report we just received refers to an exising one (Correcting it/Deleting it/Cancelling it)
+                FaReportDocumentEntity foundReferencedFaReport = faReportDocumentDao.findFaReportByIdAndScheme(receivedReferencedFaReportDocumentId, receivedReferencedFaReportDocumentSchemeId);
+                if (foundReferencedFaReport != null) { // Means that the report we just received refers to an exising one (Correcting it/Deleting it/Cancelling it)
                     FaReportStatusType faReportStatusEnum = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(justSavedPurposeCode));
                     // Change status with the new reports status (new report = report that refers to this one = the newly saved one)
-                    foundRelatedFaReport.setStatus(faReportStatusEnum.name());
+                    foundReferencedFaReport.setStatus(faReportStatusEnum.name());
                     // Correction (purposecode == 5) => set 'latest' to false (for each activitiy related to this report)
-                    checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(foundRelatedFaReport, faReportStatusEnum, justSavedReport.getId());
+                    checkAndUpdateActivitiesForCorrectionsAndCancellationsAndDeletions(foundReferencedFaReport, faReportStatusEnum, justSavedReport.getId());
                 } else {
                     log.warn("Received and saved a correction/cancellation or deletion message but couldn't find a message to apply it to!");
                 }

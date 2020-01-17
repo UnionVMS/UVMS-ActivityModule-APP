@@ -12,37 +12,21 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFault;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import org.apache.activemq.artemis.jms.client.ActiveMQTextMessage;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.enterprise.event.Event;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,12 +40,6 @@ public class ActivityMessageConsumerBeanTest {
 
     @Mock
     private Event<EventMessage> errorEvent;
-
-    @Mock
-    private ActivityMatchingIdsService matchingIdsService;
-
-    @Mock
-    private ActivityErrorMessageServiceBean producer;
 
     @Test
     public void wrongRequestType_expectError() throws Exception {
@@ -86,46 +64,5 @@ public class ActivityMessageConsumerBeanTest {
 
         assertEquals("Error when receiving message: [Error when unmarshalling response in ResponseMapper ]", fault.getFault());
         assertEquals(1700, fault.getCode());
-    }
-
-    @Test
-    public void getNonUniqueIds() throws ActivityModelMarshallException, JMSException {
-        // Given
-        GetNonUniqueIdsRequest getNonUniqueIdsRequest = new GetNonUniqueIdsRequest();
-        getNonUniqueIdsRequest.setMethod(ActivityModuleMethod.GET_NON_UNIQUE_IDS);
-        String requestString = JAXBMarshaller.marshallJaxBObjectToString(getNonUniqueIdsRequest);
-
-        ActiveMQTextMessage activeMQTextMessage = mock(ActiveMQTextMessage.class);
-        when(activeMQTextMessage.getText()).thenReturn(requestString);
-
-        List<ActivityIDType> idList = new ArrayList<>();
-        idList.add(new ActivityIDType("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb", "scheme-idqq"));
-
-        ActivityUniquinessList activityUniquinessList1 = new ActivityUniquinessList();
-        activityUniquinessList1.setActivityTableType(ActivityTableType.RELATED_FLUX_REPORT_DOCUMENT_ENTITY);
-        activityUniquinessList1.setIds(idList);
-
-        ActivityUniquinessList activityUniquinessList2 = new ActivityUniquinessList();
-        activityUniquinessList2.setActivityTableType(ActivityTableType.FLUX_REPORT_DOCUMENT_ENTITY);
-        activityUniquinessList2.setIds(idList);
-
-        List<ActivityUniquinessList> list = new ArrayList<>();
-        list.add(activityUniquinessList1);
-        list.add(activityUniquinessList2);
-
-        when(matchingIdsService.getMatchingIds(any())).thenReturn(list);
-
-        // When
-        consumer.onMessage(activeMQTextMessage);
-
-        // Then
-        ArgumentCaptor<TextMessage> messageCaptor = ArgumentCaptor.forClass(TextMessage.class);
-        ArgumentCaptor<String> textCaptor = ArgumentCaptor.forClass(String.class);
-
-        Mockito.verify(producer, times(1)).sendResponseMessageToSender(messageCaptor.capture(), textCaptor.capture());
-
-        String text = textCaptor.getValue();
-
-        assertTrue(text.contains("46DCC44C-0AE2-434C-BC14-B85D86B29512bbbbb"));
     }
 }

@@ -11,7 +11,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>1.2.3-SWE-SNAPSHOT</version>
+    <version>1.2.4-SWE-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Swedish version of UnionVms activity module for handling fishing activities.</description>
 
@@ -30,7 +30,7 @@
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
 
         <!-- Docker configuration -->
-        <docker.dev.version>3.40.21.w18-ERS</docker.dev.version>
+        <docker.dev.version>3.40.22.w18-ERS</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>activity</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
@@ -73,12 +73,19 @@
         <!-- Test dependency versions -->
         <uvms.test.version>0.0.4</uvms.test.version>
         <activemq.artemis.version>1.1.0.wildfly-008</activemq.artemis.version>
+        <arquillian.jacoco.version>1.0.0</arquillian.jacoco.version>
+
+        <!-- Test filter -->
+        <activity.integration.test.filter>**/*IntegrationTest.java</activity.integration.test.filter>
 
         <!-- Sonar (used invisibly)-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.jacoco.reportPath>${project.basedir}/target/coverage-reports/jacoco-unit.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
+        <sonar.jacoco.coverageReportPath>${project.basedir}/target/jacoco-output/jacoco.exec</sonar.jacoco.coverageReportPath>
+        <sonar.jacoco.generatedReportPath>${project.basedir}/target/jacoco-output/coverage-report</sonar.jacoco.generatedReportPath>
+
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/jacoco-output/coverage-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
@@ -323,12 +330,6 @@
                 <version>${guava.version}</version>
             </dependency>
 
-            <!--dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.api.version}</version>
-            </dependency-->
-
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations-java5</artifactId>
@@ -364,6 +365,13 @@
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-jms-client</artifactId>
                 <version>${activemq.artemis.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-jacoco</artifactId>
+                <version>${arquillian.jacoco.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -417,13 +425,6 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-ejb-plugin</artifactId>
-                    <configuration>
-                        <ejbVersion>3.1</ejbVersion>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <executions>
                         <execution>
@@ -455,21 +456,62 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-plugin-plugin</artifactId>
-                <version>3.4</version>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <goalPrefix>plugin</goalPrefix>
-                    <outputDirectory>target/dir</outputDirectory>
+                    <excludes>
+                        <exclude>${activity.integration.test.filter}</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
+                <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
-                    <excludes>
-                        <exclude>**/*ITest.java</exclude>
-                    </excludes>
+                    <includes>
+                        <include>${activity.integration.test.filter}</include>
+                    </includes>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.4</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.coverageReportPath}</destFile>
+                    <append>true</append>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>prepare-unit-test-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>prepare integration test agent</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-coverage-report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${sonar.jacoco.coverageReportPath}</dataFile>
+                            <outputDirectory>${sonar.jacoco.generatedReportPath}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -479,9 +521,9 @@
             <id>postgres</id>
             <properties>
                 <database.dialect>${application.database.dialect}</database.dialect>
-                <!-- the record -->
             </properties>
         </profile>
+
         <profile>
             <id>doclint-java8-disable</id>
             <activation>

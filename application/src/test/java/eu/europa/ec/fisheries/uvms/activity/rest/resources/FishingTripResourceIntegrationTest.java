@@ -59,7 +59,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Arquillian.class)
-public class FishingTripResourceTest extends BaseActivityArquillianTest {
+public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTest {
 
     @Before
     public void setUp() throws NamingException, IOException, JAXBException, ServiceException, NotSupportedException, SystemException {

@@ -15,7 +15,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentRelatedFaReportEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
@@ -137,7 +137,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         FLUXReportDocument fluxReportDocument = mapToFluxReportDocument(source);
         target.setRelatedFLUXReportDocument(fluxReportDocument);
 
-        mapRelatedReportIDs(target, source.getFaReportIdentifiers());
+        mapRelatedReportIDs(target, source.getRelatedFaReportIdentifiers());
         mapSpecifiedVesselTransportMeans(target, source.getVesselTransportMeans());
         mapFishingActivities(target, source.getFishingActivities());
     }
@@ -580,10 +580,10 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         }
     }
 
-    private void mapRelatedReportIDs(FAReportDocument target, Set<FaReportIdentifierEntity> faReportIdentifiers) {
-        if (CollectionUtils.isNotEmpty(faReportIdentifiers)) {
+    private void mapRelatedReportIDs(FAReportDocument target, Set<FaReportDocumentRelatedFaReportEntity> relatedFaReportIdentifiers) {
+        if (CollectionUtils.isNotEmpty(relatedFaReportIdentifiers)) {
             List<IDType> idTypeList = new ArrayList<>();
-            for (FaReportIdentifierEntity source : faReportIdentifiers) {
+            for (FaReportDocumentRelatedFaReportEntity source : relatedFaReportIdentifiers) {
                 IDType idType = new IDType();
                 String faReportIdentifierId = source.getFaReportIdentifierId();
                 String faReportIdentifierSchemeId = source.getFaReportIdentifierSchemeId();
