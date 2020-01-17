@@ -15,7 +15,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.VesselStorageCharCodeDto
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface VesselStorageCharCodeMapper {
+public abstract class VesselStorageCharCodeMapper {
 
-    VesselStorageCharCodeDto mapToVesselStorageCharCodeDto(VesselStorageCharCodeEntity entity);
+    public abstract VesselStorageCharCodeDto mapToVesselStorageCharCodeDto(VesselStorageCharCodeEntity entity);
 }

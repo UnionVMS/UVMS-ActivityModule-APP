@@ -25,22 +25,22 @@ import java.util.Set;
 
 @Mapper(uses = BaseMapper.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface VesselIdentifierMapper {
+public abstract class VesselIdentifierMapper {
 
-    VesselIdentifierMapper INSTANCE = Mappers.getMapper(VesselIdentifierMapper.class);
+    public static final VesselIdentifierMapper INSTANCE = Mappers.getMapper(VesselIdentifierMapper.class);
 
 
     @Mapping(target = "identifierSchemeId", source = "vesselIdentifierSchemeId")
     @Mapping(target = "faIdentifierId", source = "vesselIdentifierId")
     @Mapping(target = "faIdentifierSchemeId", ignore = true)
     @Mapping(target = "fromAssets", ignore = true)
-    AssetIdentifierDto mapToIdentifierDto(VesselIdentifierEntity entity);
+    public abstract AssetIdentifierDto mapToIdentifierDto(VesselIdentifierEntity entity);
 
-    Set<AssetIdentifierDto> mapToIdentifierDotSet(Set<VesselIdentifierEntity> entity);
+    public abstract Set<AssetIdentifierDto> mapToIdentifierDotSet(Set<VesselIdentifierEntity> entity);
 
     @ValueMapping(source = "EXT_MARK", target = "EXTERNAL_MARKING")
     @ValueMapping(source = "UVI", target = MappingConstants.NULL)
     @ValueMapping(source = "ICCAT", target = MappingConstants.NULL)
     @ValueMapping(source = "GFCM", target = MappingConstants.NULL)
-    ConfigSearchField map(VesselIdentifierSchemeIdEnum schemeIdEnum);
+    public abstract ConfigSearchField map(VesselIdentifierSchemeIdEnum schemeIdEnum);
 }
