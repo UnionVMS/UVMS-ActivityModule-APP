@@ -133,9 +133,6 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "jurisdiction_country_code")
 	private String jurisdictionCountryCode;
 
-	@Column(precision = 17, scale = 17)
-	private Double altitude;
-
 	@Column(name = "system_id")
 	private String systemId;
 

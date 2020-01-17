@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.2.4/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="robmil" id="ers-473-dropped-altitude-column">
+        <dropColumn tableName="activity_flux_location" columnName="altitude" />
+    </changeSet>
+
+</databaseChangeLog>
