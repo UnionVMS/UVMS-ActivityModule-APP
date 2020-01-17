@@ -82,8 +82,10 @@
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
+        <sonar.jacoco.coverageReportPath>${project.basedir}/target/jacoco-output/jacoco.exec</sonar.jacoco.coverageReportPath>
+        <sonar.jacoco.generatedReportPath>${project.basedir}/target/jacoco-output/coverage-report</sonar.jacoco.generatedReportPath>
 
-        <aggregate.report.dir>application/target/site/jacoco-ut/jacoco.xml</aggregate.report.dir>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/jacoco-output/coverage-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
@@ -481,47 +483,32 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${focus-pom.jacoco.plugin.version}</version>
+                <version>0.8.4</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.coverageReportPath}</destFile>
+                    <append>true</append>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>pre-unit-test</id>
+                        <id>prepare-unit-test-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
-                        <configuration>
-                            <append>true</append>
-                            <propertyName>surefireArgLine</propertyName>
-                        </configuration>
                     </execution>
                     <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
+                        <id>prepare integration test agent</id>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>generate-coverage-report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-
-
-                    <execution>
-                        <id>default-prepare-agent-integration</id>
-                        <goals>
-                            <goal>prepare-agent-integration</goal>
-                        </goals>
-                        <configuration>
-                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>post-integration-test</id>
-                        <phase>integration-test</phase>
-                        <goals>
-                            <goal>report-integration</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-it</outputDirectory>
+                            <dataFile>${sonar.jacoco.coverageReportPath}</dataFile>
+                            <outputDirectory>${sonar.jacoco.generatedReportPath}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -536,6 +523,7 @@
                 <database.dialect>${application.database.dialect}</database.dialect>
             </properties>
         </profile>
+
         <profile>
             <id>doclint-java8-disable</id>
             <activation>
