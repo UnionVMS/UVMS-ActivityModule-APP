@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper(uses = {CustomBigDecimal.class, FishingGearMapper.class, FluxCharacteristicsMapper.class, AapProcessMapper.class, AapStockMapper.class, VesselIdentifierMapper.class},
+@Mapper(uses = {CustomBigDecimal.class, AapProcessMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 

@@ -28,11 +28,11 @@ import static org.junit.Assert.assertTrue;
 public class FluxLocationMapperTest {
 
     @Test
-    public void testFluxLocationMapper() {
+    public void fluxLocationMapper() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
         FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
         assertEquals(fluxLocation.getTypeCode().getListID(), fluxLocationEntity.getTypeCodeListId());
-        assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode());
+        assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode().name());
         assertEquals(fluxLocation.getCountryID().getValue(), fluxLocationEntity.getCountryId());
         assertEquals(fluxLocation.getCountryID().getSchemeID(), fluxLocationEntity.getCountryIdSchemeId());
         assertEquals(fluxLocation.getRegionalFisheriesManagementOrganizationCode().getValue(), fluxLocationEntity.getRegionalFisheriesManagementOrganizationCode());
