@@ -121,9 +121,6 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "rfmo_code_list_id")
 	private String regionalFisheriesManagementOrganizationCodeListId;
 
-	@Column(name = "jurisdiction_country_code")
-	private String jurisdictionCountryCode;
-
 	@Column(name = "system_id")
 	private String systemId;
 

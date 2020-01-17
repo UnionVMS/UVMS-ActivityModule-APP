@@ -18,4 +18,8 @@
         <dropColumn tableName="activity_flux_location" columnName="sovereign_rights_country_code" />
     </changeSet>
 
+    <changeSet author="robmil" id="ers-473-drop-jurisdiction_contry_code-column">
+        <dropColumn tableName="activity_flux_location" columnName="jurisdiction_country_code" />
+    </changeSet>
+
 </databaseChangeLog>
