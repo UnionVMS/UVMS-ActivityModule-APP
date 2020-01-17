@@ -78,14 +78,13 @@
         <!-- Test filter -->
         <activity.integration.test.filter>**/*IntegrationTest.java</activity.integration.test.filter>
 
-        <!-- Sonar (used invisibly)-->
+        <!-- Sonar -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
-        <sonar.jacoco.coverageReportPath>${project.basedir}/target/jacoco-output/jacoco.exec</sonar.jacoco.coverageReportPath>
-        <sonar.jacoco.generatedReportPath>${project.basedir}/target/jacoco-output/coverage-report</sonar.jacoco.generatedReportPath>
-
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/jacoco-output/coverage-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.jacoco.coverageReportPath>${project.basedir}/target/jacoco-output/jacoco.exec</sonar.jacoco.coverageReportPath> <!-- The binary coverage file that jacoco creates when doing the analysis -->
+        <sonar.jacoco.generatedReportPath>${project.basedir}/target/jacoco-output/coverage-report</sonar.jacoco.generatedReportPath> <!-- Directory where jacoco will generate the HTML and XML report files -->
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/jacoco-output/coverage-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths> <!-- Property for sonar where it can find the generated XML report file -->
     </properties>
 
     <dependencyManagement>
@@ -496,7 +495,7 @@
                         </goals>
                     </execution>
                     <execution>
-                        <id>prepare integration test agent</id>
+                        <id>prepare-integration-test-agent</id>
                         <goals>
                             <goal>prepare-agent-integration</goal>
                         </goals>
