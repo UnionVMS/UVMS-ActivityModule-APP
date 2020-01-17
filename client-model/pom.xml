@@ -12,10 +12,6 @@
     <name>${project.parent.artifactId}-client-model</name>
     <packaging>jar</packaging>
 
-    <properties>
-<!--        <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report</sonar.coverage.jacoco.xmlReportPaths>-->
-    </properties>
-
     <dependencies>
         <!-- UVMS COMMONS DEPENDENCIES -->
 
