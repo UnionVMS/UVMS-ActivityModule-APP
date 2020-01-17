@@ -12,6 +12,7 @@ import org.apache.commons.lang3.EnumUtils;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -86,32 +87,33 @@ public abstract class CatchEvolutionProgressHandler {
 
     protected void handleCumulatedCatch(FaCatchEntity faCatch, CatchSummaryListDTO cumulated, Map<String, Double> speciesCumulatedWeight, boolean delete) {
         String speciesCode = faCatch.getSpeciesCode();
-        boolean exists = false;
         cumulated.setTotal(delete ? cumulated.getTotal() - faCatch.getCalculatedWeightMeasure() : cumulated.getTotal() + faCatch.getCalculatedWeightMeasure());
 
-        for (SpeciesQuantityDTO speciesQuantityDTO : cumulated.getSpeciesList()) {
-            if (speciesQuantityDTO.getSpeciesCode().equalsIgnoreCase(speciesCode)) {
-                double weight = delete ? speciesQuantityDTO.getWeight() - faCatch.getCalculatedWeightMeasure() : speciesQuantityDTO.getWeight() + faCatch.getCalculatedWeightMeasure();
-                speciesQuantityDTO.setWeight(weight);
+        Optional<SpeciesQuantityDTO> previousAccumulationForThisSpeciesOptional = cumulated.getSpeciesList().stream()
+                .filter(dto -> speciesCode.equalsIgnoreCase(dto.getSpeciesCode()))
+                .findAny();
 
-                if (speciesCumulatedWeight.containsKey(speciesCode)) {
-                    double existingCumulatedWeight = speciesCumulatedWeight.get(speciesCode);
-                    double newCumulatedWeight = delete ? existingCumulatedWeight - faCatch.getCalculatedWeightMeasure() : existingCumulatedWeight + faCatch.getCalculatedWeightMeasure();
-                    speciesCumulatedWeight.put(speciesCode, newCumulatedWeight);
-                } else {
-                    speciesCumulatedWeight.put(speciesCode, weight);
-                }
+        if (previousAccumulationForThisSpeciesOptional.isPresent()) {
+            SpeciesQuantityDTO previousAccumulationForThisSpecies = previousAccumulationForThisSpeciesOptional.get();
+            double weight = delete ? previousAccumulationForThisSpecies.getWeight() - faCatch.getCalculatedWeightMeasure() : previousAccumulationForThisSpecies.getWeight() + faCatch.getCalculatedWeightMeasure();
+            previousAccumulationForThisSpecies.setWeight(weight);
 
-                exists = true;
-                break;
+            if (speciesCumulatedWeight.containsKey(speciesCode)) {
+                double existingCumulatedWeight = speciesCumulatedWeight.get(speciesCode);
+                double newCumulatedWeight = delete ? existingCumulatedWeight - faCatch.getCalculatedWeightMeasure() : existingCumulatedWeight + faCatch.getCalculatedWeightMeasure();
+                speciesCumulatedWeight.put(speciesCode, newCumulatedWeight);
+            } else {
+                speciesCumulatedWeight.put(speciesCode, weight);
             }
-        }
-
-        if (!exists) {
+        } else {
             SpeciesQuantityDTO speciesQuantityDTO = new SpeciesQuantityDTO();
             speciesQuantityDTO.setSpeciesCode(speciesCode);
-            double weight = speciesCumulatedWeight.containsKey(speciesCode) ? delete ? speciesCumulatedWeight.get(speciesCode) - faCatch.getCalculatedWeightMeasure() :
-                    speciesCumulatedWeight.get(speciesCode) + faCatch.getCalculatedWeightMeasure() : faCatch.getCalculatedWeightMeasure();
+            double weight;
+            if (speciesCumulatedWeight.containsKey(speciesCode)) {
+                weight = delete ? speciesCumulatedWeight.get(speciesCode) - faCatch.getCalculatedWeightMeasure() : speciesCumulatedWeight.get(speciesCode) + faCatch.getCalculatedWeightMeasure();
+            } else {
+                weight = faCatch.getCalculatedWeightMeasure();
+            }
             speciesCumulatedWeight.put(speciesCode, weight);
             speciesQuantityDTO.setWeight(weight);
             cumulated.getSpeciesList().add(speciesQuantityDTO);
