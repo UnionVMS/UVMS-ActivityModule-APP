@@ -39,6 +39,7 @@ public class FluxLocationMapperTest {
         assertEquals(fluxLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), fluxLocationEntity.getRegionalFisheriesManagementOrganizationCodeListId());
         assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().intValue(), fluxLocationEntity.getLongitude().intValue());
         assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().intValue(), fluxLocationEntity.getLatitude().intValue());
+        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure().getValue().intValue(), fluxLocationEntity.getAltitude().intValue());
         assertEquals(fluxLocation.getID().getValue(), fluxLocationEntity.getFluxLocationIdentifier());
         assertEquals(fluxLocation.getID().getSchemeID(), fluxLocationEntity.getFluxLocationIdentifierSchemeId());
         assertTrue(fluxLocationEntity.getName().startsWith(fluxLocation.getNames().get(0).getValue()));

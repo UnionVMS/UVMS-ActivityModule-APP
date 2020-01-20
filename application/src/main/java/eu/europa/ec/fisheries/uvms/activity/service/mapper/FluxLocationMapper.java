@@ -37,6 +37,7 @@ public interface FluxLocationMapper {
     @Mapping(target = "countryId", source = "countryID.value")
     @Mapping(target = "longitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value")
     @Mapping(target = "latitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value")
+    @Mapping(target = "altitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.altitudeMeasure.value")
     @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID")
     @Mapping(target = "fluxLocationIdentifier", source = "ID.value")
     @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID")
