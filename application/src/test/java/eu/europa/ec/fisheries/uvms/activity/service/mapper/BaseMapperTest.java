@@ -60,7 +60,7 @@ public class BaseMapperTest {
 
         List<AssetListCriteriaPair> pairs = BaseMapper.mapToAssetListCriteriaPairList(identifierDtos);
 
-        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs, from -> from.getKey());
+        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs, AssetListCriteriaPair::getKey);
 
         assertEquals(3, map.size());
         AssetListCriteriaPair cfrPair = map.get(ConfigSearchField.CFR);
@@ -74,13 +74,10 @@ public class BaseMapperTest {
         AssetListCriteriaPair ircsPair = map.get(ConfigSearchField.IRCS);
         assertEquals(ConfigSearchField.IRCS, ircsPair.getKey());
         assertEquals("ircsValue", ircsPair.getValue());
-
     }
 
-
     @Test
-   public void mapMdrCodeListToAssetListCriteriaPairList() {
-
+    public void mapMdrCodeListToAssetListCriteriaPairList() {
         AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
         cfr.setFaIdentifierId("cfrValue");
         AssetIdentifierDto gfmc = new AssetIdentifierDto(GFCM);
@@ -100,12 +97,7 @@ public class BaseMapperTest {
         mdrCodeList.add("GFCM");
         List<AssetListCriteriaPair> pairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(identifierDtos,mdrCodeList);
 
-        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs,
-                new Function<AssetListCriteriaPair, ConfigSearchField>() {
-                    public ConfigSearchField apply(AssetListCriteriaPair from) {
-                        return from.getKey();
-                    }
-                });
+        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs, AssetListCriteriaPair::getKey);
 
         assertEquals(2, map.size());
         AssetListCriteriaPair cfrPair = map.get(ConfigSearchField.CFR);
@@ -115,7 +107,6 @@ public class BaseMapperTest {
         AssetListCriteriaPair ircsPair = map.get(ConfigSearchField.IRCS);
         assertEquals(ConfigSearchField.IRCS, ircsPair.getKey());
         assertEquals("ircsValue", ircsPair.getValue());
-
     }
 
     @Test

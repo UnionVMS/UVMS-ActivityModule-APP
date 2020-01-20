@@ -25,9 +25,9 @@ import java.util.Set;
 @Mapper(imports = BaseMapper.class,
         uses = {FluxCharacteristicsMapper.class, StructuredAddressMapper.class, FluxCharacteristicsMapper.class},
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface FluxLocationMapper {
+public abstract class FluxLocationMapper {
 
-    FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
+    public static final FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
 
 
     @Mapping(target = "typeCode", source = "typeCode.value")
@@ -44,10 +44,10 @@ public interface FluxLocationMapper {
     @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxLocation.getNames()))")
     @Mapping(target = "regionalFisheriesManagementOrganizationCode", source = "regionalFisheriesManagementOrganizationCode.value")
     @Mapping(target = "regionalFisheriesManagementOrganizationCodeListId", source = "regionalFisheriesManagementOrganizationCode.listID")
-    FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
+    public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
 
     @InheritInverseConfiguration
-    FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
+    public abstract FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
 
     List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
 }

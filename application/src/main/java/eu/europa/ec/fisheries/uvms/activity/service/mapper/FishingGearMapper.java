@@ -26,9 +26,9 @@ import java.util.Set;
 
 @Mapper(uses = {GearCharacteristicsMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface FishingGearMapper {
+public abstract class FishingGearMapper {
 
-    FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);
+    public static final FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);
 
 
     @Mapping(target = "typeCode", source = "typeCode.value")
@@ -39,21 +39,21 @@ public interface FishingGearMapper {
     @Mapping(target = "faCatch", ignore = true)
     @Mapping(target = "fishingActivity", ignore = true)
     @Mapping(target = "gearProblem", ignore = true)
-    FishingGearEntity mapToFishingGearEntity(FishingGear fishingGear);
+    public abstract FishingGearEntity mapToFishingGearEntity(FishingGear fishingGear);
 
     @InheritInverseConfiguration
     @Mapping(target = "roleCodes", source = "fishingGearRole")
     @Mapping(target = "applicableGearCharacteristics", source = "gearCharacteristics")
     @Mapping(target = "illustrateFLUXPictures", ignore = true)
-    FishingGear mapToFishingGear(FishingGearEntity fishingGearEntity);
+    public abstract FishingGear mapToFishingGear(FishingGearEntity fishingGearEntity);
 
-    List<FishingGear> mapToFishingGearList(Set<FishingGearEntity> fishingGearEntitySet);
+    public abstract List<FishingGear> mapToFishingGearList(Set<FishingGearEntity> fishingGearEntitySet);
 
     @Mapping(target = "roleCode", source = "value")
     @Mapping(target = "roleCodeListId", source = "listID")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "fishingGear", ignore = true)
-    FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
+    public abstract FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
 
     @InheritInverseConfiguration
     @Mapping(target = "listAgencyID", ignore = true)
@@ -64,6 +64,6 @@ public interface FishingGearMapper {
     @Mapping(target = "languageID", ignore = true)
     @Mapping(target = "listURI", ignore = true)
     @Mapping(target = "listSchemeURI", ignore = true)
-    CodeType mapToFishingGearRole(FishingGearRoleEntity codeType);
+    public abstract CodeType mapToFishingGearRole(FishingGearRoleEntity codeType);
 
 }

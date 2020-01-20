@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface StructuredAddressMapper {
+public abstract class StructuredAddressMapper {
 
-    StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
+    public static final StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
 
 
     @Mapping(target = "blockName", source = "blockName.value")
@@ -54,15 +54,15 @@ public interface StructuredAddressMapper {
     @Mapping(target = "structuredAddressType", ignore = true)
     @Mapping(target = "contactParty", ignore = true)
     @Mapping(target = "fluxLocation", ignore = true)
-    StructuredAddressEntity mapToStructuredAddressEntity(StructuredAddress structuredAddress);
+    public abstract StructuredAddressEntity mapToStructuredAddressEntity(StructuredAddress structuredAddress);
 
     @InheritInverseConfiguration
-    StructuredAddress mapToStructuredAddress(StructuredAddressEntity structuredAddress);
+    public abstract StructuredAddress mapToStructuredAddress(StructuredAddressEntity structuredAddress);
 
-    List<StructuredAddress> mapToStructuredAddressList(Set<StructuredAddressEntity> structuredAddress);
+    public abstract List<StructuredAddress> mapToStructuredAddressList(Set<StructuredAddressEntity> structuredAddress);
 
-    AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
+    public abstract AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
 
-    Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
+    public abstract Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
 
 }

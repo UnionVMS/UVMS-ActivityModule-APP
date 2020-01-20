@@ -89,6 +89,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Stateless
@@ -322,17 +323,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         for (FishingActivityEntity fishingActivityEntity : cancelledOrDeletedActivities) {
             Integer canceledBy = fishingActivityEntity.getCanceledBy();
             Integer deletedBy = fishingActivityEntity.getDeletedBy();
-            if (canceledBy != null) {
-                for (FaReportDocumentEntity faReportDocumentEntity : reportsByIdsList) {
-                    if (canceledBy.equals(faReportDocumentEntity.getId())) {
-                        responseMap.put(faReportDocumentEntity, fishingActivityEntity);
-                    }
-                }
-            } else {
-                for (FaReportDocumentEntity faReportDocumentEntity : reportsByIdsList) {
-                    if (deletedBy.equals(faReportDocumentEntity.getId())) {
-                        responseMap.put(faReportDocumentEntity, fishingActivityEntity);
-                    }
+            for (FaReportDocumentEntity faReportDocumentEntity : reportsByIdsList) {
+                if (Objects.equals(canceledBy, faReportDocumentEntity.getId()) ||
+                    Objects.equals(deletedBy, faReportDocumentEntity.getId())) {
+                    responseMap.put(faReportDocumentEntity, fishingActivityEntity);
                 }
             }
         }

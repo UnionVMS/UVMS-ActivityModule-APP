@@ -522,7 +522,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
 
         for (FluxLocationEntity location : fluxLocations) {
-            if (FluxLocationEnum.AREA.toString().equalsIgnoreCase(location.getTypeCode())) {
+            if (location.getTypeCode() == FluxLocationEnum.AREA) {
                 areas.add(location.getFluxLocationIdentifier());
             }
         }
@@ -537,7 +537,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<String> ports = new HashSet<>();
         Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
         for (FluxLocationEntity location : fluxLocations) {
-            if (FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(location.getTypeCode())) {
+            if (location.getTypeCode() == FluxLocationEnum.LOCATION) {
                 ports.add(location.getFluxLocationIdentifier());
             }
         }
