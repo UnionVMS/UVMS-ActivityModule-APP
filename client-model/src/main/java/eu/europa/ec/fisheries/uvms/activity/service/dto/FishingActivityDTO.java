@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.Data;
 
@@ -71,9 +70,6 @@ public class FishingActivityDTO {
 
     @JsonProperty("purposeCode")
     private String purposeCode;
-
-    @JsonProperty("fluxLocations")
-    private List<FluxLocationDetailsDTO> fluxLocations;
 
     @JsonProperty("fishingGears")
     private List<FishingGearDTO> fishingGears;

@@ -111,12 +111,6 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "flux_location_identifier_scheme_id")
 	private String fluxLocationIdentifierSchemeId;
 
-	@Column(name = "geopolitical_region_code")
-	private String geopoliticalRegionCode;
-
-	@Column(name = "geopolitical_region_code_list_id")
-	private String geopoliticalRegionCodeListId;
-
 	@Column(columnDefinition = "text", name = "namevalue")
 	private String name;
 
@@ -129,17 +123,8 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "rfmo_code_list_id")
 	private String regionalFisheriesManagementOrganizationCodeListId;
 
-	@Column(name = "sovereign_rights_country_code")
-	private String sovereignRightsCountryCode;
-
-	@Column(name = "jurisdiction_country_code")
-	private String jurisdictionCountryCode;
-
 	@Column(precision = 17, scale = 17)
 	private Double altitude;
-
-	@Column(name = "system_id")
-	private String systemId;
 
 	@OneToOne(mappedBy = "fluxLocation")
 	private FluxCharacteristicEntity fluxCharacteristic;

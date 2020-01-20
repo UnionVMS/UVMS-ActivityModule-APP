@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -41,13 +40,8 @@ public abstract class FluxLocationMapper {
     @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID")
     @Mapping(target = "fluxLocationIdentifier", source = "ID.value")
     @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID")
-    @Mapping(target = "geopoliticalRegionCode", source = "geopoliticalRegionCode.value")
-    @Mapping(target = "geopoliticalRegionCodeListId", source = "geopoliticalRegionCode.listID")
     @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(fluxLocation.getNames()))")
     @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxLocation.getNames()))")
-    @Mapping(target = "sovereignRightsCountryCode", source = "sovereignRightsCountryID.value")
-    @Mapping(target = "jurisdictionCountryCode", source = "jurisdictionCountryID.value")
-    @Mapping(target = "systemId", source = "specifiedPhysicalFLUXGeographicalCoordinate.systemID.value")
     @Mapping(target = "regionalFisheriesManagementOrganizationCode", source = "regionalFisheriesManagementOrganizationCode.value")
     @Mapping(target = "regionalFisheriesManagementOrganizationCodeListId", source = "regionalFisheriesManagementOrganizationCode.listID")
     public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
@@ -56,14 +50,4 @@ public abstract class FluxLocationMapper {
     public abstract FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
 
     public abstract List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
-
-
-    @Mapping(target = "geometry", source = "wkt")
-    @Mapping(target = "sovereignCountry", source = "sovereignRightsCountryCode")
-    @Mapping(target = "jurisdictionCountry", source = "jurisdictionCountryCode")
-    @Mapping(target = "rfmoCode", source = "regionalFisheriesManagementOrganizationCode")
-    public abstract FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
-
-    public abstract Set<FluxLocationDto> mapEntityToFluxLocationDto(Set<FluxLocationEntity> fluxLocation);
-
 }

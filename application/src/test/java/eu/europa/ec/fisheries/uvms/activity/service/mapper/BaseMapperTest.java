@@ -13,14 +13,9 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
-import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
@@ -29,7 +24,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,40 +42,6 @@ public class BaseMapperTest {
     @Before
     public void setUp() {
         baseMapper = new BaseMapper();
-    }
-
-    @Test
-    public void mapFromFluxLocation() {
-        // Given
-        FluxLocationEntity locationEntity_1 = FluxLocationEntity.builder().fluxLocationIdentifier("id1").fluxLocationIdentifierSchemeId("scheme1").build();
-        HashSet<FluxLocationEntity> fluxLocationEntities = Sets.newHashSet(locationEntity_1);
-
-        // When
-        Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(fluxLocationEntities);
-
-        // Then
-        assertEquals(1, fluxLocationDtos.size());
-    }
-
-    @Test
-    public void mapFluxLocations() {
-        // Given
-        FluxLocationEntity entity1 = new FluxLocationEntity();
-        entity1.setTypeCode(FluxLocationEnum.LOCATION);
-        entity1.setRegionalFisheriesManagementOrganizationCode("RFMO1");
-        entity1.setRegionalFisheriesManagementOrganizationCodeListId("RFMO");
-
-        FluxLocationEntity entity2 = new FluxLocationEntity();
-        entity2.setTypeCode(FluxLocationEnum.AREA);
-        entity2.setRegionalFisheriesManagementOrganizationCode("RFMO2");
-        entity2.setRegionalFisheriesManagementOrganizationCodeListId("RFMO");
-
-        // When
-        Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(newSet(entity1, entity2), FluxLocationEnum.LOCATION);
-
-        // Then
-        assertEquals(1, fluxLocationDtos.size());
-        assertEquals("RFMO1", fluxLocationDtos.iterator().next().getRfmoCode());
     }
 
     @Test

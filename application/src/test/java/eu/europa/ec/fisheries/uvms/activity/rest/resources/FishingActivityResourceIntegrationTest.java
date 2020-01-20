@@ -126,7 +126,6 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
             assertNotNull(fishingActivityReportDTO.getActivityType());
             assertNull(fishingActivityReportDTO.getGeometry());
             assertNull(fishingActivityReportDTO.getReason());
-            assertNull(fishingActivityReportDTO.getFluxLocations());
             assertNull(fishingActivityReportDTO.getFishingGears());
             assertNull(fishingActivityReportDTO.getFluxCharacteristics());
             assertNull(fishingActivityReportDTO.getDelimitedPeriod());

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.2.4/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="robmil" id="ers-473-drop-geopolitical_region_code-columns">
+        <dropColumn tableName="activity_flux_location" columnName="geopolitical_region_code" />
+        <dropColumn tableName="activity_flux_location" columnName="geopolitical_region_code_list_id" />
+    </changeSet>
+
+    <changeSet author="robmil" id="ers-473-drop-sovereign_rights_country_code-column">
+        <dropColumn tableName="activity_flux_location" columnName="sovereign_rights_country_code" />
+    </changeSet>
+
+    <changeSet author="robmil" id="ers-473-drop-jurisdiction_contry_code-column">
+        <dropColumn tableName="activity_flux_location" columnName="jurisdiction_country_code" />
+    </changeSet>
+
+    <changeSet author="robmil" id="ers-473-drop-system_id-column">
+        <dropColumn tableName="activity_flux_location" columnName="system_id" />
+    </changeSet>
+
+</databaseChangeLog>
