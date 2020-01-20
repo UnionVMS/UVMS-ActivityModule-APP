@@ -14,14 +14,11 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -44,19 +41,5 @@ public class FluxLocationMapperTest {
         assertEquals(fluxLocation.getID().getSchemeID(), fluxLocationEntity.getFluxLocationIdentifierSchemeId());
         assertTrue(fluxLocationEntity.getName().startsWith(fluxLocation.getNames().get(0).getValue()));
         assertNull(fluxLocationEntity.getFishingActivity());
-    }
-
-    @Test
-    public void mapToFluxLocationDTOTest(){
-        FluxLocationEntity fluxLocationEntity = getFluxLocationEntityMock();
-        FluxLocationDto locationDto = FluxLocationMapper.INSTANCE.mapEntityToFluxLocationDto(fluxLocationEntity);
-        assertNotNull(locationDto);
-    }
-
-    private FluxLocationEntity getFluxLocationEntityMock() {
-        FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-        fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED);
-        return fluxLocationEntity;
     }
 }

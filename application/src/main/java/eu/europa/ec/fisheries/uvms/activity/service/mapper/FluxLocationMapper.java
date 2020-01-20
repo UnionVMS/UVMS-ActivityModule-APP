@@ -12,7 +12,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -51,12 +50,4 @@ public interface FluxLocationMapper {
     FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
 
     List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
-
-
-    @Mapping(target = "geometry", source = "wkt")
-    @Mapping(target = "rfmoCode", source = "regionalFisheriesManagementOrganizationCode")
-    FluxLocationDto mapEntityToFluxLocationDto(FluxLocationEntity fluxLocation);
-
-    Set<FluxLocationDto> mapEntityToFluxLocationDto(Set<FluxLocationEntity> fluxLocation);
-
 }
