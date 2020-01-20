@@ -49,5 +49,5 @@ public abstract class FluxLocationMapper {
     @InheritInverseConfiguration
     public abstract FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
 
-    List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
+    public abstract List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
 }
