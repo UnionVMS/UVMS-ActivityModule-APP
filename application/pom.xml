@@ -18,6 +18,13 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>${javaee.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- PROJECT DEPENDENCIES -->
 
@@ -65,12 +72,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>activity-model</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fish.focus.uvms.maven</groupId>
-            <artifactId>uvms-pom-gis-deps</artifactId>
-            <type>pom</type>
         </dependency>
 
         <dependency>

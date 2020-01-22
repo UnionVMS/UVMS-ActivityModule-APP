@@ -164,13 +164,7 @@
                 <artifactId>spatial-client</artifactId>
                 <version>${spatialSwe.model.version}</version>
             </dependency>
-<!--
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
-                <artifactId>subscription-model</artifactId>
-                <version>${subscription.model.version}</version>
-            </dependency>
--->
+
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
