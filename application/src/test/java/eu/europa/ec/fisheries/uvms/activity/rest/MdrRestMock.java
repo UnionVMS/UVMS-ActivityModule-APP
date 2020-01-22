@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.uvms.activity.rest;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import org.jetbrains.annotations.NotNull;
 import un.unece.uncefact.data.standard.mdr.communication.ColumnDataType;
 import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListRequest;
 import un.unece.uncefact.data.standard.mdr.communication.MdrGetCodeListResponse;
@@ -11,6 +10,7 @@ import un.unece.uncefact.data.standard.mdr.communication.ValidationResult;
 import un.unece.uncefact.data.standard.mdr.communication.ValidationResultType;
 
 import javax.ejb.Stateless;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

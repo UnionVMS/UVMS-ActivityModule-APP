@@ -71,7 +71,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.jetbrains.annotations.Nullable;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 
@@ -145,7 +144,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return null;
     }
 
-    @Nullable
     private VesselDetailsDTO getVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity fishingActivityEntity) {
         VesselDetailsDTO detailsDTO;
         detailsDTO = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
