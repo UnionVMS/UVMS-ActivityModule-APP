@@ -226,13 +226,6 @@
 
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
-                <artifactId>uvms-pom-gis-deps</artifactId>
-                <version>${uvms.maven.version}</version>
-                <type>pom</type>
-            </dependency>
-
-            <dependency>
-                <groupId>fish.focus.uvms.maven</groupId>
                 <artifactId>uvms-pom-logging-deps</artifactId>
                 <version>${uvms.maven.version}</version>
                 <type>pom</type>
@@ -364,22 +357,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <!-- add repositories for JTS and Hibernate Spatial and Hibernate (JBoss) -->
-    <repositories>
-        <repository>
-            <id>OSGEO GeoTools repo</id>
-            <url>http://download.osgeo.org/webdav/geotools</url>
-        </repository>
-        <repository>
-            <id>Hibernate Spatial Repo</id>
-            <url>http://nexus.e-is.pro/nexus/content/repositories/hibernatespatial/</url>
-        </repository>
-        <repository>
-            <id>JBOSS</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-        </repository>
-    </repositories>
 
     <distributionManagement>
         <repository>
