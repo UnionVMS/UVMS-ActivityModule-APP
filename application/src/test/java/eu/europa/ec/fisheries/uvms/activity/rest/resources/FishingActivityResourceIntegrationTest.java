@@ -273,15 +273,11 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query1.setSearchCriteriaMap(searchCriteriaMap);
         query2.setSearchCriteriaMap(searchCriteriaMap);
 
-        PaginationDto pagination1 = new PaginationDto();
-        pagination1.setPageSize(2);
-        pagination1.setOffset(0);
-        query1.setPagination(pagination1);
+        query1.setPageSize(2);
+        query1.setOffset(0);
 
-        PaginationDto pagination2 = new PaginationDto();
-        pagination2.setPageSize(2);
-        pagination2.setOffset(1); // note: offset is 1 item, not 1 page
-        query2.setPagination(pagination2);
+        query2.setPageSize(2);
+        query2.setOffset(1); // note: offset is 1 item, not 1 page
 
         // make sorting deterministic
         SortKey sortingDto = new SortKey();

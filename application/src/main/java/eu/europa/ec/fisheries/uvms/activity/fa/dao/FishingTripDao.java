@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingTripIdSearchBuilder;
-import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
@@ -54,10 +53,9 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
     public Set<FishingTripId> getFishingTripIdsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
 
         Query listQuery = getQueryForFilterFishingTripIds(query);
-        PaginationDto pagination = query.getPagination();
-        if (pagination != null && pagination.getOffset() != null) {
-            listQuery.setFirstResult(pagination.getOffset());
-            listQuery.setMaxResults(pagination.getPageSize());
+        if (query.getOffset() != null && query.getPageSize() != null) {
+            listQuery.setFirstResult(query.getOffset());
+            listQuery.setMaxResults(query.getPageSize());
         }
         else {
             listQuery.setMaxResults(100);

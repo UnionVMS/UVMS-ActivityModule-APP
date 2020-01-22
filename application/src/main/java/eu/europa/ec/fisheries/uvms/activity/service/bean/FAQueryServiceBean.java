@@ -14,10 +14,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.FaQueryService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.ActivityEntityToModelMapper;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.annotation.PostConstruct;
@@ -37,26 +34,8 @@ public class FAQueryServiceBean extends BaseActivityBean implements FaQueryServi
     }
 
     @Override
-    public FLUXFAReportMessage getReportsByCriteria(List<SubscriptionDataCriteria> subscriptionDataCriteria) {
-        if (CollectionUtils.isNotEmpty(subscriptionDataCriteria)) {
-            Instant endDate = null;
-            Instant startDate = null;
-
-            for (SubscriptionDataCriteria dataCriteria : subscriptionDataCriteria) {
-
-                SubCriteriaType subCriteria = dataCriteria.getSubCriteria();
-                String value = dataCriteria.getValue();
-
-                if (subCriteria == SubCriteriaType.END_DATE) {
-                    endDate = Instant.parse(value);
-                } else if (subCriteria == SubCriteriaType.START_DATE) {
-                    startDate = Instant.parse(value);
-                }
-            }
-
-            List<FaReportDocumentEntity> faReportDocumentsForTrip = faReportDao.loadReports(null, "N", startDate, endDate);
-            return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
-        }
-        return null;
+    public FLUXFAReportMessage getReportsByCriteria(Instant startDate, Instant endDate) {
+        List<FaReportDocumentEntity> faReportDocumentsForTrip = faReportDao.loadReports(null, "N", startDate, endDate);
+        return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
     }
 }

@@ -30,24 +30,13 @@
         <!-- UVMS COMMONS DEPENDENCIES -->
 
         <dependency>
-            <groupId>fish.focus.uvms.maven</groupId>
-            <artifactId>uvms-pom-monitoring-deps</artifactId>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-message</artifactId>
+            <artifactId>uvms-commons-rest</artifactId>
         </dependency>
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-date</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-service</artifactId>
         </dependency>
 
         <dependency>
@@ -63,6 +52,12 @@
         <!-- UVMS DEPENDENCIES -->
 
         <dependency>
+            <groupId>fish.focus.uvms.maven</groupId>
+            <artifactId>uvms-pom-monitoring-deps</artifactId>
+            <type>pom</type>
+        </dependency>
+
+        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
             <artifactId>spatial-model</artifactId>
         </dependency>
@@ -76,7 +71,6 @@
             <groupId>fish.focus.uvms.maven</groupId>
             <artifactId>uvms-pom-gis-deps</artifactId>
             <type>pom</type>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -97,6 +91,12 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
             <artifactId>mdr-client</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>uvms-commons-rest</artifactId>
+                    <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -124,10 +124,10 @@
             <artifactId>asset-client</artifactId>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
             <artifactId>subscription-model</artifactId>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
@@ -139,6 +139,10 @@
             <artifactId>uvms-config</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.config</groupId>
+            <artifactId>config-model</artifactId>
+        </dependency>
 
         <!-- THIRD-PARTY DEPENDENCIES -->
         <dependency>

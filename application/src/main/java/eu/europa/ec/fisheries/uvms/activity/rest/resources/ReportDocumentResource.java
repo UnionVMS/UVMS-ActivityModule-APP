@@ -18,18 +18,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 import eu.europa.ec.fisheries.uvms.activity.service.FaQueryService;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 
 @Path("/report")
 @Slf4j
@@ -43,10 +45,23 @@ public class ReportDocumentResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_XML})
     @Consumes(value = {MediaType.APPLICATION_XML})
     public Object getReport(FLUXFAQueryMessage fluxfaQueryMessage) throws JAXBException {
-        SubscriptionDataRequest subscriptionDataRequest = SubscriptionMapper.mapToSubscriptionDataRequest(fluxfaQueryMessage.getFAQuery());
-        List<SubscriptionDataCriteria> queryCriteria = subscriptionDataRequest.getQuery().getCriteria();
-        log.debug(queryCriteria.toString());
-        FLUXFAReportMessage reportsByCriteria = faQueryService.getReportsByCriteria(queryCriteria);
+        DateTimeType startDate = fluxfaQueryMessage.getFAQuery().getSpecifiedDelimitedPeriod().getStartDateTime();
+        DateTimeType endDate = fluxfaQueryMessage.getFAQuery().getSpecifiedDelimitedPeriod().getEndDateTime();
+        LocalDateTime localStartDate = LocalDateTime.of(
+                startDate.getDateTime().getYear(),
+                startDate.getDateTime().getMonth(),
+                startDate.getDateTime().getDay(),
+                startDate.getDateTime().getHour(),
+                startDate.getDateTime().getMinute(),
+                startDate.getDateTime().getSecond());
+        LocalDateTime localEndDate = LocalDateTime.of(
+                endDate.getDateTime().getYear(),
+                endDate.getDateTime().getMonth(),
+                endDate.getDateTime().getDay(),
+                endDate.getDateTime().getHour(),
+                endDate.getDateTime().getMinute(),
+                endDate.getDateTime().getSecond());
+        FLUXFAReportMessage reportsByCriteria = faQueryService.getReportsByCriteria(localStartDate.toInstant(ZoneOffset.UTC), localEndDate.toInstant(ZoneOffset.UTC));
         String controlSource = JAXBUtils.marshallJaxBObjectToString(reportsByCriteria, "ISO-8859-15", true, new FANamespaceMapper());
         return clearEmptyTags(controlSource);
     }

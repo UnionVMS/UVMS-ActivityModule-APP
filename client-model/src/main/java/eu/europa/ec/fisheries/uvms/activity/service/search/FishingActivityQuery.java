@@ -15,7 +15,6 @@ import java.util.Map;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 
 /**
  * This class is used to define Filters to be applied on Fishing Activities
@@ -23,24 +22,17 @@ import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
  */
 public class FishingActivityQuery {
 
-    private PaginationDto pagination;
     private Map<SearchFilter, String> searchCriteriaMap;
     private Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues;
     private SortKey sorting;
     private List<GroupCriteria> groupByFields;
     private Boolean showOnlyLatest;
     private Boolean useStatusInsteadOfPurposeCode;
+    private Integer offset;
+    private Integer pageSize;
 
     public FishingActivityQuery() {
         // Assuming jackson needs this for serializing/deserializing
-    }
-
-    public PaginationDto getPagination() {
-        return pagination;
-    }
-
-    public void setPagination(PaginationDto pagination) {
-        this.pagination = pagination;
     }
 
     public Map<SearchFilter, String> getSearchCriteriaMap() {
@@ -89,5 +81,21 @@ public class FishingActivityQuery {
 
     public void setUseStatusInsteadOfPurposeCode(Boolean useStatusInsteadOfPurposeCode) {
         this.useStatusInsteadOfPurposeCode = useStatusInsteadOfPurposeCode;
+    }
+
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 }
