@@ -13,8 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.geotools.geometry.jts.GeometryBuilder;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.WKTWriter;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 import javax.persistence.CascadeType;
@@ -50,6 +49,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT_EPSG_SRID;
 
 @Entity
 @Table(name = "activity_flux_location")
@@ -140,7 +141,7 @@ public class FluxLocationEntity implements Serializable {
 	public void onPrePersist() {
 	    if(longitude != null && latitude != null){
             Point point = new GeometryBuilder().point(longitude, latitude);
-            point.setSRID(GeometryUtils.DEFAULT_EPSG_SRID);
+            point.setSRID(DEFAULT_EPSG_SRID);
             this.geom = point;
         }
 	}
@@ -148,7 +149,7 @@ public class FluxLocationEntity implements Serializable {
 	@PostLoad
 	private void onLoad() {
 		if(this.geom != null){
-			this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
+			this.wkt = new WKTWriter().write(this.geom);
 		}
 	}
 

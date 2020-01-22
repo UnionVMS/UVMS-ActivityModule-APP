@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.FeatureToGeoJsonJacksonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;

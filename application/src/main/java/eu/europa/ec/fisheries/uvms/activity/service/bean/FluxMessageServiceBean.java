@@ -32,18 +32,14 @@ import eu.europa.ec.fisheries.uvms.activity.service.MovementModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.io.WKTWriter;
 import org.locationtech.jts.linearref.LengthIndexedLine;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -53,13 +49,9 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
+
+import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.*;
 
 @Stateless
 @Transactional
@@ -289,14 +281,14 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
      *
      * @param faReportDocumentEntity
      */
-    private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws ServiceException {
+    private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws Exception {
         List<MicroMovement> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
         Set<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
         List<Geometry> multiPointForFaReport = populateGeometriesForFishingActivitiesAndRelatedActivities(movements, fishingActivityEntities);
-        faReportDocumentEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFaReport));
+        faReportDocumentEntity.setGeom(createMultipoint(multiPointForFaReport));
     }
 
-    private List<Geometry> populateGeometriesForFishingActivitiesAndRelatedActivities(List<MicroMovement> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
+    private List<Geometry> populateGeometriesForFishingActivitiesAndRelatedActivities(List<MicroMovement> movements, Set<FishingActivityEntity> fishingActivityEntities) throws Exception {
         List<Geometry> multiPointForFaReport = new ArrayList<>();
         for (FishingActivityEntity fishingActivityEntity : Utils.safeIterable(fishingActivityEntities)) {
             multiPointForFaReport = deriveMultipointsFromActivitiesAndMovements(multiPointForFaReport, fishingActivityEntity, movements);
@@ -307,7 +299,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return multiPointForFaReport;
     }
 
-    private List<Geometry> deriveMultipointsFromActivitiesAndMovements(List<Geometry> multiPointsToAddTo, FishingActivityEntity fishingActivityEntity, List<MicroMovement> movements) throws ServiceException {
+    private List<Geometry> deriveMultipointsFromActivitiesAndMovements(List<Geometry> multiPointsToAddTo, FishingActivityEntity fishingActivityEntity, List<MicroMovement> movements) throws Exception {
         List<Geometry> multiPointForFa = new ArrayList<>();
 
         Instant activityDate = getActivityDate(fishingActivityEntity);
@@ -326,7 +318,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                     fluxLocation.setGeom(point);
                     break;
                 case POSITION:
-                    point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                    point = createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
                     fluxLocation.setGeom(point);
                     break;
                 default:
@@ -337,7 +329,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 multiPointsToAddTo.add(point);
             }
         }
-        fishingActivityEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFa));
+        fishingActivityEntity.setGeom(createMultipoint(multiPointForFa));
         return multiPointsToAddTo;
     }
 
@@ -355,7 +347,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private Geometry getGeometryForLocation(FluxLocationEntity fluxLocation) throws ServiceException {
         Geometry point;
         if (fluxLocation.getLongitude() != null && fluxLocation.getLatitude() != null) {
-            point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+            point = createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
         } else {
             point = getGeometryFromMdr(fluxLocation.getFluxLocationIdentifier());
             if (point == null) {
@@ -396,7 +388,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 longitude = Double.parseDouble(longitudeStr);
             }
         }
-        return GeometryUtils.createPoint(longitude, latitude);
+        return createPoint(longitude, latitude);
     }
 
     /**
@@ -414,13 +406,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         try {
             String geometryWkt = spatialModuleService.getGeometryForPortCode(fluxLocationIdentifier);
             if (geometryWkt != null) {
-                Geometry value = GeometryMapper.INSTANCE.wktToGeometry(geometryWkt).getValue();
+                Geometry value = new WKTReader().read(geometryWkt);
                 Coordinate[] coordinates = value.getCoordinates();
                 if (coordinates.length > 0) {
                     Coordinate coordinate = coordinates[0];
                     double x = coordinate.x;
                     double y = coordinate.y;
-                    geometry = GeometryUtils.createPoint(x, y);
+                    geometry = createPoint(x, y);
                 }
             }
             log.debug("Geometry received from Spatial for: {} : {}", fluxLocationIdentifier, geometryWkt);
@@ -462,7 +454,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return movementModule.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
     }
 
-    private Geometry interpolatePointFromMovements(List<MicroMovement> movements, Instant activityDate) throws ServiceException {
+    private Geometry interpolatePointFromMovements(List<MicroMovement> movements, Instant activityDate) throws Exception {
         if (movements == null || movements.isEmpty()) {
             return null;
         }
@@ -493,7 +485,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         return geometryFactory.createPoint(coordinate);
     }
 
-    private Geometry calculateIntermediatePoint(MicroMovement previousMovement, MicroMovement nextMovement, Instant acceptedDate) throws ServiceException {
+    private Geometry calculateIntermediatePoint(MicroMovement previousMovement, MicroMovement nextMovement, Instant acceptedDate) throws Exception {
         long durationAB = nextMovement.getTimestamp().toEpochMilli() - previousMovement.getTimestamp().toEpochMilli();
         long durationAC = acceptedDate.toEpochMilli() - previousMovement.getTimestamp().toEpochMilli();
         long durationBC = nextMovement.getTimestamp().toEpochMilli() - acceptedDate.toEpochMilli();
@@ -513,9 +505,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             String nextWkt = WKTWriter.toPoint(nextPoint.getCoordinate());
             String previousWkt = WKTWriter.toPoint(previousPoint.getCoordinate());
 
-            LengthIndexedLine lengthIndexedLine = GeometryUtils.createLengthIndexedLine(previousWkt, nextWkt);
+            LengthIndexedLine lengthIndexedLine = createLengthIndexedLine(previousWkt, nextWkt);
             Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB;
-            point = GeometryUtils.calculateIntersectingPoint(lengthIndexedLine, index);
+            point = calculateIntersectingPoint(lengthIndexedLine, index);
         }
         point.setSRID(DEFAULT_WILDFLY_SRID);
         return point;
@@ -533,4 +525,5 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         }
         return movementMap;
     }
+
 }

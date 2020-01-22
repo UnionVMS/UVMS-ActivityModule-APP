@@ -21,9 +21,9 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.ToString;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.WKTWriter;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -243,7 +243,7 @@ public class ActivityDetailsDto {
     public String getWkt() {
         String wkt = null;
         if (geom != null) {
-            wkt = GeometryMapper.INSTANCE.geometryToWkt(geom).getValue();
+            wkt = new WKTWriter().write(geom);
         }
         return wkt;
     }

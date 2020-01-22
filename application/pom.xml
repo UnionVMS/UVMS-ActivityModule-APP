@@ -52,11 +52,6 @@
             <artifactId>uvms-commons-dao</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-geometry</artifactId>
-        </dependency>
-
         <!-- UVMS DEPENDENCIES -->
 
         <dependency>
@@ -126,11 +121,6 @@
             <artifactId>asset-client</artifactId>
         </dependency>
 
-        <!--dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
-            <artifactId>subscription-model</artifactId>
-        </dependency-->
-
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
@@ -180,6 +170,11 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geojson</artifactId>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->

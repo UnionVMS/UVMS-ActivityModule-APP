@@ -20,12 +20,11 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierScheme
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.model.StringWrapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.spatial.model.schemas.StringWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.WKTWriter;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -38,6 +37,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.createMultipoint;
 
 @Slf4j
 public class FishingTripIdWithGeometryMapper extends BaseMapper {
@@ -77,11 +78,8 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         }
 
         if (CollectionUtils.isNotEmpty(activityGeomList)) {
-            Geometry geometry = GeometryUtils.createMultipoint(activityGeomList);
-            StringWrapper stringWrapper = GeometryMapper.INSTANCE.geometryToWkt(geometry);
-            if (stringWrapper != null) {
-                return stringWrapper.getValue();
-            }
+            Geometry geometry = createMultipoint(activityGeomList);
+            return new WKTWriter().write(geometry);
         }
 
         return null;
