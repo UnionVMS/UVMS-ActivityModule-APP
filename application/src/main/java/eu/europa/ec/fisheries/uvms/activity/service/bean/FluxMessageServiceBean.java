@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
@@ -64,7 +63,6 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private static final String END_DATE = "END_DATE";
 
     private FaReportDocumentDao faReportDocumentDao;
-    private FluxFaReportMessageDao fluxFaReportMessageDao;
 
     @EJB
     private MovementModuleService movementModule;
@@ -83,13 +81,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
-        fluxFaReportMessageDao = new FluxFaReportMessageDao(entityManager);
     }
 
     @Override
     public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) {
         log.info("[START] Going to save [{}] FaReportDocuments.", faReportMessage.getFAReportDocuments().size());
         FluxFaReportMessageEntity messageEntity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);
+        entityManager.persist(messageEntity);
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             try {
@@ -99,13 +97,12 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 log.error("Could not update Geometry OR enrichActivities for faReportDocument: {}", faReportDocument.getId());
             }
         }
-        FluxFaReportMessageEntity entity = fluxFaReportMessageDao.createEntity(messageEntity);
         log.debug("Saved partial FluxFaReportMessage before further processing");
-        updateFaReportCorrectionsOrCancellations(entity.getFaReportDocuments());
+        updateFaReportCorrectionsOrCancellations(messageEntity.getFaReportDocuments());
         log.debug("Updating FaReport Corrections is complete.");
-        updateFishingTripStartAndEndDate(entity.getFaReportDocuments());
+        updateFishingTripStartAndEndDate(messageEntity.getFaReportDocuments());
         log.info("[END] FluxFaReportMessage Saved successfully.");
-        return entity;
+        return messageEntity;
     }
 
     /**
@@ -208,7 +205,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 List<FaReportDocumentEntity> foundRelatedFaReportsCorrOrDelOrCanc = faReportDocumentDao.findFaReportsThatReferTo(justSavedReport.getFluxReportDocument_Id(), justSavedReport.getFluxReportDocument_IdSchemeId());
 
                 if (!foundRelatedFaReportsCorrOrDelOrCanc.isEmpty()) {
-                    FaReportDocumentEntity persistentFaDoc = faReportDocumentDao.findEntityById(FaReportDocumentEntity.class, justSavedReport.getId());
+                    FaReportDocumentEntity persistentFaDoc = entityManager.find(FaReportDocumentEntity.class, justSavedReport.getId());
 
                     for (FaReportDocumentEntity foundRelatedFaReportCorrOrDelOrCanc : foundRelatedFaReportsCorrOrDelOrCanc) {
                         String purposeCodeFromDb = foundRelatedFaReportCorrOrDelOrCanc.getFluxReportDocument_PurposeCode();

@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingActivitySearchBuilder;
-import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -33,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
+public class FishingActivityDao {
 
     private static final String QUERY_PARAM_FISHING_TRIP_ID = "fishingTripId";
     private static final String QUERY_PARAM_FISHING_ACTIVITY_ID = "fishingActivityId";
@@ -47,7 +46,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         this.em = em;
     }
 
-    @Override
     public EntityManager getEntityManager() {
         return em;
     }

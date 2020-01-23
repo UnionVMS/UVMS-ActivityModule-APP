@@ -47,10 +47,10 @@
             </exclusions>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
             <artifactId>uvms-commons-dao</artifactId>
-        </dependency>
+        </dependency-->
 
         <!-- UVMS DEPENDENCIES -->
 
