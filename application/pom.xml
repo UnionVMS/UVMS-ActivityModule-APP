@@ -47,11 +47,6 @@
             </exclusions>
         </dependency>
 
-        <!--dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-dao</artifactId>
-        </dependency-->
-
         <!-- UVMS DEPENDENCIES -->
 
         <dependency>
@@ -124,6 +119,12 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>uvms-commons-message</artifactId>
+                    <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
