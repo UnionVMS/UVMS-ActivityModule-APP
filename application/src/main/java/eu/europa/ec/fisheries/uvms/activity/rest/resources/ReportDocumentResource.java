@@ -45,23 +45,9 @@ public class ReportDocumentResource extends UnionVMSResource {
     @Produces(value = {MediaType.APPLICATION_XML})
     @Consumes(value = {MediaType.APPLICATION_XML})
     public Object getReport(FLUXFAQueryMessage fluxfaQueryMessage) throws JAXBException {
-        DateTimeType startDate = fluxfaQueryMessage.getFAQuery().getSpecifiedDelimitedPeriod().getStartDateTime();
-        DateTimeType endDate = fluxfaQueryMessage.getFAQuery().getSpecifiedDelimitedPeriod().getEndDateTime();
-        LocalDateTime localStartDate = LocalDateTime.of(
-                startDate.getDateTime().getYear(),
-                startDate.getDateTime().getMonth(),
-                startDate.getDateTime().getDay(),
-                startDate.getDateTime().getHour(),
-                startDate.getDateTime().getMinute(),
-                startDate.getDateTime().getSecond());
-        LocalDateTime localEndDate = LocalDateTime.of(
-                endDate.getDateTime().getYear(),
-                endDate.getDateTime().getMonth(),
-                endDate.getDateTime().getDay(),
-                endDate.getDateTime().getHour(),
-                endDate.getDateTime().getMinute(),
-                endDate.getDateTime().getSecond());
-        FLUXFAReportMessage reportsByCriteria = faQueryService.getReportsByCriteria(localStartDate.toInstant(ZoneOffset.UTC), localEndDate.toInstant(ZoneOffset.UTC));
+        Instant startInstant = fluxfaQueryMessage.getFAQuery().getSpecifiedDelimitedPeriod().getStartDateTime().getDateTime().toGregorianCalendar().getTime().toInstant();
+        Instant endInstant = fluxfaQueryMessage.getFAQuery().getSpecifiedDelimitedPeriod().getEndDateTime().getDateTime().toGregorianCalendar().getTime().toInstant();
+        FLUXFAReportMessage reportsByCriteria = faQueryService.getReportsByCriteria(startInstant, endInstant);
         String controlSource = JAXBUtils.marshallJaxBObjectToString(reportsByCriteria, "ISO-8859-15", true, new FANamespaceMapper());
         return clearEmptyTags(controlSource);
     }
