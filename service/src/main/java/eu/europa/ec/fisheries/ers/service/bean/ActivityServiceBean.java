@@ -66,6 +66,8 @@ import org.jetbrains.annotations.NotNull;
 @Slf4j
 public class ActivityServiceBean extends BaseActivityBean implements ActivityService {
 
+    public static final String CODE_COLUMN = "code";
+
     private FaReportDocumentDao faReportDocumentDao;
 
     private FishingActivityDao fishingActivityDao;
@@ -368,17 +370,13 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             return;
         }
         final String ACRONYM = "LOCATION";
-        String filter;
-        final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
-        Integer nrOfResults = 1;
         if (CollectionUtils.isNotEmpty(fishingActivityViewDTO.getLocations())) {
             for (FluxLocationDto fluxLocationDto : fishingActivityViewDTO.getLocations()) {
                 if (fluxLocationIdSchemeId.equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
                     try {
-                        filter = fluxLocationDto.getFluxLocationIdentifier();
-                        List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "description").get("description");
-                        String codeDescription = codeDescriptions.get(0);
-                        fluxLocationDto.setPortDescription(codeDescription);
+                        String filter = fluxLocationDto.getFluxLocationIdentifier();
+                        Map<String,String> codeDescription = mdrModuleService.getPortDescriptionFromMdr(ACRONYM,filter);
+                        fluxLocationDto.setPortDescription(codeDescription.get(filter));
                     } catch (ServiceException e) {
                         log.error("Error while trying to set port description on FluxLocationDto.", e);
                     } catch (IndexOutOfBoundsException iobe) {

@@ -34,6 +34,9 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
         mdrcache.loadAllMdrCodeLists();
     }
 
+    public static final String CODE_COLUMN = "code";
+    public static final String DESCRIPTION_COLUMN = "description";
+
     @Override
     public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> filterColumns, Integer nrOfResults, String... returnColumns) throws ServiceException {
         loadCache();
@@ -48,6 +51,32 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
         }
         return columnNameValuesMap;
     }
+
+    @Override
+    public Map<String, String> getPortDescriptionFromMdr(String acronym,String filter) throws ServiceException {
+        loadCache();
+        Map<String,String> columnNameValuesMap = new HashMap<>();
+        List<ObjectRepresentation> codeList = mdrcache.getEntry(MDRAcronymType.fromValue(acronym));
+        for (ObjectRepresentation objectRep : codeList) {
+            for (ColumnDataType nameVal : objectRep.getFields()) {
+                if (CODE_COLUMN.equals(nameVal.getColumnName()) && filter.equals(nameVal.getColumnValue()) ) {
+                    columnNameValuesMap.put(filter,getDescriptionColumnValue(objectRep));
+                    return columnNameValuesMap;
+                }
+            }
+        }
+        return columnNameValuesMap;
+    }
+
+    private String getDescriptionColumnValue(ObjectRepresentation objectRep){
+        for (ColumnDataType nameVal : objectRep.getFields()) {
+            if (DESCRIPTION_COLUMN.equals(nameVal.getColumnName())) {
+                return  nameVal.getColumnValue();
+            }
+        }
+        return null;
+    }
+
 
     private Map<String, List<String>> prepareColumnNameValuesMap(String[] returnColumns) {
         Map<String, List<String>> columnNameValuesMap = new HashMap<>(returnColumns.length);
