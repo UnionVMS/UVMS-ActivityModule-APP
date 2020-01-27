@@ -563,39 +563,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (faCatches == null || faCatches.isEmpty()) {
             return Collections.emptySet();
         }
+
         Set<FaCatchEntity> faCatchEntities = new HashSet<>();
+
         for (FACatch faCatch : faCatches) {
             FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
-            for (AAPProcess aapProcess : Utils.safeIterable(faCatch.getAppliedAAPProcesses())) {
-                AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
-                for (AAPProduct aapProduct : Utils.safeIterable(aapProcess.getResultAAPProducts())) {
-                    aapProcessEntity.addAapProducts(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct));
-                }
-
-                for (CodeType codeType : Utils.safeIterable(aapProcess.getTypeCodes())) {
-                    aapProcessEntity.addProcessCode(AapProcessCodeMapper.INSTANCE.mapToAapProcessCodeEntity(codeType));
-                }
-                faCatchEntity.addAAPProcess(aapProcessEntity);
-            }
-
-            SizeDistribution specifiedSizeDistribution = faCatch.getSpecifiedSizeDistribution();
-            if (specifiedSizeDistribution != null) {
-                if (specifiedSizeDistribution.getCategoryCode() != null) {
-                    faCatchEntity.setSizeDistributionCategoryCode(specifiedSizeDistribution.getCategoryCode().getValue());
-                    faCatchEntity.setSizeDistributionCategoryCodeListId(specifiedSizeDistribution.getCategoryCode().getListID());
-                }
-
-                List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
-                if (!CollectionUtils.isEmpty(classCodes)) {
-                    if (classCodes.size() > 1) {
-                        String values = classCodes.stream().map(CodeType::getValue).collect(Collectors.joining(", "));
-                        throw new IllegalArgumentException("Failed to map FACatch.specifiedSizeDistribution, more than one SizeDistributionType.ClassCode found. Values: " + values);
-                    }
-                    faCatchEntity.setSizeDistributionClassCode(classCodes.get(0).getValue());
-                    faCatchEntity.setSizeDistributionClassCodeListId(classCodes.get(0).getListID());
-                }
-            }
+            mapAapProcesses(faCatch, faCatchEntity);
+            mapSizeDistribution(faCatch, faCatchEntity);
 
             faCatchEntity.setFishingActivity(fishingActivityEntity);
             faCatchEntity.setGearTypeCode(extractFishingGearTypeCode(faCatchEntity.getFishingGears()));
@@ -603,6 +578,42 @@ public abstract class FishingActivityMapper extends BaseMapper {
             faCatchEntities.add(mapFluxLocationSchemeIds(faCatch, faCatchEntity));
         }
         return faCatchEntities;
+    }
+
+    private void mapAapProcesses(FACatch faCatch, FaCatchEntity faCatchEntity) {
+        for (AAPProcess aapProcess : Utils.safeIterable(faCatch.getAppliedAAPProcesses())) {
+            AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+            for (AAPProduct aapProduct : Utils.safeIterable(aapProcess.getResultAAPProducts())) {
+                aapProcessEntity.addAapProducts(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct));
+            }
+
+            for (CodeType codeType : Utils.safeIterable(aapProcess.getTypeCodes())) {
+                aapProcessEntity.addProcessCode(AapProcessCodeMapper.INSTANCE.mapToAapProcessCodeEntity(codeType));
+            }
+            faCatchEntity.addAAPProcess(aapProcessEntity);
+        }
+    }
+
+    private void mapSizeDistribution(FACatch faCatch, FaCatchEntity faCatchEntity) {
+        SizeDistribution specifiedSizeDistribution = faCatch.getSpecifiedSizeDistribution();
+        if (specifiedSizeDistribution == null) {
+            return;
+        }
+
+        if (specifiedSizeDistribution.getCategoryCode() != null) {
+            faCatchEntity.setSizeDistributionCategoryCode(specifiedSizeDistribution.getCategoryCode().getValue());
+            faCatchEntity.setSizeDistributionCategoryCodeListId(specifiedSizeDistribution.getCategoryCode().getListID());
+        }
+
+        List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
+        if (!CollectionUtils.isEmpty(classCodes)) {
+            if (classCodes.size() > 1) {
+                String values = classCodes.stream().map(CodeType::getValue).collect(Collectors.joining(", "));
+                throw new IllegalArgumentException("Failed to map FACatch.specifiedSizeDistribution, more than one SizeDistributionType.ClassCode found. Values: " + values);
+            }
+            faCatchEntity.setSizeDistributionClassCode(classCodes.get(0).getValue());
+            faCatchEntity.setSizeDistributionClassCodeListId(classCodes.get(0).getListID());
+        }
     }
 
     private String extractPresentation(Set<AapProcessEntity> aapProcessEntities) {
