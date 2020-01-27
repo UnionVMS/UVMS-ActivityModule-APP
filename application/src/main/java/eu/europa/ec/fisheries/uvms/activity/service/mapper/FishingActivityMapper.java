@@ -70,6 +70,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -271,25 +272,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingActivity == null) {
             return null;
         }
-        DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
 
-        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingActivity.getSpecifiedDelimitedPeriods();
-        if (specifiedDelimitedPeriods.size() > 1) {
+        if (fishingActivity.getSpecifiedDelimitedPeriods().size() > 1) {
             throw new IllegalArgumentException("Received more than one DelimitedPeriod in FishingActivity");
         }
 
-        if (!specifiedDelimitedPeriods.isEmpty()) {
-            DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
-            Instant endDate = DelimitedPeriodMapper.getEndDate(delimitedPeriod);
-            if (endDate != null) {
-                return endDate;
-            } else {
-                Duration duration = DelimitedPeriodMapper.getDuration(delimitedPeriod);
-                if (duration != null && occurrenceDateTime != null) {
-                    Instant instant = XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
-                    return instant.plus(duration);
-                }
-            }
+        Optional<Instant> endTimeFromDelimitedTimePeriod = getEndTimeFromDelimitedTimePeriod(fishingActivity);
+        if (endTimeFromDelimitedTimePeriod.isPresent()) {
+            return endTimeFromDelimitedTimePeriod.get();
         }
 
         Instant relatedFishingActivityEndDate = null;
@@ -306,11 +296,33 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return relatedFishingActivityEndDate;
         }
 
-        if (occurrenceDateTime != null) {
-            return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
+        if (fishingActivity.getOccurrenceDateTime() != null) {
+            return XMLDateUtils.xmlGregorianCalendarToDate(fishingActivity.getOccurrenceDateTime().getDateTime()).toInstant();
         }
 
         return null;
+    }
+
+    private Optional<Instant> getEndTimeFromDelimitedTimePeriod(FishingActivity fishingActivity) {
+        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingActivity.getSpecifiedDelimitedPeriods();
+        if (specifiedDelimitedPeriods.isEmpty()) {
+            return Optional.empty();
+        }
+
+        DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
+        DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
+        Instant endDate = DelimitedPeriodMapper.getEndDate(delimitedPeriod);
+        if (endDate != null) {
+            return Optional.of(endDate);
+        } else {
+            Duration duration = DelimitedPeriodMapper.getDuration(delimitedPeriod);
+            if (duration != null && occurrenceDateTime != null) {
+                Instant instant = XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
+                return Optional.of(instant.plus(duration));
+            }
+        }
+
+        return Optional.empty();
     }
 
     protected Date getEndDate(FishingActivityEntity entity) {
