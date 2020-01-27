@@ -41,27 +41,22 @@ public abstract class GeomUtil {
         return createPoint(coordinate);
     }
 
-    public static LengthIndexedLine createLengthIndexedLine(String wkt1, String wkt2) throws Exception {
+    public static LengthIndexedLine createLengthIndexedLine(String wkt1, String wkt2) throws ParseException {
         Geometry lineString = GeomUtil.createLineString(wkt1, wkt2);
         return new LengthIndexedLine(lineString);
     }
 
-    public static Geometry createLineString(String wkt1, String wkt2) throws Exception {
+    public static Geometry createLineString(String wkt1, String wkt2) throws ParseException {
         LineString line;
 
-        try {
-            Geometry point1 = new WKTReader().read(wkt1);
-            Geometry point2 = new WKTReader().read(wkt2);
-            GeometryFactory geometryFactory = new GeometryFactory();
-            List<Coordinate> coordinates = new ArrayList<>();
-            coordinates.add(point1.getCoordinate());
-            coordinates.add(point2.getCoordinate());
-            line = geometryFactory.createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
-            line.setSRID(DEFAULT_EPSG_SRID);
-
-        } catch (ParseException e) {
-            throw new Exception(e.getMessage(), e);
-        }
+        Geometry point1 = new WKTReader().read(wkt1);
+        Geometry point2 = new WKTReader().read(wkt2);
+        GeometryFactory geometryFactory = new GeometryFactory();
+        List<Coordinate> coordinates = new ArrayList<>();
+        coordinates.add(point1.getCoordinate());
+        coordinates.add(point2.getCoordinate());
+        line = geometryFactory.createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
+        line.setSRID(DEFAULT_EPSG_SRID);
 
         return line;
     }

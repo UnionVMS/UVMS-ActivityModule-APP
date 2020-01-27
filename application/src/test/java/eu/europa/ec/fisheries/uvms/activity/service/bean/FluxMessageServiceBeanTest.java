@@ -21,6 +21,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -81,7 +82,7 @@ public class FluxMessageServiceBeanTest {
 
     @Test
     @Ignore
-    public void saveFishingActivityReportDocuments() {
+    public void saveFishingActivityReportDocuments() throws ServiceException {
         // Trigger
         fluxMessageService.saveFishingActivityReportDocuments(fluxFaReportMessage, FaReportSourceEnum.FLUX);
 
@@ -101,7 +102,7 @@ public class FluxMessageServiceBeanTest {
 
     @Test
     @Ignore
-    public void saveFishingReportMessage_expectFishingTripStartAndEndDateToBeSet() {
+    public void saveFishingReportMessage_expectFishingTripStartAndEndDateToBeSet() throws ServiceException {
         // Trigger
         fluxMessageService.saveFishingActivityReportDocuments(fluxFaReportMessage, FaReportSourceEnum.FLUX);
 
