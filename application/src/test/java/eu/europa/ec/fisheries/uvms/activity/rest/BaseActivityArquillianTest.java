@@ -121,7 +121,6 @@ public abstract class BaseActivityArquillianTest {
 
     protected void setUp() throws NamingException, ServiceException, JAXBException, IOException, SystemException, NotSupportedException {
         InitialContext ctx = new InitialContext();
-        ctx.rebind("java:global/spatial_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST);
         ctx.rebind("java:global/mdr_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/mdrmock");
         ctx.rebind("java:global/asset_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/assetmock");
         ctx.rebind("java:global/movement_endpoint", "http://localhost:8080/" + ACTIVITY_REST_TEST + "/movementmock");
@@ -136,7 +135,7 @@ public abstract class BaseActivityArquillianTest {
     }
 
     @Transactional
-    private void populateFluxTestData() throws IOException, JAXBException, ServiceException {
+    public void populateFluxTestData() throws IOException, JAXBException, ServiceException {
         for (String anonymizedFluxMessageFileName : ANONYMIZED_FLUX_MESSAGES) {
             FLUXFAReportMessage fluxMessage = getMessageFromTestResource(ANONYMIZED_FLUX_MESSAGES_FOLDER_NAME + "/" + anonymizedFluxMessageFileName);
             fluxMessageService.saveFishingActivityReportDocuments(fluxMessage, FaReportSourceEnum.FLUX);

@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
+public class FaReportDocumentDao {
 
     private static final String REPORT_ID = "reportId";
     private static final String SCHEME_ID = "schemeId";
@@ -48,7 +47,6 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         this.em = em;
     }
 
-    @Override
     public EntityManager getEntityManager() {
         return em;
     }

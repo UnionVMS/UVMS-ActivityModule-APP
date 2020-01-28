@@ -11,15 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service;
 
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.ejb.Local;
-import java.util.List;
+import java.time.Instant;
 
 @Local
 public interface FaQueryService {
 
-    FLUXFAReportMessage getReportsByCriteria(List<SubscriptionDataCriteria> subscriptionDataCriteria);
+    FLUXFAReportMessage getReportsByCriteria(Instant startDate, Instant endDate);
 
 }

@@ -62,8 +62,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
@@ -71,9 +69,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.jetbrains.annotations.Nullable;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
+import org.locationtech.jts.io.WKTWriter;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -91,6 +90,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT_EPSG_SRID;
 
 @Stateless
 @Local(FishingTripService.class)
@@ -145,7 +146,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return null;
     }
 
-    @Nullable
     private VesselDetailsDTO getVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity fishingActivityEntity) {
         VesselDetailsDTO detailsDTO;
         detailsDTO = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
@@ -224,8 +224,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         try {
             List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
             String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
-            Geometry geometry = GeometryMapper.INSTANCE.wktToGeometry(areaWkt).getValue();
-            geometry.setSRID(GeometryUtils.DEFAULT_EPSG_SRID);
+            Geometry geometry = new WKTReader().read(areaWkt);
+            geometry.setSRID(DEFAULT_EPSG_SRID);
             return geometry;
         } catch (ParseException e) {
             throw new ServiceException(e.getMessage(), e);

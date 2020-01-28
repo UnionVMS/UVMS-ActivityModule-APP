@@ -18,7 +18,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.search.builder.SearchQueryBu
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.junit.Test;
 
@@ -38,10 +37,8 @@ public class SearchQueryBuilderTest {
         searchCriteriaMap.put(SearchFilter.ACTIVITY_TYPE, "DEPARTURE");
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        PaginationDto pagination = new PaginationDto();
-        pagination.setPageSize(2);
-        pagination.setOffset(1);
-        query.setPagination( pagination);
+        query.setPageSize(2);
+        query.setOffset(1);
         SearchQueryBuilder search = new FishingActivitySearchBuilder();
 
         // When
@@ -81,10 +78,8 @@ public class SearchQueryBuilderTest {
         query.setSorting(sortingDto);
 
         query.setSearchCriteriaMap(searchCriteriaMap);
-        PaginationDto pagination = new PaginationDto();
-        pagination.setPageSize(2);
-        pagination.setOffset(1);
-        query.setPagination( pagination);
+        query.setPageSize(2);
+        query.setOffset(1);
 
         SortKey sortingDto2 = new SortKey();
         sortingDto2.setReversed(false);

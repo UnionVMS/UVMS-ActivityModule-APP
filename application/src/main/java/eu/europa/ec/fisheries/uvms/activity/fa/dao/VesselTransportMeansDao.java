@@ -14,14 +14,13 @@
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
-import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
-import eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class VesselTransportMeansDao extends AbstractDAO<VesselTransportMeansEntity> {
+public class VesselTransportMeansDao {
 
     private EntityManager em;
 
@@ -29,19 +28,17 @@ public class VesselTransportMeansDao extends AbstractDAO<VesselTransportMeansEnt
         this.em = em;
     }
 
-    @Override
     public EntityManager getEntityManager() {
         return em;
     }
 
     public VesselTransportMeansEntity findLatestVesselByTripId(String tripId) {
         VesselTransportMeansEntity vesselTransportMeansEntity = null;
-        List<VesselTransportMeansEntity> byNamedQuery = findEntityByNamedQuery(
-                VesselTransportMeansEntity.class,
-                VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
-                QueryParameter.with("tripId", tripId).parameters(),
-                1
-        );
+
+        TypedQuery<VesselTransportMeansEntity> query = em.createNamedQuery(VesselTransportMeansEntity.FIND_LATEST_VESSEL_BY_TRIP_ID, VesselTransportMeansEntity.class);
+        query.setParameter("tripId", tripId);
+        query.setMaxResults(1);
+        List<VesselTransportMeansEntity> byNamedQuery = query.getResultList();
         if (!CollectionUtils.isEmpty(byNamedQuery)) {
             vesselTransportMeansEntity = byNamedQuery.get(0);
         }

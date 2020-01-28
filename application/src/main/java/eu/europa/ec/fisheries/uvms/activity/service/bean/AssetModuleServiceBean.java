@@ -22,12 +22,12 @@ import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,9 +44,6 @@ public class AssetModuleServiceBean implements AssetModuleService {
 
     @EJB
     private AssetClient assetClient;
-
-    public AssetModuleServiceBean() {
-    }
 
     @Inject
     public AssetModuleServiceBean(AssetClient assetClient) {

@@ -48,9 +48,10 @@
         <usm4uvms.version>4.0.21</usm4uvms.version>
         <uvms.maven.version>2.6</uvms.maven.version>
 
+        <config.model.version>4.1.3</config.model.version>
         <spatialSwe.model.version>2.0.8-UVMS</spatialSwe.model.version>
         <exchange.model.version>5.0.19-UVMS</exchange.model.version>
-        <subscription.model.version>1.3</subscription.model.version>
+        <!--subscription.model.version>1.3</subscription.model.version-->
         <rules.model.version>3.0.49</rules.model.version>
         <uvms.config.version>4.0.5</uvms.config.version>
         <mdr.model.version>1.0.5</mdr.model.version>
@@ -66,9 +67,9 @@
         <apache.commons.lang3.version>3.7</apache.commons.lang3.version>
         <commons.io.version>2.6</commons.io.version>
         <lombok.version>1.18.10</lombok.version>
-        <guava.version>20.0</guava.version>
         <slf4j.api.version>1.7.25</slf4j.api.version>
         <jetbrains.annotations.java5.version>16.0.3</jetbrains.annotations.java5.version>
+        <geotools.version>22.0</geotools.version>
 
         <!-- Test dependency versions -->
         <uvms.test.version>0.0.4</uvms.test.version>
@@ -106,34 +107,9 @@
 
 
             <!-- UVMS COMMONS DEPENDENCIES -->
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-                <artifactId>uvms-commons-message</artifactId>
-                <version>${uvms.commons.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
                 <artifactId>uvms-commons-date</artifactId>
-                <version>${uvms.commons.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-                <artifactId>uvms-commons-service</artifactId>
-                <version>${uvms.commons.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-                <artifactId>uvms-commons-dao</artifactId>
-                <version>${uvms.commons.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-                <artifactId>uvms-commons-geometry</artifactId>
                 <version>${uvms.commons.version}</version>
             </dependency>
 
@@ -145,6 +121,12 @@
 
 
             <!-- UVMS DEPENDENCIES -->
+
+            <dependency>
+                <groupId>eu.europa.ec.fisheries.uvms.config</groupId>
+                <artifactId>config-model</artifactId>
+                <version>${config.model.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
@@ -168,12 +150,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
                 <artifactId>spatial-client</artifactId>
                 <version>${spatialSwe.model.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
-                <artifactId>subscription-model</artifactId>
-                <version>${subscription.model.version}</version>
             </dependency>
 
             <dependency>
@@ -238,13 +214,6 @@
 
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
-                <artifactId>uvms-pom-gis-deps</artifactId>
-                <version>${uvms.maven.version}</version>
-                <type>pom</type>
-            </dependency>
-
-            <dependency>
-                <groupId>fish.focus.uvms.maven</groupId>
                 <artifactId>uvms-pom-logging-deps</artifactId>
                 <version>${uvms.maven.version}</version>
                 <type>pom</type>
@@ -264,40 +233,50 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
                 <version>${jackson.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.jaxrs</groupId>
                 <artifactId>jackson-jaxrs-json-provider</artifactId>
                 <version>${jackson.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
                 <artifactId>jackson-module-jaxb-annotations</artifactId>
                 <version>${jackson.version}</version>
-                <scope>test</scope>
+                <scope>provided</scope>
             </dependency>
 
             <!-- THIRD-PARTY DEPDENDENCIES -->
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-geojson</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.mapstruct</groupId>
@@ -322,19 +301,6 @@
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.jetbrains</groupId>
-                <artifactId>annotations-java5</artifactId>
-                <version>${jetbrains.annotations.java5.version}</version>
-            </dependency>
-
 
             <!-- TEST DEPENDENCIES -->
 
@@ -373,33 +339,9 @@
                 <version>${arquillian.jacoco.version}</version>
                 <scope>test</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
-
-	<dependencies>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>${javaee.version}</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
-    <!-- add repositories for JTS and Hibernate Spatial and Hibernate (JBoss) -->
-    <repositories>
-        <repository>
-            <id>OSGEO GeoTools repo</id>
-            <url>http://download.osgeo.org/webdav/geotools</url>
-        </repository>
-        <repository>
-            <id>Hibernate Spatial Repo</id>
-            <url>http://nexus.e-is.pro/nexus/content/repositories/hibernatespatial/</url>
-        </repository>
-        <repository>
-            <id>JBOSS</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-        </repository>
-    </repositories>
 
     <distributionManagement>
         <repository>

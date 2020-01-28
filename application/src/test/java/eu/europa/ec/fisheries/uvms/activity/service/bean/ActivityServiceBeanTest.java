@@ -301,9 +301,8 @@ public class ActivityServiceBeanTest {
         purposeCodeList.add("9");
         searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
         PaginationDto pagination =new PaginationDto();
-        pagination.setPageSize(4);
-        pagination.setOffset(1);
-        query.setPagination(pagination);
+        query.setPageSize(4);
+        query.setOffset(1);
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
@@ -332,9 +331,8 @@ public class ActivityServiceBeanTest {
         searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
 
         PaginationDto pagination = new PaginationDto();
-        pagination.setPageSize(4);
-        pagination.setOffset(1);
-        query.setPagination(pagination);
+        query.setPageSize(4);
+        query.setOffset(1);
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
