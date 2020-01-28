@@ -25,9 +25,6 @@ public class FishingTripToGeoJsonMapper {
 
     /**
      * Convert Geometry list into GEO JSON format
-     *
-     * @param geoList
-     * @return
      */
     public static ObjectNode toJson(List<Geometry> geoList)  {
 

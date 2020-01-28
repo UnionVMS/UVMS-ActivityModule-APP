@@ -19,9 +19,9 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface AapProcessCodeMapper {
+public abstract class AapProcessCodeMapper {
 
-    AapProcessCodeMapper INSTANCE = Mappers.getMapper(AapProcessCodeMapper.class);
+    public static final AapProcessCodeMapper INSTANCE = Mappers.getMapper(AapProcessCodeMapper.class);
 
 
     @Mapping(target = "value", source = "typeCode")
@@ -34,10 +34,10 @@ public interface AapProcessCodeMapper {
     @Mapping(target = "languageID", ignore = true)
     @Mapping(target = "listURI", ignore = true)
     @Mapping(target = "listSchemeURI", ignore = true)
-    CodeType mapToCodeType(AapProcessCodeEntity aapProcessCodeEntity);
+    public abstract CodeType mapToCodeType(AapProcessCodeEntity aapProcessCodeEntity);
 
     @InheritInverseConfiguration
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "aapProcess", ignore = true)
-    AapProcessCodeEntity mapToAapProcessCodeEntity(CodeType codeType);
+    public abstract AapProcessCodeEntity mapToAapProcessCodeEntity(CodeType codeType);
 }

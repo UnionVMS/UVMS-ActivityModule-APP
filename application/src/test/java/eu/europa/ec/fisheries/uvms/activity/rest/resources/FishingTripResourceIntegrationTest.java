@@ -144,7 +144,6 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         }
         assertEquals(reason, dto.getReason());
         assertEquals(correction ? "5" : "9", dto.getPurposeCode());
-        assertNull(dto.getFluxLocations());
         assertNull(dto.getFluxCharacteristics());
 
         if (delimitedPeriodDTO == null) {
@@ -181,7 +180,6 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         assertNotNull(dto.getOccurence());
         assertNull(dto.getReason());
         assertEquals(dto.isCorrection() ? "5" : "9", dto.getPurposeCode());
-        assertNull(dto.getFluxLocations());
         assertEquals(1, dto.getFishingGears().size());
         assertNull(dto.getFluxCharacteristics());
         assertEquals(1, dto.getDelimitedPeriod().size());

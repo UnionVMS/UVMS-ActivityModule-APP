@@ -43,7 +43,7 @@ public class AssetRestMock {
         AssetDTO assetSweTestDto = new AssetDTO();
         assetSweTestDto.setId(getId(query));
         assetSweTestDto.setCfr(getFirstElementOrNull(query.getCfr()));
-        assetSweTestDto.setImo(getImo(query));
+        assetSweTestDto.setImo(getFirstElementOrNull(query.getImo()));
         assetSweTestDto.setName(getName(query));
         assetDtoList.add(assetSweTestDto);
 
@@ -67,11 +67,6 @@ public class AssetRestMock {
             seed += String.join("", query.getIrcs());
         }
         return UUID.nameUUIDFromBytes(seed.getBytes());
-    }
-
-    private String getImo(AssetQuery query) {
-        // TODO based on IDs in query
-        return "7774444";
     }
 
     private String getFirstElementOrNull(List<String> list) {

@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxFaReportMessageDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
@@ -23,7 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.MicroMovementComparator;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
@@ -72,6 +72,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     private static final String END_DATE = "END_DATE";
 
     private FaReportDocumentDao faReportDocumentDao;
+    private FluxFaReportMessageDao fluxFaReportMessageDao;
 
     @EJB
     private MovementModuleService movementModule;
@@ -85,14 +86,12 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @EJB
     private SpatialModuleService spatialModuleService;
 
-    @EJB
-    private FaMessageSaverBean faMessageSaverBean;
-
     private GeometryFactory geometryFactory = new GeometryFactory();
 
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
+        fluxFaReportMessageDao = new FluxFaReportMessageDao(entityManager);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                 log.error("Could not update Geometry OR enrichActivities for faReportDocument: {}", faReportDocument.getId());
             }
         }
-        FluxFaReportMessageEntity entity = faMessageSaverBean.saveReportMessageNow(messageEntity);
+        FluxFaReportMessageEntity entity = fluxFaReportMessageDao.createEntity(messageEntity);
         log.debug("Saved partial FluxFaReportMessage before further processing");
         updateFaReportCorrectionsOrCancellations(entity.getFaReportDocuments());
         log.debug("Updating FaReport Corrections is complete.");
@@ -316,17 +315,22 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
         for (FluxLocationEntity fluxLocation : fishingActivityEntity.getFluxLocations()) {
             Geometry point = null;
-            String fluxLocationStr = fluxLocation.getTypeCode();
-            if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) {
-                point = interpolatedPoint;
-                fluxLocation.setGeom(point);
-            } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) {
-                point = getGeometryForLocation(fluxLocation);
-                log.debug("Geometry calculated for location is: {}", point);
-                fluxLocation.setGeom(point);
-            } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.POSITION.name())) {
-                point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
-                fluxLocation.setGeom(point);
+            switch(fluxLocation.getTypeCode()) {
+                case AREA:
+                    point = interpolatedPoint;
+                    fluxLocation.setGeom(point);
+                    break;
+                case LOCATION:
+                    point = getGeometryForLocation(fluxLocation);
+                    log.debug("Geometry calculated for location is: {}", point);
+                    fluxLocation.setGeom(point);
+                    break;
+                case POSITION:
+                    point = GeometryUtils.createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
+                    fluxLocation.setGeom(point);
+                    break;
+                default:
+                    // do nothing
             }
             if (point != null) {
                 multiPointForFa.add(point);

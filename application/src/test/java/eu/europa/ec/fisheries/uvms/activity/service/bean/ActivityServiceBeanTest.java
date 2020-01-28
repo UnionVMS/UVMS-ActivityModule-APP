@@ -18,14 +18,11 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.SneakyThrows;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,9 +53,6 @@ public class ActivityServiceBeanTest {
 
     @Mock
     private FaReportDocumentDao faReportDocumentDao;
-
-    @Mock
-    private SpatialModuleService spatialModule;
 
     @Test
     public void getNextFishingActivity() {
@@ -302,7 +296,6 @@ public class ActivityServiceBeanTest {
         FishingActivityQuery query = new FishingActivityQuery();
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
         searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
-        List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
         Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
         List<String> purposeCodeList= new ArrayList<>();
         purposeCodeList.add("9");
@@ -331,25 +324,24 @@ public class ActivityServiceBeanTest {
         FishingActivityQuery query = new FishingActivityQuery();
 
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
-        List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
         searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
 
         Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
-        List<String> purposeCodeList= new ArrayList<>();
+        List<String> purposeCodeList = new ArrayList<>();
         purposeCodeList.add("9");
         searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
 
-        PaginationDto pagination =new PaginationDto();
+        PaginationDto pagination = new PaginationDto();
         pagination.setPageSize(4);
         pagination.setOffset(1);
         query.setPagination(pagination);
         query.setSearchCriteriaMap(searchCriteriaMap);
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
-        when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(new ArrayList<FishingActivityEntity>());
+        when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(new ArrayList<>());
 
         //Trigger
-        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, new ArrayList<Dataset>());
+        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, new ArrayList<>());
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
 

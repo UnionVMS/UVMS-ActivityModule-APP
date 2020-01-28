@@ -128,7 +128,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mapping(target = "fishingGear", expression = "java(getFishingGears(entity))")
     @Mapping(target = "speciesCode", expression = "java(getSpeciesCode(entity))")
     @Mapping(target = "quantity", expression = "java(getQuantity(entity))")
-    @Mapping(target = "fluxLocations", expression = "java(null)")
     @Mapping(target = "fishingGears", expression = "java(null)")
     @Mapping(target = "fluxCharacteristics", expression = "java(null)")
     @Mapping(target = "dataSource", source = "faReportDocument.source")
@@ -193,7 +192,6 @@ public abstract class FishingActivityMapper extends BaseMapper {
     @Mapping(target = "faReportAcceptedDateTime", source = "faReportDocument.acceptedDatetime", qualifiedByName = "instantToDate")
     @Mapping(target = "correction", expression = "java(getCorrection(entity))") // FIXME entity method
     @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))")
-    @Mapping(target = "fluxLocations", ignore = true)
     @Mapping(target = "faReportID", source = "faReportDocument.id")
     @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
@@ -524,7 +522,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
 
         for (FluxLocationEntity location : fluxLocations) {
-            if (FluxLocationEnum.AREA.toString().equalsIgnoreCase(location.getTypeCode())) {
+            if (location.getTypeCode() == FluxLocationEnum.AREA) {
                 areas.add(location.getFluxLocationIdentifier());
             }
         }
@@ -539,7 +537,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<String> ports = new HashSet<>();
         Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
         for (FluxLocationEntity location : fluxLocations) {
-            if (FluxLocationEnum.LOCATION.toString().equalsIgnoreCase(location.getTypeCode())) {
+            if (location.getTypeCode() == FluxLocationEnum.LOCATION) {
                 ports.add(location.getFluxLocationIdentifier());
             }
         }

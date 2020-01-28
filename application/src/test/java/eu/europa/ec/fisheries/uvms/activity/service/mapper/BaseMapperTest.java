@@ -13,14 +13,9 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
-import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
@@ -29,7 +24,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -51,40 +45,6 @@ public class BaseMapperTest {
     }
 
     @Test
-    public void mapFromFluxLocation() {
-        // Given
-        FluxLocationEntity locationEntity_1 = FluxLocationEntity.builder().fluxLocationIdentifier("id1").fluxLocationIdentifierSchemeId("scheme1").build();
-        HashSet<FluxLocationEntity> fluxLocationEntities = Sets.newHashSet(locationEntity_1);
-
-        // When
-        Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(fluxLocationEntities);
-
-        // Then
-        assertEquals(1, fluxLocationDtos.size());
-    }
-
-    @Test
-    public void mapFluxLocations() {
-        // Given
-        FluxLocationEntity entity1 = new FluxLocationEntity();
-        entity1.setTypeCode("LOCATION");
-        entity1.setRegionalFisheriesManagementOrganizationCode("RFMO1");
-        entity1.setRegionalFisheriesManagementOrganizationCodeListId("RFMO");
-
-        FluxLocationEntity entity2 = new FluxLocationEntity();
-        entity2.setTypeCode("DUMMY");
-        entity2.setRegionalFisheriesManagementOrganizationCode("RFMO2");
-        entity2.setRegionalFisheriesManagementOrganizationCodeListId("RFMO");
-
-        // When
-        Set<FluxLocationDto> fluxLocationDtos = BaseMapper.mapFromFluxLocation(newSet(entity1, entity2), FluxLocationEnum.LOCATION);
-
-        // Then
-        assertEquals(1, fluxLocationDtos.size());
-        assertEquals("RFMO1", fluxLocationDtos.iterator().next().getRfmoCode());
-    }
-
-    @Test
     public void mapToAssetListCriteriaPairList() {
         // Given
         AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
@@ -100,7 +60,7 @@ public class BaseMapperTest {
 
         List<AssetListCriteriaPair> pairs = BaseMapper.mapToAssetListCriteriaPairList(identifierDtos);
 
-        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs, from -> from.getKey());
+        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs, AssetListCriteriaPair::getKey);
 
         assertEquals(3, map.size());
         AssetListCriteriaPair cfrPair = map.get(ConfigSearchField.CFR);
@@ -114,13 +74,10 @@ public class BaseMapperTest {
         AssetListCriteriaPair ircsPair = map.get(ConfigSearchField.IRCS);
         assertEquals(ConfigSearchField.IRCS, ircsPair.getKey());
         assertEquals("ircsValue", ircsPair.getValue());
-
     }
 
-
     @Test
-   public void mapMdrCodeListToAssetListCriteriaPairList() {
-
+    public void mapMdrCodeListToAssetListCriteriaPairList() {
         AssetIdentifierDto cfr = new AssetIdentifierDto(CFR);
         cfr.setFaIdentifierId("cfrValue");
         AssetIdentifierDto gfmc = new AssetIdentifierDto(GFCM);
@@ -140,12 +97,7 @@ public class BaseMapperTest {
         mdrCodeList.add("GFCM");
         List<AssetListCriteriaPair> pairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(identifierDtos,mdrCodeList);
 
-        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs,
-                new Function<AssetListCriteriaPair, ConfigSearchField>() {
-                    public ConfigSearchField apply(AssetListCriteriaPair from) {
-                        return from.getKey();
-                    }
-                });
+        ImmutableMap<ConfigSearchField, AssetListCriteriaPair> map = Maps.uniqueIndex(pairs, AssetListCriteriaPair::getKey);
 
         assertEquals(2, map.size());
         AssetListCriteriaPair cfrPair = map.get(ConfigSearchField.CFR);
@@ -155,7 +107,6 @@ public class BaseMapperTest {
         AssetListCriteriaPair ircsPair = map.get(ConfigSearchField.IRCS);
         assertEquals(ConfigSearchField.IRCS, ircsPair.getKey());
         assertEquals("ircsValue", ircsPair.getValue());
-
     }
 
     @Test

@@ -12,6 +12,7 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import lombok.AllArgsConstructor;
@@ -80,8 +81,9 @@ public class FluxLocationEntity implements Serializable {
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "type_code", nullable = false)
-	private String typeCode;
+	private FluxLocationEnum typeCode;
 
 	@Column(name = "type_code_list_id", nullable = false)
 	private String typeCodeListId;
@@ -109,12 +111,6 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "flux_location_identifier_scheme_id")
 	private String fluxLocationIdentifierSchemeId;
 
-	@Column(name = "geopolitical_region_code")
-	private String geopoliticalRegionCode;
-
-	@Column(name = "geopolitical_region_code_list_id")
-	private String geopoliticalRegionCodeListId;
-
 	@Column(columnDefinition = "text", name = "namevalue")
 	private String name;
 
@@ -127,17 +123,8 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "rfmo_code_list_id")
 	private String regionalFisheriesManagementOrganizationCodeListId;
 
-	@Column(name = "sovereign_rights_country_code")
-	private String sovereignRightsCountryCode;
-
-	@Column(name = "jurisdiction_country_code")
-	private String jurisdictionCountryCode;
-
 	@Column(precision = 17, scale = 17)
 	private Double altitude;
-
-	@Column(name = "system_id")
-	private String systemId;
 
 	@OneToOne(mappedBy = "fluxLocation")
 	private FluxCharacteristicEntity fluxCharacteristic;

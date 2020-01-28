@@ -21,9 +21,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 
 @Mapper(uses = {AapProcessCodeMapper.class, AapProductMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public interface AapProcessMapper {
+public abstract class AapProcessMapper {
 
-    AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
+    public static final AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
 
 
     @Mapping(target = "conversionFactor", source = "conversionFactorNumeric.value")
@@ -31,12 +31,12 @@ public interface AapProcessMapper {
     @Mapping(target = "aapProducts", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "faCatch", ignore = true)
-    AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
+    public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
 
     @InheritInverseConfiguration
     @Mapping(source = "aapProducts", target = "resultAAPProducts")
     @Mapping(source = "aapProcessCode", target = "typeCodes")
     @Mapping(target = "usedFACatches", ignore = true)
-    AAPProcess mapToAapProcess(AapProcessEntity aapProcess);
+    public abstract AAPProcess mapToAapProcess(AapProcessEntity aapProcess);
 
 }
