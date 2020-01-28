@@ -17,7 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselPositionEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -33,6 +32,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.createPoint;
 
 @Mapper(uses = {FaReportDocumentMapper.class, VesselIdentifierMapper.class, ContactPartyMapper.class, FlapDocumentMapper.class,VesselStorageCharacteristicsMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
@@ -78,7 +79,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         Set<VesselPositionEventEntity> vesselPositionEventEntities = new HashSet<>();
         for (VesselPositionEvent vesselPositionEvent : specifiedVesselPositionEvents) {
             VesselPositionEventEntity entity = VesselPositionEventMapper.INSTANCE.mapToVesselPositionEventEntity(vesselPositionEvent,vesselTransportMeansEntity);
-            Geometry point = GeometryUtils.createPoint(entity.getLongitude(), entity.getLatitude());
+            Geometry point = createPoint(entity.getLongitude(), entity.getLatitude());
             entity.setGeom(point);
             vesselPositionEventEntities.add(entity);
         }

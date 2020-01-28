@@ -12,13 +12,13 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.WKTWriter;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
@@ -242,7 +242,7 @@ public class FishingActivityEntity implements Serializable {
 	@PostLoad
 	private void onLoad() {
         if (this.geom != null) {
-            this.wkt = GeometryMapper.INSTANCE.geometryToWkt(this.geom).getValue();
+            this.wkt = new WKTWriter().write(this.geom);
         }
     }
 

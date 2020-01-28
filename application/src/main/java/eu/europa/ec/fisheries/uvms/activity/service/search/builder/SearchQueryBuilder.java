@@ -19,13 +19,12 @@ import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
-import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT_EPSG_SRID;
 
 public abstract class SearchQueryBuilder {
     protected static final Logger LOG = LoggerFactory.getLogger(SearchQueryBuilder.class);
@@ -360,8 +361,8 @@ public abstract class SearchQueryBuilder {
             case AREA_GEOM:
                 Geometry geom;
                 try {
-                    geom = GeometryMapper.INSTANCE.wktToGeometry(value).getValue();
-                    geom.setSRID(GeometryUtils.DEFAULT_EPSG_SRID);
+                    geom =  new WKTReader().read(value);
+                    geom.setSRID(DEFAULT_EPSG_SRID);
                 } catch (ParseException e) {
                     throw new ServiceException(e.getMessage(), e);
                 }

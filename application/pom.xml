@@ -18,6 +18,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- PROJECT DEPENDENCIES -->
 
@@ -30,37 +36,35 @@
         <!-- UVMS COMMONS DEPENDENCIES -->
 
         <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-rest</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.resteasy</groupId>
+                    <artifactId>resteasy-multipart-provider</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- UVMS DEPENDENCIES -->
+
+        <dependency>
             <groupId>fish.focus.uvms.maven</groupId>
             <artifactId>uvms-pom-monitoring-deps</artifactId>
             <type>pom</type>
         </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-message</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-date</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-service</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-dao</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
-            <artifactId>uvms-commons-geometry</artifactId>
-        </dependency>
-
-        <!-- UVMS DEPENDENCIES -->
 
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
@@ -70,13 +74,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>activity-model</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fish.focus.uvms.maven</groupId>
-            <artifactId>uvms-pom-gis-deps</artifactId>
-            <type>pom</type>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -97,6 +94,12 @@
         <dependency>
             <groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
             <artifactId>mdr-client</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>uvms-commons-rest</artifactId>
+                    <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -125,13 +128,14 @@
         </dependency>
 
         <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
-            <artifactId>subscription-model</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>eu.europa.ec.fisheries.uvms</groupId>
             <artifactId>usm4uvms</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>uvms-commons-message</artifactId>
+                    <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -139,6 +143,10 @@
             <artifactId>uvms-config</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.config</groupId>
+            <artifactId>config-model</artifactId>
+        </dependency>
 
         <!-- THIRD-PARTY DEPENDENCIES -->
         <dependency>
@@ -150,11 +158,6 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
         </dependency>
 
         <dependency>
@@ -182,11 +185,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations-java5</artifactId>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-geojson</artifactId>
         </dependency>
-
-
 
         <!-- TEST DEPENDENCIES -->
 

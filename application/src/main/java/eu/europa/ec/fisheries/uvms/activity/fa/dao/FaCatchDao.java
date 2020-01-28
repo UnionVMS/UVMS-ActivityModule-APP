@@ -10,7 +10,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityManager;
@@ -18,7 +17,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Slf4j
-public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
+public class FaCatchDao {
 
     private static final String TRIP_ID = "tripId";
     private EntityManager em;
@@ -27,7 +26,6 @@ public class FaCatchDao extends AbstractDAO<FaCatchEntity> {
         this.em = em;
     }
 
-    @Override
     public EntityManager getEntityManager() {
         return em;
     }

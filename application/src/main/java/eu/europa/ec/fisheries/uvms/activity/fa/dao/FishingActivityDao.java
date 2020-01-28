@@ -16,8 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingActivitySearchBuilder;
-import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
-import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -34,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
+public class FishingActivityDao {
 
     private static final String QUERY_PARAM_FISHING_TRIP_ID = "fishingTripId";
     private static final String QUERY_PARAM_FISHING_ACTIVITY_ID = "fishingActivityId";
@@ -48,7 +46,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         this.em = em;
     }
 
-    @Override
     public EntityManager getEntityManager() {
         return em;
     }
@@ -117,11 +114,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         Query listQuery = getQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
 
         // Agreed with frontend : Page size : Number of record to be retrieved in one page; offSet : The position from where the result should be picked. Starts with 0
-        PaginationDto pagination = query.getPagination();
-        if (pagination != null) {
-            LOG.debug("Pagination information getting applied to Query is: Offset: {} PageSize. {}", pagination.getOffset(), pagination.getPageSize());
-            listQuery.setFirstResult(pagination.getOffset());
-            listQuery.setMaxResults(pagination.getPageSize());
+        if (query.getOffset() != null && query.getPageSize() != null) {
+            LOG.debug("Pagination information getting applied to Query is: Offset: {} PageSize. {}", query.getOffset(), query.getPageSize());
+            listQuery.setFirstResult(query.getOffset());
+            listQuery.setMaxResults(query.getPageSize());
         }
         return listQuery.getResultList();
     }
