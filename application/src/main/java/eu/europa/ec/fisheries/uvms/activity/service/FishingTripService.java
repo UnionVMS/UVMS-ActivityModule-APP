@@ -62,13 +62,6 @@ public interface FishingTripService {
      */
     Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId);
 
-    /**
-     * Retrieve GEO data for Fishing Trip MAp
-     *
-     * @param tripId
-     */
-    ObjectNode getTripMapDetailsForTripId(String tripId);
-
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 
     CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;

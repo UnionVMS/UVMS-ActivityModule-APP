@@ -682,10 +682,19 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_RELATED);
-            fluxLocationEntity.setFishingActivity(fishingActivityEntity);
-            fluxLocationEntities.add(fluxLocationEntity);
+            if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
+                if(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate() != null) {
+                    fishingActivityEntity.setLongitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
+                    fishingActivityEntity.setLatitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
+                    if(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure() != null){
+                        fishingActivityEntity.setAltitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure().getValue().doubleValue());
+                    }
+                }
+            } else {
+                FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+                fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_RELATED);
+                fluxLocationEntities.add(fluxLocationEntity);
+            }
         }
         return fluxLocationEntities;
     }

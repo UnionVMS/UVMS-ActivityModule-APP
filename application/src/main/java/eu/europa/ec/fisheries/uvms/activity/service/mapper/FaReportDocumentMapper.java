@@ -72,7 +72,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
     @Mapping(target = "source", source = "faReportSourceEnum.sourceType")
     @Mapping(target = "relatedFaReportIdentifiers", expression = "java(mapRelatedReportIDs(faReportDocument))")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "geom", ignore = true)
     @Mapping(target = "fluxFaReportMessage", ignore = true)
     @Mapping(target = "fishingActivities", ignore = true)
     @Mapping(target = "vesselTransportMeans", ignore = true)

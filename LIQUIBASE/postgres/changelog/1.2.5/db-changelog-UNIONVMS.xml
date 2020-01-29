@@ -9,8 +9,9 @@
         <dropColumn tableName="activity_flux_location" columnName="longitude" />
         <dropColumn tableName="activity_flux_location" columnName="latitude" />
         <dropColumn tableName="activity_flux_location" columnName="altitude" />
-        <dropColumn tableName="activity_flux_location" columnName="fishing_activity_id" />
-        <dropColumn tableName="activity_flux_location" columnName="fa_catch_id" />
+        <dropColumn tableName="activity_flux_location" columnName="geom" />
+        <dropColumn tableName="activity_fa_report_document" columnName="geom" />
+
     </changeSet>
 
     <changeSet author="anwall" id="ers-462-drop-act_cat_fk">
@@ -19,16 +20,46 @@
     </changeSet>
 
 
-    <changeSet author="anwall" id="ers-462-location_m2m2">
+    <changeSet author="anwall" id="ers-462-location_m2m_activity">
         <createTable tableName="activity_fishing_activity_flux_location">
-            <column name="id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="activity_aap_stock_pk"/>
-            </column>
-            <column name="stock_id" type="VARCHAR(255)"/>
-            <column name="stock_scheme_id" type="VARCHAR(255)"/>
-            <column name="fa_catch_id" type="BIGINT"/>
+            <column name="fishing_activity_id" type="int"/>
+            <column name="flux_location_id" type="int"/>
         </createTable>
+
+        <addUniqueConstraint
+                columnNames="fishing_activity_id, flux_location_id"
+                constraintName="fishing_activity_flux_location_pk"
+                tableName="activity_fishing_activity_flux_location"
+        />
     </changeSet>
 
+
+    <changeSet author="anwall" id="ers-462-add-pos-activity">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="longitude" type="FLOAT8"/>
+            <column name="latitude" type="FLOAT8"/>
+            <column name="altitude" type="FLOAT8"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="anwall" id="ers-462-location_m2m_catch">
+        <createTable tableName="activity_fa_catch_flux_location">
+            <column name="fa_catch_id" type="int"/>
+            <column name="flux_location_id" type="int"/>
+        </createTable>
+
+        <addUniqueConstraint
+                columnNames="fa_catch_id, flux_location_id"
+                constraintName="fa_catch_id_flux_location_pk"
+                tableName="activity_fa_catch_flux_location"
+        />
+    </changeSet>
+
+    <changeSet author="anwall" id="fa_change_geom_to_point">
+        <modifyDataType
+                columnName="geom"
+                newDataType="geometry(Point, 4326)"
+                tableName="activity_fishing_activity"/>
+    </changeSet>
 
 </databaseChangeLog>

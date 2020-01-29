@@ -102,20 +102,6 @@ public class FishingTripServiceBeanTest {
 
 
     @Test
-    public void getTripMapDetailsForTripId() throws JsonProcessingException {
-        String expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiPoint\",\"coordinates\":[[-10,40],[-40,30],[-20,20],[-30,10]]},\"properties\":{}}]}";
-        when(faReportDocumentDao.loadReports("NOR-TRP-20160517234053706", "Y")).thenReturn(Arrays.asList(MapperUtil.getFaReportDocumentEntity()));
-        //Trigger
-        ObjectNode node = fishingTripService.getTripMapDetailsForTripId("NOR-TRP-20160517234053706");
-        Mockito.verify(faReportDocumentDao, times(1)).loadReports(any(String.class), any(String.class));
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        //Verify
-        assertEquals(expected, objectMapper.writeValueAsString(node));
-
-    }
-
-    @Test
     public void filterFishingTrips() throws ServiceException {
         Map<SearchFilter, String> searchMap = new HashMap<>();
         searchMap.put(SearchFilter.REPORT_TYPE, "NOTIFICATION");

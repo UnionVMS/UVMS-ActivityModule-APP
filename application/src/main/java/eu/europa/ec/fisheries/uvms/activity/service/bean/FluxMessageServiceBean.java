@@ -11,73 +11,42 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import com.google.common.collect.ImmutableMap;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementPoint;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.MicroMovementComparator;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
-import eu.europa.ec.fisheries.uvms.activity.service.MdrModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.MovementModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxFaReportMessageMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.movement.client.model.MicroMovement;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.locationtech.jts.geom.*;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.io.WKTWriter;
-import org.locationtech.jts.linearref.LengthIndexedLine;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.*;
-
-import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.*;
 
 @Stateless
 @Transactional
 @Slf4j
 public class FluxMessageServiceBean extends BaseActivityBean implements FluxMessageService {
 
-    private static final String PREVIOUS = "PREVIOUS";
-    private static final String NEXT = "NEXT";
-    private static final String START_DATE = "START_DATE";
-    private static final String END_DATE = "END_DATE";
-
     private FaReportDocumentDao faReportDocumentDao;
 
     @EJB
-    private MovementModuleService movementModule;
-
-    @EJB
     private AssetModuleService assetService;
-
-    @EJB
-    private MdrModuleService mdrModuleServiceBean;
-
-    @EJB
-    private SpatialModuleService spatialModuleService;
-
-    private GeometryFactory geometryFactory = new GeometryFactory();
 
     @PostConstruct
     public void init() {
@@ -91,14 +60,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         entityManager.persist(messageEntity);
         final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
-            try {
-                updateGeometry(faReportDocument);
-                enrichFishingActivityWithGuiID(faReportDocument);
-            } catch (ParseException e) {
-                log.error("Could not update Geometry OR enrichActivities for faReportDocument: {}", faReportDocument.getId(), e);
-                // TODO: This needs some serious considerations, throws checked exception and commits all reports up until this point
-                throw new ServiceException("Failed to save document", e);
-            }
+            updateGeometry(faReportDocument);
+            enrichFishingActivityWithGuiID(faReportDocument);
         }
         log.debug("Saved partial FluxFaReportMessage before further processing");
         updateFaReportCorrectionsOrCancellations(messageEntity.getFaReportDocuments());
@@ -274,251 +237,12 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         log.debug("Update of Start And End Date for all fishingTrips is complete");
     }
 
-    /**
-     * Create Geometry for FaReportDocument and FluxLocation. In Flux location we save each reported location as a point geometry.
-     * In Fa Report document, all the points are converted to Multipoint and saved as a single geometry.
-     * In Fishing activity we save all the points those are reported in the corresponding flux location.
-     *
-     * @param faReportDocumentEntity
-     */
-    private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) throws ParseException {
-        List<MicroMovement> movements = getInterpolatedGeomForArea(faReportDocumentEntity);
+    private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity) {
         Set<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
-        List<Geometry> multiPointForFaReport = populateGeometriesForFishingActivitiesAndRelatedActivities(movements, fishingActivityEntities);
-        faReportDocumentEntity.setGeom(createMultipoint(multiPointForFaReport));
-    }
-
-    private List<Geometry> populateGeometriesForFishingActivitiesAndRelatedActivities(List<MicroMovement> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ParseException {
-        List<Geometry> multiPointForFaReport = new ArrayList<>();
-        for (FishingActivityEntity fishingActivityEntity : Utils.safeIterable(fishingActivityEntities)) {
-            multiPointForFaReport = deriveMultipointsFromActivitiesAndMovements(multiPointForFaReport, fishingActivityEntity, movements);
-            for (FishingActivityEntity relatedFishingActivityEntity : Utils.safeIterable(fishingActivityEntity.getAllRelatedFishingActivities())) {
-                multiPointForFaReport = deriveMultipointsFromActivitiesAndMovements(multiPointForFaReport, relatedFishingActivityEntity, movements);
+        for(FishingActivityEntity each : fishingActivityEntities) {
+            if(each.getLatitude() != null && each.getLongitude() != null) {
+                each.setGeom(GeomUtil.createPoint(each.getLongitude(), each.getLatitude()));
             }
         }
-        return multiPointForFaReport;
     }
-
-    private List<Geometry> deriveMultipointsFromActivitiesAndMovements(List<Geometry> multiPointsToAddTo, FishingActivityEntity fishingActivityEntity, List<MicroMovement> movements) throws ParseException {
-        List<Geometry> multiPointForFa = new ArrayList<>();
-
-        Instant activityDate = getActivityDate(fishingActivityEntity);
-        Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
-
-        for (FluxLocationEntity fluxLocation : fishingActivityEntity.getFluxLocations()) {
-            Geometry point = null;
-            switch(fluxLocation.getTypeCode()) {
-                case AREA:
-                    point = interpolatedPoint;
-                    fluxLocation.setGeom(point);
-                    break;
-                case LOCATION:
-                    point = getGeometryForLocation(fluxLocation);
-                    log.debug("Geometry calculated for location is: {}", point);
-                    fluxLocation.setGeom(point);
-                    break;
-                case POSITION:
-                    point = createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
-                    fluxLocation.setGeom(point);
-                    break;
-                default:
-                    // do nothing
-            }
-            if (point != null) {
-                multiPointForFa.add(point);
-                multiPointsToAddTo.add(point);
-            }
-        }
-        fishingActivityEntity.setGeom(createMultipoint(multiPointForFa));
-        return multiPointsToAddTo;
-    }
-
-    private Instant getActivityDate(FishingActivityEntity fishingActivityEntity) {
-        Instant occurenceence = fishingActivityEntity.getOccurence();
-        Instant calculatedStartTime = fishingActivityEntity.getCalculatedStartTime();
-
-        if (occurenceence != null) {
-            return occurenceence;
-        }
-
-        return calculatedStartTime;
-    }
-
-    private Geometry getGeometryForLocation(FluxLocationEntity fluxLocation) throws ParseException {
-        Geometry point;
-        if (fluxLocation.getLongitude() != null && fluxLocation.getLatitude() != null) {
-            point = createPoint(fluxLocation.getLongitude(), fluxLocation.getLatitude());
-        } else {
-            point = getGeometryFromMdr(fluxLocation.getFluxLocationIdentifier());
-            if (point == null) {
-                point = getGeometryFromSpatial(fluxLocation.getFluxLocationIdentifier());
-            }
-        }
-        return point;
-    }
-
-    /**
-     * Find geometry for fluxLocation code in MDR
-     *
-     * @param fluxLocationIdentifier
-     */
-    private Geometry getGeometryFromMdr(String fluxLocationIdentifier) {
-        log.debug("Get Geometry from MDR for : " + fluxLocationIdentifier);
-        if (fluxLocationIdentifier == null) {
-            return null;
-        }
-
-        final List<String> columnsList = new ArrayList<>(Collections.singletonList("code"));
-        Map<String, List<String>> portValuesFromMdr = mdrModuleServiceBean.getAcronymFromMdr("LOCATION", fluxLocationIdentifier, columnsList, 1, "latitude", "longitude");
-        List<String> latitudeValues = portValuesFromMdr.get("latitude");
-        List<String> longitudeValues = portValuesFromMdr.get("longitude");
-
-        Double latitude = null;
-        Double longitude = null;
-        if (CollectionUtils.isNotEmpty(latitudeValues)) {
-            String latitudeStr = latitudeValues.get(0);
-            if (latitudeStr != null) {
-                latitude = Double.parseDouble(latitudeStr);
-            }
-        }
-
-        if (CollectionUtils.isNotEmpty(longitudeValues)) {
-            String longitudeStr = longitudeValues.get(0);
-            if (longitudeStr != null) {
-                longitude = Double.parseDouble(longitudeStr);
-            }
-        }
-        return createPoint(longitude, latitude);
-    }
-
-    /**
-     * Get Geometry information from spatial for FLUXLocation code
-     *
-     * @param fluxLocationIdentifier
-     */
-    private Geometry getGeometryFromSpatial(String fluxLocationIdentifier) throws ParseException {
-        log.info("Get Geometry from Spatial for: {}", fluxLocationIdentifier);
-        if (fluxLocationIdentifier == null) {
-            return null;
-        }
-
-        Geometry geometry = null;
-        String geometryWkt = spatialModuleService.getGeometryForPortCode(fluxLocationIdentifier);
-        if (geometryWkt != null) {
-            Geometry value = new WKTReader().read(geometryWkt);
-            Coordinate[] coordinates = value.getCoordinates();
-            if (coordinates.length > 0) {
-                Coordinate coordinate = coordinates[0];
-                double x = coordinate.x;
-                double y = coordinate.y;
-                geometry = createPoint(x, y);
-            }
-        }
-        log.debug("Geometry received from Spatial for: {} : {}", fluxLocationIdentifier, geometryWkt);
-        return geometry;
-    }
-
-    private List<MicroMovement> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity) {
-        if (CollectionUtils.isEmpty(faReportDocumentEntity.getVesselTransportMeans())) {
-            return Collections.emptyList();
-        }
-
-        Set<VesselIdentifierEntity> vesselIdentifiers = faReportDocumentEntity.getVesselTransportMeans().iterator().next().getVesselIdentifiers();
-        Map<String, Instant> dateMap = findStartAndEndDate(faReportDocumentEntity);
-        return getAllMovementsForDateRange(vesselIdentifiers, dateMap.get(START_DATE), dateMap.get(END_DATE));
-    }
-
-    private Map<String, Instant> findStartAndEndDate(FaReportDocumentEntity faReportDocumentEntity) {
-        TreeSet<Instant> dates = new TreeSet<>();
-        for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
-            if (fishingActivity.getOccurence() != null) {
-                dates.add(fishingActivity.getOccurence());
-            } else {
-                Instant firstDate = getActivityDate(fishingActivity);
-                if (firstDate != null) {
-                    dates.add(firstDate);
-                }
-            }
-        }
-        return ImmutableMap.<String, Instant>builder().put(START_DATE, dates.first()).put(END_DATE, dates.last()).build();
-    }
-
-    private List<MicroMovement> getAllMovementsForDateRange(Set<VesselIdentifierEntity> vesselIdentifiers,
-                                                            Instant startDate, Instant endDate) {
-        List<String> assetGuids = assetService.getAssetGuids(vesselIdentifiers); // Call asset to get Vessel Guids
-        return movementModule.getMovement(assetGuids, startDate, endDate); // Send Vessel Guids to movements
-    }
-
-    private Geometry interpolatePointFromMovements(List<MicroMovement> movements, Instant activityDate) throws ParseException {
-        if (movements == null || movements.isEmpty()) {
-            return null;
-        }
-
-        movements.sort(new MicroMovementComparator());
-        Map<String, MicroMovement> movementTypeMap = getPreviousAndNextMovement(movements, activityDate);
-        MicroMovement nextMovement = movementTypeMap.get(NEXT);
-        MicroMovement previousMovement = movementTypeMap.get(PREVIOUS);
-
-        Geometry faReportGeom;
-        if (previousMovement == null && nextMovement == null) {
-            return null;
-        } else if (nextMovement == null) {
-            faReportGeom = convertToPoint(previousMovement);
-            faReportGeom.setSRID(DEFAULT_WILDFLY_SRID);
-        } else if (previousMovement == null) {
-            faReportGeom = convertToPoint(nextMovement);
-            faReportGeom.setSRID(DEFAULT_WILDFLY_SRID);
-        } else {
-            faReportGeom = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
-        }
-        return faReportGeom;
-    }
-
-    private Point convertToPoint(MicroMovement microMovement) {
-        MovementPoint location = microMovement.getLocation();
-        Coordinate coordinate = new Coordinate(location.getLongitude(), location.getLatitude());
-        return geometryFactory.createPoint(coordinate);
-    }
-
-    private Geometry calculateIntermediatePoint(MicroMovement previousMovement, MicroMovement nextMovement, Instant acceptedDate) throws ParseException {
-        long durationAB = nextMovement.getTimestamp().toEpochMilli() - previousMovement.getTimestamp().toEpochMilli();
-        long durationAC = acceptedDate.toEpochMilli() - previousMovement.getTimestamp().toEpochMilli();
-        long durationBC = nextMovement.getTimestamp().toEpochMilli() - acceptedDate.toEpochMilli();
-
-        Point previousPoint = convertToPoint(previousMovement);
-        Point nextPoint = convertToPoint(nextMovement);
-
-        Geometry point;
-        if (durationAC == 0) {
-            log.info("The point is same as the start point");
-            point = previousPoint;
-        } else if (durationBC == 0) {
-            log.info("The point is the same as end point");
-            point = nextPoint;
-        } else {
-            log.info("The point is between start and end point");
-            String nextWkt = WKTWriter.toPoint(nextPoint.getCoordinate());
-            String previousWkt = WKTWriter.toPoint(previousPoint.getCoordinate());
-
-            LengthIndexedLine lengthIndexedLine = createLengthIndexedLine(previousWkt, nextWkt);
-            Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB;
-            point = calculateIntersectingPoint(lengthIndexedLine, index);
-        }
-        point.setSRID(DEFAULT_WILDFLY_SRID);
-        return point;
-    }
-
-    private Map<String, MicroMovement> getPreviousAndNextMovement(List<MicroMovement> movements, Instant inputDate) {
-        Map<String, MicroMovement> movementMap = new HashMap<>();
-        for (MicroMovement movement : movements) {
-            if (movement.getTimestamp().compareTo(inputDate) <= 0) {
-                movementMap.put(PREVIOUS, movement);
-            } else if (movement.getTimestamp().compareTo(inputDate) > 0) {
-                movementMap.put(NEXT, movement);
-                break;
-            }
-        }
-        return movementMap;
-    }
-
 }

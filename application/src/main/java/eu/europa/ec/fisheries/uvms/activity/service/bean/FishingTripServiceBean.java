@@ -426,23 +426,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     /**
-     * Retrieve GEO data for fishing trip Map for tripID
-     *
-     * @param tripId
-     */
-    @Override
-    public ObjectNode getTripMapDetailsForTripId(String tripId) {
-        log.info("Get GEO data for Fishing Trip for tripId:" + tripId);
-        List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.loadReports(tripId, "Y");
-        List<Geometry> geoList = new ArrayList<>();
-        for (FaReportDocumentEntity entity : faReportDocumentEntityList) {
-            if (entity.getGeom() != null)
-                geoList.add(entity.getGeom());
-        }
-        return FishingTripToGeoJsonMapper.toJson(geoList);
-    }
-
-    /**
      * This method filters fishing Trips for Activity tab
      */
     @Override

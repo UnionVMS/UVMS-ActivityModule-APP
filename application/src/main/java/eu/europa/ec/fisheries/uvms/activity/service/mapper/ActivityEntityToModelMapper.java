@@ -34,31 +34,13 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselCountry;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -173,7 +155,40 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         mapSourceVesselStorageCharacteristic(target, source.getSourceVesselCharId());
         mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
 
-        target.setRelatedFLUXLocations(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
+        target.setRelatedFLUXLocations(new ArrayList<>());
+        target.getRelatedFLUXLocations().addAll(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
+        if(source.getLongitude() != null || source.getLatitude() != null || source.getLatitude() != null) {
+            FLUXLocation posFluxLocation = new FLUXLocation();
+            FLUXGeographicalCoordinate fluxGeographicalCoordinate = new FLUXGeographicalCoordinate();
+
+            if(source.getAltitude() != null) {
+                MeasureType measureType = new MeasureType();
+                BigDecimal value = BigDecimal.valueOf(source.getAltitude());
+                measureType.setValue(value);
+                fluxGeographicalCoordinate.setAltitudeMeasure(measureType);
+            }
+
+            if(source.getLatitude() != null) {
+                MeasureType measureType = new MeasureType();
+                BigDecimal value = BigDecimal.valueOf(source.getLatitude());
+                measureType.setValue(value);
+                fluxGeographicalCoordinate.setLatitudeMeasure(measureType);
+            }
+
+            if(source.getLongitude() != null) {
+                MeasureType measureType = new MeasureType();
+                BigDecimal value = BigDecimal.valueOf(source.getLongitude());
+                measureType.setValue(value);
+                fluxGeographicalCoordinate.setLongitudeMeasure(measureType);
+            }
+
+            posFluxLocation.setSpecifiedPhysicalFLUXGeographicalCoordinate(fluxGeographicalCoordinate);
+            CodeType codeType = new CodeType();
+            codeType.setValue("POSITION");
+            codeType.setListID("FLUX_LOCATION_TYPE");
+            posFluxLocation.setTypeCode(codeType);
+            target.getRelatedFLUXLocations().add(posFluxLocation);
+        }
 
         Set<FluxCharacteristicEntity> fluxCharacteristics = source.getFluxCharacteristics();
         if (CollectionUtils.isNotEmpty(fluxCharacteristics)) {

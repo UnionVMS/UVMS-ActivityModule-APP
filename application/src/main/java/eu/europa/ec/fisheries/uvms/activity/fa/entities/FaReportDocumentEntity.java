@@ -15,8 +15,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.locationtech.jts.geom.Geometry;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -144,9 +142,6 @@ public class FaReportDocumentEntity implements Serializable {
 
     @Column(name = "flux_party_name_language_id")
     private String fluxParty_nameLanguageId;
-
-    @Column(name = "geom", columnDefinition = "Geometry")
-    private Geometry geom;
 
     @Column(name = "type_code")
     private String typeCode;

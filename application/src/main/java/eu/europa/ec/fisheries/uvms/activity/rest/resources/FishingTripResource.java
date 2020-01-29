@@ -110,17 +110,6 @@ public class FishingTripResource extends UnionVMSResource {
     }
 
     @GET
-    @Path("/mapData/{tripId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Interceptors(ActivityExceptionInterceptor.class)
-    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getTripMapData(@Context HttpServletRequest request,
-                                   @Context HttpServletResponse response,
-                                   @PathParam("tripId") String tripId) {
-        return createSuccessResponse(fishingTripService.getTripMapDetailsForTripId(tripId));
-    }
-
-    @GET
     @Path("/catchevolution/{fishingTripId}")
     @Produces(MediaType.APPLICATION_JSON)
     @Interceptors(ActivityExceptionInterceptor.class)

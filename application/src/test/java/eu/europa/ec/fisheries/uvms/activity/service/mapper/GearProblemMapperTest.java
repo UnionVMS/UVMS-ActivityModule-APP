@@ -47,8 +47,6 @@ public class GearProblemMapperTest {
 
         assertEquals("Code Type 1", gearProblemEntity.getTypeCode());
         assertEquals("fhty58-gh586t-5tjf8-t58rjewe", gearProblemEntity.getTypeCodeListId());
-        gearProblemEntity.getLocations().iterator().next().onPrePersist();
-        assertNotNull(gearProblemEntity.getLocations().iterator().next().getGeom());
 
     }
 }

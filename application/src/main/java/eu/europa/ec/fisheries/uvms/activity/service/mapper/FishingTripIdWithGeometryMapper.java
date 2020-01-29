@@ -20,7 +20,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierScheme
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.StringWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.locationtech.jts.geom.Geometry;

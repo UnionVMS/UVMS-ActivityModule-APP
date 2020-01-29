@@ -68,20 +68,6 @@ public class FluxLocationEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
 	private int id;
 
-	@Column(name = "geom", columnDefinition = "Geometry")
-	private Geometry geom;
-
-	@Transient
-	private String wkt;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fa_catch_id")
-	private FaCatchEntity faCatch;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fishing_activity_id")
-	private FishingActivityEntity fishingActivity;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type_code", nullable = false)
 	private FluxLocationEnum typeCode;
@@ -92,12 +78,6 @@ public class FluxLocationEntity implements Serializable {
 	@XmlElement(nillable = true)
 	@Column(name = "country_id")
 	private String countryId;
-
-	@Column(precision = 17, scale = 17)
-	private Double longitude;
-
-	@Column(precision = 17, scale = 17)
-	private Double latitude;
 
 	@Column(name = "flux_location_catch_type_mapper_info", nullable = false)
 	@Enumerated(EnumType.STRING)
@@ -124,9 +104,6 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "rfmo_code_list_id")
 	private String regionalFisheriesManagementOrganizationCodeListId;
 
-	@Column(precision = 17, scale = 17)
-	private Double altitude;
-
 	@OneToOne(mappedBy = "fluxLocation")
 	private FluxCharacteristicEntity fluxCharacteristic;
 
@@ -137,21 +114,6 @@ public class FluxLocationEntity implements Serializable {
 	@JoinColumn(name = "gear_problem_id")
 	private GearProblemEntity gearProblem;
 
-	@PrePersist
-	public void onPrePersist() {
-	    if(longitude != null && latitude != null){
-            Point point = new GeometryBuilder().point(longitude, latitude);
-            point.setSRID(DEFAULT_EPSG_SRID);
-            this.geom = point;
-        }
-	}
-
-	@PostLoad
-	private void onLoad() {
-		if(this.geom != null){
-			this.wkt = new WKTWriter().write(this.geom);
-		}
-	}
 
 	public List<TextType> getNames(){
         List<TextType> names = null;

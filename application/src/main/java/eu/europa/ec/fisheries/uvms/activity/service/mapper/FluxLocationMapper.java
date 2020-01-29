@@ -34,9 +34,6 @@ public abstract class FluxLocationMapper {
     @Mapping(target = "fluxLocationCatchTypeMapperInfo", ignore = true) // Stored but only used for mapping decisions
     @Mapping(target = "typeCodeListId", source = "typeCode.listID")
     @Mapping(target = "countryId", source = "countryID.value")
-    @Mapping(target = "longitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.longitudeMeasure.value")
-    @Mapping(target = "latitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.latitudeMeasure.value")
-    @Mapping(target = "altitude", source = "specifiedPhysicalFLUXGeographicalCoordinate.altitudeMeasure.value")
     @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID")
     @Mapping(target = "fluxLocationIdentifier", source = "ID.value")
     @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID")
@@ -47,6 +44,7 @@ public abstract class FluxLocationMapper {
     public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
 
     @InheritInverseConfiguration
+    @Mapping(target = "specifiedPhysicalFLUXGeographicalCoordinate", ignore = true)
     public abstract FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
 
     public abstract List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
