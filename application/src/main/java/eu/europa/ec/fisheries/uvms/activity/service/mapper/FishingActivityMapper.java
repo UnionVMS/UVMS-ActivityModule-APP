@@ -70,6 +70,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -271,25 +272,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (fishingActivity == null) {
             return null;
         }
-        DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
 
-        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingActivity.getSpecifiedDelimitedPeriods();
-        if (specifiedDelimitedPeriods.size() > 1) {
+        if (fishingActivity.getSpecifiedDelimitedPeriods().size() > 1) {
             throw new IllegalArgumentException("Received more than one DelimitedPeriod in FishingActivity");
         }
 
-        if (!specifiedDelimitedPeriods.isEmpty()) {
-            DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
-            Instant endDate = DelimitedPeriodMapper.getEndDate(delimitedPeriod);
-            if (endDate != null) {
-                return endDate;
-            } else {
-                Duration duration = DelimitedPeriodMapper.getDuration(delimitedPeriod);
-                if (duration != null && occurrenceDateTime != null) {
-                    Instant instant = XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
-                    return instant.plus(duration);
-                }
-            }
+        Optional<Instant> endTimeFromDelimitedTimePeriod = getEndTimeFromDelimitedTimePeriod(fishingActivity);
+        if (endTimeFromDelimitedTimePeriod.isPresent()) {
+            return endTimeFromDelimitedTimePeriod.get();
         }
 
         Instant relatedFishingActivityEndDate = null;
@@ -306,11 +296,33 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return relatedFishingActivityEndDate;
         }
 
-        if (occurrenceDateTime != null) {
-            return XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
+        if (fishingActivity.getOccurrenceDateTime() != null) {
+            return XMLDateUtils.xmlGregorianCalendarToDate(fishingActivity.getOccurrenceDateTime().getDateTime()).toInstant();
         }
 
         return null;
+    }
+
+    private Optional<Instant> getEndTimeFromDelimitedTimePeriod(FishingActivity fishingActivity) {
+        List<DelimitedPeriod> specifiedDelimitedPeriods = fishingActivity.getSpecifiedDelimitedPeriods();
+        if (specifiedDelimitedPeriods.isEmpty()) {
+            return Optional.empty();
+        }
+
+        DateTimeType occurrenceDateTime = fishingActivity.getOccurrenceDateTime();
+        DelimitedPeriod delimitedPeriod = specifiedDelimitedPeriods.get(0);
+        Instant endDate = DelimitedPeriodMapper.getEndDate(delimitedPeriod);
+        if (endDate != null) {
+            return Optional.of(endDate);
+        } else {
+            Duration duration = DelimitedPeriodMapper.getDuration(delimitedPeriod);
+            if (duration != null && occurrenceDateTime != null) {
+                Instant instant = XMLDateUtils.xmlGregorianCalendarToDate(occurrenceDateTime.getDateTime()).toInstant();
+                return Optional.of(instant.plus(duration));
+            }
+        }
+
+        return Optional.empty();
     }
 
     protected Date getEndDate(FishingActivityEntity entity) {
@@ -563,39 +575,14 @@ public abstract class FishingActivityMapper extends BaseMapper {
         if (faCatches == null || faCatches.isEmpty()) {
             return Collections.emptySet();
         }
+
         Set<FaCatchEntity> faCatchEntities = new HashSet<>();
+
         for (FACatch faCatch : faCatches) {
             FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
-            for (AAPProcess aapProcess : Utils.safeIterable(faCatch.getAppliedAAPProcesses())) {
-                AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
-                for (AAPProduct aapProduct : Utils.safeIterable(aapProcess.getResultAAPProducts())) {
-                    aapProcessEntity.addAapProducts(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct));
-                }
-
-                for (CodeType codeType : Utils.safeIterable(aapProcess.getTypeCodes())) {
-                    aapProcessEntity.addProcessCode(AapProcessCodeMapper.INSTANCE.mapToAapProcessCodeEntity(codeType));
-                }
-                faCatchEntity.addAAPProcess(aapProcessEntity);
-            }
-
-            SizeDistribution specifiedSizeDistribution = faCatch.getSpecifiedSizeDistribution();
-            if (specifiedSizeDistribution != null) {
-                if (specifiedSizeDistribution.getCategoryCode() != null) {
-                    faCatchEntity.setSizeDistributionCategoryCode(specifiedSizeDistribution.getCategoryCode().getValue());
-                    faCatchEntity.setSizeDistributionCategoryCodeListId(specifiedSizeDistribution.getCategoryCode().getListID());
-                }
-
-                List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
-                if (!CollectionUtils.isEmpty(classCodes)) {
-                    if (classCodes.size() > 1) {
-                        String values = classCodes.stream().map(CodeType::getValue).collect(Collectors.joining(", "));
-                        throw new IllegalArgumentException("Failed to map FACatch.specifiedSizeDistribution, more than one SizeDistributionType.ClassCode found. Values: " + values);
-                    }
-                    faCatchEntity.setSizeDistributionClassCode(classCodes.get(0).getValue());
-                    faCatchEntity.setSizeDistributionClassCodeListId(classCodes.get(0).getListID());
-                }
-            }
+            mapAapProcesses(faCatch, faCatchEntity);
+            mapSizeDistribution(faCatch, faCatchEntity);
 
             faCatchEntity.setFishingActivity(fishingActivityEntity);
             faCatchEntity.setGearTypeCode(extractFishingGearTypeCode(faCatchEntity.getFishingGears()));
@@ -603,6 +590,42 @@ public abstract class FishingActivityMapper extends BaseMapper {
             faCatchEntities.add(mapFluxLocationSchemeIds(faCatch, faCatchEntity));
         }
         return faCatchEntities;
+    }
+
+    private void mapAapProcesses(FACatch faCatch, FaCatchEntity faCatchEntity) {
+        for (AAPProcess aapProcess : Utils.safeIterable(faCatch.getAppliedAAPProcesses())) {
+            AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+            for (AAPProduct aapProduct : Utils.safeIterable(aapProcess.getResultAAPProducts())) {
+                aapProcessEntity.addAapProducts(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct));
+            }
+
+            for (CodeType codeType : Utils.safeIterable(aapProcess.getTypeCodes())) {
+                aapProcessEntity.addProcessCode(AapProcessCodeMapper.INSTANCE.mapToAapProcessCodeEntity(codeType));
+            }
+            faCatchEntity.addAAPProcess(aapProcessEntity);
+        }
+    }
+
+    private void mapSizeDistribution(FACatch faCatch, FaCatchEntity faCatchEntity) {
+        SizeDistribution specifiedSizeDistribution = faCatch.getSpecifiedSizeDistribution();
+        if (specifiedSizeDistribution == null) {
+            return;
+        }
+
+        if (specifiedSizeDistribution.getCategoryCode() != null) {
+            faCatchEntity.setSizeDistributionCategoryCode(specifiedSizeDistribution.getCategoryCode().getValue());
+            faCatchEntity.setSizeDistributionCategoryCodeListId(specifiedSizeDistribution.getCategoryCode().getListID());
+        }
+
+        List<CodeType> classCodes = specifiedSizeDistribution.getClassCodes();
+        if (!CollectionUtils.isEmpty(classCodes)) {
+            if (classCodes.size() > 1) {
+                String values = classCodes.stream().map(CodeType::getValue).collect(Collectors.joining(", "));
+                throw new IllegalArgumentException("Failed to map FACatch.specifiedSizeDistribution, more than one SizeDistributionType.ClassCode found. Values: " + values);
+            }
+            faCatchEntity.setSizeDistributionClassCode(classCodes.get(0).getValue());
+            faCatchEntity.setSizeDistributionClassCodeListId(classCodes.get(0).getListID());
+        }
     }
 
     private String extractPresentation(Set<AapProcessEntity> aapProcessEntities) {

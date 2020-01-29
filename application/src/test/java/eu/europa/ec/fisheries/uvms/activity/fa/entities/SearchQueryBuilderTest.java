@@ -101,11 +101,11 @@ public class SearchQueryBuilderTest {
                 "JOIN a.fluxLocations fluxLoc  " +
                 "JOIN FETCH  a.fishingGears fg   " +
                 "RIGHT  JOIN  a.faCatchs faCatch  " +
-                "LEFT JOIN   faCatch.aapProcesses aprocess  " +
-                "LEFT JOIN   aprocess.aapProducts aprod   " +
+                "LEFT JOIN  faCatch.aapProcesses aprocess  " +
+                "LEFT JOIN  aprocess.aapProducts aprod   " +
                 "JOIN FETCH  a.faCatchs faCatch  " +
-                "LEFT JOIN FETCH  faCatch.aapProcesses aprocess  " +
-                "LEFT JOIN FETCH  aprocess.aapProducts aprod   " +
+                "LEFT JOIN  FETCH  faCatch.aapProcesses aprocess  " +
+                "LEFT JOIN  FETCH  aprocess.aapProducts aprod   " +
                 "JOIN FETCH vt.contactParty cparty " +
                 "JOIN FETCH  cparty.contactPerson cPerson  " +
                 "WHERE fa.source =:dataSource " +
