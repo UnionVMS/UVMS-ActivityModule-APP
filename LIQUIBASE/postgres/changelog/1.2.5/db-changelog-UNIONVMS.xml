@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.2.5/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="anwall" id="ers-462-drop-pos">
+        <dropColumn tableName="activity_flux_location" columnName="longitude" />
+        <dropColumn tableName="activity_flux_location" columnName="latitude" />
+        <dropColumn tableName="activity_flux_location" columnName="altitude" />
+        <dropColumn tableName="activity_flux_location" columnName="fishing_activity_id" />
+        <dropColumn tableName="activity_flux_location" columnName="fa_catch_id" />
+    </changeSet>
+
+    <changeSet author="anwall" id="ers-462-drop-act_cat_fk">
+        <dropColumn tableName="activity_flux_location" columnName="fishing_activity_id" />
+        <dropColumn tableName="activity_flux_location" columnName="fa_catch_id" />
+    </changeSet>
+
+
+    <changeSet author="anwall" id="ers-462-location_m2m2">
+        <createTable tableName="activity_fishing_activity_flux_location">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="activity_aap_stock_pk"/>
+            </column>
+            <column name="stock_id" type="VARCHAR(255)"/>
+            <column name="stock_scheme_id" type="VARCHAR(255)"/>
+            <column name="fa_catch_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>
