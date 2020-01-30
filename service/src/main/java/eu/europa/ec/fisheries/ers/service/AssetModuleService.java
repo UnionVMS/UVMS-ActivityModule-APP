@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -35,4 +36,6 @@ public interface AssetModuleService {
     List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearchName) throws ServiceException;
 
     List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException;
+
+    List<Asset> getAssetListResponseBatch(List<AssetListQuery> assetListQuery) throws ServiceException;
 }
