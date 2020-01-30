@@ -15,14 +15,19 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -30,8 +35,11 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.model.StringWrapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
+import eu.europa.ec.fisheries.wsdl.asset.types.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.*;
 
 @Slf4j
 public class FishingTripIdWithGeometryMapper extends BaseMapper {
@@ -140,6 +148,94 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         }
 
         return vesselIdentifierTypes;
+    }
+
+    public final void populateGeometryFromAssetModule( List<FishingTripIdWithGeometry> fishingTripIdLists , AssetModuleService assetModuleService) {
+        Set<String> cfrSet = fishingTripIdLists.stream()
+                .map(FishingTripIdWithGeometry::getVesselIdLists)
+                .flatMap(List::stream)
+                .filter(k -> isCFR(k.getKey().name()))
+                .map(VesselIdentifierType::getValue)
+                .collect(Collectors.toSet());
+        Set<Asset> assets = retrieveVesselIdentifiersFromAssetModule(cfrSet,assetModuleService);
+
+        fishingTripIdLists.forEach(t -> {
+            Optional<VesselIdentifierType> cfrIdentifier = t.getVesselIdLists().stream().filter(r -> isCFR(r.getKey().name())).findFirst();
+            if(!cfrIdentifier.isPresent()){
+                return;
+            }
+
+            List<VesselIdentifierType> vesselIdLists = t.getVesselIdLists();
+            Set<VesselIdentifierSchemeIdEnum> presentIdentifierEnums = vesselIdLists.stream().map(VesselIdentifierType::getKey).collect(Collectors.toSet());
+
+            Stream.of(VesselIdentifierSchemeIdEnum.values())
+                    .filter(s -> !presentIdentifierEnums.contains(s))
+                    .forEach(s -> {
+                        assets.stream().filter(a -> cfrIdentifier.get().getValue().equals(a.getCfr())).findFirst().ifPresent(asset -> {
+                            switch (s) {
+                                case UVI:
+                                    addVesselIdentifierType(vesselIdLists,asset.getUvi(),UVI);
+                                    break;
+                                case GFCM:
+                                    addVesselIdentifierType(vesselIdLists,asset.getGfcm(),GFCM);
+                                    break;
+                                case EXT_MARK:
+                                    addVesselIdentifierType(vesselIdLists,asset.getExternalMarking(),EXT_MARK);
+                                    break;
+                                case IRCS:
+                                    addVesselIdentifierType(vesselIdLists,asset.getIrcs(),IRCS);
+                                    break;
+                                case ICCAT:
+                                    addVesselIdentifierType(vesselIdLists,asset.getIccat(),ICCAT);
+                                    break;
+                            }
+                        });
+                    });
+            t.setVesselIdLists(vesselIdLists);
+        });
+    }
+
+    private void addVesselIdentifierType(List<VesselIdentifierType> vesselIdLists,String identifier,VesselIdentifierSchemeIdEnum schemeIdEnum) {
+        if(identifier !=null) {
+            vesselIdLists.add(new VesselIdentifierType(schemeIdEnum, identifier));
+        }
+    }
+
+    public final Set<Asset> retrieveVesselIdentifiersFromAssetModule(Set<String> cfrIdentifier, AssetModuleService assetModuleService )  {
+        List<AssetListQuery> cfrIdentifierSet = cfrIdentifier.stream().map(this::prepareAssetModuleQuery).distinct().collect(Collectors.toList());
+
+        try {
+            List<Asset> assetListResponseBatch = assetModuleService.getAssetListResponseBatch(cfrIdentifierSet);
+           return Collections.unmodifiableSet(new HashSet<>(assetListResponseBatch));
+        } catch (Exception ex) {
+            log.info("Could not reach asset module",ex);
+            return Collections.emptySet();
+        }
+    }
+
+    private AssetListQuery prepareAssetModuleQuery(String cfrIdentifier){
+        AssetListQuery query = new AssetListQuery();
+
+        AssetListPagination listPagination = new AssetListPagination();
+        listPagination.setListSize(25);
+        listPagination.setPage(1);
+        query.setPagination(listPagination);
+
+        AssetListCriteria listCriteria = new AssetListCriteria();
+        listCriteria.setIsDynamic(false);
+
+        List<AssetListCriteriaPair>  assetCriteriaPairList = new ArrayList<>();
+        AssetListCriteriaPair assetListCriteriaPair = new AssetListCriteriaPair();
+        assetListCriteriaPair.setKey(ConfigSearchField.CFR);
+        assetListCriteriaPair.setValue(cfrIdentifier);
+        assetCriteriaPairList.add(assetListCriteriaPair);
+        listCriteria.getCriterias().addAll(assetCriteriaPairList);
+        query.setAssetSearchCriteria(listCriteria);
+        return query;
+    }
+
+    public boolean isCFR(String param){
+        return VesselIdentifierSchemeIdEnum.CFR.equals( VesselIdentifierSchemeIdEnum.valueOf(param));
     }
 
     private String getFlagStateFromActivityList(List<FishingActivityEntity> fishingActivities) {
