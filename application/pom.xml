@@ -186,6 +186,7 @@
             <artifactId>guava</artifactId>
             <groupId>com.google.guava</groupId>
             <version>28.1-jre</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -193,12 +194,6 @@
             <artifactId>uvms-pom-arquillian-deps</artifactId>
             <type>pom</type>
             <scope>test</scope>
-            <!--exclusions>
-                <exclusion>
-                    <artifactId>guava</artifactId>
-                    <groupId>com.google.guava</groupId>
-                </exclusion>
-            </exclusions-->
         </dependency>
 
         <dependency>
