@@ -308,7 +308,7 @@ public class ActivityServiceBeanTest {
 
         when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(MapperUtil.getFishingActivityEntityList());
         //Trigger
-        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, null);
+        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query);
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
         //Verify
         assertNotNull(filterFishingActivityReportResultDTO);
@@ -339,7 +339,7 @@ public class ActivityServiceBeanTest {
         when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(new ArrayList<>());
 
         //Trigger
-        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, new ArrayList<>());
+        FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query);
 
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
 

@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentRelatedFaReportEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
@@ -51,17 +50,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -361,7 +350,7 @@ public class BaseMapper {
         IDType idType = new IDType();
         idType.setValue(fluxReportDocument_id);
         idType.setSchemeID(fluxReportDocument_idSchemeId);
-        ArrayList<IDType> idTypes = Lists.newArrayList(idType);
+        List<IDType> idTypes = Arrays.asList(idType);
 
         IDType ownerFluxPartyId = new IDType();
         ownerFluxPartyId.setValue(faReportDocumentEntity.getFluxParty_identifier());
@@ -371,7 +360,7 @@ public class BaseMapper {
         ownerFluxPartyName.setValue(faReportDocumentEntity.getFluxParty_name());
         ownerFluxPartyName.setLanguageID(faReportDocumentEntity.getFluxParty_nameLanguageId());
 
-        FLUXParty ownerFluxParty = new FLUXParty(Lists.newArrayList(ownerFluxPartyId), Lists.newArrayList(ownerFluxPartyName));
+        FLUXParty ownerFluxParty = new FLUXParty(Arrays.asList(ownerFluxPartyId), Arrays.asList(ownerFluxPartyName));
 
         String fluxReportDocument_purpose = faReportDocumentEntity.getFluxReportDocument_Purpose();
         TextType purpose = new TextType();

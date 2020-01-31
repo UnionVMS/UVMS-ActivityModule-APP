@@ -54,24 +54,17 @@ public class FishingActivityDao {
      * This method will retrieve all the fishingActivities received for the trip order by Activity type and then by FAReport accepted date.
      * so that we know which are corrected activities received.
      * @param fishingTripId
-     * @param multipolygon
      * @throws ServiceException
      */
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolygon) throws ServiceException {
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId) throws ServiceException {
         if (fishingTripId == null || fishingTripId.length() == 0) {
             throw new ServiceException("fishing Trip Id is null or empty. ");
         }
 
-        String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
-        if (multipolygon == null) {
-            queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
-        }
+        String queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
 
         TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
         typedQuery.setParameter(QUERY_PARAM_FISHING_TRIP_ID, fishingTripId);
-        if (multipolygon != null) {
-            typedQuery.setParameter(QUERY_PARAM_AREA, multipolygon);
-        }
 
         return typedQuery.getResultList();
     }

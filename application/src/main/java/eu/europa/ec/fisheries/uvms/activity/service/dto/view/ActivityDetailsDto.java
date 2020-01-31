@@ -16,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.collect.Maps;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxCharacteristicsDto;
@@ -25,10 +24,7 @@ import lombok.ToString;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @JsonInclude(Include.NON_NULL)
 @ToString
@@ -83,7 +79,7 @@ public class ActivityDetailsDto {
             return null;
         }
 
-        Map<String, Set<Object>> characMap = Maps.newHashMap();
+        Map<String, Set<Object>> characMap = new HashMap<>();
 
         for (FluxCharacteristicsDto fluxCharacteristicsDto : fluxCharacteristics) {
             Double calculatedValueMeasure = fluxCharacteristicsDto.getCalculatedValueMeasure();

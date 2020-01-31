@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
@@ -41,12 +40,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Mapper(uses = {CustomBigDecimal.class, AapProcessMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
@@ -137,7 +131,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             CodeType code = new CodeType();
             code.setValue(faCatch.getSizeDistributionClassCode());
             code.setListID(faCatch.getSizeDistributionClassCodeListId());
-            result.setClassCodes(Lists.newArrayList(code));
+            result.setClassCodes(Arrays.asList(code));
         }
 
         return result;

@@ -21,7 +21,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
-import eu.europa.ec.fisheries.uvms.activity.service.MovementModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;

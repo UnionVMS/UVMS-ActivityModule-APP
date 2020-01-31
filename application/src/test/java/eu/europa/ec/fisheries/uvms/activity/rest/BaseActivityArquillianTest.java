@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
@@ -41,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,7 +50,7 @@ public abstract class BaseActivityArquillianTest {
     private static final String ACTIVITY_REST_TEST = "activity-rest-test";
 
     private static final String ANONYMIZED_FLUX_MESSAGES_FOLDER_NAME = "anonymized_flux_messages";
-    private static final List<String> ANONYMIZED_FLUX_MESSAGES = ImmutableList.of(
+    private static final List<String> ANONYMIZED_FLUX_MESSAGES = Arrays.asList(
             "flux001_anonymized.xml",
             "flux002_anonymized.xml",
             "flux003_anonymized.xml",

@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
@@ -23,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
@@ -33,13 +33,10 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.internal.util.collections.Sets.newSet;
 
 public class FishingActivityMapperTest {
 
@@ -115,9 +112,11 @@ public class FishingActivityMapperTest {
 
         FaCatchEntity faCatchEntity = new FaCatchEntity();
         faCatchEntity.setSpeciesCode(null);
+        Set<FaCatchEntity> faCatchEntities = new HashSet<>();
+        faCatchEntities.add(faCatchEntity);
 
         FishingActivityEntity fa = new FishingActivityEntity();
-        fa.setFaCatchs(newSet(faCatchEntity));
+        fa.setFaCatchs(faCatchEntities);
 
         List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);
 
@@ -134,12 +133,20 @@ public class FishingActivityMapperTest {
         aapProductEntity.setSpeciesCode("2222");
 
         AapProcessEntity aapProcessEntity = new AapProcessEntity();
-        aapProcessEntity.setAapProducts(newSet(aapProductEntity));
 
-        faCatchEntity.setAapProcesses(newSet(aapProcessEntity));
+        Set<AapProcessEntity> aapProcessEntities = new HashSet<>();
+        aapProcessEntities.add(aapProcessEntity);
+
+        Set<AapProductEntity> aapProductEntities = new HashSet<>();
+        aapProductEntities.add(aapProductEntity);
+        aapProcessEntity.setAapProducts(aapProductEntities);
+
+        faCatchEntity.setAapProcesses(aapProcessEntities);
 
         FishingActivityEntity fa = new FishingActivityEntity();
-        fa.setFaCatchs(newSet(faCatchEntity));
+        Set<FaCatchEntity> faCatchEntities = new HashSet<>();
+        faCatchEntities.add(faCatchEntity);
+        fa.setFaCatchs(faCatchEntities);
 
         List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);
 
@@ -156,7 +163,7 @@ public class FishingActivityMapperTest {
         delimitedPeriod.setStartDateTime(dateTimeType);
 
         FishingActivity fishingActivity = new FishingActivity();
-        fishingActivity.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+        fishingActivity.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         // When
         Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
@@ -178,7 +185,7 @@ public class FishingActivityMapperTest {
 
         FishingActivity fishingActivity = new FishingActivity();
         fishingActivity.setOccurrenceDateTime(occurrenceDateTimeType);
-        fishingActivity.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+        fishingActivity.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         // When
         Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
@@ -202,13 +209,13 @@ public class FishingActivityMapperTest {
         delimitedPeriod2.setStartDateTime(dateTimeType2);
 
         FishingActivity relatedFishingActivity1 = new FishingActivity();
-        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod1));
+        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod1));
 
         FishingActivity relatedFishingActivity2 = new FishingActivity();
-        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod2));
+        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod2));
 
         FishingActivity fishingActivity = new FishingActivity();
-        fishingActivity.setRelatedFishingActivities(Lists.newArrayList(relatedFishingActivity1, relatedFishingActivity2));
+        fishingActivity.setRelatedFishingActivities(Arrays.asList(relatedFishingActivity1, relatedFishingActivity2));
 
         // When
         Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
@@ -235,14 +242,14 @@ public class FishingActivityMapperTest {
         delimitedPeriod2.setStartDateTime(dateTimeType2);
 
         FishingActivity relatedFishingActivity1 = new FishingActivity();
-        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod1));
+        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod1));
 
         FishingActivity relatedFishingActivity2 = new FishingActivity();
-        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod2));
+        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod2));
 
         FishingActivity fishingActivity = new FishingActivity();
         fishingActivity.setOccurrenceDateTime(occurrenceDateTimeType);
-        fishingActivity.setRelatedFishingActivities(Lists.newArrayList(relatedFishingActivity1, relatedFishingActivity2));
+        fishingActivity.setRelatedFishingActivities(Arrays.asList(relatedFishingActivity1, relatedFishingActivity2));
 
         // When
         Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
@@ -280,7 +287,7 @@ public class FishingActivityMapperTest {
         delimitedPeriod.setEndDateTime(dateTimeType);
 
         FishingActivity fishingActivity = new FishingActivity();
-        fishingActivity.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+        fishingActivity.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         // When
         Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
@@ -304,7 +311,7 @@ public class FishingActivityMapperTest {
 
         FishingActivity fishingActivity = new FishingActivity();
         fishingActivity.setOccurrenceDateTime(dateTimeType);
-        fishingActivity.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+        fishingActivity.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         // When
         Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
@@ -328,13 +335,13 @@ public class FishingActivityMapperTest {
         delimitedPeriod2.setEndDateTime(dateTimeType2);
 
         FishingActivity relatedFishingActivity1 = new FishingActivity();
-        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod1));
+        relatedFishingActivity1.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod1));
 
         FishingActivity relatedFishingActivity2 = new FishingActivity();
-        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod2));
+        relatedFishingActivity2.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod2));
 
         FishingActivity fishingActivity = new FishingActivity();
-        fishingActivity.setRelatedFishingActivities(Lists.newArrayList(relatedFishingActivity1, relatedFishingActivity2));
+        fishingActivity.setRelatedFishingActivities(Arrays.asList(relatedFishingActivity1, relatedFishingActivity2));
 
         // When
         Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);

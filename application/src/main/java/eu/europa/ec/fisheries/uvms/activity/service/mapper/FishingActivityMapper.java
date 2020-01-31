@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
@@ -62,15 +61,7 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -351,7 +342,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             delimitedPeriodDTO.setUnitCode("MIN");
         }
 
-        return Lists.newArrayList(delimitedPeriodDTO);
+        return Arrays.asList(delimitedPeriodDTO);
     }
 
     protected String getUniqueFaReportId(FishingActivityEntity entity) {
@@ -396,7 +387,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return Collections.emptyList();
         }
 
-        return Lists.newArrayList(entity.getFaReportDocument().getFluxParty_identifier());
+        return Arrays.asList(entity.getFaReportDocument().getFluxParty_identifier());
     }
 
     protected Map<String, String> getVesselIdType(FishingActivityEntity entity) {

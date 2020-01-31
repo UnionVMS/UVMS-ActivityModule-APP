@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
@@ -25,7 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteris
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
@@ -34,7 +32,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.MdrModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
@@ -53,7 +50,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingTripIdWithGeometryMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingTripToGeoJsonMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
@@ -63,16 +59,11 @@ import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.io.WKTWriter;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -91,8 +82,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT_EPSG_SRID;
-
 @Stateless
 @Local(FishingTripService.class)
 @Transactional
@@ -101,9 +90,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private static final String DECLARATION = "Declaration";
     private static final String NOTIFICATION = "Notification";
-
-    @EJB
-    private SpatialModuleService spatialModule;
 
     @EJB
     private ActivityService activityServiceBean;
@@ -210,26 +196,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     @Override
-    public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException {
+    public FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId) throws ServiceException {
         List<ReportDTO> reportDTOList = new ArrayList<>();
-        Geometry multipolygon = getRestrictedAreaGeom(datasets);
-        Map<String, FishingActivityTypeDTO> summary = populateFishingActivityReportListAndFishingTripSummary(fishingTripId, reportDTOList, multipolygon, false);
+        Map<String, FishingActivityTypeDTO> summary = populateFishingActivityReportListAndFishingTripSummary(fishingTripId, reportDTOList, false);
         return populateFishingTripSummary(fishingTripId, reportDTOList, summary);
-    }
-
-    private Geometry getRestrictedAreaGeom(List<Dataset> datasets) throws ServiceException {
-        if (CollectionUtils.isEmpty(datasets)) {
-            return null;
-        }
-        try {
-            List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
-            String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
-            Geometry geometry = new WKTReader().read(areaWkt);
-            geometry.setSRID(DEFAULT_EPSG_SRID);
-            return geometry;
-        } catch (ParseException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
     }
 
     /**
@@ -251,13 +221,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     /**
      * @param fishingTripId     - Fishing trip summary will be collected for this tripID
      * @param reportDTOList     - This DTO will have details about Fishing Activities.Method will process and populate data into this list     *
-     * @param multipolygon      - Activities only in this area would be selected
      * @param isOnlyTripSummary - This method you could reuse to only get Fishing trip summary as well
      * @throws ServiceException
      */
-    private Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
-                                                                                                      Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException {
-        List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, multipolygon);
+    private Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList, boolean isOnlyTripSummary) throws ServiceException {
+        List<FishingActivityEntity> fishingActivityList = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId);
         fishingActivityList.addAll(getReportsThatWereCancelledOrDeleted(fishingActivityList));
         Map<String, FishingActivityTypeDTO> tripSummary = new HashMap<>();
         for (FishingActivityEntity activityEntity : Utils.safeIterable(fishingActivityList)) {
@@ -515,7 +483,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     @Override
     public CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException {
         CatchEvolutionDTO catchEvolution = new CatchEvolutionDTO();
-        List<FishingActivityEntity> fishingActivities = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId, null);
+        List<FishingActivityEntity> fishingActivities = fishingActivityDao.getFishingActivityListForFishingTrip(fishingTripId);
         FishingActivityEntity activityEntity = fishingActivities.isEmpty() ? null : fishingActivities.get(0);
         catchEvolution.setTripDetails(getTripWidgetDto(activityEntity, fishingTripId));
         catchEvolution.setCatchEvolutionProgress(prepareCatchEvolutionProgress(fishingActivities));
@@ -553,7 +521,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     private TripOverviewDto getTripOverviewDto(FishingActivityEntity activityEntity, String tripId) throws ServiceException {
-        Map<String, FishingActivityTypeDTO> typeDTOMap = populateFishingActivityReportListAndFishingTripSummary(tripId, null, null, true);
+        Map<String, FishingActivityTypeDTO> typeDTOMap = populateFishingActivityReportListAndFishingTripSummary(tripId, null, true);
         TripOverviewDto tripOverviewDto = new TripOverviewDto();
         TripIdDto tripIdDto = new TripIdDto();
         tripIdDto.setId(tripId);

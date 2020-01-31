@@ -58,17 +58,23 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
+            <artifactId>uvms-commons-message</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- UVMS DEPENDENCIES -->
 
         <dependency>
             <groupId>fish.focus.uvms.maven</groupId>
             <artifactId>uvms-pom-monitoring-deps</artifactId>
             <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
-            <artifactId>spatial-model</artifactId>
         </dependency>
 
         <dependency>
@@ -100,21 +106,6 @@
                     <groupId>eu.europa.ec.fisheries.uvms.commons</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
-            <artifactId>spatial-client</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-            <artifactId>movement-model</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
-            <artifactId>movement-client</artifactId>
         </dependency>
 
         <dependency>
@@ -192,10 +183,22 @@
         <!-- TEST DEPENDENCIES -->
 
         <dependency>
+            <artifactId>guava</artifactId>
+            <groupId>com.google.guava</groupId>
+            <version>28.1-jre</version>
+        </dependency>
+
+        <dependency>
             <groupId>fish.focus.uvms.maven</groupId>
             <artifactId>uvms-pom-arquillian-deps</artifactId>
             <type>pom</type>
             <scope>test</scope>
+            <!--exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions-->
         </dependency>
 
         <dependency>

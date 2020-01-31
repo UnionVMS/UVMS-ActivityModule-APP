@@ -10,7 +10,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
@@ -42,11 +41,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.Collections.singletonList;
 
@@ -198,7 +193,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         Instant calculatedStartTime = source.getCalculatedStartTime();
         Instant calculatedEndTime = source.getCalculatedEndTime();
         DelimitedPeriod delimitedPeriod = DelimitedPeriodMapper.convert(calculatedStartTime, calculatedEndTime);
-        target.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+        target.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         FishingTripEntity fishingTripEntity = source.getFishingTrip();
         if (fishingTripEntity != null) {

@@ -36,7 +36,7 @@ public interface FishingTripService {
      * @return FishingTripSummaryViewDTO All of summary view data
      * @throws ServiceException
      */
-    FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException;
+    FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId) throws ServiceException;
 
 
     /**

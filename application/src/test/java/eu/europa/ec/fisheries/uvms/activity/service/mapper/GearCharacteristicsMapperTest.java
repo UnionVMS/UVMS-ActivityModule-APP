@@ -22,8 +22,10 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.Assert.assertEquals;
-import static org.mockito.internal.util.collections.Sets.newSet;
 
 @RunWith(Parameterized.class)
 public class GearCharacteristicsMapperTest {
@@ -41,7 +43,9 @@ public class GearCharacteristicsMapperTest {
     public void testMapGearDtoToFishingGearEntityWithTypeCodeDG() {
         entity.setTypeCode(typeCode);
         FishingGearEntity fishingGearEntity = new FishingGearEntity();
-        fishingGearEntity.setGearCharacteristics(newSet(entity));
+        Set<GearCharacteristicEntity> gearCharacteristicEntities = new HashSet<>();
+        gearCharacteristicEntities.add(entity);
+        fishingGearEntity.setGearCharacteristics(gearCharacteristicEntities);
         GearDto mappedDto = GearCharacteristicsMapper.INSTANCE.mapGearDtoToFishingGearEntity(fishingGearEntity);
         assertEquals(expectedDto, mappedDto);
     }

@@ -6,9 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
@@ -41,14 +38,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -561,7 +551,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
 
     private void assertLastCatchSpecies(List<SpeciesQuantityDTO> actualSpeciesList) {
         Set<String> actualSpeciesSet = actualSpeciesList.stream().map(s -> s.getSpeciesCode()).collect(Collectors.toSet());
-        HashSet<String> expectedSpeciesSet = Sets.newHashSet("WIT", "HKE", "HAD", "POL", "USK", "POK", "MON", "LIN", "TUR", "HAL", "LEM", "CAT", "WHG", "COD", "SQZ");
+        List<String> expectedSpeciesSet = Arrays.asList("WIT", "HKE", "HAD", "POL", "USK", "POK", "MON", "LIN", "TUR", "HAL", "LEM", "CAT", "WHG", "COD", "SQZ");
 
         assertTrue(actualSpeciesSet.containsAll(expectedSpeciesSet));
     }
