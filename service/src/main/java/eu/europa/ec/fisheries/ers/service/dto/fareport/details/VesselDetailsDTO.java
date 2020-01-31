@@ -17,9 +17,15 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.ICCAT;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -138,24 +144,31 @@ public class VesselDetailsDTO {
 
     public void enrichIdentifiers(Asset asset) {
         if(asset!=null) {
-            String ircs = asset.getIrcs();
-            String cfr = asset.getCfr();
-            String externalMarking = asset.getExternalMarking();
+            Map<VesselIdentifierSchemeIdEnum, String> assetDetails = new HashMap<>();
 
-            for (AssetIdentifierDto identifier : vesselIdentifiers) {
+            assetDetails.put(IRCS, asset.getIrcs());
+            assetDetails.put(CFR, asset.getCfr());
+            assetDetails.put(EXT_MARK, asset.getExternalMarking());
+            assetDetails.put(UVI, asset.getUvi());
+            assetDetails.put(ICCAT, asset.getIccat());
+            assetDetails.put(GFCM, asset.getGfcm());
 
-                if (isEmpty(identifier.getFaIdentifierId())) {
+            assetDetails.forEach(this::setIdentifierIfEmpty);
+        }
+    }
 
-                    VesselIdentifierSchemeIdEnum identifierSchemeId = identifier.getIdentifierSchemeId();
-
-                    if (CFR.equals(identifierSchemeId) && !isEmpty(cfr)) {
-                        setIdentifier(identifier, cfr);
-                    } else if (EXT_MARK.equals(identifierSchemeId) && !isEmpty(externalMarking)) {
-                        setIdentifier(identifier, externalMarking);
-                    } else if (IRCS.equals(identifierSchemeId) && !isEmpty(ircs)) {
-                        setIdentifier(identifier, ircs);
-                    }
+    private void setIdentifierIfEmpty(VesselIdentifierSchemeIdEnum identifierSchemeId, String faIdentifierId){
+        if(!isEmpty(faIdentifierId)) {
+            Optional<AssetIdentifierDto> optionalIdentifier = vesselIdentifiers.stream()
+                    .filter(identifier -> identifier.getIdentifierSchemeId().equals(identifierSchemeId))
+                    .findAny();
+            if(optionalIdentifier.isPresent()){
+                AssetIdentifierDto identifier = optionalIdentifier.get();
+                if(isEmpty(identifier.getFaIdentifierId())){
+                    setIdentifier(identifier, faIdentifierId);
                 }
+            } else {
+                vesselIdentifiers.add(new AssetIdentifierDto(identifierSchemeId, faIdentifierId));
             }
         }
     }
@@ -164,7 +177,6 @@ public class VesselDetailsDTO {
         identifier.setFaIdentifierId(value);
         identifier.setFromAssets(true);
     }
-
 
     public Set<FlapDocumentDto> getFlapDocuments() {
         return flapDocuments;
