@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
@@ -66,7 +67,6 @@ import org.hibernate.annotations.Type;
 @Table(name = "activity_fa_report_document")
 @Data
 @ToString(of = "id")
-@EqualsAndHashCode(of = {"acceptedDatetime"})
 @NoArgsConstructor
 public class FaReportDocumentEntity implements Serializable {
 
@@ -129,4 +129,17 @@ public class FaReportDocumentEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<VesselTransportMeansEntity> vesselTransportMeans;
 
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof FaReportDocumentEntity
+                && (
+                    (this.fluxReportDocument == null && ((FaReportDocumentEntity) other).fluxReportDocument == null)
+                    || (this.fluxReportDocument != null && ((FaReportDocumentEntity) other).fluxReportDocument != null && Objects.equals(this.fluxReportDocument.getFluxReportIdentifiers(), ((FaReportDocumentEntity) other).fluxReportDocument.getFluxReportIdentifiers()))
+                );
+    }
+
+    @Override
+    public int hashCode() {
+        return fluxReportDocument == null || fluxReportDocument.getFluxReportIdentifiers() == null ? 0 : fluxReportDocument.getFluxReportIdentifiers().stream().mapToInt(Object::hashCode).sum();
+    }
 }
