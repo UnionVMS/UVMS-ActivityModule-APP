@@ -15,12 +15,12 @@ package eu.europa.ec.fisheries.ers.service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.types.BatchAssetListResponseElement;
 
 public interface AssetModuleService {
 
@@ -37,5 +37,5 @@ public interface AssetModuleService {
 
     List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException;
 
-    List<Asset> getAssetListResponseBatch(List<AssetListQuery> assetListQuery) throws ServiceException;
+    List<BatchAssetListResponseElement> getAssetListResponseBatch(List<AssetListQuery> assetListQuery) throws ServiceException;
 }
