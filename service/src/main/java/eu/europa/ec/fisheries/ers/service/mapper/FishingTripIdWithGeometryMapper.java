@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Collection;
 
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -205,8 +206,15 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         List<AssetListQuery> cfrIdentifierSet = cfrIdentifier.stream().map(this::prepareAssetModuleQuery).distinct().collect(Collectors.toList());
 
         try {
-            List<Asset> assetListResponseBatch = assetModuleService.getAssetListResponseBatch(cfrIdentifierSet);
-           return Collections.unmodifiableSet(new HashSet<>(assetListResponseBatch));
+            List<BatchAssetListResponseElement> assetListResponseBatch = assetModuleService.getAssetListResponseBatch(cfrIdentifierSet);
+            List<Asset> assetList = assetListResponseBatch
+                    .stream()
+                    .map(BatchAssetListResponseElement::getAsset)
+                    .filter(e -> e != null)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList());
+
+            return Collections.unmodifiableSet(new HashSet<>(assetList));
         } catch (Exception ex) {
             log.info("Could not reach asset module",ex);
             return Collections.emptySet();

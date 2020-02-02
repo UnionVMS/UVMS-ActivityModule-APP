@@ -351,7 +351,10 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     private void enrichActivityReportsFromAssetClass(final List<FishingActivityReportDTO> activityReportDTOS){
         FishingTripIdWithGeometryMapper mapper = new FishingTripIdWithGeometryMapper();
 
-        Set<String> cfrSet = activityReportDTOS.stream().map(s -> s.getVesselIdTypes().get(CFR.name())).collect(Collectors.toSet());
+        Set<String> cfrSet = activityReportDTOS.stream()
+                .map(s -> s.getVesselIdTypes().get(CFR.name()))
+                .filter(s -> s != null)
+                .collect(Collectors.toSet());
         Set<Asset> assets = mapper.retrieveVesselIdentifiersFromAssetModule(cfrSet,assetsServiceBean);
 
         activityReportDTOS.forEach( t-> {
