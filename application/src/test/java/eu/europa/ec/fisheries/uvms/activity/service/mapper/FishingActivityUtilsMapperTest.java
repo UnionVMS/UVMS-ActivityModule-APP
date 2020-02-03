@@ -22,7 +22,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
@@ -38,13 +37,13 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class FishingActivityMapperTest {
+public class FishingActivityUtilsMapperTest {
 
     @Test
     public void testFishingActivityMapper() {
         FishingActivity fishingActivity = MapperUtil.getFishingActivity();
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
-        FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity);
+        FishingActivityEntity fishingActivityEntity = FishingActivityMapper.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity);
         fishingActivityEntity.getFishingTrip().getFishingActivities().add(fishingActivityEntity);
 
         assertFishingActivityFields(fishingActivity, fishingActivityEntity);
@@ -118,7 +117,7 @@ public class FishingActivityMapperTest {
         FishingActivityEntity fa = new FishingActivityEntity();
         fa.setFaCatchs(faCatchEntities);
 
-        List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);
+        List<String> speciesCode = FishingActivityUtilsMapper.INSTANCE.getSpeciesCode(fa);
 
         assertEquals(0, speciesCode.size());
 
@@ -148,7 +147,7 @@ public class FishingActivityMapperTest {
         faCatchEntities.add(faCatchEntity);
         fa.setFaCatchs(faCatchEntities);
 
-        List<String> speciesCode = FishingActivityMapper.INSTANCE.getSpeciesCode(fa);
+        List<String> speciesCode = FishingActivityUtilsMapper.INSTANCE.getSpeciesCode(fa);
 
         assertEquals(1, speciesCode.size());
     }
@@ -166,7 +165,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         // When
-        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+        Instant calculatedStartTime = FishingActivityMapper.getCalculatedStartTime(fishingActivity);
 
         // Then
         assertEquals(expectedStartDate, calculatedStartTime);
@@ -188,7 +187,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         // When
-        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+        Instant calculatedStartTime = FishingActivityMapper.getCalculatedStartTime(fishingActivity);
 
         // Then
         assertEquals(expectedStartDate, calculatedStartTime);
@@ -218,7 +217,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setRelatedFishingActivities(Arrays.asList(relatedFishingActivity1, relatedFishingActivity2));
 
         // When
-        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+        Instant calculatedStartTime = FishingActivityMapper.getCalculatedStartTime(fishingActivity);
 
         // Then
         assertEquals(expectedStartDate, calculatedStartTime);
@@ -252,7 +251,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setRelatedFishingActivities(Arrays.asList(relatedFishingActivity1, relatedFishingActivity2));
 
         // When
-        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+        Instant calculatedStartTime = FishingActivityMapper.getCalculatedStartTime(fishingActivity);
 
         // Then
         assertEquals(expectedStartDate, calculatedStartTime);
@@ -271,7 +270,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setOccurrenceDateTime(dateTimeType);
 
         // When
-        Instant calculatedStartTime = FishingActivityMapper.INSTANCE.getCalculatedStartTime(fishingActivity);
+        Instant calculatedStartTime = FishingActivityMapper.getCalculatedStartTime(fishingActivity);
 
         // Then
         assertEquals(expectedStartTime, calculatedStartTime);
@@ -290,7 +289,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         // When
-        Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
+        Instant calculatedEndTime = FishingActivityMapper.getCalculatedEndTime(fishingActivity);
 
         // Then
         assertEquals(expectedEndDate, calculatedEndTime);
@@ -314,7 +313,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         // When
-        Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
+        Instant calculatedEndTime = FishingActivityMapper.getCalculatedEndTime(fishingActivity);
 
         // Then
         assertEquals(expectedEndDate, calculatedEndTime);
@@ -344,7 +343,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setRelatedFishingActivities(Arrays.asList(relatedFishingActivity1, relatedFishingActivity2));
 
         // When
-        Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
+        Instant calculatedEndTime = FishingActivityMapper.getCalculatedEndTime(fishingActivity);
 
         // Then
         assertEquals(expectedEndDate, calculatedEndTime);
@@ -363,7 +362,7 @@ public class FishingActivityMapperTest {
         fishingActivity.setOccurrenceDateTime(dateTimeType);
 
         // When
-        Instant calculatedEndTime = FishingActivityMapper.INSTANCE.getCalculatedEndTime(fishingActivity);
+        Instant calculatedEndTime = FishingActivityMapper.getCalculatedEndTime(fishingActivity);
 
         // Then
         assertEquals(expectedEndDate, calculatedEndTime);

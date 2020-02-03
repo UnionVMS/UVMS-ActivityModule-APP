@@ -48,7 +48,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution.CatchEvolu
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution.TripCatchEvolutionProgressRegistry;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaCatchMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityUtilsMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingTripIdWithGeometryMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselStorageCharacteristicsMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselTransportMeansMapper;
@@ -63,7 +63,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.locationtech.jts.geom.Geometry;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -230,7 +229,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         Map<String, FishingActivityTypeDTO> tripSummary = new HashMap<>();
         for (FishingActivityEntity activityEntity : Utils.safeIterable(fishingActivityList)) {
             if (!isOnlyTripSummary) {
-                ReportDTO reportDTO = FishingActivityMapper.INSTANCE.mapToReportDTO(activityEntity);
+                ReportDTO reportDTO = FishingActivityUtilsMapper.INSTANCE.mapToReportDTO(activityEntity);
                 reportDTOList.add(reportDTO);
             }
             if (activityEntity != null && activityEntity.getFaReportDocument() != null && DECLARATION.equalsIgnoreCase(activityEntity.getFaReportDocument().getTypeCode())) {

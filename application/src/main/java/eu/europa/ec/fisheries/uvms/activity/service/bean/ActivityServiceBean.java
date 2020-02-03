@@ -23,7 +23,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityRep
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaReportDocumentMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityUtilsMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
@@ -209,7 +209,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
 
         for (FishingActivityEntity entity : activityList) {
-            FishingActivityReportDTO fishingActivityReportDTO = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity);
+            FishingActivityReportDTO fishingActivityReportDTO = FishingActivityUtilsMapper.INSTANCE.mapToFishingActivityReportDTO(entity);
             // Switch the report ids if this activity was canceled or deleted (needed from FE to display correctly)
             if (fishingActivityReportDTO.getCancelingReportID() != 0) {
                 fishingActivityReportDTO.setFaReportID(fishingActivityReportDTO.getCancelingReportID());

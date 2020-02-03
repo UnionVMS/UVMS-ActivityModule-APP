@@ -59,7 +59,7 @@ import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT
 @Builder
 @Data
 @EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
-@ToString(exclude = {"structuredAddresses", "faCatch", "fishingActivity", "fluxCharacteristic", "gearProblem"})
+@ToString(exclude = {"structuredAddresses", "fluxCharacteristic", "gearProblem"})
 public class FluxLocationEntity implements Serializable {
 
 	@Id

@@ -133,7 +133,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
         for (FishingActivity fishingActivity : fishingActivities) {
             List<FishingGear> specifiedFishingGears = fishingActivity.getSpecifiedFishingGears();
-            FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity);
+            FishingActivityEntity fishingActivityEntity = FishingActivityMapper.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity);
 
             if (CollectionUtils.isNotEmpty(specifiedFishingGears)) {
                 Set<FishingGearEntity> fishingGearEntitySet = new HashSet<>();
