@@ -25,6 +25,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +35,7 @@ import java.util.List;
  */
 @Stateless
 @LocalBean
+@Transactional
 @Slf4j
 public class ActivityMatchingIdsServiceBean extends BaseActivityBean {
 
