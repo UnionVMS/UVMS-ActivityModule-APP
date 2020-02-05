@@ -20,10 +20,6 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import org.geotools.geometry.jts.GeometryBuilder;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.WKTWriter;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
 import javax.persistence.CascadeType;
@@ -31,26 +27,18 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT_EPSG_SRID;
 
 @Entity
 @Table(name = "activity_flux_location")
@@ -59,7 +47,7 @@ import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT
 @Builder
 @Data
 @EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
-@ToString(exclude = {"structuredAddresses", "fluxCharacteristic", "gearProblem"})
+@ToString(exclude = {"structuredAddresses", "fluxCharacteristic"})
 public class FluxLocationEntity implements Serializable {
 
 	@Id
@@ -109,11 +97,6 @@ public class FluxLocationEntity implements Serializable {
 
 	@OneToMany(mappedBy = "fluxLocation", cascade = CascadeType.ALL)
 	private Set<StructuredAddressEntity> structuredAddresses;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "gear_problem_id")
-	private GearProblemEntity gearProblem;
-
 
 	public List<TextType> getNames(){
         List<TextType> names = null;

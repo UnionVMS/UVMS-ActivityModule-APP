@@ -16,7 +16,9 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemRecoveryEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.locationtech.jts.geom.Point;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -43,7 +45,7 @@ public abstract class GearProblemMapper extends BaseMapper {
     @Mapping(target = "affectedQuantity", source = "affectedQuantity.value")
     @Mapping(target = "gearProblemRecovery", expression = "java(mapToGearProblemRecoveries(gearProblem.getRecoveryMeasureCodes(), gearProblemEntity))")
     @Mapping(target = "fishingGears", expression = "java(getFishingGearsEntities(gearProblem.getRelatedFishingGears(), gearProblemEntity))")
-    @Mapping(target = "locations", expression = "java(mapToFluxLocations(gearProblem.getSpecifiedFLUXLocations(), gearProblemEntity))")
+    @Mapping(target = "geom", expression = "java(mapToFluxLocations(gearProblem.getSpecifiedFLUXLocations()))")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "fishingActivity", ignore = true)
     public abstract GearProblemEntity mapToGearProblemEntity(GearProblem gearProblem);
@@ -55,19 +57,15 @@ public abstract class GearProblemMapper extends BaseMapper {
     @Mapping(target = "gearProblem", ignore = true)
     public abstract GearProblemRecoveryEntity mapToGearProblemRecoveryEntity(CodeType codeType);
 
-    protected Set<FluxLocationEntity> mapToFluxLocations(List<FLUXLocation> flLocList, GearProblemEntity gearProbEntity){
+    protected Point mapToFluxLocations(List<FLUXLocation> flLocList){
         if(CollectionUtils.isEmpty(flLocList)){
-            return Collections.emptySet();
+            return null;
         }
-        Set<FluxLocationEntity> entitiesSet = new HashSet<>();
-        for(FLUXLocation flLocAct : flLocList){
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(flLocAct);
-            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.GEAR_PROBLEM);
-            fluxLocationEntity.setGearProblem(gearProbEntity);
-            FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(flLocAct);
-            entitiesSet.add(FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(flLocAct));
+        if(flLocList.get(0).getSpecifiedPhysicalFLUXGeographicalCoordinate() != null ){
+            return GeomUtil.createPoint(flLocList.get(0).getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue(),
+                    flLocList.get(0).getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
         }
-        return entitiesSet;
+        return null;
     }
 
     protected Set<GearProblemRecoveryEntity> mapToGearProblemRecoveries(List<CodeType> codeTypes, GearProblemEntity gearProblemEntity) {

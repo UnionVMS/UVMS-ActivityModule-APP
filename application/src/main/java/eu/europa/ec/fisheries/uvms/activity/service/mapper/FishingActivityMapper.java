@@ -2,7 +2,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -250,7 +249,7 @@ public abstract class FishingActivityMapper {
             faCatchEntity.setFishingActivity(fishingActivityEntity);
             faCatchEntity.setGearTypeCode(extractFishingGearTypeCode(faCatchEntity.getFishingGears()));
             faCatchEntity.setPresentation(extractPresentation(faCatchEntity.getAapProcesses()));
-            faCatchEntities.add(mapFluxLocationSchemeIds(faCatch, faCatchEntity));
+            faCatchEntities.add(faCatchEntity);
         }
         return faCatchEntities;
     }
@@ -279,51 +278,6 @@ public abstract class FishingActivityMapper {
             return fishingGearEntity.getTypeCode();
         }
         return null;
-    }
-
-    private static FaCatchEntity mapFluxLocationSchemeIds(FACatch faCatch, FaCatchEntity faCatchEntity) {
-        List<FLUXLocation> fluxLocations = faCatch.getSpecifiedFLUXLocations();
-        if (fluxLocations == null || fluxLocations.isEmpty()) {
-            return faCatchEntity;
-        }
-        for (FLUXLocation location : fluxLocations) {
-            IDType id = location.getID();
-            if (id != null) {
-                FluxLocationSchemeId fluxLocationSchemeId = null;
-                try {
-                    fluxLocationSchemeId = FluxLocationSchemeId.valueOf(id.getSchemeID());
-                } catch (IllegalArgumentException e) {
-                    log.warn("Unknown schemeId for FluxLocation." + id.getSchemeID());
-                }
-                if (fluxLocationSchemeId != null) {
-                    switch (fluxLocationSchemeId) {
-                        case TERRITORY:
-                            faCatchEntity.setTerritory(id.getValue());
-                            break;
-                        case FAO_AREA:
-                            faCatchEntity.setFaoArea(id.getValue());
-                            break;
-                        case ICES_STAT_RECTANGLE:
-                            faCatchEntity.setIcesStatRectangle(id.getValue());
-                            break;
-                        case EFFORT_ZONE:
-                            faCatchEntity.setEffortZone(id.getValue());
-                            break;
-                        case GFCM_GSA:
-                            faCatchEntity.setGfcmGsa(id.getValue());
-                            break;
-                        case GFCM_STAT_RECTANGLE:
-                            faCatchEntity.setGfcmStatRectangle(id.getValue());
-                            break;
-                        default:
-                            log.warn("Unknown schemeId for FluxLocation." + id.getSchemeID());
-                            break;
-                    }
-                }
-            }
-        }
-
-        return faCatchEntity;
     }
 
     protected static Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FishingActivityEntity fishingActivityEntity) {

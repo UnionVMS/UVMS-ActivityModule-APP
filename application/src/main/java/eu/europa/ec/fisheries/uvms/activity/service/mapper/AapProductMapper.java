@@ -14,6 +14,9 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import org.mapstruct.InheritInverseConfiguration;
@@ -25,6 +28,8 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationSchemeId.EFFORT_ZONE;
 
 @Mapper(uses = CustomBigDecimal.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
@@ -90,24 +95,11 @@ public abstract class AapProductMapper {
 
     protected Map<String, String> getDenormalizedLocations(AapProductEntity aapProduct) {
         Map<String, String> locations = new HashMap<>();
-        if (aapProduct.getAapProcess().getFaCatch().getIcesStatRectangle() != null) {
-            locations.put("ices_stat_rectangle", aapProduct.getAapProcess().getFaCatch().getIcesStatRectangle());
-        }
-
-        if (aapProduct.getAapProcess().getFaCatch().getFaoArea() != null) {
-            locations.put("fao_area", aapProduct.getAapProcess().getFaCatch().getFaoArea());
-        }
-
-        if (aapProduct.getAapProcess().getFaCatch().getGfcmGsa() != null) {
-            locations.put("gfcm_gsa", aapProduct.getAapProcess().getFaCatch().getGfcmGsa());
-        }
-
-        if (aapProduct.getAapProcess().getFaCatch().getEffortZone() != null) {
-            locations.put("effort_zone", aapProduct.getAapProcess().getFaCatch().getEffortZone());
-        }
-
-        if (aapProduct.getAapProcess().getFaCatch().getTerritory() != null) {
-            locations.put("territory", aapProduct.getAapProcess().getFaCatch().getTerritory());
+        // TODO: No, this probably will not work
+        for(FluxLocationEntity location : aapProduct.getAapProcess().getFaCatch().getFluxLocations()) {
+            if(location.getTypeCode().equals(FluxLocationEnum.AREA)) {
+                locations.put(location.getFluxLocationIdentifierSchemeId(), location.getFluxLocationIdentifier());;
+            }
         }
         return locations;
     }

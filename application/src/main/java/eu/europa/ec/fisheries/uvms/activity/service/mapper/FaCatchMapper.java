@@ -75,12 +75,6 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "fishingActivity", ignore = true)
     @Mapping(target = "calculatedUnitQuantity", ignore = true)
     @Mapping(target = "calculatedWeightMeasure", ignore = true)
-    @Mapping(target = "territory", ignore = true)
-    @Mapping(target = "faoArea", ignore = true)
-    @Mapping(target = "icesStatRectangle", ignore = true)
-    @Mapping(target = "effortZone", ignore = true)
-    @Mapping(target = "gfcmGsa", ignore = true)
-    @Mapping(target = "gfcmStatRectangle", ignore = true)
     @Mapping(target = "presentation", ignore = true)
     //TODO: Fix this
     @Mapping(target = "fishingTrip", expression = "java(getFishingTripEntity(faCatch.getRelatedFishingTrips()))")

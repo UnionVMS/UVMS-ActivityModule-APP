@@ -38,7 +38,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(of = {"typeCode", "speciesCode", "typeCodeListId", "speciesCodeListid", "unitQuantity", "unitQuantityCode", "calculatedUnitQuantity", "weightMeasureUnitCode", "weightMeasure", "usageCode", "territory", "fishClassCode"})
-@ToString(exclude = {"fishingActivity", "aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrip"})
+@ToString(exclude = {"fishingActivity", "aapProcesses", "fluxLocations", "fluxCharacteristics", "aapStocks"})
 public class FaCatchEntity implements Serializable {
 
 	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";
@@ -94,24 +94,6 @@ public class FaCatchEntity implements Serializable {
 
 	@Column(name = "weighing_means_code_list_id")
 	private String weighingMeansCodeListId;
-
-	@Column(name = "territory")
-	private String territory;
-
-	@Column(name = "fao_area")
-	private String faoArea;
-
-	@Column(name = "ices_stat_rectangle")
-	private String icesStatRectangle;
-
-	@Column(name = "effort_zone")
-	private String effortZone;
-
-    @Column(name = "gfcm_gsa")
-    private String gfcmGsa;
-
-    @Column(name = "gfcm_stat_rectangle")
-    private String gfcmStatRectangle;
 
 	@Column(name = "presentation")
 	private String presentation;

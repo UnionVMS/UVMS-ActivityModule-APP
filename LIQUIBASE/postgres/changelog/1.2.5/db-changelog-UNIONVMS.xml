@@ -62,4 +62,21 @@
                 tableName="activity_fishing_activity"/>
     </changeSet>
 
+    <changeSet author="anwall" id="ers-462-drop-unused_cols">
+        <dropColumn tableName="activity_fa_catch" columnName="territory" />
+        <dropColumn tableName="activity_fa_catch" columnName="fao_area" />
+        <dropColumn tableName="activity_fa_catch" columnName="ices_stat_rectangle" />
+        <dropColumn tableName="activity_fa_catch" columnName="effort_zone" />
+        <dropColumn tableName="activity_fa_catch" columnName="gfcm_gsa" />
+        <dropColumn tableName="activity_fa_catch" columnName="gfcm_stat_rectangle" />
+    </changeSet>
+
+
+    <changeSet author="anwall" id="gear_problem_add_geom">
+        <dropColumn tableName="activity_flux_location" columnName="gear_problem_id" />
+        <addColumn tableName="activity_gear_problem">
+            <column name="geom" type="geometry(Point, 4326)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

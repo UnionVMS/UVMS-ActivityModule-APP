@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -45,6 +46,9 @@ public class GearProblemEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
     private int id;
 
+	@Column(name = "geom", columnDefinition = "Geometry")
+	private Point geom;
+
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
 
@@ -53,9 +57,6 @@ public class GearProblemEntity implements Serializable {
 
 	@Column(name = "affected_quantity", nullable = false)
 	private int affectedQuantity;
-
-	@OneToMany(mappedBy = "gearProblem", cascade = CascadeType.ALL)
-	private Set<FluxLocationEntity> locations;
 
 	@OneToMany(mappedBy = "gearProblem", cascade = CascadeType.ALL)
 	private Set<GearProblemRecoveryEntity> gearProblemRecovery;
