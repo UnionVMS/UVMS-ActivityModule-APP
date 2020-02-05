@@ -58,8 +58,8 @@ public class FaCatchMapperTest {
         assertNotNull(fluxCharacteristicEntity);
         assertFaCatchFields(faCatch, fluxCharacteristicEntity.getFaCatch());
 
-        assertNotNull(faCatchEntity.getFluxLocations());
-        FluxLocationEntity fluxLocationEntity = faCatchEntity.getFluxLocations().iterator().next();
+        assertNotNull(faCatchEntity.getLocations());
+        FluxLocationEntity fluxLocationEntity = faCatchEntity.getLocations().iterator().next();
         assertNotNull(fluxLocationEntity);
     }
 

@@ -43,15 +43,26 @@
     </changeSet>
 
     <changeSet author="anwall" id="ers-462-location_m2m_catch">
-        <createTable tableName="activity_fa_catch_flux_location">
+        <createTable tableName="activity_fa_catch_specified_location">
             <column name="fa_catch_id" type="int"/>
             <column name="flux_location_id" type="int"/>
         </createTable>
 
         <addUniqueConstraint
                 columnNames="fa_catch_id, flux_location_id"
-                constraintName="fa_catch_id_flux_location_pk"
-                tableName="activity_fa_catch_flux_location"
+                constraintName="fa_catch_id_spec_location_pk"
+                tableName="activity_fa_catch_specified_location"
+        />
+
+        <createTable tableName="activity_fa_catch_destination_location">
+            <column name="fa_catch_id" type="int"/>
+            <column name="flux_location_id" type="int"/>
+        </createTable>
+
+        <addUniqueConstraint
+                columnNames="fa_catch_id, flux_location_id"
+                constraintName="fa_catch_id_dest_location_pk"
+                tableName="activity_fa_catch_destination_location"
         />
     </changeSet>
 

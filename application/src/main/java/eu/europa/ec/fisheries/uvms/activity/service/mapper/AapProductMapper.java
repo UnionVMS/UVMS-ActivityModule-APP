@@ -96,7 +96,7 @@ public abstract class AapProductMapper {
     protected Map<String, String> getDenormalizedLocations(AapProductEntity aapProduct) {
         Map<String, String> locations = new HashMap<>();
         // TODO: No, this probably will not work
-        for(FluxLocationEntity location : aapProduct.getAapProcess().getFaCatch().getFluxLocations()) {
+        for(FluxLocationEntity location : aapProduct.getAapProcess().getFaCatch().getLocations()) {
             if(location.getTypeCode().equals(FluxLocationEnum.AREA)) {
                 locations.put(location.getFluxLocationIdentifierSchemeId(), location.getFluxLocationIdentifier());;
             }

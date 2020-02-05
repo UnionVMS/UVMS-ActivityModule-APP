@@ -68,7 +68,8 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))")
     @Mapping(target = "aapProcesses", ignore = true)
     @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))")
-    @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations()))")
+    @Mapping(target = "locations", expression = "java(getLocFluxLocationEntities(faCatch.getSpecifiedFLUXLocations()))")
+    @Mapping(target = "destinations", expression = "java(getDestFluxLocationEntities(faCatch.getDestinationFLUXLocations()))")
     @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))")
     @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))")
     @Mapping(target = "id", ignore = true)
@@ -189,7 +190,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         return fluxCharacteristicEntities;
     }
 
-    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> specifiedFluxLocations, List<FLUXLocation> destFluxLocations) {
+    protected Set<FluxLocationEntity> getLocFluxLocationEntities(List<FLUXLocation> specifiedFluxLocations) {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : Utils.safeIterable(specifiedFluxLocations)) {
             FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
@@ -219,6 +220,12 @@ public abstract class FaCatchMapper extends BaseMapper {
             fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED);
             fluxLocationEntities.add(fluxLocationEntity);
         }
+
+        return fluxLocationEntities;
+    }
+
+    protected Set<FluxLocationEntity> getDestFluxLocationEntities(List<FLUXLocation> destFluxLocations) {
+        Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
 
         for (FLUXLocation fluxLocation : Utils.safeIterable(destFluxLocations)) {
             FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);

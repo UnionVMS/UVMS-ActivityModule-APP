@@ -26,7 +26,7 @@ import java.util.Set;
 @NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
 		query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " +
 				"FROM FaCatchEntity faCatch " +
-				"JOIN faCatch.fluxLocations fluxLoc " +
+				"JOIN faCatch.locations fluxLoc " +
 				"JOIN faCatch.fishingActivity fishAct " +
 				"JOIN fishAct.faReportDocument fa " +
 				"JOIN fishAct.fishingTrip fishTrip " +
@@ -124,10 +124,17 @@ public class FaCatchEntity implements Serializable {
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
-			name = "activity_fa_catch_flux_location",
+			name = "activity_fa_catch_specified_location",
 			joinColumns = @JoinColumn(name = "fa_catch_id"),
 			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
-	private Set<FluxLocationEntity> fluxLocations = new HashSet<>();
+	private Set<FluxLocationEntity> locations = new HashSet<>();
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+			name = "activity_fa_catch_destination_location",
+			joinColumns = @JoinColumn(name = "fa_catch_id"),
+			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
+	private Set<FluxLocationEntity> destinations = new HashSet<>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<>();

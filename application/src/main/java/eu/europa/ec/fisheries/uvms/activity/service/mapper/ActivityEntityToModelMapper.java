@@ -220,7 +220,8 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         List<FACatch> faCatchList = new ArrayList<>();
         for (FaCatchEntity faCatchEntity : faCatchs) {
             FACatch faCatch = FaCatchMapper.INSTANCE.mapToFaCatch(faCatchEntity);
-            Set<FluxLocationEntity> fluxLocations = faCatchEntity.getFluxLocations();
+            Set<FluxLocationEntity> fluxLocations = faCatchEntity.getLocations();
+            fluxLocations.addAll(faCatchEntity.getDestinations());
             if (CollectionUtils.isNotEmpty(fluxLocations)) {
                 mapFluxLocations(faCatch, fluxLocations);
             }

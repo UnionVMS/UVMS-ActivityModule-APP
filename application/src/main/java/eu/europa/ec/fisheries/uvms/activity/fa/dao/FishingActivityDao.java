@@ -161,7 +161,7 @@ public class FishingActivityDao {
                 .append("LEFT JOIN FETCH relatedActivities.vesselTransportMeans relvtm ")
                 .append("LEFT JOIN FETCH relvtm.vesselIdentifiers relvid ")
                 .append("LEFT JOIN FETCH relatedActivities.faCatchs relCatch ")
-                .append("LEFT JOIN FETCH fCatch.fluxLocations ")
+                .append("LEFT JOIN FETCH fCatch.locations ")
                 .append("LEFT JOIN FETCH fCatch.fishingGears ")
                 .append("LEFT JOIN FETCH fCatch.fluxCharacteristics ")
                 .append("LEFT JOIN FETCH fg.fishingGearRole ")
