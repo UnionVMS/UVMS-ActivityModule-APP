@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +21,6 @@ import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -30,15 +28,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "activity_flux_location")
@@ -47,7 +42,7 @@ import java.util.Set;
 @Builder
 @Data
 @EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
-@ToString(exclude = {"structuredAddresses", "fluxCharacteristic"})
+@ToString
 public class FluxLocationEntity implements Serializable {
 
 	@Id
@@ -87,9 +82,6 @@ public class FluxLocationEntity implements Serializable {
 
 	@Column(name = "rfmo_code_list_id")
 	private String regionalFisheriesManagementOrganizationCodeListId;
-
-	@OneToOne(mappedBy = "fluxLocation")
-	private FluxCharacteristicEntity fluxCharacteristic;
 
 	public List<TextType> getNames(){
         List<TextType> names = null;

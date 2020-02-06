@@ -22,9 +22,7 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import java.util.List;
 import java.util.Set;
 
-@Mapper(imports = BaseMapper.class,
-        uses = {FluxCharacteristicsMapper.class, StructuredAddressMapper.class, FluxCharacteristicsMapper.class},
-        unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(imports = BaseMapper.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class FluxLocationMapper {
 
     public static final FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
