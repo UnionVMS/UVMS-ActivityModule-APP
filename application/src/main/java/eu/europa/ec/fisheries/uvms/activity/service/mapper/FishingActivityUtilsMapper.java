@@ -454,7 +454,8 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     protected String getLandingCountryId(FishingActivityEntity entity) {
         if (entity.getFluxLocations() != null) {
             for (FluxLocationEntity fluxLocation : entity.getFluxLocations()) {
-                if (FluxLocationCatchTypeEnum.FA_RELATED.equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
+                // TODO: No, not quite right
+                if(fluxLocation.getCountryId() != null) {
                     return fluxLocation.getCountryId();
                 }
             }

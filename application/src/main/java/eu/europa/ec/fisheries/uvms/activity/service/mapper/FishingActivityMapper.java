@@ -296,7 +296,6 @@ public abstract class FishingActivityMapper {
                 }
             } else {
                 FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-                fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_RELATED);
                 fluxLocationEntities.add(fluxLocationEntity);
             }
         }

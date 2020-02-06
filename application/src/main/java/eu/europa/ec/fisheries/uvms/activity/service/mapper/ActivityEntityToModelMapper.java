@@ -220,11 +220,8 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         List<FACatch> faCatchList = new ArrayList<>();
         for (FaCatchEntity faCatchEntity : faCatchs) {
             FACatch faCatch = FaCatchMapper.INSTANCE.mapToFaCatch(faCatchEntity);
-            Set<FluxLocationEntity> fluxLocations = faCatchEntity.getLocations();
-            fluxLocations.addAll(faCatchEntity.getDestinations());
-            if (CollectionUtils.isNotEmpty(fluxLocations)) {
-                mapFluxLocations(faCatch, fluxLocations);
-            }
+            mapSpecFluxLocations(faCatch,faCatchEntity.getLocations());
+            mapDestFluxLocations(faCatch, faCatchEntity.getDestinations());
 
             FishingTripEntity catchFishingTrip = faCatchEntity.getFishingTrip();
             if (catchFishingTrip != null) {
@@ -235,19 +232,25 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         target.setSpecifiedFACatches(faCatchList);
     }
 
-    private void mapFluxLocations(FACatch faCatch, Set<FluxLocationEntity> fluxLocations) {
-        List<FLUXLocation> specified = new ArrayList<>();
-        List<FLUXLocation> destination = new ArrayList<>();
-        for (FluxLocationEntity fluxLocation : Utils.safeIterable(fluxLocations)) {
-            if (FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED.equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
+    private void mapSpecFluxLocations(FACatch faCatch, Set<FluxLocationEntity> locations) {
+        if (CollectionUtils.isNotEmpty(locations)) {
+            List<FLUXLocation> specified = new ArrayList<>();
+            for (FluxLocationEntity fluxLocation : Utils.safeIterable(locations)) {
                 specified.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
             }
-            if (FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION.equals(fluxLocation.getFluxLocationCatchTypeMapperInfo())) {
+            faCatch.setSpecifiedFLUXLocations(specified);
+        }
+    }
+
+    private void mapDestFluxLocations(FACatch faCatch, Set<FluxLocationEntity> locations) {
+        if (CollectionUtils.isNotEmpty(locations)) {
+
+            List<FLUXLocation> destination = new ArrayList<>();
+            for (FluxLocationEntity fluxLocation : Utils.safeIterable(locations)) {
                 destination.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
             }
+            faCatch.setDestinationFLUXLocations(destination);
         }
-        faCatch.setSpecifiedFLUXLocations(specified);
-        faCatch.setDestinationFLUXLocations(destination);
     }
 
     private void mapFluxCharacteristics(FishingActivity target, Set<FluxCharacteristicEntity> fluxCharacteristics) {

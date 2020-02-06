@@ -82,12 +82,15 @@
         <dropColumn tableName="activity_fa_catch" columnName="gfcm_stat_rectangle" />
     </changeSet>
 
-
     <changeSet author="anwall" id="gear_problem_add_geom">
         <dropColumn tableName="activity_flux_location" columnName="gear_problem_id" />
         <addColumn tableName="activity_gear_problem">
             <column name="geom" type="geometry(Point, 4326)"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet author="anwall" id="flux_location_drop_mappers">
+        <dropColumn tableName="activity_flux_location" columnName="flux_location_catch_type_mapper_info" />
     </changeSet>
 
 </databaseChangeLog>

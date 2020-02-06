@@ -67,10 +67,6 @@ public class FluxLocationEntity implements Serializable {
 	@Column(name = "country_id")
 	private String countryId;
 
-	@Column(name = "flux_location_catch_type_mapper_info", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private FluxLocationCatchTypeEnum fluxLocationCatchTypeMapperInfo;
-
 	@Column(name = "country_id_scheme_id")
 	private String countryIdSchemeId;
 

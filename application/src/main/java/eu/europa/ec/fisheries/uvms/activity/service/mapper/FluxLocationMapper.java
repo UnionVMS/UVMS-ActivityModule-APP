@@ -31,7 +31,6 @@ public abstract class FluxLocationMapper {
 
 
     @Mapping(target = "typeCode", source = "typeCode.value")
-    @Mapping(target = "fluxLocationCatchTypeMapperInfo", ignore = true) // Stored but only used for mapping decisions
     @Mapping(target = "typeCodeListId", source = "typeCode.listID")
     @Mapping(target = "countryId", source = "countryID.value")
     @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID")
