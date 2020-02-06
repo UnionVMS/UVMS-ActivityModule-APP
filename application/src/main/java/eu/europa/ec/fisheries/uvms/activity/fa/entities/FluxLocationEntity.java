@@ -91,9 +91,6 @@ public class FluxLocationEntity implements Serializable {
 	@OneToOne(mappedBy = "fluxLocation")
 	private FluxCharacteristicEntity fluxCharacteristic;
 
-	@OneToMany(mappedBy = "fluxLocation", cascade = CascadeType.ALL)
-	private Set<StructuredAddressEntity> structuredAddresses;
-
 	public List<TextType> getNames(){
         List<TextType> names = null;
 		if (StringUtils.isNotEmpty(name)){

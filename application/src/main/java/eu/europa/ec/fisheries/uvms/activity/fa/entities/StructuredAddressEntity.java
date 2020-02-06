@@ -109,8 +109,4 @@ public class StructuredAddressEntity implements Serializable {
     @JoinColumn(name = "contact_party_id")
     private ContactPartyEntity contactParty;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flux_location_id")
-    private FluxLocationEntity fluxLocation;
-
 }

@@ -93,4 +93,8 @@
         <dropColumn tableName="activity_flux_location" columnName="flux_location_catch_type_mapper_info" />
     </changeSet>
 
+
+    <changeSet author="anwall" id="activity_structured_address_drop_location">
+        <dropColumn tableName="activity_structured_address" columnName="flux_location_id" />
+    </changeSet>
 </databaseChangeLog>

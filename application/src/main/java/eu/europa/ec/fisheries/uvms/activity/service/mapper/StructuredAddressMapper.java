@@ -53,7 +53,6 @@ public abstract class StructuredAddressMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "structuredAddressType", ignore = true)
     @Mapping(target = "contactParty", ignore = true)
-    @Mapping(target = "fluxLocation", ignore = true)
     public abstract StructuredAddressEntity mapToStructuredAddressEntity(StructuredAddress structuredAddress);
 
     @InheritInverseConfiguration

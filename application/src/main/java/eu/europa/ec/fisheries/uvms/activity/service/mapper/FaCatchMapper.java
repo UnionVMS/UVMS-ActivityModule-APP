@@ -17,9 +17,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
@@ -37,7 +34,6 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 import java.util.*;
@@ -194,29 +190,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : Utils.safeIterable(specifiedFluxLocations)) {
             FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-
-            Set<StructuredAddressEntity> structuredAddressEntitySet = new HashSet<>();
-
-            StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
-            StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(physicalStructuredAddress);
-
-            if (physicalStructuredAddressEntity != null) {
-                physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
-                structuredAddressEntitySet.add(physicalStructuredAddressEntity);
-            }
-
-            List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
-            for (StructuredAddress structuredAddress : Utils.safeIterable(postalStructuredAddresses)) {
-                StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
-                if (structuredAddressEntity != null) {
-                    structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
-                    structuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                    structuredAddressEntitySet.add(structuredAddressEntity);
-                }
-            }
-
-            fluxLocationEntity.setStructuredAddresses(structuredAddressEntitySet);
+            // We ignore fluxLocation.getPhysicalStructuredAddress(); We will pick this up on VesselTransportMeans. See EFCA FLUX implementation document.
             fluxLocationEntities.add(fluxLocationEntity);
         }
 
