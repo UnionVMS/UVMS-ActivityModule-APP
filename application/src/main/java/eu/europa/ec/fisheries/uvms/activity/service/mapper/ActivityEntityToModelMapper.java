@@ -25,17 +25,19 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
 
+import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.math.BigDecimal;
@@ -45,12 +47,24 @@ import java.util.*;
 import static java.util.Collections.singletonList;
 
 @Slf4j
+
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public class ActivityEntityToModelMapper extends BaseMapper {
 
-    public static final ActivityEntityToModelMapper INSTANCE = new ActivityEntityToModelMapper();
+    @Inject
+    FishingGearMapper fishingGearMapper;
 
-    private ActivityEntityToModelMapper() {
-    }
+    @Inject
+    FluxLocationMapper fluxLocationMapper;
+
+    @Inject
+    FlapDocumentMapper flapDocumentMapper;
+
+    @Inject
+    ContactPersonMapper contactPersonMapper;
+
+    @Inject
+    StructuredAddressMapper structuredAddressMapper;
 
     public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity) {
         FLUXFAReportMessage target = new FLUXFAReportMessage();
@@ -150,7 +164,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
 
         target.setRelatedFLUXLocations(new ArrayList<>());
-        target.getRelatedFLUXLocations().addAll(FluxLocationMapper.INSTANCE.mapToFluxLocationList(source.getFluxLocations()));
+        target.getRelatedFLUXLocations().addAll(fluxLocationMapper.mapToFluxLocationList(source.getFluxLocations()));
         if(source.getLongitude() != null || source.getLatitude() != null || source.getLatitude() != null) {
             FLUXLocation posFluxLocation = new FLUXLocation();
             FLUXGeographicalCoordinate fluxGeographicalCoordinate = new FLUXGeographicalCoordinate();
@@ -199,7 +213,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
             target.setSpecifiedFishingTrip(fishingTripEntity.convert());
         }
 
-        target.setSpecifiedFishingGears(FishingGearMapper.INSTANCE.mapToFishingGearList(source.getFishingGears()));
+        target.setSpecifiedFishingGears(fishingGearMapper.mapToFishingGearList(source.getFishingGears()));
 
         Set<FaCatchEntity> faCatchs = source.getFaCatchs();
 
@@ -209,7 +223,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
         mapRelatedVesselTransportMeans(target, source.getVesselTransportMeans());
 
-        target.setSpecifiedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
+        target.setSpecifiedFLAPDocuments(flapDocumentMapper.mapToFlapDocumentList(source.getFlapDocuments()));
 
         source.getFlagState(); // TODO MAP
 
@@ -236,7 +250,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         if (CollectionUtils.isNotEmpty(locations)) {
             List<FLUXLocation> specified = new ArrayList<>();
             for (FluxLocationEntity fluxLocation : Utils.safeIterable(locations)) {
-                specified.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
+                specified.add(fluxLocationMapper.mapToFluxLocation(fluxLocation));
             }
             faCatch.setSpecifiedFLUXLocations(specified);
         }
@@ -247,7 +261,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
             List<FLUXLocation> destination = new ArrayList<>();
             for (FluxLocationEntity fluxLocation : Utils.safeIterable(locations)) {
-                destination.add(FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation));
+                destination.add(fluxLocationMapper.mapToFluxLocation(fluxLocation));
             }
             faCatch.setDestinationFLUXLocations(destination);
         }
@@ -258,7 +272,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         for (FluxCharacteristicEntity fluxCharacteristicEntity : fluxCharacteristics) {
             FLUXCharacteristic fLUXCharacteristic = FluxCharacteristicsMapper.INSTANCE.mapToFLUXCharacteristic(fluxCharacteristicEntity);
             FluxLocationEntity fluxLocation = fluxCharacteristicEntity.getFluxLocation();
-            FLUXLocation location = FluxLocationMapper.INSTANCE.mapToFluxLocation(fluxLocation);
+            FLUXLocation location = fluxLocationMapper.mapToFluxLocation(fluxLocation);
             if (fluxLocation != null) {
                 fLUXCharacteristic.setSpecifiedFLUXLocations(Collections.singletonList(location));
             }
@@ -422,7 +436,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
                 mapRegistrationEvent(vesselTransportMeans, source.getRegistrationEvent());
                 mapIDs(vesselTransportMeans, source.getVesselIdentifiers());
                 mapSpecifiedContactParties(vesselTransportMeans, source.getContactParty());
-                vesselTransportMeans.setGrantedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
+                vesselTransportMeans.setGrantedFLAPDocuments(flapDocumentMapper.mapToFlapDocumentList(source.getFlapDocuments()));
                 vesselTransportMeansList.add(vesselTransportMeans);
             }
             target.setRelatedVesselTransportMeans(vesselTransportMeansList);
@@ -440,7 +454,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
             mapIDs(vesselTransportMeans, source.getVesselIdentifiers());
             mapSpecifiedContactParties(vesselTransportMeans, source.getContactParty());
 
-            vesselTransportMeans.setGrantedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
+            vesselTransportMeans.setGrantedFLAPDocuments(flapDocumentMapper.mapToFlapDocumentList(source.getFlapDocuments()));
             target.setSpecifiedVesselTransportMeans(vesselTransportMeans);
         }
     }
@@ -450,14 +464,14 @@ public class ActivityEntityToModelMapper extends BaseMapper {
         for (ContactPartyEntity source : Utils.safeIterable(contactPartyEntities)) {
             ContactParty contactParty = new ContactParty();
 
-            ContactPerson contactPerson = ContactPersonMapper.INSTANCE.mapToContactPerson(source.getContactPerson());
+            ContactPerson contactPerson = contactPersonMapper.mapToContactPerson(source.getContactPerson());
 
             if (contactPerson != null) {
                 contactParty.setSpecifiedContactPersons(Collections.singletonList(contactPerson)); // TODO @Greg mapstruct add non-iterable type
             }
             mapRoles(contactParty, source.getContactPartyRole());
 
-            contactParty.setSpecifiedStructuredAddresses(StructuredAddressMapper.INSTANCE.mapToStructuredAddressList(source.getStructuredAddresses()));
+            contactParty.setSpecifiedStructuredAddresses(structuredAddressMapper.mapToStructuredAddressList(source.getStructuredAddresses()));
             contactParties.add(contactParty);
         }
         target.setSpecifiedContactParties(contactParties);

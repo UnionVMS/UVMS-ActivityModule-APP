@@ -12,20 +12,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.*;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
 import java.util.List;
 import java.util.Set;
 
-@Mapper(imports = BaseMapper.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public abstract class FluxLocationMapper {
-
-    public static final FluxLocationMapper INSTANCE = Mappers.getMapper(FluxLocationMapper.class);
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public interface FluxLocationMapper {
 
 
     @Mapping(target = "typeCode", source = "typeCode.value")
@@ -34,15 +28,15 @@ public abstract class FluxLocationMapper {
     @Mapping(target = "countryIdSchemeId", source = "countryID.schemeID")
     @Mapping(target = "fluxLocationIdentifier", source = "ID.value")
     @Mapping(target = "fluxLocationIdentifierSchemeId", source = "ID.schemeID")
-    @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(fluxLocation.getNames()))")
-    @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxLocation.getNames()))")
+    @Mapping(target = "name", expression = "java(BaseUtil.getTextFromList(fluxLocation.getNames()))")
+    @Mapping(target = "nameLanguageId", expression = "java(BaseUtil.getLanguageIdFromList(fluxLocation.getNames()))")
     @Mapping(target = "regionalFisheriesManagementOrganizationCode", source = "regionalFisheriesManagementOrganizationCode.value")
     @Mapping(target = "regionalFisheriesManagementOrganizationCodeListId", source = "regionalFisheriesManagementOrganizationCode.listID")
-    public abstract FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
+    FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
 
     @InheritInverseConfiguration
     @Mapping(target = "specifiedPhysicalFLUXGeographicalCoordinate", ignore = true)
-    public abstract FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
+    FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
 
-    public abstract List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
+    List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
 }

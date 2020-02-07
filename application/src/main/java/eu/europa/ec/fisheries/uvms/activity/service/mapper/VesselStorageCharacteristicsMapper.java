@@ -18,10 +18,10 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.VesselStorageCharCodeDto
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +30,8 @@ import java.util.Set;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class VesselStorageCharacteristicsMapper {
 
-    public static final VesselStorageCharacteristicsMapper INSTANCE = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
-
+    @Inject
+    VesselStorageCharacteristicsMapper vesselStorageCharacteristicsMapper;
 
     @Mapping(target = "vesselId", source = "vesselStorageCharacteristic.ID.value")
     @Mapping(target = "vesselSchemaId", source = "vesselStorageCharacteristic.ID.schemeID")
@@ -54,7 +54,7 @@ public abstract class VesselStorageCharacteristicsMapper {
         }
         Set<VesselStorageCharCodeEntity> vesselStorageCharCodes = new HashSet<>();
         for (CodeType codeType : codeTypes) {
-            VesselStorageCharCodeEntity vesselStorageCharCode = VesselStorageCharacteristicsMapper.INSTANCE.mapToVesselStorageCharCodeEntity(codeType);
+            VesselStorageCharCodeEntity vesselStorageCharCode = vesselStorageCharacteristicsMapper.mapToVesselStorageCharCodeEntity(codeType);
             vesselStorageCharCode.setVesselStorageCharacteristics(vesselStorageChar);
             vesselStorageCharCodes.add(vesselStorageCharCode);
         }

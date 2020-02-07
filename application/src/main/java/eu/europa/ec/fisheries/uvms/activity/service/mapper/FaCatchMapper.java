@@ -36,14 +36,23 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
+import javax.inject.Inject;
 import java.util.*;
 
-@Mapper(uses = {CustomBigDecimal.class, AapProcessMapper.class},
+@Mapper(componentModel = "cdi", uses = {CustomBigDecimal.class, AapProcessMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 
     public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
 
+    @Inject
+    FluxLocationMapper LOCATION_MAPPER;
+
+    @Inject
+    AapStockMapper aapStockMapper;
+
+    @Inject
+    FishingGearMapper fishingGearMapper;
 
     @Mapping(target = "typeCode", source = "typeCode.value")
     @Mapping(target = "typeCodeListId", source = "typeCode.listID")
@@ -166,7 +175,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<AapStockEntity> aapStockEntities = new HashSet<>();
         for (AAPStock aapStock : aapStocks) {
-            AapStockEntity aapStockEntity = AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock);
+            AapStockEntity aapStockEntity = aapStockMapper.mapToAapStockEntity(aapStock);
             aapStockEntity.setFaCatch(faCatchEntity);
             aapStockEntities.add(aapStockEntity);
         }
@@ -189,7 +198,7 @@ public abstract class FaCatchMapper extends BaseMapper {
     protected Set<FluxLocationEntity> getLocFluxLocationEntities(List<FLUXLocation> specifiedFluxLocations) {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : Utils.safeIterable(specifiedFluxLocations)) {
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+            FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
             // We ignore fluxLocation.getPhysicalStructuredAddress(); We will pick this up on VesselTransportMeans. See EFCA FLUX implementation document.
             fluxLocationEntities.add(fluxLocationEntity);
         }
@@ -201,7 +210,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
 
         for (FLUXLocation fluxLocation : Utils.safeIterable(destFluxLocations)) {
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+            FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
             fluxLocationEntities.add(fluxLocationEntity);
         }
 
@@ -214,7 +223,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
-            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+            FishingGearEntity fishingGearEntity = fishingGearMapper.mapToFishingGearEntity(fishingGear);
             fishingGearEntity.setFaCatch(faCatchEntity);
             fishingGearEntities.add(fishingGearEntity);
         }

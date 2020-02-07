@@ -18,17 +18,14 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 
-@Mapper(imports = BaseMapper.class,
+@Mapper(componentModel = "cdi", imports = BaseMapper.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public abstract class RegistrationEventMapper {
+public abstract class RegistrationEventMapper extends BaseMapper{
 
-    public static final RegistrationEventMapper INSTANCE = Mappers.getMapper(RegistrationEventMapper.class);
-
-
-    @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationEvent.getDescriptions()))")
-    @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationEvent.getDescriptions()))")
+    @Mapping(target = "description", expression = "java(BaseUtil.getTextFromList(registrationEvent.getDescriptions()))")
+    @Mapping(target = "descLanguageId", expression = "java(BaseUtil.getLanguageIdFromList(registrationEvent.getDescriptions()))")
     @Mapping(target = "occurrenceDatetime", source = "occurrenceDateTime.dateTime")
-    @Mapping(target = "registrationLocation", expression = "java(BaseMapper.mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))")
+    @Mapping(target = "registrationLocation", expression = "java(mapToRegistrationLocationEntity(registrationEvent.getRelatedRegistrationLocation(), registrationEventEntity))")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "vesselTransportMeanses", ignore = true)
     public abstract RegistrationEventEntity mapToRegistrationEventEntity(RegistrationEvent registrationEvent);

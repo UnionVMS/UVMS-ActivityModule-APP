@@ -18,14 +18,10 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEnti
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselPositionEvent;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class VesselPositionEventMapper {
-
-    public static final VesselPositionEventMapper INSTANCE = Mappers.getMapper(VesselPositionEventMapper.class);
-
 
     @Mapping(target = "typeCode", source = "vesselPositionEvent.typeCode.value")
     @Mapping(target = "obtainedOccurrenceDateTime", source = "vesselPositionEvent.obtainedOccurrenceDateTime.dateTime")

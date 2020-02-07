@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runners.Parameterized.Parameter;
+import org.mapstruct.factory.Mappers;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.DefaultNodeMatcher;
 import org.xmlunit.diff.Diff;
@@ -42,6 +43,9 @@ public class ActivityEntityToModelMapperTest {
 
     private Unmarshaller unmarshaller;
 
+    FluxFaReportMessageMapper fluxFaReportMessageMapper = Mappers.getMapper(FluxFaReportMessageMapper.class);
+    ActivityEntityToModelMapper activityEntityToModelMapper = Mappers.getMapper(ActivityEntityToModelMapper.class);
+
     @Parameter
     public String resource;
 
@@ -55,9 +59,9 @@ public class ActivityEntityToModelMapperTest {
     public void testMapToFLUXFAReportMessage() throws Exception {
 
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
-        FluxFaReportMessageEntity entity = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL);
+        FluxFaReportMessageEntity entity = fluxFaReportMessageMapper.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL);
 
-        FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()));
+        FLUXFAReportMessage target = activityEntityToModelMapper.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()));
 
         String controlSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(fluxfaReportMessage), "ISO-8859-15", true, new FANamespaceMapper());
         String testSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(target), "ISO-8859-15", true, new FANamespaceMapper());

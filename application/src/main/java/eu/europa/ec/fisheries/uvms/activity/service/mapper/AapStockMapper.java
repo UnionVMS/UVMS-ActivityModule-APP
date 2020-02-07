@@ -18,14 +18,12 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
-public abstract class AapStockMapper {
-
-    public static final AapStockMapper INSTANCE = Mappers.getMapper(AapStockMapper.class);
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
+public interface AapStockMapper {
 
     @Mapping(target = "stockId", source = "ID.value")
     @Mapping(target = "stockSchemeId", source = "ID.schemeID")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "faCatch", ignore = true)
-    public abstract AapStockEntity mapToAapStockEntity(AAPStock aapStock);
+    AapStockEntity mapToAapStockEntity(AAPStock aapStock);
 }

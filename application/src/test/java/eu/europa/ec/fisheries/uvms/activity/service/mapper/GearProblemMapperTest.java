@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 
 import static org.junit.Assert.assertEquals;
@@ -28,7 +29,8 @@ public class GearProblemMapperTest {
     @Test
     public void testGearProblemMapper() {
         GearProblem gearProblem = MapperUtil.getGearProblem();
-        GearProblemEntity gearProblemEntity = GearProblemMapper.INSTANCE.mapToGearProblemEntity(gearProblem);
+        GearProblemMapper gearProblemMapper = Mappers.getMapper(GearProblemMapper.class);
+        GearProblemEntity gearProblemEntity = gearProblemMapper.mapToGearProblemEntity(gearProblem);
 
         assertEquals(gearProblem.getTypeCode().getValue(), gearProblemEntity.getTypeCode());
         assertEquals(gearProblem.getTypeCode().getListID(), gearProblemEntity.getTypeCodeListId());

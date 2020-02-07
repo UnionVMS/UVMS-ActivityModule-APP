@@ -37,6 +37,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -58,6 +59,12 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     private FishingActivityDao fishingActivityDao;
 
+    @Inject
+    FaReportDocumentMapper faReportDocumentMapper;
+
+    @Inject
+    FishingActivityUtilsMapper fishingActivityUtilsMapper;
+
     @EJB
     private AssetModuleService assetsServiceBean;
 
@@ -75,7 +82,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
 
         List<FaReportDocumentEntity> historyOfFaReport = faReportDocumentDao.getHistoryOfFaReport(faReport);
-        List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(historyOfFaReport);
+        List<FaReportCorrectionDTO> faReportCorrectionDTOs = faReportDocumentMapper.mapToFaReportCorrectionDtoList(historyOfFaReport);
         Collections.sort(faReportCorrectionDTOs);
         return faReportCorrectionDTOs;
     }
@@ -209,7 +216,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
 
         for (FishingActivityEntity entity : activityList) {
-            FishingActivityReportDTO fishingActivityReportDTO = FishingActivityUtilsMapper.INSTANCE.mapToFishingActivityReportDTO(entity);
+            FishingActivityReportDTO fishingActivityReportDTO = fishingActivityUtilsMapper.mapToFishingActivityReportDTO(entity);
             // Switch the report ids if this activity was canceled or deleted (needed from FE to display correctly)
             if (fishingActivityReportDTO.getCancelingReportID() != 0) {
                 fishingActivityReportDTO.setFaReportID(fishingActivityReportDTO.getCancelingReportID());

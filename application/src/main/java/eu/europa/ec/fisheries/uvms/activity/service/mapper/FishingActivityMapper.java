@@ -1,25 +1,49 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import javax.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FishingActivityMapper {
 
-    public static FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity) {
+    @Inject
+    FluxLocationMapper LOCATION_MAPPER;
+    
+    @Inject
+    AapProcessMapper aapProcessMapper;
+
+    @Inject
+    AapProductMapper aapProductMapper;
+
+    @Inject
+    AapProcessCodeMapper aapProcessCodeMapper;
+
+    @Inject
+    VesselTransportMeansMapper vesselTransportMeansMapper;
+
+    @Inject
+    GearProblemMapper gearProblemMapper;
+
+    @Inject
+    VesselStorageCharacteristicsMapper vesselStorageCharacteristicsMapper;
+
+    public FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity) {
         FishingActivityEntity entity = new FishingActivityEntity();
         entity.setLatest(true);
         entity.setCalculatedEndTime(getCalculatedEndTime(fishingActivity));
@@ -61,7 +85,7 @@ public abstract class FishingActivityMapper {
         return entity;
     }
 
-    private static Double getDouble(un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType measureType) {
+    private Double getDouble(un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType measureType) {
         if(measureType != null) {
             if(measureType.getValue() != null) {
                 return measureType.getValue().doubleValue();
@@ -69,7 +93,7 @@ public abstract class FishingActivityMapper {
         }
         return null;
     }
-    private static Double getDouble(un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType quantityType) {
+    private Double getDouble(un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType quantityType) {
         if(quantityType != null) {
             if(quantityType.getValue() != null) {
                 return quantityType.getValue().doubleValue();
@@ -78,16 +102,16 @@ public abstract class FishingActivityMapper {
         return null;
     }
 
-    private static String getIdType(IDType idType) {
+    private String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
     }
-    private static String getCodeTypeListId(CodeType codeType) {
+    private String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
     }
-    private static String getCodeType(CodeType codeType) {
+    private String getCodeType(CodeType codeType) {
         return (codeType == null) ? null : codeType.getValue();
     }
-    private static String getCountry(VesselCountry country) {
+    private String getCountry(VesselCountry country) {
         if (country == null) {
             return null;
         }
@@ -95,14 +119,14 @@ public abstract class FishingActivityMapper {
     }
 
 
-    protected static Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity fishingActivityEntity) {
+    protected Set<VesselTransportMeansEntity> getVesselTransportMeansEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity fishingActivityEntity) {
         List<VesselTransportMeans> vesselList = fishingActivity.getRelatedVesselTransportMeans();
         if (vesselList == null || vesselList.isEmpty()) {
             return null;
         }
         Set<VesselTransportMeansEntity> vesselTransportMeansEntities = new HashSet<>();
         for (VesselTransportMeans vesselTransportMeans : vesselList) {
-            VesselTransportMeansEntity vesselTransportMeansEntity = VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans);
+            VesselTransportMeansEntity vesselTransportMeansEntity = vesselTransportMeansMapper.mapToVesselTransportMeansEntity(vesselTransportMeans);
             vesselTransportMeansEntity.setFaReportDocument(faReportDocumentEntity);
             vesselTransportMeansEntity.setFishingActivity(fishingActivityEntity);
             vesselTransportMeansEntities.add(vesselTransportMeansEntity);
@@ -110,7 +134,7 @@ public abstract class FishingActivityMapper {
         return vesselTransportMeansEntities;
     }
 
-    protected static Instant getCalculatedStartTime(FishingActivity fishingActivity) {
+    protected Instant getCalculatedStartTime(FishingActivity fishingActivity) {
         if (fishingActivity == null) {
             return null;
         }
@@ -148,7 +172,7 @@ public abstract class FishingActivityMapper {
         return startTimeInstant;
     }
 
-    protected static Instant getCalculatedEndTime(FishingActivity fishingActivity) {
+    protected Instant getCalculatedEndTime(FishingActivity fishingActivity) {
         if (fishingActivity == null) {
             return null;
         }
@@ -194,7 +218,7 @@ public abstract class FishingActivityMapper {
         return null;
     }
 
-    protected static Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
+    protected Set<FishingActivityEntity> getAllRelatedFishingActivities(List<FishingActivity> fishingActivity, FaReportDocumentEntity faReportDocumentEntity, FishingActivityEntity parentFishingActivity) {
         Set<FishingActivityEntity> relatedFishingActivityEntities = new HashSet<>();
 
         if (fishingActivity == null || fishingActivity.isEmpty()) {
@@ -208,7 +232,7 @@ public abstract class FishingActivityMapper {
         return relatedFishingActivityEntities;
     }
 
-    protected static Set<FaCatchEntity> mapToFaCatchEntities(List<FACatch> faCatches, FishingActivityEntity fishingActivityEntity) {
+    protected Set<FaCatchEntity> mapToFaCatchEntities(List<FACatch> faCatches, FishingActivityEntity fishingActivityEntity) {
         if (faCatches == null || faCatches.isEmpty()) {
             return Collections.emptySet();
         }
@@ -217,13 +241,13 @@ public abstract class FishingActivityMapper {
             FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
             for (AAPProcess aapProcess : Utils.safeIterable(faCatch.getAppliedAAPProcesses())) {
-                AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+                AapProcessEntity aapProcessEntity = aapProcessMapper.mapToAapProcessEntity(aapProcess);
                 for (AAPProduct aapProduct : Utils.safeIterable(aapProcess.getResultAAPProducts())) {
-                    aapProcessEntity.addAapProducts(AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct));
+                    aapProcessEntity.addAapProducts(aapProductMapper.mapToAapProductEntity(aapProduct));
                 }
 
                 for (CodeType codeType : Utils.safeIterable(aapProcess.getTypeCodes())) {
-                    aapProcessEntity.addProcessCode(AapProcessCodeMapper.INSTANCE.mapToAapProcessCodeEntity(codeType));
+                    aapProcessEntity.addProcessCode(aapProcessCodeMapper.mapToAapProcessCodeEntity(codeType));
                 }
                 faCatchEntity.addAAPProcess(aapProcessEntity);
             }
@@ -254,7 +278,7 @@ public abstract class FishingActivityMapper {
         return faCatchEntities;
     }
 
-    private static String extractPresentation(Set<AapProcessEntity> aapProcessEntities) {
+    private String extractPresentation(Set<AapProcessEntity> aapProcessEntities) {
         if (CollectionUtils.isEmpty(aapProcessEntities)) {
             return null;
         }
@@ -272,7 +296,7 @@ public abstract class FishingActivityMapper {
         return null;
     }
 
-    private static String extractFishingGearTypeCode(Set<FishingGearEntity> fishingGears) {
+    private String extractFishingGearTypeCode(Set<FishingGearEntity> fishingGears) {
         if (CollectionUtils.isNotEmpty(fishingGears)) {
             FishingGearEntity fishingGearEntity = fishingGears.iterator().next();
             return fishingGearEntity.getTypeCode();
@@ -280,7 +304,7 @@ public abstract class FishingActivityMapper {
         return null;
     }
 
-    protected static Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FishingActivityEntity fishingActivityEntity) {
+    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FishingActivityEntity fishingActivityEntity) {
         if (fluxLocations == null || fluxLocations.isEmpty()) {
             return Collections.emptySet();
         }
@@ -295,47 +319,47 @@ public abstract class FishingActivityMapper {
                     }
                 }
             } else {
-                FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+                FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
                 fluxLocationEntities.add(fluxLocationEntity);
             }
         }
         return fluxLocationEntities;
     }
 
-    protected static Set<GearProblemEntity> getGearProblemEntities(List<GearProblem> gearProblems, FishingActivityEntity fishingActivityEntity) {
+    protected Set<GearProblemEntity> getGearProblemEntities(List<GearProblem> gearProblems, FishingActivityEntity fishingActivityEntity) {
         if (gearProblems == null || gearProblems.isEmpty()) {
             return Collections.emptySet();
         }
         Set<GearProblemEntity> gearProblemEntities = new HashSet<>();
         for (GearProblem gearProblem : gearProblems) {
-            GearProblemEntity gearProblemEntity = GearProblemMapper.INSTANCE.mapToGearProblemEntity(gearProblem);
+            GearProblemEntity gearProblemEntity = gearProblemMapper.mapToGearProblemEntity(gearProblem);
             gearProblemEntity.setFishingActivity(fishingActivityEntity);
             gearProblemEntities.add(gearProblemEntity);
         }
         return gearProblemEntities;
     }
 
-    protected static VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
+    protected VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
         if (sourceVesselStorageChar == null) {
             return null;
         }
         VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity =
-                VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(sourceVesselStorageChar);
+                vesselStorageCharacteristicsMapper.mapToDestVesselStorageCharEntity(sourceVesselStorageChar);
         vesselStorageCharacteristicsEntity.setFishingActivitiesForSourceVesselCharId(fishingActivityEntity);
         return vesselStorageCharacteristicsEntity;
     }
 
-    protected static VesselStorageCharacteristicsEntity getDestVesselStorageCharacteristics(VesselStorageCharacteristic destVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
+    protected VesselStorageCharacteristicsEntity getDestVesselStorageCharacteristics(VesselStorageCharacteristic destVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
         if (destVesselStorageChar == null) {
             return null;
         }
         VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity =
-                VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(destVesselStorageChar);
+                vesselStorageCharacteristicsMapper.mapToDestVesselStorageCharEntity(destVesselStorageChar);
         vesselStorageCharacteristicsEntity.setFishingActivitiesForDestVesselCharId(fishingActivityEntity);
         return vesselStorageCharacteristicsEntity;
     }
 
-    protected static String getFlagState(FishingActivity fishingActivity) {
+    protected String getFlagState(FishingActivity fishingActivity) {
         List<VesselTransportMeans> vesselList = fishingActivity.getRelatedVesselTransportMeans();
         if (CollectionUtils.isEmpty(vesselList)) {
             return null;

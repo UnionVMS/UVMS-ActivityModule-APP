@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
 import static org.junit.Assert.assertEquals;
@@ -24,10 +25,12 @@ import static org.junit.Assert.assertTrue;
 
 public class FluxLocationMapperTest {
 
+    public static final FluxLocationMapper LOCATION_MAPPER = Mappers.getMapper(FluxLocationMapper.class);
+
     @Test
     public void fluxLocationMapper() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+        FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
         assertEquals(fluxLocation.getTypeCode().getListID(), fluxLocationEntity.getTypeCodeListId());
         assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode().name());
         assertEquals(fluxLocation.getCountryID().getValue(), fluxLocationEntity.getCountryId());

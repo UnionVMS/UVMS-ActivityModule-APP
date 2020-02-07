@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.xml.bind.JAXBContext;
@@ -36,7 +37,8 @@ public class FluxFaReportMessageMapperTest {
         FLUXFAReportMessage original = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
 
         // When
-        FluxFaReportMessageEntity mapped = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(original, FaReportSourceEnum.FLUX);
+        FluxFaReportMessageMapper fluxFaReportMessageMapper = Mappers.getMapper(FluxFaReportMessageMapper.class);
+        FluxFaReportMessageEntity mapped = fluxFaReportMessageMapper.mapToFluxFaReportMessage(original, FaReportSourceEnum.FLUX);
 
         // Then
         assertEquals("FLUX_REPORT_ID_1", mapped.getFluxReportDocument_Id());

@@ -22,7 +22,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
@@ -38,21 +37,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 
+import javax.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
-@Mapper(imports = {FaReportStatusType.class},
+@Mapper(componentModel = "cdi", imports = {FaReportStatusType.class},
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 @Slf4j
 public abstract class FishingActivityUtilsMapper extends BaseMapper {
 
-    public static final FishingActivityUtilsMapper INSTANCE = Mappers.getMapper(FishingActivityUtilsMapper.class);
+    @Inject
+    VesselStorageCharacteristicsMapper vesselStorageCharacteristicsMapper;
 
     @Mapping(target = "fishingActivityId", source = "id")
     @Mapping(target = "uniqueFAReportId", expression = "java(getUniqueId(entity))")
@@ -74,7 +74,7 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     @Mapping(target = "vesselIdTypes", expression = "java(getVesselIdType(entity))")
     @Mapping(target = "startDate", source = "calculatedStartTime", qualifiedByName = "instantToDate")
     @Mapping(target = "endDate", expression = "java(getEndDate(entity))")
-    @Mapping(target = "hasCorrection", expression = "java(getCorrection(entity))")
+    @Mapping(target = "hasCorrection", expression = "java(BaseUtil.getCorrection(entity))")
     @Mapping(target = "fluxReportReferenceId", source = "faReportDocument.fluxReportDocument_ReferencedFaReportDocumentId")
     @Mapping(target = "fluxReportReferenceSchemeId", source = "faReportDocument.fluxReportDocument_ReferencedFaReportDocumentSchemeId")
     @Mapping(target = "cancelingReportID", source = "canceledBy")
@@ -98,7 +98,7 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))")
     @Mapping(target = "ports", expression = "java(getPortsForFishingActivity(entity))")
     @Mapping(target = "vesselIdentifiers", expression = "java(getVesselIdentifierTypeList(entity))")
-    @Mapping(target = "isCorrection", expression = "java(getCorrection(entity))")
+    @Mapping(target = "isCorrection", expression = "java(BaseUtil.getCorrection(entity))")
     @Mapping(target = "tripId", expression = "java(getFishingTripId(entity))")
     @Mapping(target = "flagState", expression = "java(getFlagState(entity))")
     @Mapping(target = "landingReferencedID", expression = "java(getFluxReportIdentifierId(entity))")
@@ -130,7 +130,7 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument_PurposeCode")
     @Mapping(target = "faReportDocumentType", source = "faReportDocument.typeCode")
     @Mapping(target = "faReportAcceptedDateTime", source = "faReportDocument.acceptedDatetime", qualifiedByName = "instantToDate")
-    @Mapping(target = "correction", expression = "java(getCorrection(entity))") // FIXME entity method
+    @Mapping(target = "correction", expression = "java(BaseUtil.getCorrection(entity))") // FIXME entity method
     @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))")
     @Mapping(target = "faReportID", source = "faReportDocument.id")
     @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
@@ -410,7 +410,7 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
             return null;
         }
         VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity =
-                VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(sourceVesselStorageChar);
+                vesselStorageCharacteristicsMapper.mapToDestVesselStorageCharEntity(sourceVesselStorageChar);
         vesselStorageCharacteristicsEntity.setFishingActivitiesForSourceVesselCharId(fishingActivityEntity);
         return vesselStorageCharacteristicsEntity;
     }
@@ -420,7 +420,7 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
             return null;
         }
         VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity =
-                VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(destVesselStorageChar);
+                vesselStorageCharacteristicsMapper.mapToDestVesselStorageCharEntity(destVesselStorageChar);
         vesselStorageCharacteristicsEntity.setFishingActivitiesForDestVesselCharId(fishingActivityEntity);
         return vesselStorageCharacteristicsEntity;
     }

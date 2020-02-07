@@ -28,17 +28,21 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = {ContactPersonMapper.class, StructuredAddressMapper.class},
+@Mapper(componentModel = "cdi", uses = {ContactPersonMapper.class, StructuredAddressMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class ContactPartyMapper extends BaseMapper {
 
-    public static final ContactPartyMapper INSTANCE = Mappers.getMapper(ContactPartyMapper.class);
+    @Inject
+    ContactPersonMapper contactPersonMapper;
 
+    @Inject
+    StructuredAddressMapper structuredAddressMapper;
 
     @Mapping(target = "contactPerson", expression = "java(getContactPersonEntity(contactParty.getSpecifiedContactPersons(), contactPartyEntity))")
     @Mapping(target = "structuredAddresses", expression = "java(getStructuredAddressEntity(contactParty.getSpecifiedStructuredAddresses(), contactPartyEntity))")
@@ -59,7 +63,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
         }
         Set<ContactPartyRoleEntity> contactPartyRoles = new HashSet<>();
         for(CodeType codeType : codeTypes) {
-            ContactPartyRoleEntity contactPartyRoleEntity = ContactPartyMapper.INSTANCE.mapToContactPartyRoleEntity(codeType);
+            ContactPartyRoleEntity contactPartyRoleEntity = mapToContactPartyRoleEntity(codeType);
             contactPartyRoleEntity.setContactParty(contactPartyEntity);
             contactPartyRoles.add(contactPartyRoleEntity);
         }
@@ -70,7 +74,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
         if(CollectionUtils.isEmpty(contactPersons)) {
             return null;
         }
-        ContactPersonEntity contactPersonEntity = ContactPersonMapper.INSTANCE.mapToContactPersonEntity(contactPersons.get(0));
+        ContactPersonEntity contactPersonEntity = contactPersonMapper.mapToContactPersonEntity(contactPersons.get(0));
         contactPersonEntity.setContactParty(contactPartyEntity);
         return contactPersonEntity;
     }
@@ -82,7 +86,7 @@ public abstract class ContactPartyMapper extends BaseMapper {
         Set<StructuredAddressEntity> structuredAddressEntities = new HashSet<>();
         for (StructuredAddress structuredAddress : structuredAddresses) {
             StructuredAddressEntity structuredAddressEntity =
-                    StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
+                    structuredAddressMapper.mapToStructuredAddressEntity(structuredAddress);
             structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.CONTACT_PARTY_SPECIFIED.getType());
             structuredAddressEntity.setContactParty(contactPartyEntity);
             structuredAddressEntities.add(structuredAddressEntity);

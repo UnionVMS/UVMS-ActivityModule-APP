@@ -19,15 +19,12 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.ValueMapping;
-import org.mapstruct.factory.Mappers;
 
 import java.util.Set;
 
-@Mapper(uses = BaseMapper.class,
+@Mapper(componentModel = "cdi", uses = BaseMapper.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class VesselIdentifierMapper {
-
-    public static final VesselIdentifierMapper INSTANCE = Mappers.getMapper(VesselIdentifierMapper.class);
 
 
     @Mapping(target = "identifierSchemeId", source = "vesselIdentifierSchemeId")

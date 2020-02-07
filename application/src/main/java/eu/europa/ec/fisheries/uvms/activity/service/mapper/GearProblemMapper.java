@@ -12,33 +12,34 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemRecoveryEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.locationtech.jts.geom.Point;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = {FishingGearMapper.class, FluxLocationMapper.class},
+@Mapper(componentModel = "cdi", uses = {FishingGearMapper.class, FluxLocationMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class GearProblemMapper extends BaseMapper {
 
-    public static final GearProblemMapper INSTANCE = Mappers.getMapper(GearProblemMapper.class);
+    @Inject
+    GearProblemMapper gearProblemMapper;
 
+    @Inject
+    FishingGearMapper fishingGearMapper;
 
     @Mapping(target = "typeCode", source = "typeCode.value")
     @Mapping(target = "typeCodeListId", source = "typeCode.listID")
@@ -74,7 +75,7 @@ public abstract class GearProblemMapper extends BaseMapper {
         }
         Set<GearProblemRecoveryEntity> gearProblemRecoveries = new HashSet<>();
         for (CodeType codeType : codeTypes) {
-            GearProblemRecoveryEntity gearProblemRecovery = GearProblemMapper.INSTANCE.mapToGearProblemRecoveryEntity(codeType);
+            GearProblemRecoveryEntity gearProblemRecovery = gearProblemMapper.mapToGearProblemRecoveryEntity(codeType);
             gearProblemRecovery.setGearProblem(gearProblemEntity);
             gearProblemRecoveries.add(gearProblemRecovery);
         }
@@ -87,7 +88,7 @@ public abstract class GearProblemMapper extends BaseMapper {
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
-            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+            FishingGearEntity fishingGearEntity = fishingGearMapper.mapToFishingGearEntity(fishingGear);
             fishingGearEntity.setGearProblem(gearProblemEntity);
             fishingGearEntities.add(fishingGearEntity);
         }

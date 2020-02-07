@@ -21,7 +21,7 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
-@Mapper(uses = CustomBigDecimal.class, unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "cdi", uses = CustomBigDecimal.class, unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FluxCharacteristicsMapper extends BaseMapper {
 
     public static final FluxCharacteristicsMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsMapper.class);
@@ -34,12 +34,12 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     @Mapping(target = "valueDateTime", source = "valueDateTime.dateTime")
     @Mapping(target = "valueIndicator", source = "valueIndicator.indicatorString.value")
     @Mapping(target = "valueCode", source = "valueCode.value")
-    @Mapping(target = "valueText", expression = "java(BaseMapper.getTextFromList(fluxCharacteristic.getValues()))")
-    @Mapping(target = "valueLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxCharacteristic.getValues()))")
+    @Mapping(target = "valueText", expression = "java(BaseUtil.getTextFromList(fluxCharacteristic.getValues()))")
+    @Mapping(target = "valueLanguageId", expression = "java(BaseUtil.getLanguageIdFromList(fluxCharacteristic.getValues()))")
     @Mapping(target = "valueQuantity", source = "valueQuantity.value")
     @Mapping(target = "valueQuantityCode", source = "valueQuantity.unitCode")
-    @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(fluxCharacteristic.getDescriptions()))")
-    @Mapping(target = "descriptionLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(fluxCharacteristic.getDescriptions()))")
+    @Mapping(target = "description", expression = "java(BaseUtil.getTextFromList(fluxCharacteristic.getDescriptions()))")
+    @Mapping(target = "descriptionLanguageId", expression = "java(BaseUtil.getLanguageIdFromList(fluxCharacteristic.getDescriptions()))")
     @Mapping(target = "fluxLocation", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "calculatedValueMeasure", ignore = true)

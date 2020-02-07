@@ -29,6 +29,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
@@ -37,6 +38,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 public class AapProductMapperTest {
+
+    AapProcessMapper aapProcessMapper = Mappers.getMapper(AapProcessMapper.class);
+    AapProductMapper aapProductMapper = Mappers.getMapper(AapProductMapper.class);
 
     @Test
     public void testMapToProcessingProduct() {
@@ -47,15 +51,15 @@ public class AapProductMapperTest {
         FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
 
         AAPProcess aapProcess = MapperUtil.getAapProcess();
-        AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+        AapProcessEntity aapProcessEntity = aapProcessMapper.mapToAapProcessEntity(aapProcess);
         aapProcessEntity.setFaCatch(faCatchEntity);
 
         AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
+        AapProductEntity aapProductEntity = aapProductMapper.mapToAapProductEntity(aapProduct);
         aapProductEntity.setAapProcess(aapProcessEntity);
 
         // Create Input data
-        ProcessingProductsDto processingProductsDto = AapProductMapper.INSTANCE.mapToProcessingProduct(aapProductEntity);
+        ProcessingProductsDto processingProductsDto = aapProductMapper.mapToProcessingProduct(aapProductEntity);
         assertEquals(processingProductsDto.getType(), faCatchEntity.getTypeCode());
         assertEquals(processingProductsDto.getGear(), faCatchEntity.getGearTypeCode());
         assertEquals(processingProductsDto.getSpecies(), faCatchEntity.getSpeciesCode());

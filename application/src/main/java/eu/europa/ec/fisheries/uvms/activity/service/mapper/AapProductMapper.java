@@ -16,26 +16,20 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationSchemeId.EFFORT_ZONE;
-
-@Mapper(uses = CustomBigDecimal.class,
+@Mapper(componentModel = "cdi", uses = CustomBigDecimal.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class AapProductMapper {
-
-    public static final AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
 
     public static final String FISH_PRESENTATION = "FISH_PRESENTATION";
 

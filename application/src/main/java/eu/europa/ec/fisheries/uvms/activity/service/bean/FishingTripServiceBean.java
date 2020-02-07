@@ -46,12 +46,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution.CatchEvolutionProgressProcessor;
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution.TripCatchEvolutionProgressRegistry;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.BaseMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaCatchMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityUtilsMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingTripIdWithGeometryMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselStorageCharacteristicsMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselTransportMeansMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.*;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
@@ -63,11 +58,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -89,6 +86,18 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private static final String DECLARATION = "Declaration";
     private static final String NOTIFICATION = "Notification";
+
+    @Inject
+    VesselTransportMeansMapper vesselTransportMeansMapper;
+
+    @Inject
+    VesselStorageCharacteristicsMapper vesselStorageCharacteristicsMapper;
+
+    @Inject
+    FishingActivityUtilsMapper fishingActivityUtilsMapper;
+
+    @Inject
+    FishingTripIdWithGeometryMapper fishingTripIdWithGeometryMapper;
 
     @EJB
     private ActivityService activityServiceBean;
@@ -133,14 +142,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private VesselDetailsDTO getVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity fishingActivityEntity) {
         VesselDetailsDTO detailsDTO;
-        detailsDTO = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
+        detailsDTO = vesselTransportMeansMapper.map(vesselTransportMeansEntity);
 
         getMdrCodesEnrichWithAssetsModuleDataIfNeeded(detailsDTO);
 
         if (fishingActivityEntity != null) {
             VesselStorageCharacteristicsEntity sourceVesselCharId = fishingActivityEntity.getSourceVesselCharId();
             if (detailsDTO != null) {
-                detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(sourceVesselCharId));
+                detailsDTO.setStorageDto(vesselStorageCharacteristicsMapper.mapToStorageDto(sourceVesselCharId));
             }
         }
         return detailsDTO;
@@ -229,7 +238,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         Map<String, FishingActivityTypeDTO> tripSummary = new HashMap<>();
         for (FishingActivityEntity activityEntity : Utils.safeIterable(fishingActivityList)) {
             if (!isOnlyTripSummary) {
-                ReportDTO reportDTO = FishingActivityUtilsMapper.INSTANCE.mapToReportDTO(activityEntity);
+                ReportDTO reportDTO = fishingActivityUtilsMapper.mapToReportDTO(activityEntity);
                 reportDTOList.add(reportDTO);
             }
             if (activityEntity != null && activityEntity.getFaReportDocument() != null && DECLARATION.equalsIgnoreCase(activityEntity.getFaReportDocument().getTypeCode())) {
@@ -305,7 +314,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 || FishingActivityTypeEnum.ARRIVAL.toString().equalsIgnoreCase(activityTypeCode)
                 || FishingActivityTypeEnum.LANDING.toString().equalsIgnoreCase(activityTypeCode)) {
             Instant occurrence = activityEntity.getOccurence();
-            boolean isCorrection = BaseMapper.getCorrection(activityEntity);
+            boolean isCorrection = BaseUtil.getCorrection(activityEntity);
             FishingActivityTypeDTO fishingActivityTypeDTO = summary.get(activityTypeCode);
             if (occurrence != null && (
                     (fishingActivityTypeDTO == null)
@@ -436,7 +445,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             query.setSorting(sortKey);
             List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
 
-            FishingTripIdWithGeometry fishingTripIdWithGeometry = FishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList);
+            FishingTripIdWithGeometry fishingTripIdWithGeometry = fishingTripIdWithGeometryMapper.mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList);
             fishingTripIdLists.add(fishingTripIdWithGeometry);
         }
 

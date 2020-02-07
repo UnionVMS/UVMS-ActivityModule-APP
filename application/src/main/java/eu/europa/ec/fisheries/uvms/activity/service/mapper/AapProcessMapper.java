@@ -19,24 +19,21 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 
-@Mapper(uses = {AapProcessCodeMapper.class, AapProductMapper.class},
+@Mapper(componentModel = "cdi", uses = {AapProcessCodeMapper.class, AapProductMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public abstract class AapProcessMapper {
-
-    public static final AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
-
+public interface AapProcessMapper {
 
     @Mapping(target = "conversionFactor", source = "conversionFactorNumeric.value")
     @Mapping(target = "aapProcessCode", ignore = true)
     @Mapping(target = "aapProducts", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "faCatch", ignore = true)
-    public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
+    AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
 
     @InheritInverseConfiguration
     @Mapping(source = "aapProducts", target = "resultAAPProducts")
     @Mapping(source = "aapProcessCode", target = "typeCodes")
     @Mapping(target = "usedFACatches", ignore = true)
-    public abstract AAPProcess mapToAapProcess(AapProcessEntity aapProcess);
+    AAPProcess mapToAapProcess(AapProcessEntity aapProcess);
 
 }

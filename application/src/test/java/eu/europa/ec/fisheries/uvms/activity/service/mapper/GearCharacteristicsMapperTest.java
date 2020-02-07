@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
+import org.mapstruct.factory.Mappers;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -46,7 +47,8 @@ public class GearCharacteristicsMapperTest {
         Set<GearCharacteristicEntity> gearCharacteristicEntities = new HashSet<>();
         gearCharacteristicEntities.add(entity);
         fishingGearEntity.setGearCharacteristics(gearCharacteristicEntities);
-        GearDto mappedDto = GearCharacteristicsMapper.INSTANCE.mapGearDtoToFishingGearEntity(fishingGearEntity);
+        GearCharacteristicsMapper gearCharacteristicsMapper = Mappers.getMapper(GearCharacteristicsMapper.class);
+        GearDto mappedDto = gearCharacteristicsMapper.mapGearDtoToFishingGearEntity(fishingGearEntity);
         assertEquals(expectedDto, mappedDto);
     }
 

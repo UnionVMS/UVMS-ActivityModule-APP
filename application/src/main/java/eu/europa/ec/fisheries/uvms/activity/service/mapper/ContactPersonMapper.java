@@ -17,14 +17,10 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactPerson;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
-public abstract class ContactPersonMapper {
-
-    public static final ContactPersonMapper INSTANCE = Mappers.getMapper(ContactPersonMapper.class);
-
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
+public interface ContactPersonMapper {
 
     @Mapping(target = "title", source = "title.value")
     @Mapping(target = "givenName", source = "givenName.value")
@@ -36,7 +32,7 @@ public abstract class ContactPersonMapper {
     @Mapping(target = "alias", source = "alias.value")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "contactParty", ignore = true)
-    public abstract ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
+    ContactPersonEntity mapToContactPersonEntity(ContactPerson contactPerson);
 
     @InheritInverseConfiguration
     @Mapping(target = "birthDateTime", ignore = true)
@@ -46,8 +42,8 @@ public abstract class ContactPersonMapper {
     @Mapping(target = "emailURIEmailCommunication", ignore = true)
     @Mapping(target = "websiteURIWebsiteCommunication", ignore = true)
     @Mapping(target = "specifiedUniversalCommunications", ignore = true)
-    public abstract ContactPerson mapToContactPerson(ContactPersonEntity contactPerson);
+    ContactPerson mapToContactPerson(ContactPersonEntity contactPerson);
 
     @Mapping(target = "characteristicsMap", ignore = true)
-    public abstract ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
+    ContactPersonDetailsDTO mapToContactPersonDetailsDTO(ContactPersonEntity contactPersonEntity);
 }

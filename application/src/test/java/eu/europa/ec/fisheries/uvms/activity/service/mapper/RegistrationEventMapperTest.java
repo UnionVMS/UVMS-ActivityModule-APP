@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 
 import static org.junit.Assert.assertEquals;
@@ -26,8 +27,9 @@ public class RegistrationEventMapperTest {
 
     @Test
     public void testRegistrationEventMapper() {
+        RegistrationEventMapper registrationEventMapper = Mappers.getMapper(RegistrationEventMapper.class);
         RegistrationEvent registrationEvent = MapperUtil.getRegistrationEvent();
-        RegistrationEventEntity registrationEventEntity = RegistrationEventMapper.INSTANCE.mapToRegistrationEventEntity(registrationEvent);
+        RegistrationEventEntity registrationEventEntity = registrationEventMapper.mapToRegistrationEventEntity(registrationEvent);
 
         assertTrue(registrationEventEntity.getDescription().startsWith(registrationEvent.getDescriptions().get(0).getValue()));
         assertEquals(registrationEvent.getOccurrenceDateTime().getDateTime().toGregorianCalendar().toInstant(), registrationEventEntity.getOccurrenceDatetime());
