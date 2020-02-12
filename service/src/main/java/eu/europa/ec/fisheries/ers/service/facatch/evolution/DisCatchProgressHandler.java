@@ -23,12 +23,6 @@ public class DisCatchProgressHandler extends CatchProgressHandler {
 
         Set<FaCatchEntity> faCatches = fishingActivity.getFaCatchs();
 
-        faCatches.forEach(faCatch ->{
-            if(faCatch.getTypeCode().equals("TAKEN_ONBOARD")){
-                faCatch.setTypeCode(FaCatchTypeEnum.TAKEN_ON_BOARD.value());
-            }
-        });
-
         faCatches.forEach(faCatch -> handleSubtractingCatch(faCatch, faCatches, catchProgressDTO));
 
         return catchProgressDTO;
