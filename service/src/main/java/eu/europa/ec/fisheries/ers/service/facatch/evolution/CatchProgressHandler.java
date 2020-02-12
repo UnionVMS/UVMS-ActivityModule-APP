@@ -28,9 +28,9 @@ public abstract class CatchProgressHandler {
         FaCatchTypeEnum faCatchType = EnumUtils.getEnum(FaCatchTypeEnum.class, faCatch.getTypeCode());
         if(ADDED_CATCH_TYPES.contains(faCatchType)){
             catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), faCatch.getCalculatedWeightMeasure());
-        } else if (faCatchType == FaCatchTypeEnum.TAKEN_ON_BOARD && !isFaCatchTypePresent(faCatches, FaCatchTypeEnum.ONBOARD)){
+        } else if (faCatchType == FaCatchTypeEnum.TAKEN_ONBOARD && !isFaCatchTypePresent(faCatches, FaCatchTypeEnum.ONBOARD)){
             catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), faCatch.getCalculatedWeightMeasure());
-        } else if(SUBTRACTED_CATCH_TYPES.contains(faCatchType) && isFaCatchTypePresent(faCatches, FaCatchTypeEnum.TAKEN_ON_BOARD) && !isFaCatchTypePresent(faCatches, FaCatchTypeEnum.ONBOARD)){
+        } else if(SUBTRACTED_CATCH_TYPES.contains(faCatchType) && isFaCatchTypePresent(faCatches, FaCatchTypeEnum.TAKEN_ONBOARD) && !isFaCatchTypePresent(faCatches, FaCatchTypeEnum.ONBOARD)){
             catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), -faCatch.getCalculatedWeightMeasure());
         }
     }
