@@ -113,9 +113,9 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
      * @return
      * @throws ServiceException
      */
-    public Set<FishingTripId> getFishingTripIdsForMatchingFilterCriteria(FishingActivityQuery query) throws ServiceException {
+    public Set<FishingTripId> getFishingTripIdsForMatchingFilterCriteria(FishingActivityQuery query,boolean isActivityTrip) throws ServiceException {
 
-        Query listQuery = getQueryForFilterFishingTripIds(query);
+        Query listQuery = getQueryForFilterFishingTripIds(query,isActivityTrip);
         PaginationDto pagination = query.getPagination();
         if (pagination != null && pagination.getOffset() != null) {
             listQuery.setFirstResult(pagination.getOffset());
@@ -168,9 +168,9 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         return search.fillInValuesForTypedQuery(query, typedQuery);
     }
 
-    private Query getQueryForFilterFishingTripIds(FishingActivityQuery query) throws ServiceException {
+    private Query getQueryForFilterFishingTripIds(FishingActivityQuery query, boolean isActivityTrip) throws ServiceException {
         FishingTripIdSearchBuilder search = new FishingTripIdSearchBuilder();
-        StringBuilder sqlToGetActivityList = search.createSQL(query);
+        StringBuilder sqlToGetActivityList = search.createSQL(query,isActivityTrip);
         log.debug("SQL:" + sqlToGetActivityList);
         TypedQuery<Object[]> typedQuery = em.createQuery(sqlToGetActivityList.toString(),Object[].class);
         return search.fillInValuesForTypedQuery(query, typedQuery);

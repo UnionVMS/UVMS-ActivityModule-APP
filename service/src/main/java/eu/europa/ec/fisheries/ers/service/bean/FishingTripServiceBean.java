@@ -558,7 +558,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if (searchFilters.get(SearchFilter.PERIOD_START) == null || searchFilters.get(SearchFilter.PERIOD_END) == null) {
             throw new ServiceException("Either PERIOD_START or PERIOD_END not present. Please provide values for both.");
         }
-        Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
+        Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query,false);
         // checkThresholdForFishingTripList(fishingTripIds); // If size of Ids retrieved is more than threshold, Error will be thrown and then user would need to apply more filters to retrict the data.
         log.debug("Fishing trips received from db:" + fishingTripIds.size());
         // build Fishing trip response from FishingTripEntityList and return
@@ -590,7 +590,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 || activityServiceBean.checkAndEnrichIfVesselFiltersArePresent(query)) {
             return new FishingTripResponse();
         }
-        Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query);
+        Set<FishingTripId> fishingTripIds = fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(query,true);
         Integer totalCountOfRecords = fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
         FishingTripResponse fishingTripResponse = buildFishingTripSearchRespose(fishingTripIds, false);

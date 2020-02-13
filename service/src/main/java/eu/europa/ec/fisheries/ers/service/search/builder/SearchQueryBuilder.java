@@ -308,7 +308,7 @@ public abstract class SearchQueryBuilder {
      * @return
      * @throws ServiceException
      */
-    void createSortPartForQuery(StringBuilder sql, FishingActivityQuery query) throws ServiceException {
+    void createSortPartForQuery(StringBuilder sql, FishingActivityQuery query, boolean isActivityTrip) throws ServiceException {
         LOG.debug("Create Sorting part of Query");
         SortKey sort = query.getSorting();
         if (sort != null && sort.getSortBy() != null) {
@@ -319,15 +319,25 @@ public abstract class SearchQueryBuilder {
             if(SearchFilter.PERIOD_END_TRIP.equals(field)){
                 getMaxEndDate(sql, field, query);
             }
-            String orderby = " ASC ";
+            StringBuilder orderBy =new StringBuilder();
+            if(isActivityTrip){
+                orderBy.append( " timeout ");
+            }
             if (sort.isReversed()) {
-                orderby = " DESC ";
+                orderBy.append(" DESC NULLS LAST");
+            } else {
+                orderBy.append(" ASC ");
             }
             String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
             if (sortFieldMapping == null) {
                 throw new ServiceException("Information about which database field to be used for sorting is unavailable");
             }
-            sql.append(" order by ").append(sortFieldMapping).append(orderby);
+            sql.append(" order by ");
+            if(isActivityTrip){
+                sql.append(orderBy);
+            } else{
+                sql.append(sortFieldMapping);
+            }
         } else {
             sql.append(" order by fa.acceptedDatetime ASC ");
         }

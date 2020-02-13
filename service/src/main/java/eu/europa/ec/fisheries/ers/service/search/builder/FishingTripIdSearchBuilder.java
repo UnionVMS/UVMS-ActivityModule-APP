@@ -47,6 +47,8 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdSearchBuilder.class);
     private static final String FISHING_TRIP_SELECT = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId ";
+    private static final String FISHING_TRIP_ACTIVITY_SELECT_ASC = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId , min(a.calculatedStartTime) as timeout ";
+    private static final String FISHING_TRIP_ACTIVITY_SELECT_DESC = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId , max(a.calculatedStartTime) as timeout ";
     private static final String PERIOD_END_SELECT = ", a";
     private static final String PERIOD_START_SELECT = ", a";
     private static final String FLAG_STATE_SELECT = ", a";
@@ -66,12 +68,17 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
+        return createSQL(query,false);
+    }
+
+
+    public StringBuilder createSQL(FishingActivityQuery query,boolean isActivityTrip) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
         StringBuilder sql = new StringBuilder();
         boolean isSorted = Optional.ofNullable(query.getSorting()).map(SortKey::getSortBy).isPresent();
 
-        sql.append(FISHING_TRIP_SELECT);
-        if(isSorted) {
+        prepareSelect(sql,isActivityTrip, isSorted ? query.getSorting().isReversed():false);
+        if(isSorted && !isActivityTrip) {
             updateSQLQueryFilter(query,sql); // Add Order by clause for only requested Sort field
         }
 
@@ -80,14 +87,34 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         LOG.info("sql :" + sql);
 
-        if(isSorted) {
-            createSortPartForQuery(sql, query);
+        if(isActivityTrip){
+            sql.append(" group by ftripId.tripId, ftripId.tripSchemeId ");
+        }
+
+        if(isSorted ) {
+            createSortPartForQuery(sql, query, isActivityTrip);
         }
         return sql;
     }
 
-    private void updateSQLQueryFilter(FishingActivityQuery query, StringBuilder sql){
+    private StringBuilder prepareSelect(StringBuilder sql, boolean isActivityTrip, boolean reverseOrder ){
 
+        if(!isActivityTrip){
+            sql.append(FISHING_TRIP_SELECT);
+            return sql;
+        }
+
+        if(reverseOrder){
+            sql.append(FISHING_TRIP_ACTIVITY_SELECT_DESC);
+        } else {
+            sql.append(FISHING_TRIP_ACTIVITY_SELECT_ASC);
+        }
+
+        return sql;
+    }
+
+
+    private void updateSQLQueryFilter(FishingActivityQuery query, StringBuilder sql){
         if(SearchFilter.PERIOD_END_TRIP.equals(query.getSorting().getSortBy())) {
            sql.append(PERIOD_END_SELECT);
         }

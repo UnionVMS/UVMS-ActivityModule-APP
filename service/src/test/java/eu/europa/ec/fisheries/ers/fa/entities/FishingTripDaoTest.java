@@ -105,7 +105,7 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
-        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query);
+        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query,false);
         FishingTripId fishingTripId = new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID");
 
         assertEquals(true,fishingTripIdSet.contains(fishingTripId));
@@ -147,7 +147,7 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
-        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query);
+        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query,false);
         FishingTripId fishingTripId = new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID");
 
         assertEquals(true,fishingTripIdSet.contains(fishingTripId));
@@ -177,7 +177,7 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
-        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query);
+        Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query,false);
         FishingTripId fishingTripId = new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID");
 
         assertEquals(true,fishingTripIdSet.contains(fishingTripId));

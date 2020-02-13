@@ -99,8 +99,6 @@ public class FishingActivityResource extends UnionVMSResource {
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
-        String username = request.getRemoteUser();
-        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         FishingTripResponse fishingTripIdsForFilter = fishingTripService.filterFishingTrips(fishingActivityQuery);
         return createSuccessResponse(fishingTripIdsForFilter);
     }
