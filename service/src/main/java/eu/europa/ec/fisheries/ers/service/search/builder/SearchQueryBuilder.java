@@ -321,7 +321,7 @@ public abstract class SearchQueryBuilder {
             }
             String orderby = " ASC ";
             if (sort.isReversed()) {
-                orderby = " DESC ";
+                orderby = " DESC NULLS LAST";
             }
             String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
             if (sortFieldMapping == null) {
