@@ -12,16 +12,10 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import java.util.Collection;
 
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -99,31 +93,55 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null) {
             return null;
         }
-        return fishingActivities.get(0).getTypeCode();
+        Optional<FishingActivityEntity> fishingActivityEntity = fishingActivities.stream().filter(s -> s.getCalculatedStartTime() != null).findFirst();
+
+        if(!fishingActivityEntity.isPresent()){
+            return fishingActivities.get(0).getTypeCode();
+        }
+
+        return fishingActivityEntity.get().getTypeCode();
     }
 
     private XMLGregorianCalendar getFirstFishingActivityStartTime(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null || fishingActivities.get(0).getCalculatedStartTime() == null) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(0) == null ) {
             return null;
         }
+        Optional<FishingActivityEntity> fishingActivityEntity = fishingActivities.stream().filter(s -> s.getCalculatedStartTime() != null).findFirst();
 
-        return convertToXMLGregorianCalendar(fishingActivities.get(0).getCalculatedStartTime(), false);
+        if(fishingActivityEntity.isPresent()){
+            return convertToXMLGregorianCalendar(fishingActivityEntity.get().getCalculatedStartTime(), false);
+        }
+
+
+        return null;
     }
 
     private String getLastFishingActivityType(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null) {
             return null;
         }
-        int totalFishingActivityCount = fishingActivities.size();
-        return fishingActivities.get(totalFishingActivityCount - 1).getTypeCode();
+
+
+        List<FishingActivityEntity> fishingActivityEntities = fishingActivities.stream().filter(s -> s.getCalculatedStartTime() != null).collect(Collectors.toList());
+
+        if(!fishingActivityEntities.isEmpty())
+            return  fishingActivityEntities.get(fishingActivityEntities.size() - 1).getTypeCode();
+        else {
+            return fishingActivities.get(fishingActivities.size() - 1).getTypeCode();
+        }
     }
 
     private XMLGregorianCalendar getLastFishingActivityStartTime(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null || fishingActivities.get(fishingActivities.size() - 1).getCalculatedStartTime() == null) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.get(fishingActivities.size() - 1) == null ) {
             return null;
         }
-        int totalFishingActivityCount = fishingActivities.size();
-        return convertToXMLGregorianCalendar(fishingActivities.get(totalFishingActivityCount - 1).getCalculatedStartTime(), false);
+
+        List<FishingActivityEntity> fishingActivityEntities = fishingActivities.stream().filter(s -> s.getCalculatedStartTime() != null).collect(Collectors.toList());
+
+        if(!fishingActivityEntities.isEmpty()) {
+            return convertToXMLGregorianCalendar(fishingActivityEntities.get(fishingActivityEntities.size() - 1).getCalculatedStartTime(), false);
+        }
+        return null;
     }
 
     private List<VesselIdentifierType> getVesselIdListsForFishingActivity(List<FishingActivityEntity> fishingActivities) {

@@ -51,7 +51,7 @@ public class FishingActivitySearchBuilder extends SearchQueryBuilder {
         // Create join part of SQL query
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
-        createSortPartForQuery(sql, query); // Add Order by clause for only requested Sort field
+        createSortPartForQuery(sql, query,false); // Add Order by clause for only requested Sort field
         LOG.debug("sql :" + sql);
         return sql;
     }

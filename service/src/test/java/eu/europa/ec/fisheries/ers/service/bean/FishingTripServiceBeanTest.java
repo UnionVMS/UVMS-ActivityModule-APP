@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -362,7 +363,7 @@ public class FishingTripServiceBeanTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
 
-        when(fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingTripIdSet());
+        when(fishingTripDao.getFishingTripIdsForMatchingFilterCriteria(any(FishingActivityQuery.class),eq(false))).thenReturn(MapperUtil.getFishingTripIdSet());
         when(fishingTripDao.getCountOfFishingTripsForMatchingFilterCriteria(any(FishingActivityQuery.class))).thenReturn(new Integer(2));
         when(fishingActivityDao.getFishingActivityListByQuery(any(FishingActivityQuery.class))).thenReturn(MapperUtil.getFishingActivityEntityList());
         //Trigger
