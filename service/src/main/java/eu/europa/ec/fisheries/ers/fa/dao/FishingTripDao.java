@@ -155,7 +155,9 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         log.debug("SQL:" + sqlToGetActivityList);
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
         Query query = search.fillInValuesForTypedQuery(queryDto, typedQuery);
-        return query.getResultList().size();
+        Long nrOfFa = (Long) query.getResultList().get(0);
+        return nrOfFa.intValue();
+
     }
 
     private Query getQueryForFilterFishingTrips(FishingActivityQuery query) throws ServiceException {
