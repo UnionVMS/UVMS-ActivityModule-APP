@@ -57,7 +57,7 @@ public class FopCatchProgressHandlerTest {
         FishingActivityEntity fishingActivity = makeFishingActivityEntity(
                 "FISHING_OPERATION",
                 "DECLARATION",
-                makeFaCatch("TAKEN_ON_BOARD", "COD", 15.0),
+                makeFaCatch("TAKEN_ONBOARD", "COD", 15.0),
                 makeFaCatch("KEPT_IN_NET", "SPR", 30.0),
                 makeFaCatch("BY_CATCH", "SPR", 40.0),
                 makeFaCatch("LOADED", "SPR", 60.0)
@@ -77,7 +77,7 @@ public class FopCatchProgressHandlerTest {
         FishingActivityEntity fishingActivity = makeFishingActivityEntity(
                 "FISHING_OPERATION",
                 "DECLARATION",
-                makeFaCatch("TAKEN_ON_BOARD", "COD", 15.0),
+                makeFaCatch("TAKEN_ONBOARD", "COD", 15.0),
                 makeFaCatch("ONBOARD", "SPR", 30.0),
                 makeFaCatch("KEPT_IN_NET", "SPR", 30.0),
                 makeFaCatch("BY_CATCH", "SPR", 40.0),
@@ -97,7 +97,7 @@ public class FopCatchProgressHandlerTest {
         FishingActivityEntity fishingActivity = makeFishingActivityEntity(
                 "FISHING_OPERATION",
                 "DECLARATION",
-                makeFaCatch("TAKEN_ON_BOARD", "COD", 15.0),
+                makeFaCatch("TAKEN_ONBOARD", "COD", 15.0),
                 makeFaCatch("KEPT_IN_NET", "SPR", 30.0),
                 makeFaCatch("BY_CATCH", "SPR", 40.0),
                 makeFaCatch("LOADED", "SPR", 60.0),
@@ -120,7 +120,7 @@ public class FopCatchProgressHandlerTest {
         FishingActivityEntity fishingActivity = makeFishingActivityEntity(
                 "FISHING_OPERATION",
                 "DECLARATION",
-                makeFaCatch("TAKEN_ON_BOARD", "COD", 15.0),
+                makeFaCatch("TAKEN_ONBOARD", "COD", 15.0),
                 makeFaCatch("ONBOARD", "FIS", 80.0),
                 makeFaCatch("KEPT_IN_NET", "SPR", 30.0),
                 makeFaCatch("BY_CATCH", "SPR", 40.0),
@@ -144,7 +144,7 @@ public class FopCatchProgressHandlerTest {
         FishingActivityEntity fishingActivity = makeFishingActivityEntity(
                 "FISHING_OPERATION",
                 "DECLARATION",
-                makeFaCatch("TAKEN_ON_BOARD", "COD", 15.0),
+                makeFaCatch("TAKEN_ONBOARD", "COD", 15.0),
                 makeFaCatch("DEMINIMIS", "SPR", 30.0),
                 makeFaCatch("DISCARDED", "SPR", 10.0),
                 makeFaCatch("UNLOADED", "SPR", 10.0)
