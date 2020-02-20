@@ -20,7 +20,6 @@ import com.google.common.collect.Maps;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxCharacteristicsDto;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.ToString;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
@@ -49,16 +48,12 @@ public class ActivityDetailsDto {
 
     private String reason;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date occurrence;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date arrivalTime;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date intendedLandingTime;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date estimatedArrivalTime;
 
     private DelimitedPeriodDTO landingTime;

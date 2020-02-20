@@ -15,7 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -23,7 +22,6 @@ import java.util.List;
 public class FishingActivityTypeDTO {
 
     @JsonProperty("date")
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date date;
 
     @JsonProperty("locations")

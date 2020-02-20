@@ -12,8 +12,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -26,13 +24,10 @@ public class TripOverviewDto {
     @JsonProperty(value = "tripTypeCode")
     private String typeCode;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date departureTime;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date arrivalTime;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date landingTime;
 
     public List<TripIdDto> getTripId() {

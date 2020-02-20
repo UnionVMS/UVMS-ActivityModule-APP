@@ -15,8 +15,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -63,11 +61,9 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private Double quantity;
 
     @JsonProperty("startDate")
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date startDate;
 
     @JsonProperty("endDate")
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date endDate;
 
     @JsonProperty("hasCorrection")

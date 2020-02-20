@@ -17,7 +17,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityDTO;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.List;
 public class ReportDTO extends FishingActivityDTO {
 
     @JsonProperty("faReportAcceptedDateTime")
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date faReportAcceptedDateTime;
 
     @JsonProperty("faReportDocumentType")

@@ -13,19 +13,16 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @JsonInclude(NON_NULL)
 public class FluxCharacteristicsDto {
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date valueDateTime;
 
     @JsonIgnore

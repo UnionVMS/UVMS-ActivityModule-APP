@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.Data;
 
 import java.util.Date;
@@ -62,7 +61,6 @@ public class FishingActivityDTO {
     private String geometry;
 
     @JsonProperty("occurence")
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date occurence;
 
     @JsonProperty("reason")
