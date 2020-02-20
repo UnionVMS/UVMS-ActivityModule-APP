@@ -119,6 +119,7 @@ public abstract class BaseActivityArquillianTest {
 
         testWar.addAsResource("logback-test.xml");
         testWar.addAsResource("META-INF/persistence.xml");
+        //testWar.addAsResource("META-INF/beans.xml");
         testWar.addAsResource("fa_flux_message.xml");
 
 

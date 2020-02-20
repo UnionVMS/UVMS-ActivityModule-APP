@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
-public class GearProblemMapperTest extends BaseActivityArquillianTest {
+public class GearProblemMapperIntegrationTest extends BaseActivityArquillianTest {
 
     @Inject
     GearProblemMapper gearProblemMapper;

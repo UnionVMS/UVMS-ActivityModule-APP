@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
-public class VesselTransportMeansMapperTest extends BaseActivityArquillianTest {
+public class VesselTransportMeansMapperIntegrationTest extends BaseActivityArquillianTest {
 
     @Inject
     VesselTransportMeansMapper vesselTransportMeansMapper;

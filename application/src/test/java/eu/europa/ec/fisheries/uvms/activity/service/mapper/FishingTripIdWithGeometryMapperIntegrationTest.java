@@ -19,7 +19,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Arquillian.class)
-public class FishingTripIdWithGeometryMapperTest extends BaseActivityArquillianTest {
+public class FishingTripIdWithGeometryMapperIntegrationTest extends BaseActivityArquillianTest {
 
     private FishingTripId fishingTripId;
     private List<FishingActivityEntity> fishingActivities;

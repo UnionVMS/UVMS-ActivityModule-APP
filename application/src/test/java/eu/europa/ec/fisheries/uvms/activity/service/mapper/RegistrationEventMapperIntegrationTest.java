@@ -29,7 +29,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
-public class RegistrationEventMapperTest extends BaseActivityArquillianTest {
+public class RegistrationEventMapperIntegrationTest extends BaseActivityArquillianTest {
 
     @Inject
     RegistrationEventMapper registrationEventMapper;

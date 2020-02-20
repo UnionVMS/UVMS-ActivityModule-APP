@@ -42,7 +42,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Arquillian.class)
-public class FishingActivityUtilsMapperTest extends BaseActivityArquillianTest {
+public class FishingActivityUtilsMapperIntegrationTest extends BaseActivityArquillianTest {
 
     @Inject
     FishingActivityUtilsMapper fishingActivityUtilsMapper;

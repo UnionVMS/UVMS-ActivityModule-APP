@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 import static junit.framework.TestCase.assertFalse;
 
 @RunWith(Arquillian.class)
-public class ActivityEntityToModelMapperTest extends BaseActivityArquillianTest {
+public class ActivityEntityToModelMapperIntegrationTest extends BaseActivityArquillianTest {
 
     private Unmarshaller unmarshaller;
 

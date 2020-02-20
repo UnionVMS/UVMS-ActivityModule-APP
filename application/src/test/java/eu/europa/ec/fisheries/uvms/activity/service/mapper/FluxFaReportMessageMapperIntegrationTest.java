@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
-public class FluxFaReportMessageMapperTest extends BaseActivityArquillianTest {
+public class FluxFaReportMessageMapperIntegrationTest extends BaseActivityArquillianTest {
 
     @Inject
     FluxFaReportMessageMapper fluxFaReportMessageMapper;

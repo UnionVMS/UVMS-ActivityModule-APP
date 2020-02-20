@@ -33,7 +33,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
-public class FaCatchMapperTest extends BaseActivityArquillianTest {
+public class FaCatchMapperIntegrationTest extends BaseActivityArquillianTest {
 
     @Inject
     private FaCatchMapper faCatchMapper;
