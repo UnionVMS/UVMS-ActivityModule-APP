@@ -3,8 +3,6 @@ package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
@@ -17,7 +15,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrect
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginatedResponse;
-import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
@@ -55,7 +52,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getCommunicationChannels_OK() throws JsonProcessingException {
+    public void getCommunicationChannels_OK() throws IOException {
         // When
         String responseAsString = getWebTarget()
                 .path("fa")
@@ -66,7 +63,6 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
 
         ResponseDto<FaReportSourceEnum[]> responseDto =
                 objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FaReportSourceEnum[]>>() {
@@ -80,7 +76,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_noSearchCriteria() throws JsonProcessingException {
+    public void listActivityReportsByQuery_noSearchCriteria() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -133,7 +129,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_multipleActivityTypes() throws JsonProcessingException {
+    public void listActivityReportsByQuery_multipleActivityTypes() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -170,7 +166,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_byReportId() throws JsonProcessingException {
+    public void listActivityReportsByQuery_byReportId() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -222,7 +218,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_byReportType() throws JsonProcessingException {
+    public void listActivityReportsByQuery_byReportType() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -258,7 +254,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_byReportType_withPagination() throws JsonProcessingException {
+    public void listActivityReportsByQuery_byReportType_withPagination() throws IOException {
         // Given
         FishingActivityQuery query1 = new FishingActivityQuery();
         FishingActivityQuery query2 = new FishingActivityQuery();
@@ -318,7 +314,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_byPort() throws JsonProcessingException {
+    public void listActivityReportsByQuery_byPort() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -358,7 +354,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_incorrectPurposeCode_expectNoResults() throws JsonProcessingException {
+    public void listActivityReportsByQuery_incorrectPurposeCode_expectNoResults() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -395,7 +391,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
      * TODO: still not working properly even though mock is working
      */
     @Test
-    public void listActivityReportsByQuery_withVesselId() throws JsonProcessingException {
+    public void listActivityReportsByQuery_withVesselId() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -424,7 +420,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listFishingTripsByQuery() throws JsonProcessingException {
+    public void listFishingTripsByQuery() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -444,7 +440,6 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
 
         // Then
         ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setAnnotationIntrospector(new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
 
         ResponseDto<FishingTripResponse> responseDto =
                 objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FishingTripResponse>>() {
@@ -472,7 +467,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getAllCorrections_reportNotFound() throws JsonProcessingException {
+    public void getAllCorrections_reportNotFound() throws IOException {
         // When
         String responseAsString = getWebTarget()
                 .path("fa")
@@ -498,7 +493,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getAllCorrections() throws JsonProcessingException {
+    public void getAllCorrections() throws IOException {
         // When
         String responseAsString = getWebTarget()
                 .path("fa")
@@ -542,7 +537,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getPreviousFishingActivity() throws JsonProcessingException {
+    public void getPreviousFishingActivity() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -590,7 +585,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getNextFishingActivity() throws JsonProcessingException {
+    public void getNextFishingActivity() throws IOException {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 

@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -67,7 +66,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripSummary_noGeometry() throws JsonProcessingException {
+    public void getFishingTripSummary_noGeometry() throws IOException {
         // Given
 
         // When
@@ -186,7 +185,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripSummary_tripNotFound() throws JsonProcessingException {
+    public void getFishingTripSummary_tripNotFound() throws IOException {
         // Given
 
         // When
@@ -216,7 +215,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getVesselDetails() throws JsonProcessingException {
+    public void getVesselDetails() throws IOException {
         // Given
 
         // When
@@ -280,7 +279,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getVesselDetails_tripNotFound() throws JsonProcessingException {
+    public void getVesselDetails_tripNotFound() throws IOException {
         // Given
 
         // When
@@ -304,7 +303,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripMessageCounter() throws JsonProcessingException {
+    public void getFishingTripMessageCounter() throws IOException {
         // Given
 
         // When
@@ -335,7 +334,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripMessageCounter_tripNotFound() throws JsonProcessingException {
+    public void getFishingTripMessageCounter_tripNotFound() throws IOException {
         // Given
 
         // When
@@ -366,7 +365,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripCatchReports() throws JsonProcessingException {
+    public void getFishingTripCatchReports() throws IOException {
         // Given
 
         // When
@@ -421,7 +420,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripCatchReports_tripNotFound() throws JsonProcessingException {
+    public void getFishingTripCatchReports_tripNotFound() throws IOException {
         // Given
 
         // When
@@ -454,7 +453,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getTripMapData() throws JsonProcessingException {
+    public void getTripMapData() throws IOException {
         // Given
 
         // When
@@ -510,7 +509,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getTripMapData_tripNotFound() throws JsonProcessingException {
+    public void getTripMapData_tripNotFound() throws IOException {
         // Given
 
         // When
@@ -538,7 +537,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripCatchEvolution() throws JsonProcessingException {
+    public void getFishingTripCatchEvolution() throws IOException {
         // Given
 
         // When
@@ -651,7 +650,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripCatchEvolution_tripNotFound() throws JsonProcessingException {
+    public void getFishingTripCatchEvolution_tripNotFound() throws IOException {
         // Given
 
         // When
