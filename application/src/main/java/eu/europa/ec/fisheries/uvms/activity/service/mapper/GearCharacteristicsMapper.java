@@ -14,16 +14,13 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 
 @Mapper(componentModel = "cdi", imports = BaseMapper.class,
-        uses = CustomBigDecimal.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class GearCharacteristicsMapper extends BaseMapper {
 

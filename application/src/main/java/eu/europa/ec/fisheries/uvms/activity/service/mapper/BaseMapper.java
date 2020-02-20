@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentRelatedFaReportEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;

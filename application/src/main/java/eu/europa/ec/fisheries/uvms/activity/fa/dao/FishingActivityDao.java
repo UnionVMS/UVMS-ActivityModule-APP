@@ -168,7 +168,6 @@ public class FishingActivityDao {
                 .append("LEFT JOIN FETCH fg.gearCharacteristics ")
                 .append("LEFT JOIN FETCH a.fluxCharacteristics fluxChar ")
                 .append("LEFT JOIN FETCH fCatch.fluxCharacteristics fluxCharFa ")
-                .append("LEFT JOIN FETCH fl.fluxCharacteristic fluxCharFluxLoc ")
                 .append("LEFT JOIN FETCH a.flapDocuments flapDoc ")
                 .append("LEFT JOIN FETCH a.fishingTrip faFiTrip ")
                 .append("LEFT JOIN FETCH faFiTrip.catchEntities faFiTripsFaCatch ")

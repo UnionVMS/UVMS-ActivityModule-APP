@@ -21,17 +21,14 @@ import org.mapstruct.ReportingPolicy;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class VesselStorageCharacteristicsMapper {
 
-    @Inject
-    VesselStorageCharacteristicsMapper vesselStorageCharacteristicsMapper;
 
     @Mapping(target = "vesselId", source = "vesselStorageCharacteristic.ID.value")
     @Mapping(target = "vesselSchemaId", source = "vesselStorageCharacteristic.ID.schemeID")
@@ -54,7 +51,7 @@ public abstract class VesselStorageCharacteristicsMapper {
         }
         Set<VesselStorageCharCodeEntity> vesselStorageCharCodes = new HashSet<>();
         for (CodeType codeType : codeTypes) {
-            VesselStorageCharCodeEntity vesselStorageCharCode = vesselStorageCharacteristicsMapper.mapToVesselStorageCharCodeEntity(codeType);
+            VesselStorageCharCodeEntity vesselStorageCharCode = mapToVesselStorageCharCodeEntity(codeType);
             vesselStorageCharCode.setVesselStorageCharacteristics(vesselStorageChar);
             vesselStorageCharCodes.add(vesselStorageCharCode);
         }

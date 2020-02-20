@@ -66,6 +66,9 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     @Inject
     StructuredAddressMapper structuredAddressMapper;
 
+    @Inject
+    FaCatchMapper faCatchMapper;
+
     public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity) {
         FLUXFAReportMessage target = new FLUXFAReportMessage();
 
@@ -233,7 +236,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
     private void mapCatches(FishingActivity target, Set<FaCatchEntity> faCatchs) {
         List<FACatch> faCatchList = new ArrayList<>();
         for (FaCatchEntity faCatchEntity : faCatchs) {
-            FACatch faCatch = FaCatchMapper.INSTANCE.mapToFaCatch(faCatchEntity);
+            FACatch faCatch = faCatchMapper.mapToFaCatch(faCatchEntity);
             mapSpecFluxLocations(faCatch,faCatchEntity.getLocations());
             mapDestFluxLocations(faCatch, faCatchEntity.getDestinations());
 

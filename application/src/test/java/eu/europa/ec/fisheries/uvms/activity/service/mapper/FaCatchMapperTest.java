@@ -19,20 +19,29 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class FaCatchMapperTest {
+@RunWith(Arquillian.class)
+public class FaCatchMapperTest extends BaseActivityArquillianTest {
+
+    @Inject
+    private FaCatchMapper faCatchMapper;
 
     @Test
     public void testFaCatchMapper() {
         FACatch faCatch = MapperUtil.getFaCatch();
-        FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
+        FaCatchEntity faCatchEntity = faCatchMapper.mapToFaCatchEntity(faCatch);
 
         assertFaCatchFields(faCatch, faCatchEntity);
         assertNull(faCatchEntity.getFishingActivity());

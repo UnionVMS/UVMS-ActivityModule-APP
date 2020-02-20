@@ -26,21 +26,32 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.runner.RunWith;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 
+import javax.inject.Inject;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class AapProductMapperTest {
+@RunWith(Arquillian.class)
+public class AapProductMapperTest extends BaseActivityArquillianTest {
 
-    AapProcessMapper aapProcessMapper = Mappers.getMapper(AapProcessMapper.class);
-    AapProductMapper aapProductMapper = Mappers.getMapper(AapProductMapper.class);
+    @Inject
+    AapProcessMapper aapProcessMapper;
+    @Inject
+    AapProductMapper aapProductMapper;
+    @Inject
+    FaCatchMapper faCatchMapper;
+
+
 
     @Test
     public void testMapToProcessingProduct() {
@@ -48,7 +59,7 @@ public class AapProductMapperTest {
         // Prepare
         FACatch faCatch = MapperUtil.getFaCatch();
         FaCatchEntity faCatchEntity = new FaCatchEntity();
-        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
+        faCatchMapper.mapToFaCatchEntity(faCatch);
 
         AAPProcess aapProcess = MapperUtil.getAapProcess();
         AapProcessEntity aapProcessEntity = aapProcessMapper.mapToAapProcessEntity(aapProcess);

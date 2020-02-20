@@ -77,7 +77,7 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "weight_measure_unit_code")
 	private String weightMeasureUnitCode;
 
-	@Column(name = "weight_measure", precision = 17, scale = 17)
+	@Column(name = "weight_measure")
 	private Double weightMeasure;
 
 	@Column(name = "calculated_weight_measure")

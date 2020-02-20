@@ -3,11 +3,14 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -15,12 +18,14 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class FishingTripIdWithGeometryMapperTest {
+@RunWith(Arquillian.class)
+public class FishingTripIdWithGeometryMapperTest extends BaseActivityArquillianTest {
 
     private FishingTripId fishingTripId;
     private List<FishingActivityEntity> fishingActivities;
 
-    FishingTripIdWithGeometryMapper fishingTripIdWithGeometryMapper = Mappers.getMapper(FishingTripIdWithGeometryMapper.class);
+    @Inject
+    FishingTripIdWithGeometryMapper fishingTripIdWithGeometryMapper;
 
     @Before
     public void setUp() {

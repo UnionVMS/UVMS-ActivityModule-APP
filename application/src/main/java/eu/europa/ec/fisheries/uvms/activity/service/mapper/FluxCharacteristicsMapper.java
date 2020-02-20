@@ -13,7 +13,6 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxCharacteristicsDto;
-import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -21,7 +20,7 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
 
-@Mapper(componentModel = "cdi", uses = CustomBigDecimal.class, unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FluxCharacteristicsMapper extends BaseMapper {
 
     public static final FluxCharacteristicsMapper INSTANCE = Mappers.getMapper(FluxCharacteristicsMapper.class);

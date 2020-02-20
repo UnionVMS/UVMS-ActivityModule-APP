@@ -18,7 +18,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +25,6 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
@@ -39,11 +37,9 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import javax.inject.Inject;
 import java.util.*;
 
-@Mapper(componentModel = "cdi", uses = {CustomBigDecimal.class, AapProcessMapper.class},
+@Mapper(componentModel = "cdi", uses = {AapProcessMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
-
-    public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
 
     @Inject
     FluxLocationMapper LOCATION_MAPPER;

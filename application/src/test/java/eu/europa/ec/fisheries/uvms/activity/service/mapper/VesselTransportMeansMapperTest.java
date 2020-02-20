@@ -15,22 +15,30 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class VesselTransportMeansMapperTest {
+@RunWith(Arquillian.class)
+public class VesselTransportMeansMapperTest extends BaseActivityArquillianTest {
+
+    @Inject
+    VesselTransportMeansMapper vesselTransportMeansMapper;
 
     @Test
     public void testVesselTransportMeansMapper() {
         VesselTransportMeans vesselTransportMeans = MapperUtil.getVesselTransportMeans();
 
-        VesselTransportMeansMapper vesselTransportMeansMapper = Mappers.getMapper(VesselTransportMeansMapper.class);
         VesselTransportMeansEntity vesselTransportMeansEntity = vesselTransportMeansMapper.mapToVesselTransportMeansEntity(vesselTransportMeans);
 
         assertTrue(vesselTransportMeansEntity.getName().startsWith(vesselTransportMeans.getNames().get(0).getValue()));

@@ -14,20 +14,28 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class RegistrationEventMapperTest {
+@RunWith(Arquillian.class)
+public class RegistrationEventMapperTest extends BaseActivityArquillianTest {
+
+    @Inject
+    RegistrationEventMapper registrationEventMapper;
 
     @Test
     public void testRegistrationEventMapper() {
-        RegistrationEventMapper registrationEventMapper = Mappers.getMapper(RegistrationEventMapper.class);
         RegistrationEvent registrationEvent = MapperUtil.getRegistrationEvent();
         RegistrationEventEntity registrationEventEntity = registrationEventMapper.mapToRegistrationEventEntity(registrationEvent);
 

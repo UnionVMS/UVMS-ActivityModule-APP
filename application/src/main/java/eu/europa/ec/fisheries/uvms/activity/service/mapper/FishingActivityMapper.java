@@ -43,6 +43,9 @@ public abstract class FishingActivityMapper {
     @Inject
     VesselStorageCharacteristicsMapper vesselStorageCharacteristicsMapper;
 
+    @Inject
+    FaCatchMapper faCatchMapper;
+
     public FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity) {
         FishingActivityEntity entity = new FishingActivityEntity();
         entity.setLatest(true);
@@ -238,7 +241,7 @@ public abstract class FishingActivityMapper {
         }
         Set<FaCatchEntity> faCatchEntities = new HashSet<>();
         for (FACatch faCatch : faCatches) {
-            FaCatchEntity faCatchEntity = FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
+            FaCatchEntity faCatchEntity = faCatchMapper.mapToFaCatchEntity(faCatch);
 
             for (AAPProcess aapProcess : Utils.safeIterable(faCatch.getAppliedAAPProcesses())) {
                 AapProcessEntity aapProcessEntity = aapProcessMapper.mapToAapProcessEntity(aapProcess);

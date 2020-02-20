@@ -58,7 +58,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -98,6 +97,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     @Inject
     FishingTripIdWithGeometryMapper fishingTripIdWithGeometryMapper;
+
+    @Inject
+    FaCatchMapper faCatchMapper;
 
     @EJB
     private ActivityService activityServiceBean;
@@ -398,7 +400,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      */
     @Override
     public Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId) {
-        return FaCatchMapper.INSTANCE.mapCatchesToSummaryDTO(faCatchDao.findFaCatchesByFishingTrip(fishingTripId));
+        return faCatchMapper.mapCatchesToSummaryDTO(faCatchDao.findFaCatchesByFishingTrip(fishingTripId));
     }
 
     /**

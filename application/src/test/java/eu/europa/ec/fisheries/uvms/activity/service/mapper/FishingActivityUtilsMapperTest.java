@@ -20,14 +20,17 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.runner.RunWith;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
 
+import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -38,10 +41,14 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class FishingActivityUtilsMapperTest {
+@RunWith(Arquillian.class)
+public class FishingActivityUtilsMapperTest extends BaseActivityArquillianTest {
 
-    FishingActivityUtilsMapper fishingActivityUtilsMapper = Mappers.getMapper(FishingActivityUtilsMapper.class);
-    FishingActivityMapper fishingActivityMapper = Mappers.getMapper(FishingActivityMapper.class);
+    @Inject
+    FishingActivityUtilsMapper fishingActivityUtilsMapper;
+
+    @Inject
+    FishingActivityMapper fishingActivityMapper;
     
     @Test
     public void testfishingActivityMapper() {
