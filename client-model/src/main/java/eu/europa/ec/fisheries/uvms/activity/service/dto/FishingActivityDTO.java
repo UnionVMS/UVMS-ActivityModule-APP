@@ -13,69 +13,65 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.Date;
 import java.util.List;
 
-@JsonInclude(Include.NON_NULL)
 @Data
 public class FishingActivityDTO {
 
-    @JsonProperty("uniqueReportIdList")
+    @JsonbProperty("uniqueReportIdList")
     private List<FluxReportIdentifierDTO> uniqueFAReportId;
 
-    @JsonProperty("fishingActivityId")
+    @JsonbProperty("fishingActivityId")
     private int fishingActivityId;
 
-    @JsonProperty("faReportID")
+    @JsonbProperty("faReportID")
     private int faReportID;
 
-    @JsonIgnore
+    @JsonbTransient
     private int cancelingReportID;
 
-    @JsonIgnore
+    @JsonbTransient
     private int deletingReportID;
 
-    @JsonProperty("faUniqueReportID")
+    @JsonbProperty("faUniqueReportID")
     private String faUniqueReportID;
 
-    @JsonProperty("faUniqueReportSchemeID")
+    @JsonbProperty("faUniqueReportSchemeID")
     private String faUniqueReportSchemeID;
 
-    @JsonProperty("faReferenceID")
+    @JsonbProperty("faReferenceID")
     private String faReferenceID;
 
-    @JsonProperty("faReferenceSchemeID")
+    @JsonbProperty("faReferenceSchemeID")
     private String faReferenceSchemeID;
 
-    @JsonProperty("activityType")
+    @JsonbProperty("activityType")
     private String activityType;
 
-    @JsonProperty("geometry")
+    @JsonbProperty("geometry")
     private String geometry;
 
-    @JsonProperty("occurence")
+    @JsonbProperty("occurence")
     private Date occurence;
 
-    @JsonProperty("reason")
+    @JsonbProperty("reason")
     private String reason;
 
-    @JsonProperty("purposeCode")
+    @JsonbProperty("purposeCode")
     private String purposeCode;
 
-    @JsonProperty("fishingGears")
+    @JsonbProperty("fishingGears")
     private List<FishingGearDTO> fishingGears;
 
-    @JsonProperty("fluxCharacteristics")
+    @JsonbProperty("fluxCharacteristics")
     private List<FluxCharacteristicsDto> fluxCharacteristics;
 
-    @JsonProperty("delimitedPeriod")
+    @JsonbProperty("delimitedPeriod")
     private List<DelimitedPeriodDTO> delimitedPeriod;
 
 }

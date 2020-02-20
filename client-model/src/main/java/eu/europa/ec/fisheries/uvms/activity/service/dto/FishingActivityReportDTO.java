@@ -13,168 +13,163 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import javax.json.bind.annotation.JsonbProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-@JsonInclude(NON_NULL)
 public class FishingActivityReportDTO extends FishingActivityDTO implements Serializable  {
 
-    @JsonProperty("dataSource")
+    @JsonbProperty("dataSource")
     private String dataSource;
 
-    @JsonProperty("fromId")
+    @JsonbProperty("fromId")
     private List<String> fromId;
 
-    @JsonProperty("fromName")
+    @JsonbProperty("fromName")
     private String fromName;
 
-    @JsonProperty("vesselIdTypes")
+    @JsonbProperty("vesselIdTypes")
     private Map<String,String> vesselIdTypes;
 
-    @JsonProperty("vesselTransportMeansName")
+    @JsonbProperty("vesselTransportMeansName")
     private String vesselTransportMeansName;
 
-    @JsonProperty("FAReportType")
+    @JsonbProperty("FAReportType")
     private String faReportType;
 
-    @JsonProperty("areas")
+    @JsonbProperty("areas")
     private List<String> areas;
 
-    @JsonProperty("port")
+    @JsonbProperty("port")
     private List<String> port;
 
-    @JsonProperty("fishingGear")
+    @JsonbProperty("fishingGear")
     private Set<String> fishingGear;
 
-    @JsonProperty("speciesCode")
+    @JsonbProperty("speciesCode")
     private List<String> speciesCode;
 
-    @JsonProperty("quantity")
+    @JsonbProperty("quantity")
     private Double quantity;
 
-    @JsonProperty("startDate")
+    @JsonbProperty("startDate")
     private Date startDate;
 
-    @JsonProperty("endDate")
+    @JsonbProperty("endDate")
     private Date endDate;
 
-    @JsonProperty("hasCorrection")
+    @JsonbProperty("hasCorrection")
     private boolean hasCorrection;
 
-    @JsonProperty("fluxReportReferenceId")
+    @JsonbProperty("fluxReportReferenceId")
     private String fluxReportReferenceId;
 
-    @JsonProperty("fluxReportReferenceSchemeId")
+    @JsonbProperty("fluxReportReferenceSchemeId")
     private String fluxReportReferenceSchemeId;
 
     public FishingActivityReportDTO() {
         // Assuming jackson needs this when serializing/deserializing
     }
 
-    @JsonProperty("vesselTransportMeansName")
+    @JsonbProperty("vesselTransportMeansName")
     public String getVesselTransportMeansName() {
         return vesselTransportMeansName;
     }
 
-    @JsonProperty("vesselTransportMeansName")
+    @JsonbProperty("vesselTransportMeansName")
     public void setVesselTransportMeansName(String vesselTransportMeansName) {
         this.vesselTransportMeansName = vesselTransportMeansName;
     }
 
-    @JsonProperty("FAReportType")
+    @JsonbProperty("FAReportType")
     public String getFaReportType() {
         return faReportType;
     }
 
-    @JsonProperty("FAReportType")
+    @JsonbProperty("FAReportType")
     public void setFaReportType(String faReportType) {
         this.faReportType = faReportType;
     }
 
-    @JsonProperty("areas")
+    @JsonbProperty("areas")
     public List<String> getAreas() {
         return areas;
     }
 
-    @JsonProperty("areas")
+    @JsonbProperty("areas")
     public void setAreas(List<String> areas) {
         this.areas = areas;
     }
 
-    @JsonProperty("port")
+    @JsonbProperty("port")
     public List<String> getPort() {
         return port;
     }
 
-    @JsonProperty("port")
+    @JsonbProperty("port")
     public void setPort(List<String> port) {
         this.port = port;
     }
 
-    @JsonProperty("fishingGear")
+    @JsonbProperty("fishingGear")
     public Set<String> getFishingGear() {
         return fishingGear;
     }
 
-    @JsonProperty("fishingGear")
+    @JsonbProperty("fishingGear")
     public void setFishingGear(Set<String> fishingGear) {
         this.fishingGear = fishingGear;
     }
 
-    @JsonProperty("speciesCode")
+    @JsonbProperty("speciesCode")
     public List<String> getSpeciesCode() {
         return speciesCode;
     }
 
-    @JsonProperty("speciesCode")
+    @JsonbProperty("speciesCode")
     public void setSpeciesCode(List<String> speciesCode) {
         this.speciesCode = speciesCode;
     }
 
-    @JsonProperty("quantity")
+    @JsonbProperty("quantity")
     public Double getQuantity() {
         return quantity;
     }
 
-    @JsonProperty("quantity")
+    @JsonbProperty("quantity")
     public void setQuantity(Double quantity) {
         this.quantity = quantity;
     }
 
-    @JsonProperty("dataSource")
+    @JsonbProperty("dataSource")
     public String getDataSource() {
         return dataSource;
     }
 
-    @JsonProperty("dataSource")
+    @JsonbProperty("dataSource")
     public void setDataSource(String dataSource) {
         this.dataSource = dataSource;
     }
 
-    @JsonProperty("fromId")
+    @JsonbProperty("fromId")
     public List<String> getFromId() {
         return fromId;
     }
 
-    @JsonProperty("fromId")
+    @JsonbProperty("fromId")
     public void setFromId(List<String> fromId) {
         this.fromId = fromId;
     }
 
-    @JsonProperty("fromName")
+    @JsonbProperty("fromName")
     public String getFromName() {
         return fromName;
     }
 
-    @JsonProperty("fromName")
+    @JsonbProperty("fromName")
     public void setFromName(String fromName) {
         this.fromName = fromName;
     }
@@ -187,22 +182,22 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
         this.vesselIdTypes = vesselIdTypes;
     }
 
-    @JsonProperty("startDate")
+    @JsonbProperty("startDate")
     public Date getStartDate() {
         return startDate;
     }
 
-    @JsonProperty("startDate")
+    @JsonbProperty("startDate")
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
     }
 
-    @JsonProperty("endDate")
+    @JsonbProperty("endDate")
     public Date getEndDate() {
         return endDate;
     }
 
-    @JsonProperty("endDate")
+    @JsonbProperty("endDate")
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }

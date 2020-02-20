@@ -44,6 +44,7 @@
         <!-- Other UVMS module dependencies -->
         <activity.model.version>1.0.10</activity.model.version>
 
+        <uvms.pom.version>3.0</uvms.pom.version>
         <uvms.commons.version>4.1.1</uvms.commons.version>
         <usm4uvms.version>4.0.21</usm4uvms.version>
         <uvms.maven.version>2.6</uvms.maven.version>
@@ -86,12 +87,21 @@
         <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/jacoco-output/coverage-report/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths> <!-- Property for sonar where it can find the generated XML report file -->
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
 
             <dependency>
                 <groupId>fish.focus.uvms.maven</groupId>
                 <artifactId>uvms-pom-java11-deps</artifactId>
+                <version>${uvms.pom.version}</version>
                 <type>pom</type>
             </dependency>
 
@@ -171,6 +181,14 @@
                         <groupId>org.mapstruct</groupId>
                         <artifactId>mapstruct</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
 
@@ -229,6 +247,12 @@
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-geojson</artifactId>
                 <version>${geotools.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax</groupId>
+                        <artifactId>javaee-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>

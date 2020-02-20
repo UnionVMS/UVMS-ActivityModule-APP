@@ -13,55 +13,50 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.Date;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-@JsonInclude(NON_NULL)
 public class FluxCharacteristicsDto {
 
     private Date valueDateTime;
 
-    @JsonIgnore
+    @JsonbTransient
     private String typeCode;
 
-    @JsonIgnore
+    @JsonbTransient
     private String typeCodeListId;
 
-    @JsonIgnore
+    @JsonbTransient
     private Double valueMeasure;
 
-    @JsonIgnore
+    @JsonbTransient
     private String valueMeasureUnitCode;
 
-    @JsonIgnore
+    @JsonbTransient
     private Double calculatedValueMeasure;
 
-    @JsonIgnore
+    @JsonbTransient
     private String valueIndicator;
 
-    @JsonIgnore
+    @JsonbTransient
     private String valueCode;
 
-    @JsonIgnore
+    @JsonbTransient
     private String valueLanguageId;
 
-    @JsonIgnore
+    @JsonbTransient
     private Double valueQuantity;
 
-    @JsonIgnore
+    @JsonbTransient
     private String valueQuantityCode;
 
-    @JsonIgnore
+    @JsonbTransient
     private Double calculatedValueQuantity;
 
-    @JsonIgnore
+    @JsonbTransient
     private String description;
 
-    @JsonIgnore
+    @JsonbTransient
     private String descriptionLanguageId;
 
     public Date getValueDateTime() {
