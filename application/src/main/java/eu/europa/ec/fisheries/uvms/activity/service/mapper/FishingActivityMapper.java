@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxLocationDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
@@ -13,6 +14,8 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -45,6 +48,9 @@ public abstract class FishingActivityMapper {
 
     @Inject
     FaCatchMapper faCatchMapper;
+
+    @PersistenceContext(unitName = "activityPUpostgres")
+    EntityManager em;
 
     public FishingActivityEntity mapToFishingActivityEntity(FishingActivity fishingActivity, FaReportDocumentEntity faReportDocumentEntity) {
         FishingActivityEntity entity = new FishingActivityEntity();
@@ -311,6 +317,7 @@ public abstract class FishingActivityMapper {
         if (fluxLocations == null || fluxLocations.isEmpty()) {
             return Collections.emptySet();
         }
+        FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
             if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
@@ -322,7 +329,11 @@ public abstract class FishingActivityMapper {
                     }
                 }
             } else {
-                FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+                FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+                if(fluxLocationEntity == null) {
+                    fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+                    em.persist(fluxLocationEntity);
+                }
                 fluxLocationEntities.add(fluxLocationEntity);
             }
         }

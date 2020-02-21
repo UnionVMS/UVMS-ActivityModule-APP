@@ -14,18 +14,23 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.runner.RunWith;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
+import javax.inject.Inject;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class FluxLocationMapperTest {
+@RunWith(Arquillian.class)
+public class FluxLocationMapperIntegrationTest extends BaseActivityArquillianTest {
 
-    public static final FluxLocationMapper LOCATION_MAPPER = Mappers.getMapper(FluxLocationMapper.class);
+    @Inject
+    FluxLocationMapper LOCATION_MAPPER;
 
     @Test
     public void fluxLocationMapper() {

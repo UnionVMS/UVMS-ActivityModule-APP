@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxLocationDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
@@ -39,6 +40,8 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -66,6 +69,9 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
 
     @Inject
     FlapDocumentMapper flapDocumentMapper;
+
+    @PersistenceContext(unitName = "activityPUpostgres")
+    EntityManager em;
 
     @Mapping(target = "fluxReportDocument_Id", source = "faReportDocument.relatedFLUXReportDocument.IDS", qualifiedByName = "singleIDTypeValue")
     @Mapping(target = "fluxReportDocument_IdSchemeId", source = "faReportDocument.relatedFLUXReportDocument.IDS", qualifiedByName = "singleIDTypeSchemeID")
@@ -183,13 +189,17 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
             }
 
             specifiedFishingActivityEntities.add(fishingActivityEntity);
-
+            FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
             List<FLUXCharacteristic> specifiedFLUXCharacteristics = fishingActivity.getSpecifiedFLUXCharacteristics();
             for (FLUXCharacteristic specifiedFLUXCharacteristic : Utils.safeIterable(specifiedFLUXCharacteristics)) {
                 FluxCharacteristicEntity fluxCharacteristicEntity = fluxCharacteristicsMapper.mapToFluxCharEntity(specifiedFLUXCharacteristic);
                 List<FLUXLocation> specifiedFLUXLocations = specifiedFLUXCharacteristic.getSpecifiedFLUXLocations();
                 for (FLUXLocation specifiedFLUXLocation : Utils.safeIterable(specifiedFLUXLocations)) {
-                    FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(specifiedFLUXLocation);
+                    FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(specifiedFLUXLocation.getID());
+                    if(fluxLocationEntity == null) {
+                        fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(specifiedFLUXLocation);
+                        em.persist(fluxLocationEntity);
+                    }
                     fluxCharacteristicEntity.setFluxLocation(fluxLocationEntity);
                     fluxCharacteristicEntity.setFishingActivity(fishingActivityEntity);
                 }

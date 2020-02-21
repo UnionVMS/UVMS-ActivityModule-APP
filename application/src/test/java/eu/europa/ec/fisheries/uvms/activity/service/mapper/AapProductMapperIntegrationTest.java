@@ -23,10 +23,10 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.activity.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.jboss.arquillian.junit.Arquillian;
@@ -42,7 +42,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
-public class AapProductMapperIntegrationTest extends BaseActivityArquillianTest {
+public class AapProductMapperIntegrationTest extends TransactionalTests {
 
     @Inject
     AapProcessMapper aapProcessMapper;

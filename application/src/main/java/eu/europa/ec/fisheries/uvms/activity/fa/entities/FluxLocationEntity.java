@@ -21,20 +21,15 @@ import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+@NamedQuery(name = FluxLocationEntity.LOOKUP_LOCATION, query ="SELECT l FROM FluxLocationEntity l WHERE l.fluxLocationIdentifier =:identifier and l.fluxLocationIdentifierSchemeId =:schemeId")
 @Entity
 @Table(name = "activity_flux_location")
 @NoArgsConstructor
@@ -44,6 +39,8 @@ import java.util.List;
 @EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
 @ToString
 public class FluxLocationEntity implements Serializable {
+
+	public static final String LOOKUP_LOCATION = "LOOKUP_LOCATION";
 
 	@Id
 	@Column(unique = true, nullable = false)

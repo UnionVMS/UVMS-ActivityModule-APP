@@ -11,6 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxLocationDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
@@ -35,6 +36,8 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @Mapper(componentModel = "cdi", uses = {AapProcessMapper.class},
@@ -49,6 +52,9 @@ public abstract class FaCatchMapper extends BaseMapper {
 
     @Inject
     FishingGearMapper fishingGearMapper;
+
+    @PersistenceContext(unitName = "activityPUpostgres")
+    EntityManager em;
 
     @Mapping(target = "typeCode", source = "typeCode.value")
     @Mapping(target = "typeCodeListId", source = "typeCode.listID")
@@ -69,8 +75,8 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))")
     @Mapping(target = "aapProcesses", ignore = true)
     @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))")
-    @Mapping(target = "locations", expression = "java(getLocFluxLocationEntities(faCatch.getSpecifiedFLUXLocations()))")
-    @Mapping(target = "destinations", expression = "java(getDestFluxLocationEntities(faCatch.getDestinationFLUXLocations()))")
+    @Mapping(target = "locations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations()))")
+    @Mapping(target = "destinations", expression = "java(getFluxLocationEntities(faCatch.getDestinationFLUXLocations()))")
     @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))")
     @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))")
     @Mapping(target = "id", ignore = true)
@@ -191,22 +197,15 @@ public abstract class FaCatchMapper extends BaseMapper {
         return fluxCharacteristicEntities;
     }
 
-    protected Set<FluxLocationEntity> getLocFluxLocationEntities(List<FLUXLocation> specifiedFluxLocations) {
+    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations) {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
-        for (FLUXLocation fluxLocation : Utils.safeIterable(specifiedFluxLocations)) {
-            FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
-            // We ignore fluxLocation.getPhysicalStructuredAddress(); We will pick this up on VesselTransportMeans. See EFCA FLUX implementation document.
-            fluxLocationEntities.add(fluxLocationEntity);
-        }
-
-        return fluxLocationEntities;
-    }
-
-    protected Set<FluxLocationEntity> getDestFluxLocationEntities(List<FLUXLocation> destFluxLocations) {
-        Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
-
-        for (FLUXLocation fluxLocation : Utils.safeIterable(destFluxLocations)) {
-            FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+        FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
+        for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
+            FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+            if(fluxLocationEntity == null) {
+                fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+                em.persist(fluxLocationEntity);
+            }
             fluxLocationEntities.add(fluxLocationEntity);
         }
 

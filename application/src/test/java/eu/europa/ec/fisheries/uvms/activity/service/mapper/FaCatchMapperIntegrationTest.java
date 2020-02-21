@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.activity.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
@@ -33,7 +34,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(Arquillian.class)
-public class FaCatchMapperIntegrationTest extends BaseActivityArquillianTest {
+public class FaCatchMapperIntegrationTest extends TransactionalTests {
 
     @Inject
     private FaCatchMapper faCatchMapper;

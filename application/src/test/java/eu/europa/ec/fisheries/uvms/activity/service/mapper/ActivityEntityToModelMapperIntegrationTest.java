@@ -10,6 +10,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.activity.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
@@ -20,7 +21,6 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.*;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 import static junit.framework.TestCase.assertFalse;
 
 @RunWith(Arquillian.class)
-public class ActivityEntityToModelMapperIntegrationTest extends BaseActivityArquillianTest {
+public class ActivityEntityToModelMapperIntegrationTest extends TransactionalTests {
 
     private Unmarshaller unmarshaller;
 
@@ -86,11 +86,10 @@ public class ActivityEntityToModelMapperIntegrationTest extends BaseActivityArqu
             Diff myDiffSimilar = DiffBuilder
                     .compare(clearControlSource)
                     .withTest(clearTestSource)
-                    .withNodeFilter(node -> !node.getNodeName().equalsIgnoreCase("ram:SpecifiedDelimitedPeriod"))
+                    .withNodeFilter(node -> (!node.getNodeName().equalsIgnoreCase("ram:SpecifiedDelimitedPeriod") && !node.getNodeName().equalsIgnoreCase("ram:TypeCode")))
                     .ignoreWhitespace()
                     .ignoreComments()
                     .checkForSimilar()
-                    //.withDifferenceEvaluator(new DoubleWithPrecisionEvaluator(doubleValueNodeList))
                     .withNodeMatcher(
                             new DefaultNodeMatcher(ElementSelectors.and(
                                     ElementSelectors.byNameAndText,
@@ -99,30 +98,6 @@ public class ActivityEntityToModelMapperIntegrationTest extends BaseActivityArqu
 
             assertFalse("XML similar " + myDiffSimilar.toString(), myDiffSimilar.hasDifferences());
 
-        }
-    }
-
-    public class DoubleWithPrecisionEvaluator implements DifferenceEvaluator {
-
-        private List<String> nodeNames;
-
-        public DoubleWithPrecisionEvaluator(List<String> nodeNames) {
-            this.nodeNames = nodeNames;
-        }
-
-        @Override
-        public ComparisonResult evaluate(Comparison comparison, ComparisonResult outcome) {
-            if (outcome == ComparisonResult.EQUAL)
-                return outcome;
-            final Node controlNode = comparison.getControlDetails().getTarget();
-            if (controlNode instanceof Node) {
-                if(nodeNames.contains(controlNode.getLocalName())) {
-                    //final String targetValue = comparison.getControlDetails().getTarget().getFirstChild().getNodeValue();
-                    //final String testValue = comparison.getTestDetails().getTarget().getFirstChild().getNodeValue();
-                    return ComparisonResult.EQUAL;
-                }
-            }
-            return outcome;
         }
     }
 
