@@ -406,7 +406,7 @@
 			<dependency>
 				<groupId>fish.focus.uvms.maven</groupId>
 				<artifactId>uvms-pom-test-deps</artifactId>
-				<version>1.14</version>
+				<version>3.0</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
