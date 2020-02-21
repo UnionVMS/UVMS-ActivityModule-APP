@@ -64,7 +64,7 @@
         <jackson.version>2.10.2</jackson.version>
         <xmlunit.version>1.6</xmlunit.version>
         <xmlunit-core.version>2.1.0</xmlunit-core.version>
-        <apache.commons.lang3.version>3.7</apache.commons.lang3.version>
+        <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <commons.io.version>2.6</commons.io.version>
         <lombok.version>1.18.10</lombok.version>
         <slf4j.api.version>1.7.25</slf4j.api.version>
