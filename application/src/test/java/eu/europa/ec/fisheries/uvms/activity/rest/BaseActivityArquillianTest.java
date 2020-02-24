@@ -10,10 +10,10 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.rest;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableList;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
+import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.UnionVMSFeature;
@@ -104,10 +104,8 @@ public abstract class BaseActivityArquillianTest {
     }
 
     protected WebTarget getWebTarget() {
-        ObjectMapper objectMapper = new ObjectMapper();
         Client client = ClientBuilder.newClient();
-        client.register(objectMapper);
-
+        client.register(JsonBConfigurator.class);
         return client.target("http://localhost:8080/" + ACTIVITY_REST_TEST + "/rest");
     }
 

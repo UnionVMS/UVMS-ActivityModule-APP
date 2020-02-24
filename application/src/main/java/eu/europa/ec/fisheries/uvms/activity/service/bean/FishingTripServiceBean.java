@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FishingActivityDao;
@@ -72,7 +71,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.io.WKTWriter;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -430,17 +428,17 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      *
      * @param tripId
      */
-    @Override
-    public ObjectNode getTripMapDetailsForTripId(String tripId) {
-        log.info("Get GEO data for Fishing Trip for tripId:" + tripId);
-        List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.loadReports(tripId, "Y");
-        List<Geometry> geoList = new ArrayList<>();
-        for (FaReportDocumentEntity entity : faReportDocumentEntityList) {
-            if (entity.getGeom() != null)
-                geoList.add(entity.getGeom());
-        }
-        return FishingTripToGeoJsonMapper.toJson(geoList);
-    }
+//    @Override
+//    public ObjectNode getTripMapDetailsForTripId(String tripId) {
+//        log.info("Get GEO data for Fishing Trip for tripId:" + tripId);
+//        List<FaReportDocumentEntity> faReportDocumentEntityList = faReportDocumentDao.loadReports(tripId, "Y");
+//        List<Geometry> geoList = new ArrayList<>();
+//        for (FaReportDocumentEntity entity : faReportDocumentEntityList) {
+//            if (entity.getGeom() != null)
+//                geoList.add(entity.getGeom());
+//        }
+//        return FishingTripToGeoJsonMapper.toJson(geoList);
+//    }
 
     /**
      * This method filters fishing Trips for Activity tab

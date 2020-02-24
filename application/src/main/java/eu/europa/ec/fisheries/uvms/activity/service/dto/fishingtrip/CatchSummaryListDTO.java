@@ -13,20 +13,17 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CatchSummaryListDTO {
 
-    @JsonProperty("speciesList")
+    @JsonbProperty("speciesList")
     private List<SpeciesQuantityDTO> speciesList;
 
-    @JsonProperty("total")
+    @JsonbProperty("total")
     private Double total;
 
     public CatchSummaryListDTO(){
@@ -34,7 +31,7 @@ public class CatchSummaryListDTO {
         total = 0.0;
     }
 
-    @JsonIgnore
+    @JsonbTransient
     public void addSpecieAndQuantity(String speciesCode, Double weight,String areaName){
         SpeciesQuantityDTO speciesQuantityDTO = new SpeciesQuantityDTO(speciesCode);
         if(speciesList.contains(speciesQuantityDTO)){

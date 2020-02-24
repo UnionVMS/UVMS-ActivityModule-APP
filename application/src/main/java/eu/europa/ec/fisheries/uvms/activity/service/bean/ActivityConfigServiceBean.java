@@ -13,15 +13,16 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityConfigService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.PreferenceConfigMapper;
+import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.Stateless;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.transaction.Transactional;
 import java.io.IOException;
 
@@ -64,17 +65,16 @@ public class ActivityConfigServiceBean implements ActivityConfigService {
         return getJson(mergedConfig);
     }
 
-    private ActivityConfigDTO getConfiguration(String configString) throws IOException {
+    private ActivityConfigDTO getConfiguration(String configString) {
         if (configString == null || configString.isEmpty()) {
             return new ActivityConfigDTO();
         }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-        return mapper.readValue(configString, ActivityConfigDTO.class);
+        Jsonb jsonb = new JsonBConfigurator().getContext(null);
+        return jsonb.fromJson(configString, ActivityConfigDTO.class);
     }
 
-    private String getJson(ActivityConfigDTO config) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(config);
+    private String getJson(ActivityConfigDTO config) {
+        Jsonb jsonb = new JsonBConfigurator().getContext(null);
+        return jsonb.toJson(config);
     }
 }

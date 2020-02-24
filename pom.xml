@@ -140,36 +140,84 @@
                 <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
                 <artifactId>mdr-model</artifactId>
                 <version>${mdr.model.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.mdrSwe</groupId>
                 <artifactId>mdr-client</artifactId>
                 <version>${mdrSwe.client.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
                 <artifactId>spatial-model</artifactId>
                 <version>${spatialSwe.model.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.datatype</groupId>
+                        <artifactId>jackson-datatype-jsr310</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.spatialSwe</groupId>
                 <artifactId>spatial-client</artifactId>
                 <version>${spatialSwe.model.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-model</artifactId>
                 <version>${movement.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
                 <groupId>eu.europa.ec.fisheries.uvms.movement</groupId>
                 <artifactId>movement-client</artifactId>
                 <version>${movement.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -196,6 +244,12 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
             <dependency>
@@ -314,6 +368,20 @@
                 <groupId>org.jboss.arquillian.extension</groupId>
                 <artifactId>arquillian-jacoco</artifactId>
                 <version>${arquillian.jacoco.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.json.bind</groupId>
+                <artifactId>javax.json.bind-api</artifactId>
+                <version>1.0</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.eclipse</groupId>
+                <artifactId>yasson</artifactId>
+                <version>1.0.5</version>
                 <scope>test</scope>
             </dependency>
 

@@ -13,9 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
@@ -26,11 +23,12 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
@@ -39,33 +37,32 @@ import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifie
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
-@JsonInclude(Include.NON_NULL)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @ToString
 public class VesselDetailsDTO {
 
-    @JsonIgnore
+    @JsonbTransient
     private Integer id;
 
-    @JsonProperty("role")
+    @JsonbProperty("role")
     private String roleCode;
 
     private String name;
 
     private String country;
 
-    @JsonProperty("contactParties")
+    @JsonbProperty("contactParties")
     private Set<ContactPartyDetailsDTO> contactPartyDetailsDTOSet;
 
-    @JsonProperty("vesselIds")
+    @JsonbProperty("vesselIds")
     private Set<AssetIdentifierDto> vesselIdentifiers;
 
-    @JsonProperty("storage")
+    @JsonbProperty("storage")
     private StorageDto storageDto;
 
-    @JsonProperty("authorizations")
+    @JsonbProperty("authorizations")
     private Set<FlapDocumentDto> flapDocuments;
 
     public String getRoleCode() {

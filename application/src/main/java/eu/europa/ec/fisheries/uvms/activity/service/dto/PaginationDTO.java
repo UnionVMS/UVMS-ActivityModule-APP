@@ -13,11 +13,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.json.bind.annotation.JsonbProperty;
 
 public class PaginationDTO {
 
-    @JsonProperty("totalPageCount")
+    @JsonbProperty("totalPageCount")
     private int totalPageCount;
 
     public PaginationDTO(int totalPageCount) {

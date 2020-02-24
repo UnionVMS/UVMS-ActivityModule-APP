@@ -13,13 +13,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.facatch.FluxCharacteristicsViewDto;
 
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RelocationDto {
 
     private String roleName;

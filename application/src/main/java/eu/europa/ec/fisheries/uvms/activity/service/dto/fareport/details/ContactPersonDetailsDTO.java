@@ -13,13 +13,12 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,34 +26,30 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ContactPersonDetailsDTO {
 
-
-    @JsonIgnore
+    @JsonbTransient
     private String title;
 
-    @JsonProperty("firstName")
+    @JsonbProperty("firstName")
     private String givenName;
 
-    @JsonIgnore
+    @JsonbTransient
     private String middleName;
 
-    @JsonProperty("lastName")
+    @JsonbProperty("lastName")
     private String familyName;
 
-    @JsonIgnore
+    @JsonbTransient
     private String familyNamePrefix;
 
-    @JsonIgnore
+    @JsonbTransient
     private String nameSuffix;
 
-    @JsonIgnore
+    @JsonbTransient
     private String gender;
 
     private String alias;
-
-
 
     public String getTitle() {
         return title;
@@ -120,7 +115,7 @@ public class ContactPersonDetailsDTO {
         this.alias = alias;
     }
 
-    @JsonProperty("characteristics")
+    @JsonbProperty("characteristics")
     public Map<String, String> getCharacteristicsMap() {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("title", this.getTitle());

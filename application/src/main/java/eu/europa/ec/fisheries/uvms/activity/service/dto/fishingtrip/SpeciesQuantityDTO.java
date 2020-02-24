@@ -11,19 +11,17 @@
  *
  */
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SpeciesQuantityDTO {
 
-    @JsonProperty("speciesCode")
+    @JsonbProperty("speciesCode")
     private String speciesCode;
 
-    @JsonProperty("weight")
+    @JsonbProperty("weight")
     private Double weight=0.0;
 
     private List<SpeciesAreaDTO> areaInfo;

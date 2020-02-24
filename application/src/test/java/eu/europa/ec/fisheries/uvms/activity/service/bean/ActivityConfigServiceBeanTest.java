@@ -13,11 +13,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
+import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import org.junit.Test;
 
+import javax.json.bind.Jsonb;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -28,7 +28,7 @@ public class ActivityConfigServiceBeanTest {
     private ActivityConfigServiceBean preferenceConfigService = new ActivityConfigServiceBean();
 
     @Test
-    public void getAdminConfig() throws Exception {
+    public void getAdminConfig() {
         // Given
         ActivityConfigDTO source = getConfiguration(adminConfig);
 
@@ -41,7 +41,7 @@ public class ActivityConfigServiceBeanTest {
     }
 
     @Test
-    public void getUserConfig() throws Exception {
+    public void getUserConfig() {
         // Given
         ActivityConfigDTO userConfigDto = preferenceConfigService.getUserConfig(userConfig, adminConfig);
 
@@ -54,7 +54,7 @@ public class ActivityConfigServiceBeanTest {
     }
 
     @Test
-    public void saveAdminConfig() throws Exception {
+    public void saveAdminConfig() {
         // Given
         ActivityConfigDTO adminConfigDto = getConfiguration(adminConfig);
 
@@ -66,7 +66,7 @@ public class ActivityConfigServiceBeanTest {
     }
 
     @Test
-    public void saveUserConfig() throws Exception {
+    public void saveUserConfig() {
         // Given
         String updatedConfig = adminConfig;
         ActivityConfigDTO updatedConfigDto = getConfiguration(updatedConfig);
@@ -79,7 +79,7 @@ public class ActivityConfigServiceBeanTest {
     }
 
     @Test
-    public void resetUserConfig() throws Exception {
+    public void resetUserConfig() {
         // Given
         String resetConfig = "{\n" +
                 "                    \"fishingActivityConfig\": {\n" +
@@ -98,15 +98,14 @@ public class ActivityConfigServiceBeanTest {
         assertNull(updated.getFishingActivityConfig().getSummaryReport());
     }
 
-    private ActivityConfigDTO getConfiguration(String configString) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-        return mapper.readValue(configString, ActivityConfigDTO.class);
+    private ActivityConfigDTO getConfiguration(String configString) {
+        Jsonb jsonb = new JsonBConfigurator().getContext(null);
+        return jsonb.fromJson(configString, ActivityConfigDTO.class);
     }
 
-    private String getJson(ActivityConfigDTO config) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(config);
+    private String getJson(ActivityConfigDTO config) {
+        Jsonb jsonb = new JsonBConfigurator().getContext(null);
+        return jsonb.toJson(config);
     }
 
     private String adminConfig = "{\n" +

@@ -13,7 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
@@ -67,7 +66,7 @@ public interface FishingTripService {
      *
      * @param tripId
      */
-    ObjectNode getTripMapDetailsForTripId(String tripId);
+//    ObjectNode getTripMapDetailsForTripId(String tripId);
 
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 

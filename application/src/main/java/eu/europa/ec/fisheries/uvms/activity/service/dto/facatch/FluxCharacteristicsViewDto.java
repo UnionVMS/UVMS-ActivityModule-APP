@@ -10,58 +10,25 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.dto.facatch;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.Date;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FluxCharacteristicsViewDto {
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String typeCode;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String typeCodeListId;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double valueMeasure;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueMeasureUnitCode;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double calculatedValueMeasure;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Date valueDateTime;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueIndicator;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueCode;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueText;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueLanguageId;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double valueQuantity;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String valueQuantityCode;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Double calculatedValueQuantity;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String description;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String descriptionLanguageId;
-
 
     public String getTypeCode() {
         return typeCode;

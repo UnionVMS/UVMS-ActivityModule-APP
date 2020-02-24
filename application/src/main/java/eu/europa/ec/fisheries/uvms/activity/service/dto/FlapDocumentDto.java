@@ -10,18 +10,19 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.IdentifierDto;
+
+import javax.json.bind.annotation.JsonbTransient;
 
 public class FlapDocumentDto extends IdentifierDto {
 
-    @JsonIgnore
+    @JsonbTransient
     private int id;
 
-    @JsonIgnore
+    @JsonbTransient
     private String flapTypeCode;
 
-    @JsonIgnore
+    @JsonbTransient
     private String flapTypeCodeListId;
 
     public int getId() {

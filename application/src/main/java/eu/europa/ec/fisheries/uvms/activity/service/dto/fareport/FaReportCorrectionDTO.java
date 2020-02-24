@@ -13,42 +13,34 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 
+import javax.json.bind.annotation.JsonbProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
 
-import static com.fasterxml.jackson.annotation.JsonFormat.Shape;
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_EMPTY)
 public class FaReportCorrectionDTO implements Serializable, Comparable<FaReportCorrectionDTO> {
 
-    @JsonProperty("id")
+    @JsonbProperty("id")
     private String id;
 
-    @JsonProperty("correctionType")
+    @JsonbProperty("correctionType")
     private String correctionType;
 
-    @JsonProperty("creationDate")
-    @JsonFormat(shape = Shape.STRING, pattern = DateUtils.DATE_TIME_UI_FORMAT)
+    @JsonbProperty("creationDate")
     private Date creationDate;
 
-    @JsonProperty("acceptedDate")
-    @JsonFormat(shape = Shape.STRING, pattern = DateUtils.DATE_TIME_UI_FORMAT)
+    @JsonbProperty("acceptedDate")
     private Date acceptedDate;
 
-    @JsonProperty("faReportIdentifiers")
+    @JsonbProperty("faReportIdentifiers")
     private Map<String, String> faReportIdentifiers;
 
-    @JsonProperty("ownerFluxPartyName")
+    @JsonbProperty("ownerFluxPartyName")
     private String ownerFluxPartyName;
 
-    @JsonProperty("purposeCode")
+    @JsonbProperty("purposeCode")
     private Integer purposeCode;
 
     public FaReportCorrectionDTO() {}
@@ -63,72 +55,72 @@ public class FaReportCorrectionDTO implements Serializable, Comparable<FaReportC
         this.purposeCode = purposeCode;
     }
 
-    @JsonProperty("id")
+    @JsonbProperty("id")
     public String getId() {
         return id;
     }
 
-    @JsonProperty("id")
+    @JsonbProperty("id")
     public void setId(String id) {
         this.id = id;
     }
 
-    @JsonProperty("correctionType")
+    @JsonbProperty("correctionType")
     public String getCorrectionType() {
         return correctionType;
     }
 
-    @JsonProperty("correctionType")
+    @JsonbProperty("correctionType")
     public void setCorrectionType(String correctionType) {
         this.correctionType = correctionType;
     }
 
-    @JsonProperty("creationDate")
+    @JsonbProperty("creationDate")
     public Date getCreationDate() {
         return creationDate;
     }
 
-    @JsonProperty("creationDate")
+    @JsonbProperty("creationDate")
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
 
-    @JsonProperty("acceptedDate")
+    @JsonbProperty("acceptedDate")
     public Date getAcceptedDate() {
         return acceptedDate;
     }
 
-    @JsonProperty("acceptedDate")
+    @JsonbProperty("acceptedDate")
     public void setAcceptedDate(Date acceptedDate) {
         this.acceptedDate = acceptedDate;
     }
 
-    @JsonProperty("faReportIdentifiers")
+    @JsonbProperty("faReportIdentifiers")
     public Map<String, String> getFaReportIdentifiers() {
         return faReportIdentifiers;
     }
 
-    @JsonProperty("faReportIdentifiers")
+    @JsonbProperty("faReportIdentifiers")
     public void setFaReportIdentifiers(Map<String, String> faReportIdentifiers) {
         this.faReportIdentifiers = faReportIdentifiers;
     }
 
-    @JsonProperty("ownerFluxPartyName")
+    @JsonbProperty("ownerFluxPartyName")
     public String getOwnerFluxPartyName() {
         return ownerFluxPartyName;
     }
 
-    @JsonProperty("ownerFluxPartyName")
+    @JsonbProperty("ownerFluxPartyName")
     public void setOwnerFluxPartyName(String ownerFluxPartyName) {
         this.ownerFluxPartyName = ownerFluxPartyName;
     }
 
-    @JsonProperty("purposeCode")
+    @JsonbProperty("purposeCode")
     public Integer getPurposeCode() {
         return purposeCode;
     }
 
-    @JsonProperty("purposeCode")
+    @JsonbProperty("purposeCode")
     public void setPurposeCode(Integer purposeCode) {
         this.purposeCode = purposeCode;
     }

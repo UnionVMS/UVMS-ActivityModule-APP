@@ -10,27 +10,23 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.Set;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
-
-@JsonInclude(NON_EMPTY)
 @EqualsAndHashCode
 public class StorageDto {
 
-    @JsonIgnore
+    @JsonbTransient
     VesselStorageCharCodeDto vesselStorageCharCodeDto;
 
-    @JsonIgnore
+    @JsonbTransient
     StorageIdentifierDto identifier;
 
-    @JsonProperty("type")
+    @JsonbProperty("type")
     public String getVesselTypeCode() {
         String vesselTypeCode = null;
         if (vesselStorageCharCodeDto != null) {
@@ -47,7 +43,7 @@ public class StorageDto {
         this.vesselStorageCharCodeDto = vesselStorageCharCodeDto;
     }
 
-    @JsonProperty("identifiers")
+    @JsonbProperty("identifiers")
     public Set<StorageIdentifierDto> getIdentifiers() {
         Set<StorageIdentifierDto> identifiers = Sets.newHashSet();
         if (identifier != null) {

@@ -13,22 +13,19 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.IdentifierDto;
 import lombok.EqualsAndHashCode;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
+import javax.json.bind.annotation.JsonbProperty;
 
-@JsonInclude(NON_EMPTY)
 @EqualsAndHashCode(callSuper = true)
 public class AssetIdentifierDto extends IdentifierDto {
 
-    @JsonProperty("fromAssets")
+    @JsonbProperty("fromAssets")
     private Boolean fromAssets = false;
 
-    @JsonProperty("schemeId")
+    @JsonbProperty("schemeId")
     private VesselIdentifierSchemeIdEnum identifierSchemeId;
 
     public AssetIdentifierDto() {

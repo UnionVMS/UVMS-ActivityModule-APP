@@ -12,8 +12,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.Data;
 
@@ -22,21 +20,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ActivityHistoryDtoElement implements Comparable<ActivityHistoryDtoElement> {
 
     private Integer faReportId;
 
     private Integer purposeCode;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateUtils.DATE_TIME_UI_FORMAT)
     private Date acceptanceDate;
 
     private List<Integer> fishingActivityIds;
-
-    public ActivityHistoryDtoElement() {
-        // Used by Jackson for deserialization
-    }
 
     public ActivityHistoryDtoElement(Integer faReportId, Date acceptanceDate, Integer purposeCode, List<Integer> fishingActivityIds) {
         this.fishingActivityIds = fishingActivityIds;

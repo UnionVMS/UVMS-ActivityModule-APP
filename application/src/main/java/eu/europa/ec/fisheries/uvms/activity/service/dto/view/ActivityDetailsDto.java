@@ -11,11 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.Maps;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
@@ -24,12 +19,13 @@ import lombok.ToString;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.io.WKTWriter;
 
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@JsonInclude(Include.NON_NULL)
 @ToString
 public class ActivityDetailsDto {
 
@@ -37,13 +33,13 @@ public class ActivityDetailsDto {
 
     private Long id;
 
-    @JsonIgnore
+    @JsonbTransient
     private Set<FluxCharacteristicsDto> fluxCharacteristics;
 
-    @JsonProperty("authorizations")
+    @JsonbProperty("authorizations")
     private Set<FlapDocumentDto> flapDocuments;
 
-    @JsonIgnore
+    @JsonbTransient
     private Geometry geom;
 
     private String reason;
@@ -72,7 +68,7 @@ public class ActivityDetailsDto {
 
     private DelimitedPeriodDTO transhipmentTime;
 
-    @JsonProperty("characteristics")
+    @JsonbProperty("characteristics")
     public Map<String, Set<Object>> getCharacteristics() {
         if (fluxCharacteristics == null) {
             return null;
@@ -234,7 +230,7 @@ public class ActivityDetailsDto {
         this.transhipmentTime = transhipmentTime;
     }
 
-    @JsonProperty("geom")
+    @JsonbProperty("geom")
     public String getWkt() {
         String wkt = null;
         if (geom != null) {

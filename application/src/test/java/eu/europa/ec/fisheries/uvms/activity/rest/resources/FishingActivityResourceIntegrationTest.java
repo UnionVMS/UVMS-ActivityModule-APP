@@ -1,8 +1,5 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
@@ -14,6 +11,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
+import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginatedResponse;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -22,12 +20,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.json.bind.Jsonb;
 import javax.naming.NamingException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -46,6 +47,8 @@ import static org.junit.Assert.assertTrue;
 @RunWith(Arquillian.class)
 public class FishingActivityResourceIntegrationTest extends BaseActivityArquillianTest {
 
+    private Jsonb jsonb = new JsonBConfigurator().getContext(null);
+
     @Before
     public void setUp() throws NamingException, IOException, JAXBException, ServiceException, NotSupportedException, SystemException {
         super.setUp();
@@ -54,19 +57,15 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     @Test
     public void getCommunicationChannels_OK() throws IOException {
         // When
-        String responseAsString = getWebTarget()
+        Response response = getWebTarget()
                 .path("fa")
                 .path("commChannel")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get(String.class);
+                .get();
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        ResponseDto<FaReportSourceEnum[]> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FaReportSourceEnum[]>>() {
-                });
+        ResponseDto<FaReportSourceEnum[]> responseDto = response.readEntity(new GenericType<ResponseDto<FaReportSourceEnum[]>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -87,14 +86,10 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
-        String responseAsString = list(query);
+        Response response = list(query);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -142,14 +137,10 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         // When
-        String responseAsString = list(query);
+        Response response = list(query);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -175,14 +166,10 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         // When
-        String responseAsString = list(query);
+        Response response = list(query);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -200,17 +187,15 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, Integer.toString(faReportID));
         query2.setSearchCriteriaMap(searchCriteriaMap);
 
-        String responseString2 = list(query2);
+        Response response2 = list(query);
 
-        PaginatedResponse<FishingActivityReportDTO> response2 =
-                objectMapper.readValue(responseString2, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> responseDto2 = response2.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
-        assertEquals(200, response2.getCode());
+        assertEquals(200, responseDto2.getCode());
 
-        List<FishingActivityReportDTO> resultList2 = response2.getResultList();
+        List<FishingActivityReportDTO> resultList2 = responseDto2.getResultList();
 
-        assertEquals(1, response2.getTotalItemsCount());
+        assertEquals(1, responseDto2.getTotalItemsCount());
         assertEquals(1, resultList2.size());
 
         FishingActivityReportDTO dto = resultList2.get(0);
@@ -231,14 +216,10 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         // When
-        String responseAsString = list(query);
+        Response response = list(query);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -282,32 +263,25 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query1.setSorting(sortingDto);
         query2.setSorting(sortingDto);
 
-        // When
-        String query1Response = list(query1);
 
-        String query2Response = list(query2);
+        // When
+        Response response1 = list(query1);
+        Response response2 = list(query2);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
+        PaginatedResponse<FishingActivityReportDTO> responseDto1 = response1.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto2 = response2.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
-        PaginatedResponse<FishingActivityReportDTO> response1 =
-                objectMapper.readValue(query1Response, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        assertEquals(200, responseDto1.getCode());
+        assertEquals(200, responseDto2.getCode());
 
-        PaginatedResponse<FishingActivityReportDTO> response2 =
-                objectMapper.readValue(query2Response, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        List<FishingActivityReportDTO> resultList1 = responseDto1.getResultList();
+        List<FishingActivityReportDTO> resultList2 = responseDto2.getResultList();
 
-        assertEquals(200, response1.getCode());
-        assertEquals(200, response2.getCode());
-
-        List<FishingActivityReportDTO> resultList1 = response1.getResultList();
-        List<FishingActivityReportDTO> resultList2 = response2.getResultList();
-
-        assertEquals(49, response1.getTotalItemsCount());
+        assertEquals(49, responseDto1.getTotalItemsCount());
         assertEquals(2, resultList1.size());
 
-        assertEquals(49, response2.getTotalItemsCount());
+        assertEquals(49, responseDto2.getTotalItemsCount());
         assertEquals(2, resultList2.size());
 
         assertEquals(resultList2.get(0).getFishingActivityId(), resultList1.get(1).getFishingActivityId());
@@ -327,14 +301,10 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         // When
-        String responseAsString = list(query);
+        Response response = list(query);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -363,14 +333,10 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         // When
-        String responseAsString = list(query);
+        Response response = list(query);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -404,14 +370,10 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
-        String responseAsString = list(query);
+        Response response = list(query);
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -431,19 +393,15 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
-        String responseAsString = getWebTarget()
+        Response response = getWebTarget()
                 .path("fa")
                 .path("listTrips")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
-                .post(Entity.json(query), String.class);
+                .post(Entity.json(query));
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        ResponseDto<FishingTripResponse> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<FishingTripResponse>>() {
-                });
+        ResponseDto<FishingTripResponse> responseDto = response.readEntity(new GenericType<ResponseDto<FishingTripResponse>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -469,21 +427,17 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     @Test
     public void getAllCorrections_reportNotFound() throws IOException {
         // When
-        String responseAsString = getWebTarget()
+        Response response = getWebTarget()
                 .path("fa")
                 .path("history")
                 .path("unrecognised-report-id")
                 .path("UUID")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get(String.class);
+                .get();
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        ResponseDto<List<FaReportCorrectionDTO>> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<List<FaReportCorrectionDTO>>>() {
-                });
+        ResponseDto<List<FaReportCorrectionDTO>> responseDto = response.readEntity(new GenericType<ResponseDto<List<FaReportCorrectionDTO>>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -495,21 +449,17 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     @Test
     public void getAllCorrections() throws IOException {
         // When
-        String responseAsString = getWebTarget()
+        Response response = getWebTarget()
                 .path("fa")
                 .path("history")
                 .path("8c90fa8b-9778-4b08-811b-050608589590")
                 .path("UUID")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get(String.class);
+                .get();
 
         // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        ResponseDto<List<FaReportCorrectionDTO>> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<List<FaReportCorrectionDTO>>>() {
-                });
+        ResponseDto<List<FaReportCorrectionDTO>> responseDto = response.readEntity(new GenericType<ResponseDto<List<FaReportCorrectionDTO>>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -549,13 +499,8 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
-        String activityListResponseAsString = list(query);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> activityListResponse =
-                objectMapper.readValue(activityListResponseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        Response response = list(query);
+        PaginatedResponse<FishingActivityReportDTO> activityListResponse = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         List<FishingActivityReportDTO> resultList = activityListResponse.getResultList();
         resultList.sort(Comparator.comparing(FishingActivityDTO::getOccurence));
@@ -565,18 +510,16 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         FishingActivityReportDTO secondToLastActivity = resultList.get(activityListSize - 2);
 
         // When
-        String responseAsString = getWebTarget()
+        Response response2 = getWebTarget()
                 .path("fa")
                 .path("previous")
                 .path(Integer.toString(lastActivity.getFishingActivityId()))
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get(String.class);
+                .get();
 
         // Then
-        ResponseDto<Integer> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>() {
-                });
+        ResponseDto<Integer> responseDto = response2.readEntity(new GenericType<ResponseDto<Integer>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -597,13 +540,9 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
-        String activityListResponseAsString = list(query);
+        Response response = list(query);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        PaginatedResponse<FishingActivityReportDTO> activityListResponse =
-                objectMapper.readValue(activityListResponseAsString, new TypeReference<PaginatedResponse<FishingActivityReportDTO>>() {
-                });
+        PaginatedResponse<FishingActivityReportDTO> activityListResponse = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
         List<FishingActivityReportDTO> resultList = activityListResponse.getResultList();
         resultList.sort(Comparator.comparing(FishingActivityDTO::getOccurence));
@@ -612,18 +551,16 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         FishingActivityReportDTO nextActivity = resultList.get(1);
 
         // When
-        String responseAsString = getWebTarget()
+        Response response2 = getWebTarget()
                 .path("fa")
                 .path("next")
                 .path(Integer.toString(firstActivity.getFishingActivityId()))
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get(String.class);
+                .get();
 
         // Then
-        ResponseDto<Integer> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<Integer>>() {
-                });
+        ResponseDto<Integer> responseDto = response2.readEntity(new GenericType<ResponseDto<Integer>>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -631,7 +568,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         assertEquals(nextActivity.getFishingActivityId(), responseDto.getData().intValue());
     }
 
-    private String list(FishingActivityQuery query) {
+    private Response list(FishingActivityQuery query) {
         return getWebTarget()
                 .path("fa")
                 .path("list")
@@ -639,6 +576,6 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
                 .header(HttpHeaders.AUTHORIZATION, authToken)
                 .header("scopeName", null)
                 .header("roleName", "myRole")
-                .post(Entity.json(query), String.class);
+                .post(Entity.json(query));
     }
 }

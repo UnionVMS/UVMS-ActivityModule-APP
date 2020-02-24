@@ -13,87 +13,85 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.json.bind.annotation.JsonbProperty;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MessageCountDTO {
 
-    @JsonProperty("noOfReports")
+    @JsonbProperty("noOfReports")
     private int noOfReports;
 
-    @JsonProperty("noOfDeclarations")
+    @JsonbProperty("noOfDeclarations")
     private int noOfDeclarations;
 
-    @JsonProperty("noOfNotifications")
+    @JsonbProperty("noOfNotifications")
     private int noOfNotifications;
 
-    @JsonProperty("noOfCorrections")
+    @JsonbProperty("noOfCorrections")
     private int noOfCorrections;
 
-    @JsonProperty("noOfFishingOperations")
+    @JsonbProperty("noOfFishingOperations")
     private int noOfFishingOperations;
 
-    @JsonProperty("noOfDeletions")
+    @JsonbProperty("noOfDeletions")
     private int noOfDeletions;
 
-    @JsonProperty("noOfCancellations")
+    @JsonbProperty("noOfCancellations")
     private int noOfCancellations;
 
 
-    @JsonProperty("noOfReports")
+    @JsonbProperty("noOfReports")
     public int getNoOfReports() {
         return noOfReports;
     }
-    @JsonProperty("noOfReports")
+    @JsonbProperty("noOfReports")
     public void setNoOfReports(int noOfReports) {
         this.noOfReports = noOfReports;
     }
-    @JsonProperty("noOfDeclarations")
+    @JsonbProperty("noOfDeclarations")
     public int getNoOfDeclarations() {
         return noOfDeclarations;
     }
-    @JsonProperty("noOfDeclarations")
+    @JsonbProperty("noOfDeclarations")
     public void setNoOfDeclarations(int noOfDeclarations) {
         this.noOfDeclarations = noOfDeclarations;
     }
-    @JsonProperty("noOfNotifications")
+    @JsonbProperty("noOfNotifications")
     public int getNoOfNotifications() {
         return noOfNotifications;
     }
-    @JsonProperty("noOfNotifications")
+    @JsonbProperty("noOfNotifications")
     public void setNoOfNotifications(int noOfNotifications) {
         this.noOfNotifications = noOfNotifications;
     }
-    @JsonProperty("noOfCorrections")
+    @JsonbProperty("noOfCorrections")
     public int getNoOfCorrections() {
         return noOfCorrections;
     }
-    @JsonProperty("noOfCorrections")
+    @JsonbProperty("noOfCorrections")
     public void setNoOfCorrections(int noOfCorrections) {
         this.noOfCorrections = noOfCorrections;
     }
-    @JsonProperty("noOfFishingOperations")
+    @JsonbProperty("noOfFishingOperations")
     public int getNoOfFishingOperations() {
         return noOfFishingOperations;
     }
-    @JsonProperty("noOfFishingOperations")
+    @JsonbProperty("noOfFishingOperations")
     public void setNoOfFishingOperations(int noOfFishingOperations) {
         this.noOfFishingOperations = noOfFishingOperations;
     }
-    @JsonProperty("noOfDeletions")
+    @JsonbProperty("noOfDeletions")
     public int getNoOfDeletions() {
         return noOfDeletions;
     }
-    @JsonProperty("noOfDeletions")
+    @JsonbProperty("noOfDeletions")
     public void setNoOfDeletions(int noOfDeletions) {
         this.noOfDeletions = noOfDeletions;
     }
-    @JsonProperty("noOfCancellations")
+    @JsonbProperty("noOfCancellations")
     public int getNoOfCancellations() {
         return noOfCancellations;
     }
-    @JsonProperty("noOfCancellations")
+    @JsonbProperty("noOfCancellations")
     public void setNoOfCancellations(int noOfCancellations) {
         this.noOfCancellations = noOfCancellations;
     }

@@ -10,18 +10,15 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.Date;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TripOverviewDto {
 
     private List<TripIdDto> tripId;
 
-    @JsonProperty(value = "tripTypeCode")
+    @JsonbProperty(value = "tripTypeCode")
     private String typeCode;
 
     private Date departureTime;

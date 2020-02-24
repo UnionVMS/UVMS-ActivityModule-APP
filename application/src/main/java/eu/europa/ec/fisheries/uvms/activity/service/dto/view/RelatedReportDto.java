@@ -13,11 +13,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-@JsonInclude(NON_NULL)
 public class RelatedReportDto {
 
     private String id;
