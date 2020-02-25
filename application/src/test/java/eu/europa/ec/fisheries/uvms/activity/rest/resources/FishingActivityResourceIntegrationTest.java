@@ -11,7 +11,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginatedResponse;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.ResponseDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -20,7 +19,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.json.bind.Jsonb;
 import javax.naming.NamingException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
@@ -46,8 +44,6 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(Arquillian.class)
 public class FishingActivityResourceIntegrationTest extends BaseActivityArquillianTest {
-
-    private Jsonb jsonb = new JsonBConfigurator().getContext(null);
 
     @Before
     public void setUp() throws NamingException, IOException, JAXBException, ServiceException, NotSupportedException, SystemException {
@@ -187,7 +183,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         searchCriteriaMap.put(SearchFilter.FA_REPORT_ID, Integer.toString(faReportID));
         query2.setSearchCriteriaMap(searchCriteriaMap);
 
-        Response response2 = list(query);
+        Response response2 = list(query2);
 
         PaginatedResponse<FishingActivityReportDTO> responseDto2 = response2.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
 
@@ -469,8 +465,8 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
 
         FaReportCorrectionDTO originalReport = data.get(0);
         assertEquals("UPDATED", originalReport.getCorrectionType());
-        assertEquals(1365175257000L, originalReport.getCreationDate().getTime());
-        assertEquals(1365115483000L, originalReport.getAcceptedDate().getTime());
+        assertEquals(1365175257927L, originalReport.getCreationDate().toEpochMilli());
+        assertEquals(1365115483401L, originalReport.getAcceptedDate().toEpochMilli());
         assertNull(originalReport.getOwnerFluxPartyName());
         assertEquals(9, originalReport.getPurposeCode().intValue());
         assertEquals(1, originalReport.getFaReportIdentifiers().size());
@@ -478,8 +474,8 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
 
         FaReportCorrectionDTO correctionReport = data.get(1);
         assertEquals("NEW", correctionReport.getCorrectionType());
-        assertEquals(1365175257000L, correctionReport.getCreationDate().getTime());
-        assertEquals(1365175252000L, correctionReport.getAcceptedDate().getTime());
+        assertEquals(1365175257927L, correctionReport.getCreationDate().toEpochMilli());
+        assertEquals(1365175252401L, correctionReport.getAcceptedDate().toEpochMilli());
         assertNull(correctionReport.getOwnerFluxPartyName());
         assertEquals(5, correctionReport.getPurposeCode().intValue());
         assertEquals(1, correctionReport.getFaReportIdentifiers().size());

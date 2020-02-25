@@ -25,7 +25,7 @@ public class AssetIdentifierDto extends IdentifierDto {
     @JsonbProperty("fromAssets")
     private Boolean fromAssets = false;
 
-    @JsonbProperty("schemeId")
+    @JsonbProperty("vesselSchemeId")
     private VesselIdentifierSchemeIdEnum identifierSchemeId;
 
     public AssetIdentifierDto() {

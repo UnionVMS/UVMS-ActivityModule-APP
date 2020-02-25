@@ -17,6 +17,7 @@ import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 
 import javax.json.bind.annotation.JsonbProperty;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 
@@ -29,10 +30,10 @@ public class FaReportCorrectionDTO implements Serializable, Comparable<FaReportC
     private String correctionType;
 
     @JsonbProperty("creationDate")
-    private Date creationDate;
+    private Instant creationDate;
 
     @JsonbProperty("acceptedDate")
-    private Date acceptedDate;
+    private Instant acceptedDate;
 
     @JsonbProperty("faReportIdentifiers")
     private Map<String, String> faReportIdentifiers;
@@ -45,7 +46,7 @@ public class FaReportCorrectionDTO implements Serializable, Comparable<FaReportC
 
     public FaReportCorrectionDTO() {}
 
-    public FaReportCorrectionDTO(String id, String correctionType, Date creationDate, Date acceptedDate, Map<String, String> faReportIdentifiers, String ownerFluxPartyName, Integer purposeCode) {
+    public FaReportCorrectionDTO(String id, String correctionType, Instant creationDate, Instant acceptedDate, Map<String, String> faReportIdentifiers, String ownerFluxPartyName, Integer purposeCode) {
         this.id = id;
         this.correctionType = correctionType;
         this.creationDate = creationDate;
@@ -76,22 +77,22 @@ public class FaReportCorrectionDTO implements Serializable, Comparable<FaReportC
     }
 
     @JsonbProperty("creationDate")
-    public Date getCreationDate() {
+    public Instant getCreationDate() {
         return creationDate;
     }
 
     @JsonbProperty("creationDate")
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(Instant creationDate) {
         this.creationDate = creationDate;
     }
 
     @JsonbProperty("acceptedDate")
-    public Date getAcceptedDate() {
+    public Instant getAcceptedDate() {
         return acceptedDate;
     }
 
     @JsonbProperty("acceptedDate")
-    public void setAcceptedDate(Date acceptedDate) {
+    public void setAcceptedDate(Instant acceptedDate) {
         this.acceptedDate = acceptedDate;
     }
 

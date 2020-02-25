@@ -17,7 +17,7 @@ import lombok.Data;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -57,7 +57,7 @@ public class FishingActivityDTO {
     private String geometry;
 
     @JsonbProperty("occurence")
-    private Date occurence;
+    private Instant occurence;
 
     @JsonbProperty("reason")
     private String reason;

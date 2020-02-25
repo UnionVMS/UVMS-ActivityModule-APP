@@ -87,27 +87,27 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         assertEquals(2, data.getSummary().size());
 
         FishingActivityTypeDTO departure = data.getSummary().get("DEPARTURE");
-        assertEquals(1364927847000L, departure.getDate().getTime());
+        assertEquals(1364927847401L, departure.getDate().getTime());
         assertNull(departure.getLocations());
 
         FishingActivityTypeDTO arrival = data.getSummary().get("ARRIVAL");
-        assertEquals(1365102447000L, arrival.getDate().getTime());
+        assertEquals(1365102447401L, arrival.getDate().getTime());
         assertNull(arrival.getLocations());
 
         List<ReportDTO> activityReports = data.getActivityReports();
         assertEquals(22, activityReports.size());
 
-        assertReportDto(activityReports.get(0), 1364927280000L, "DECLARATION", false, "094946e6-544b-4e42-85e6-a199774a31c1", null, "DEPARTURE", 1364927847000L, "FIS", new DelimitedPeriodDTO(new Date(1364927847000L), new Date(1364927847000L), 0.0, "MIN"));
+        assertReportDto(activityReports.get(0), 1364927280401L, "DECLARATION", false, "094946e6-544b-4e42-85e6-a199774a31c1", null, "DEPARTURE", 1364927847401L, "FIS", new DelimitedPeriodDTO(new Date(1364927847401L), new Date(1364927847401L), 0.0, "MIN"));
 
         for (int i = 1; i <= 16; i++) {
             assertIsGenericFishingOperation(activityReports.get(i));
         }
 
-        assertReportDto(activityReports.get(17), 1365087630000L, "NOTIFICATION", false, "8b84d89d-57c5-456f-a96a-f60a035f8bf8", null, "ARRIVAL", 1365100647000L, "LAN", new DelimitedPeriodDTO(new Date(1365100647000L), new Date(1365100647000L), 0.0, "MIN"));
-        assertReportDto(activityReports.get(18), 1365091060000L, "NOTIFICATION", true, "14bdf7bd-a5db-4aa5-b8b8-0cc5ed7d7ab2", "8b84d89d-57c5-456f-a96a-f60a035f8bf8", "ARRIVAL", 1365100647000L, "LAN", new DelimitedPeriodDTO(new Date(1365100647000L), new Date(1365100647000L), 0.0, "MIN"));
-        assertReportDto(activityReports.get(19), 1365115480000L, "DECLARATION", false, "a84f1363-6a23-4a49-975a-e73c95837bcb", null, "ARRIVAL", 1365102447000L, null, new DelimitedPeriodDTO(new Date(1365102447000L), new Date(1365102447000L), 0.0, "MIN"));
-        assertReportDto(activityReports.get(20), 1365115483000L, "DECLARATION", false, "8c90fa8b-9778-4b08-811b-050608589590", null, "LANDING", null, null, new DelimitedPeriodDTO(new Date(1365104247000L), new Date(1365104247000L), 0.0, "MIN"));
-        assertReportDto(activityReports.get(21), 1365175252000L, "DECLARATION", true, "27d8c389-c792-4271-90d4-e7108d6f5f79", "8c90fa8b-9778-4b08-811b-050608589590", "LANDING", null, null, new DelimitedPeriodDTO(new Date(1365104247000L), new Date(1365104247000L), 0.0, "MIN"));
+        assertReportDto(activityReports.get(17), 1365087630401L, "NOTIFICATION", false, "8b84d89d-57c5-456f-a96a-f60a035f8bf8", null, "ARRIVAL", 1365100647401L, "LAN", new DelimitedPeriodDTO(new Date(1365100647401L), new Date(1365100647401L), 0.0, "MIN"));
+        assertReportDto(activityReports.get(18), 1365091060401L, "NOTIFICATION", true, "14bdf7bd-a5db-4aa5-b8b8-0cc5ed7d7ab2", "8b84d89d-57c5-456f-a96a-f60a035f8bf8", "ARRIVAL", 1365100647401L, "LAN", new DelimitedPeriodDTO(new Date(1365100647401L), new Date(1365100647401L), 0.0, "MIN"));
+        assertReportDto(activityReports.get(19), 1365115480401L, "DECLARATION", false, "a84f1363-6a23-4a49-975a-e73c95837bcb", null, "ARRIVAL", 1365102447401L, null, new DelimitedPeriodDTO(new Date(1365102447401L), new Date(1365102447401L), 0.0, "MIN"));
+        assertReportDto(activityReports.get(20), 1365115483401L, "DECLARATION", false, "8c90fa8b-9778-4b08-811b-050608589590", null, "LANDING", null, null, new DelimitedPeriodDTO(new Date(1365104247401L), new Date(1365104247401L), 0.0, "MIN"));
+        assertReportDto(activityReports.get(21), 1365175252401L, "DECLARATION", true, "27d8c389-c792-4271-90d4-e7108d6f5f79", "8c90fa8b-9778-4b08-811b-050608589590", "LANDING", null, null, new DelimitedPeriodDTO(new Date(1365104247401L), new Date(1365104247401L), 0.0, "MIN"));
     }
 
     private void assertReportDto(ReportDTO dto, long acceptedDateTime, String type, boolean correction, String faUniqueReportId, String faReferenceId, String activityType, Long occurrence, String reason, DelimitedPeriodDTO delimitedPeriodDTO) {
@@ -130,11 +130,11 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         if (occurrence == null) {
             assertNull(dto.getOccurence());
         } else {
-            assertEquals(occurrence.longValue(), dto.getOccurence().getTime());
+            assertEquals(occurrence.longValue(), dto.getOccurence().toEpochMilli());
         }
         assertEquals(reason, dto.getReason());
         assertEquals(correction ? "5" : "9", dto.getPurposeCode());
-        assertNull(dto.getFluxCharacteristics());
+        assertTrue(dto.getFluxCharacteristics().isEmpty());
 
         if (delimitedPeriodDTO == null) {
             assertTrue(dto.getDelimitedPeriod() == null || dto.getDelimitedPeriod().isEmpty());
@@ -171,7 +171,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         assertNull(dto.getReason());
         assertEquals(dto.isCorrection() ? "5" : "9", dto.getPurposeCode());
         assertEquals(1, dto.getFishingGears().size());
-        assertNull(dto.getFluxCharacteristics());
+        assertTrue(dto.getFluxCharacteristics().isEmpty());
         assertEquals(1, dto.getDelimitedPeriod().size());
     }
 
@@ -197,8 +197,8 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         assertNull(responseDto.getMsg());
 
         FishingTripSummaryViewDTO data = responseDto.getData();
-        assertNull(data.getSummary());
-        assertNull(data.getActivityReports());
+        assertTrue(data.getSummary().isEmpty());
+        assertTrue(data.getActivityReports().isEmpty());
     }
 
     @Test
@@ -551,8 +551,8 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         assertEquals("UUR-XSM-45913768", trip.getTripId().get(0).getId());
         assertEquals("EU_TRIP_ID", trip.getTripId().get(0).getSchemeId());
         assertNull(trip.getTypeCode());
-        assertEquals(1364927847000L, trip.getDepartureTime().getTime());
-        assertEquals(1365102447000L, trip.getArrivalTime().getTime());
+        assertEquals(1364927847401L, trip.getDepartureTime().getTime());
+        assertEquals(1365102447401L, trip.getArrivalTime().getTime());
         assertNull(trip.getLandingTime());
 
         List<CatchEvolutionProgressDTO> catchEvolutionProgress = catchEvolutionDTO.getCatchEvolutionProgress();

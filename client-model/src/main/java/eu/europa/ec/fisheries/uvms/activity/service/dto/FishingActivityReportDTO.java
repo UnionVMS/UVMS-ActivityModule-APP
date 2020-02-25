@@ -15,7 +15,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,10 +56,10 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private Double quantity;
 
     @JsonbProperty("startDate")
-    private Date startDate;
+    private Instant startDate;
 
     @JsonbProperty("endDate")
-    private Date endDate;
+    private Instant endDate;
 
     @JsonbProperty("hasCorrection")
     private boolean hasCorrection;
@@ -183,22 +183,22 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     }
 
     @JsonbProperty("startDate")
-    public Date getStartDate() {
+    public Instant getStartDate() {
         return startDate;
     }
 
     @JsonbProperty("startDate")
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Instant startDate) {
         this.startDate = startDate;
     }
 
     @JsonbProperty("endDate")
-    public Date getEndDate() {
+    public Instant getEndDate() {
         return endDate;
     }
 
     @JsonbProperty("endDate")
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Instant endDate) {
         this.endDate = endDate;
     }
 

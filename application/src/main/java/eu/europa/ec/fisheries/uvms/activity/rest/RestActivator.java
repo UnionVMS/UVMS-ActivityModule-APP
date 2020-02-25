@@ -14,6 +14,7 @@ import eu.europa.ec.fisheries.uvms.activity.rest.resources.ConfigResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingTripResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.ReportDocumentResource;
+import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -27,6 +28,8 @@ public class RestActivator extends Application {
     private final Set<Class<?>> set = new HashSet<>();
 
     public RestActivator() {
+        set.add(JsonBConfigurator.class);
+
         set.add(FishingActivityResource.class);
         set.add(FishingTripResource.class);
         set.add(ConfigResource.class);

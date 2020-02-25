@@ -21,6 +21,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQueryWithStringMaps;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
@@ -77,11 +78,13 @@ public class FishingActivityResource extends UnionVMSResource {
     public Response listActivityReportsByQuery(@Context HttpServletRequest request,
                                                @HeaderParam("scopeName") String scopeName,
                                                @HeaderParam("roleName") String roleName,
-                                               FishingActivityQuery fishingActivityQuery) throws ServiceException {
-        log.debug("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
-        if (fishingActivityQuery == null) {
+                                               FishingActivityQueryWithStringMaps fishingActivityQueryWithStringMaps) throws ServiceException {
+        log.debug("Query Received to search Fishing Activity Reports. " + fishingActivityQueryWithStringMaps);
+        if (fishingActivityQueryWithStringMaps == null) {
             return createErrorResponse("Query to find list is null.");
         }
+        FishingActivityQuery fishingActivityQuery = fishingActivityQueryWithStringMaps.convert();
+
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
@@ -97,12 +100,14 @@ public class FishingActivityResource extends UnionVMSResource {
     public Response listFishingTripsByQuery(@Context HttpServletRequest request,
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
-                                            FishingActivityQuery fishingActivityQuery) throws ServiceException {
+                                            FishingActivityQueryWithStringMaps fishingActivityQueryWithStringMaps) throws ServiceException {
 
-        log.debug("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
-        if (fishingActivityQuery == null) {
+        log.debug("Query Received to search Fishing Activity Reports. " + fishingActivityQueryWithStringMaps);
+        if (fishingActivityQueryWithStringMaps == null) {
             return createErrorResponse("Query to find list is null.");
         }
+        FishingActivityQuery fishingActivityQuery = fishingActivityQueryWithStringMaps.convert();
+
         FishingTripResponse fishingTripIdsForFilter = fishingTripService.filterFishingTrips(fishingActivityQuery);
         return createSuccessResponse(fishingTripIdsForFilter);
     }
