@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +28,8 @@ public class RegistrationLocationMapperTest {
     @Test
     public void testRegistrationLocationMapper() {
         RegistrationLocation registrationLocation = MapperUtil.getRegistrationLocation();
-        RegistrationLocationEntity registrationLocationEntity = RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation);
+        RegistrationLocationMapper registrationLocationMapper = Mappers.getMapper(RegistrationLocationMapper.class);
+        RegistrationLocationEntity registrationLocationEntity = registrationLocationMapper.mapToRegistrationLocationEntity(registrationLocation);
 
         assertTrue(registrationLocationEntity.getDescription().startsWith(registrationLocation.getDescriptions().get(0).getValue()));
         assertTrue(registrationLocationEntity.getName().startsWith(registrationLocation.getNames().get(0).getValue()));

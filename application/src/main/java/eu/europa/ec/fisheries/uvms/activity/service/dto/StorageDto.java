@@ -45,7 +45,7 @@ public class StorageDto {
 
     @JsonbProperty("identifiers")
     public Set<StorageIdentifierDto> getIdentifiers() {
-        Set<StorageIdentifierDto> identifiers = Sets.newHashSet();
+        Set<StorageIdentifierDto> identifiers = new HashSet<>();
         if (identifier != null) {
             identifiers.add(identifier);
         }

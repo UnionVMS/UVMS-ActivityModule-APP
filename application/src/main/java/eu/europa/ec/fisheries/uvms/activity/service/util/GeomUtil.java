@@ -1,10 +1,7 @@
 package eu.europa.ec.fisheries.uvms.activity.service.util;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.*;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
 import org.locationtech.jts.linearref.LengthIndexedLine;
@@ -18,13 +15,13 @@ public abstract class GeomUtil {
 
     public static final int DEFAULT_EPSG_SRID = 4326;
 
-    public static Geometry createPoint(Double longitude, Double latitude) {
+    public static Point createPoint(Double longitude, Double latitude) {
         if(null == longitude || null == latitude){
             return null;
         }
         GeometryFactory geometryFactory = new GeometryFactory();
         Coordinate coordinate = new Coordinate(longitude, latitude);
-        Geometry point = geometryFactory.createPoint(coordinate);
+        Point point = geometryFactory.createPoint(coordinate);
         point.setSRID(DEFAULT_EPSG_SRID);
         return point;
     }

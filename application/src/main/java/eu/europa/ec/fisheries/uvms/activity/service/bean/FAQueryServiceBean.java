@@ -19,6 +19,7 @@ import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessag
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import java.time.Instant;
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class FAQueryServiceBean extends BaseActivityBean implements FaQueryServi
 
     private FaReportDocumentDao faReportDao;
 
+    @Inject
+    ActivityEntityToModelMapper activityEntityToModelMapper;
+
     @PostConstruct
     public void init() {
         faReportDao = new FaReportDocumentDao(entityManager);
@@ -36,6 +40,6 @@ public class FAQueryServiceBean extends BaseActivityBean implements FaQueryServi
     @Override
     public FLUXFAReportMessage getReportsByCriteria(Instant startDate, Instant endDate) {
         List<FaReportDocumentEntity> faReportDocumentsForTrip = faReportDao.loadReports(null, "N", startDate, endDate);
-        return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
+        return activityEntityToModelMapper.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
     }
 }

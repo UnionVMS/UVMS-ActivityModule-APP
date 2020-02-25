@@ -11,10 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentRelatedFaReportEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
@@ -45,23 +43,14 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
+import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -69,27 +58,33 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class BaseMapper {
 
+    @Inject
+    RegistrationLocationMapper registrationLocationMapper;
+
+    @Inject
+    VesselIdentifierMapper vesselIdentifierMapper;
+
     protected static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT, Locale.ROOT).withZone(ZoneId.of("UTC"));
 
     public static FishingTripEntity mapToFishingTripEntity(FishingTrip fishingTrip) {
         return FishingTripEntity.create(fishingTrip);
     }
 
-    public static RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
+    public RegistrationLocationEntity mapToRegistrationLocationEntity(RegistrationLocation registrationLocation, RegistrationEventEntity registrationEventEntity) {
         if (registrationLocation == null) {
             return null;
         }
-        RegistrationLocationEntity registrationLocationEntity = RegistrationLocationMapper.INSTANCE.mapToRegistrationLocationEntity(registrationLocation);
+        RegistrationLocationEntity registrationLocationEntity = registrationLocationMapper.mapToRegistrationLocationEntity(registrationLocation);
         registrationLocationEntity.setRegistrationEvent(registrationEventEntity);
         return registrationLocationEntity;
     }
 
-    public static List<AssetListCriteriaPair> mapToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet) {
+    public List<AssetListCriteriaPair> mapToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet) {
         List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
         for (AssetIdentifierDto identifierDto : identifierDtoSet) {
             AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
             VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-            ConfigSearchField key = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+            ConfigSearchField key = vesselIdentifierMapper.map(identifierSchemeId);
             String identifierId = identifierDto.getFaIdentifierId();
 
             if (key != null && identifierId != null) {
@@ -101,11 +96,11 @@ public class BaseMapper {
         return criteriaList;
     }
 
-    public static List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
+    public List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
         List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
         for (AssetIdentifierDto identifierDto : Utils.safeIterable(identifierDtoSet)) {
             VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-            ConfigSearchField keyFromDto = VesselIdentifierMapper.INSTANCE.map(identifierSchemeId);
+            ConfigSearchField keyFromDto = vesselIdentifierMapper.map(identifierSchemeId);
 
             if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
                 String identifierId = identifierDto.getFaIdentifierId();
@@ -118,38 +113,16 @@ public class BaseMapper {
         return criteriaList;
     }
 
-    public static String getLanguageIdFromList(List<TextType> textTypes) {
-        if (CollectionUtils.isEmpty(textTypes)) {
-            return null;
-        }
-        return textTypes.get(0).getLanguageID();
-    }
 
-    public static String getTextFromList(List<TextType> textTypes) {
-        if (CollectionUtils.isEmpty(textTypes)) {
-            return null;
-        }
-        return textTypes.get(0).getValue();
-    }
-
-    public static boolean getCorrection(FishingActivityEntity entity) {
-        if (entity == null || entity.getFaReportDocument() == null || StringUtils.isEmpty(entity.getFaReportDocument().getFluxReportDocument_Id())) {
-            return false;
-        }
-
-        return entity.getFaReportDocument().getFluxReportDocument_ReferencedFaReportDocumentId() != null &&
-                entity.getFaReportDocument().getFluxReportDocument_ReferencedFaReportDocumentId().length() != 0;
-    }
-
-    private static String getIdType(IDType idType) {
+    private String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
     }
 
-    public static String getCodeType(CodeType codeType) {
+    public String getCodeType(CodeType codeType) {
         return (codeType == null) ? null : codeType.getValue();
     }
 
-    public static String getCodeTypeListId(CodeType codeType) {
+    public String getCodeTypeListId(CodeType codeType) {
         return (codeType == null) ? null : codeType.getListID();
     }
 
@@ -361,7 +334,7 @@ public class BaseMapper {
         IDType idType = new IDType();
         idType.setValue(fluxReportDocument_id);
         idType.setSchemeID(fluxReportDocument_idSchemeId);
-        ArrayList<IDType> idTypes = Lists.newArrayList(idType);
+        List<IDType> idTypes = Arrays.asList(idType);
 
         IDType ownerFluxPartyId = new IDType();
         ownerFluxPartyId.setValue(faReportDocumentEntity.getFluxParty_identifier());
@@ -371,7 +344,7 @@ public class BaseMapper {
         ownerFluxPartyName.setValue(faReportDocumentEntity.getFluxParty_name());
         ownerFluxPartyName.setLanguageID(faReportDocumentEntity.getFluxParty_nameLanguageId());
 
-        FLUXParty ownerFluxParty = new FLUXParty(Lists.newArrayList(ownerFluxPartyId), Lists.newArrayList(ownerFluxPartyName));
+        FLUXParty ownerFluxParty = new FLUXParty(Arrays.asList(ownerFluxPartyId), Arrays.asList(ownerFluxPartyName));
 
         String fluxReportDocument_purpose = faReportDocumentEntity.getFluxReportDocument_Purpose();
         TextType purpose = new TextType();

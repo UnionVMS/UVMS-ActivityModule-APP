@@ -74,7 +74,7 @@ public class ActivityDetailsDto {
             return null;
         }
 
-        Map<String, Set<Object>> characMap = Maps.newHashMap();
+        Map<String, Set<Object>> characMap = new HashMap<>();
 
         for (FluxCharacteristicsDto fluxCharacteristicsDto : fluxCharacteristics) {
             Double calculatedValueMeasure = fluxCharacteristicsDto.getCalculatedValueMeasure();

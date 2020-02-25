@@ -11,18 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import com.google.common.collect.Lists;
+import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxLocationDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.StructuredAddressEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.StructuredAddressTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +26,6 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
@@ -38,22 +33,28 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.*;
 
-@Mapper(uses = {CustomBigDecimal.class, AapProcessMapper.class},
+@Mapper(componentModel = "cdi", uses = {AapProcessMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FaCatchMapper extends BaseMapper {
 
-    public static final FaCatchMapper INSTANCE = Mappers.getMapper(FaCatchMapper.class);
+    @Inject
+    FluxLocationMapper LOCATION_MAPPER;
 
+    @Inject
+    AapStockMapper aapStockMapper;
+
+    @Inject
+    FishingGearMapper fishingGearMapper;
+
+    @PersistenceContext(unitName = "activityPUpostgres")
+    EntityManager em;
 
     @Mapping(target = "typeCode", source = "typeCode.value")
     @Mapping(target = "typeCodeListId", source = "typeCode.listID")
@@ -74,19 +75,14 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))")
     @Mapping(target = "aapProcesses", ignore = true)
     @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))")
-    @Mapping(target = "fluxLocations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatch.getDestinationFLUXLocations(), faCatchEntity))")
+    @Mapping(target = "locations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations()))")
+    @Mapping(target = "destinations", expression = "java(getFluxLocationEntities(faCatch.getDestinationFLUXLocations()))")
     @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))")
     @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))")
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "fishingActivity", ignore = true)
     @Mapping(target = "calculatedUnitQuantity", ignore = true)
     @Mapping(target = "calculatedWeightMeasure", ignore = true)
-    @Mapping(target = "territory", ignore = true)
-    @Mapping(target = "faoArea", ignore = true)
-    @Mapping(target = "icesStatRectangle", ignore = true)
-    @Mapping(target = "effortZone", ignore = true)
-    @Mapping(target = "gfcmGsa", ignore = true)
-    @Mapping(target = "gfcmStatRectangle", ignore = true)
     @Mapping(target = "presentation", ignore = true)
     //TODO: Fix this
     @Mapping(target = "fishingTrip", expression = "java(getFishingTripEntity(faCatch.getRelatedFishingTrips()))")
@@ -137,7 +133,7 @@ public abstract class FaCatchMapper extends BaseMapper {
             CodeType code = new CodeType();
             code.setValue(faCatch.getSizeDistributionClassCode());
             code.setListID(faCatch.getSizeDistributionClassCodeListId());
-            result.setClassCodes(Lists.newArrayList(code));
+            result.setClassCodes(Arrays.asList(code));
         }
 
         return result;
@@ -181,7 +177,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<AapStockEntity> aapStockEntities = new HashSet<>();
         for (AAPStock aapStock : aapStocks) {
-            AapStockEntity aapStockEntity = AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock);
+            AapStockEntity aapStockEntity = aapStockMapper.mapToAapStockEntity(aapStock);
             aapStockEntity.setFaCatch(faCatchEntity);
             aapStockEntities.add(aapStockEntity);
         }
@@ -201,42 +197,15 @@ public abstract class FaCatchMapper extends BaseMapper {
         return fluxCharacteristicEntities;
     }
 
-    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> specifiedFluxLocations, List<FLUXLocation> destFluxLocations, FaCatchEntity faCatchEntity) {
+    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations) {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
-        for (FLUXLocation fluxLocation : Utils.safeIterable(specifiedFluxLocations)) {
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-
-            Set<StructuredAddressEntity> structuredAddressEntitySet = new HashSet<>();
-
-            StructuredAddress physicalStructuredAddress = fluxLocation.getPhysicalStructuredAddress();
-            StructuredAddressEntity physicalStructuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(physicalStructuredAddress);
-
-            if (physicalStructuredAddressEntity != null) {
-                physicalStructuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                physicalStructuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_PHYSICAL.getType());
-                structuredAddressEntitySet.add(physicalStructuredAddressEntity);
+        FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
+        for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
+            FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+            if(fluxLocationEntity == null) {
+                fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+                em.persist(fluxLocationEntity);
             }
-
-            List<StructuredAddress> postalStructuredAddresses = fluxLocation.getPostalStructuredAddresses();
-            for (StructuredAddress structuredAddress : Utils.safeIterable(postalStructuredAddresses)) {
-                StructuredAddressEntity structuredAddressEntity = StructuredAddressMapper.INSTANCE.mapToStructuredAddressEntity(structuredAddress);
-                if (structuredAddressEntity != null) {
-                    structuredAddressEntity.setStructuredAddressType(StructuredAddressTypeEnum.FLUX_POSTAL.getType());
-                    structuredAddressEntity.setFluxLocation(fluxLocationEntity);
-                    structuredAddressEntitySet.add(structuredAddressEntity);
-                }
-            }
-
-            fluxLocationEntity.setStructuredAddresses(structuredAddressEntitySet);
-            fluxLocationEntity.setFaCatch(faCatchEntity);
-            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_SPECIFIED);
-            fluxLocationEntities.add(fluxLocationEntity);
-        }
-
-        for (FLUXLocation fluxLocation : Utils.safeIterable(destFluxLocations)) {
-            FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
-            fluxLocationEntity.setFaCatch(faCatchEntity);
-            fluxLocationEntity.setFluxLocationCatchTypeMapperInfo(FluxLocationCatchTypeEnum.FA_CATCH_DESTINATION);
             fluxLocationEntities.add(fluxLocationEntity);
         }
 
@@ -249,7 +218,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         }
         Set<FishingGearEntity> fishingGearEntities = new HashSet<>();
         for (FishingGear fishingGear : fishingGears) {
-            FishingGearEntity fishingGearEntity = FishingGearMapper.INSTANCE.mapToFishingGearEntity(fishingGear);
+            FishingGearEntity fishingGearEntity = fishingGearMapper.mapToFishingGearEntity(fishingGear);
             fishingGearEntity.setFaCatch(faCatchEntity);
             fishingGearEntities.add(fishingGearEntity);
         }

@@ -21,7 +21,7 @@ import java.util.List;
 @Stateless
 public class ActivityConfigRegistration implements ConfigHelper {
 
-    @PersistenceContext(unitName = "activityConfig")
+    @PersistenceContext(unitName = "activityPUpostgres")
     private EntityManager em;
 
     @Override

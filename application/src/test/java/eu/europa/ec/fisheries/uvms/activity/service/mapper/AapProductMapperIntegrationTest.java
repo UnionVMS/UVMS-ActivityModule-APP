@@ -23,20 +23,35 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
+import eu.europa.ec.fisheries.uvms.activity.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ProcessingProductsDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
 
+import javax.inject.Inject;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class AapProductMapperTest {
+@RunWith(Arquillian.class)
+public class AapProductMapperIntegrationTest extends TransactionalTests {
+
+    @Inject
+    AapProcessMapper aapProcessMapper;
+    @Inject
+    AapProductMapper aapProductMapper;
+    @Inject
+    FaCatchMapper faCatchMapper;
+
+
 
     @Test
     public void testMapToProcessingProduct() {
@@ -44,18 +59,18 @@ public class AapProductMapperTest {
         // Prepare
         FACatch faCatch = MapperUtil.getFaCatch();
         FaCatchEntity faCatchEntity = new FaCatchEntity();
-        FaCatchMapper.INSTANCE.mapToFaCatchEntity(faCatch);
+        faCatchMapper.mapToFaCatchEntity(faCatch);
 
         AAPProcess aapProcess = MapperUtil.getAapProcess();
-        AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
+        AapProcessEntity aapProcessEntity = aapProcessMapper.mapToAapProcessEntity(aapProcess);
         aapProcessEntity.setFaCatch(faCatchEntity);
 
         AAPProduct aapProduct = MapperUtil.getAapProduct();
-        AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
+        AapProductEntity aapProductEntity = aapProductMapper.mapToAapProductEntity(aapProduct);
         aapProductEntity.setAapProcess(aapProcessEntity);
 
         // Create Input data
-        ProcessingProductsDto processingProductsDto = AapProductMapper.INSTANCE.mapToProcessingProduct(aapProductEntity);
+        ProcessingProductsDto processingProductsDto = aapProductMapper.mapToProcessingProduct(aapProductEntity);
         assertEquals(processingProductsDto.getType(), faCatchEntity.getTypeCode());
         assertEquals(processingProductsDto.getGear(), faCatchEntity.getGearTypeCode());
         assertEquals(processingProductsDto.getSpecies(), faCatchEntity.getSpeciesCode());

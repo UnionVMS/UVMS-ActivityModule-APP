@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 
 import static org.junit.Assert.assertEquals;
@@ -23,10 +24,12 @@ import static org.junit.Assert.assertNull;
 
 public class VesselStorageCharacteristicsMapperTest {
 
+    VesselStorageCharacteristicsMapper vesselStorageCharacteristicsMapper = Mappers.getMapper(VesselStorageCharacteristicsMapper.class);
+
     @Test
     public void testDestVesselStorageCharacteristicsMapper() {
         VesselStorageCharacteristic model = MapperUtil.getVesselStorageCharacteristic();
-        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(model);
+        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = vesselStorageCharacteristicsMapper.mapToDestVesselStorageCharEntity(model);
 
         assertEquals(model.getID().getValue(), vesselStorageCharacteristicsEntity.getVesselId());
         assertEquals(model.getID().getSchemeID(), vesselStorageCharacteristicsEntity.getVesselSchemaId());
@@ -38,7 +41,7 @@ public class VesselStorageCharacteristicsMapperTest {
     @Test
     public void testSourceVesselStorageCharacteristicsMapper() {
         VesselStorageCharacteristic vesselStorageCharacteristic = MapperUtil.getVesselStorageCharacteristic();
-        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = VesselStorageCharacteristicsMapper.INSTANCE.mapToDestVesselStorageCharEntity(vesselStorageCharacteristic);
+        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity = vesselStorageCharacteristicsMapper.mapToDestVesselStorageCharEntity(vesselStorageCharacteristic);
 
         assertEquals(vesselStorageCharacteristic.getID().getValue(), vesselStorageCharacteristicsEntity.getVesselId());
         assertEquals(vesselStorageCharacteristic.getID().getSchemeID(), vesselStorageCharacteristicsEntity.getVesselSchemaId());

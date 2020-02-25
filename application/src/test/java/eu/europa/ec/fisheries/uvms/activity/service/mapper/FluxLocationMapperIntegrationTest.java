@@ -14,32 +14,36 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
+import javax.inject.Inject;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class FluxLocationMapperTest {
+@RunWith(Arquillian.class)
+public class FluxLocationMapperIntegrationTest extends BaseActivityArquillianTest {
+
+    @Inject
+    FluxLocationMapper LOCATION_MAPPER;
 
     @Test
     public void fluxLocationMapper() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = FluxLocationMapper.INSTANCE.mapToFluxLocationEntity(fluxLocation);
+        FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
         assertEquals(fluxLocation.getTypeCode().getListID(), fluxLocationEntity.getTypeCodeListId());
         assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode().name());
         assertEquals(fluxLocation.getCountryID().getValue(), fluxLocationEntity.getCountryId());
         assertEquals(fluxLocation.getCountryID().getSchemeID(), fluxLocationEntity.getCountryIdSchemeId());
         assertEquals(fluxLocation.getRegionalFisheriesManagementOrganizationCode().getValue(), fluxLocationEntity.getRegionalFisheriesManagementOrganizationCode());
         assertEquals(fluxLocation.getRegionalFisheriesManagementOrganizationCode().getListID(), fluxLocationEntity.getRegionalFisheriesManagementOrganizationCodeListId());
-        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().intValue(), fluxLocationEntity.getLongitude().intValue());
-        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().intValue(), fluxLocationEntity.getLatitude().intValue());
-        assertEquals(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure().getValue().intValue(), fluxLocationEntity.getAltitude().intValue());
         assertEquals(fluxLocation.getID().getValue(), fluxLocationEntity.getFluxLocationIdentifier());
         assertEquals(fluxLocation.getID().getSchemeID(), fluxLocationEntity.getFluxLocationIdentifierSchemeId());
         assertTrue(fluxLocationEntity.getName().startsWith(fluxLocation.getNames().get(0).getValue()));
-        assertNull(fluxLocationEntity.getFishingActivity());
     }
 }

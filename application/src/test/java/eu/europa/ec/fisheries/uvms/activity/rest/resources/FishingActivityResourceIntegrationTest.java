@@ -30,11 +30,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -78,7 +74,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMap(new HashMap<>());
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
-        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
@@ -129,7 +125,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         activityTypeValues.add("FISHING_OPERATION");
         activityTypeValues.add("DEPARTURE");
         searchCriteriaMapMultiVal.put(SearchFilter.ACTIVITY_TYPE, activityTypeValues);
-        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         // When
@@ -158,7 +154,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         FishingActivityQuery query = new FishingActivityQuery();
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         // When
@@ -204,7 +200,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         FishingActivityQuery query = new FishingActivityQuery();
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
@@ -237,7 +233,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         FishingActivityQuery query2 = new FishingActivityQuery();
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query1.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
         query2.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
@@ -289,7 +285,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         FishingActivityQuery query = new FishingActivityQuery();
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         Map<SearchFilter, String> searchCriteriaMap = new HashMap<>();
@@ -325,7 +321,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         FishingActivityQuery query = new FishingActivityQuery();
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultiVal = new HashMap<>();
-        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Lists.newArrayList("929"));
+        searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, Arrays.asList("929"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultiVal);
 
         // When
@@ -362,7 +358,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
-        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
@@ -385,7 +381,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMap(new HashMap<>());
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
-        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         // When
@@ -492,7 +488,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
-        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         Response response = list(query);
@@ -533,7 +529,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMap(searchCriteriaMap);
 
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = new HashMap<>();
-        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Lists.newArrayList("9"));
+        searchCriteriaMapMultipleValues.put(SearchFilter.PURPOSE, Arrays.asList("9"));
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         Response response = list(query);

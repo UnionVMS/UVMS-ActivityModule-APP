@@ -24,11 +24,9 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = {GearCharacteristicsMapper.class},
+@Mapper(componentModel = "cdi", uses = {GearCharacteristicsMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FishingGearMapper {
-
-    public static final FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);
 
 
     @Mapping(target = "typeCode", source = "typeCode.value")

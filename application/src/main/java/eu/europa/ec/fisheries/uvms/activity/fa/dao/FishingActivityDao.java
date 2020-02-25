@@ -54,24 +54,17 @@ public class FishingActivityDao {
      * This method will retrieve all the fishingActivities received for the trip order by Activity type and then by FAReport accepted date.
      * so that we know which are corrected activities received.
      * @param fishingTripId
-     * @param multipolygon
      * @throws ServiceException
      */
-    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolygon) throws ServiceException {
+    public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId) throws ServiceException {
         if (fishingTripId == null || fishingTripId.length() == 0) {
             throw new ServiceException("fishing Trip Id is null or empty. ");
         }
 
-        String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
-        if (multipolygon == null) {
-            queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
-        }
+        String queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
 
         TypedQuery<FishingActivityEntity> typedQuery = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
         typedQuery.setParameter(QUERY_PARAM_FISHING_TRIP_ID, fishingTripId);
-        if (multipolygon != null) {
-            typedQuery.setParameter(QUERY_PARAM_AREA, multipolygon);
-        }
 
         return typedQuery.getResultList();
     }
@@ -168,17 +161,14 @@ public class FishingActivityDao {
                 .append("LEFT JOIN FETCH relatedActivities.vesselTransportMeans relvtm ")
                 .append("LEFT JOIN FETCH relvtm.vesselIdentifiers relvid ")
                 .append("LEFT JOIN FETCH relatedActivities.faCatchs relCatch ")
-                .append("LEFT JOIN FETCH fCatch.fluxLocations ")
+                .append("LEFT JOIN FETCH fCatch.locations ")
                 .append("LEFT JOIN FETCH fCatch.fishingGears ")
                 .append("LEFT JOIN FETCH fCatch.fluxCharacteristics ")
                 .append("LEFT JOIN FETCH fg.fishingGearRole ")
                 .append("LEFT JOIN FETCH fg.gearCharacteristics ")
                 .append("LEFT JOIN FETCH a.fluxCharacteristics fluxChar ")
                 .append("LEFT JOIN FETCH fCatch.fluxCharacteristics fluxCharFa ")
-                .append("LEFT JOIN FETCH fl.fluxCharacteristic fluxCharFluxLoc ")
-                .append("LEFT JOIN FETCH fl.structuredAddresses flAd ")
                 .append("LEFT JOIN FETCH a.flapDocuments flapDoc ")
-                .append("LEFT JOIN FETCH flAd.fluxLocation flAdFluxLoc ")
                 .append("LEFT JOIN FETCH a.fishingTrip faFiTrip ")
                 .append("LEFT JOIN FETCH faFiTrip.catchEntities faFiTripsFaCatch ")
                 .append("LEFT JOIN FETCH a.gearProblems gearProb ")

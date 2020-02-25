@@ -17,20 +17,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -39,7 +26,7 @@ import java.util.Set;
 @NamedQuery(name = FaCatchEntity.CATCHES_FOR_FISHING_TRIP,
 		query = "SELECT faCatch.typeCode, faCatch.speciesCode, fluxLoc.fluxLocationIdentifier, sum(faCatch.weightMeasure) " +
 				"FROM FaCatchEntity faCatch " +
-				"JOIN faCatch.fluxLocations fluxLoc " +
+				"JOIN faCatch.locations fluxLoc " +
 				"JOIN faCatch.fishingActivity fishAct " +
 				"JOIN fishAct.faReportDocument fa " +
 				"JOIN fishAct.fishingTrip fishTrip " +
@@ -51,7 +38,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(of = {"typeCode", "speciesCode", "typeCodeListId", "speciesCodeListid", "unitQuantity", "unitQuantityCode", "calculatedUnitQuantity", "weightMeasureUnitCode", "weightMeasure", "usageCode", "territory", "fishClassCode"})
-@ToString(exclude = {"fishingActivity", "aapProcesses", "fishingGears", "fluxLocations", "fluxCharacteristics", "aapStocks", "fishingTrip"})
+@ToString(exclude = {"fishingActivity", "aapProcesses", "fluxLocations", "fluxCharacteristics", "aapStocks"})
 public class FaCatchEntity implements Serializable {
 
 	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";
@@ -90,7 +77,7 @@ public class FaCatchEntity implements Serializable {
 	@Column(name = "weight_measure_unit_code")
 	private String weightMeasureUnitCode;
 
-	@Column(name = "weight_measure", precision = 17, scale = 17)
+	@Column(name = "weight_measure")
 	private Double weightMeasure;
 
 	@Column(name = "calculated_weight_measure")
@@ -107,24 +94,6 @@ public class FaCatchEntity implements Serializable {
 
 	@Column(name = "weighing_means_code_list_id")
 	private String weighingMeansCodeListId;
-
-	@Column(name = "territory")
-	private String territory;
-
-	@Column(name = "fao_area")
-	private String faoArea;
-
-	@Column(name = "ices_stat_rectangle")
-	private String icesStatRectangle;
-
-	@Column(name = "effort_zone")
-	private String effortZone;
-
-    @Column(name = "gfcm_gsa")
-    private String gfcmGsa;
-
-    @Column(name = "gfcm_stat_rectangle")
-    private String gfcmStatRectangle;
 
 	@Column(name = "presentation")
 	private String presentation;
@@ -153,8 +122,19 @@ public class FaCatchEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FishingGearEntity> fishingGears = new HashSet<>(); // AKA usedFishingGears
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
-	private Set<FluxLocationEntity> fluxLocations = new HashSet<>();
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+			name = "activity_fa_catch_specified_location",
+			joinColumns = @JoinColumn(name = "fa_catch_id"),
+			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
+	private Set<FluxLocationEntity> locations = new HashSet<>();
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+			name = "activity_fa_catch_destination_location",
+			joinColumns = @JoinColumn(name = "fa_catch_id"),
+			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
+	private Set<FluxLocationEntity> destinations = new HashSet<>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<>();

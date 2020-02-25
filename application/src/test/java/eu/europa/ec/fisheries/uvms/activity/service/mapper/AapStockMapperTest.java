@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
 
 import static org.junit.Assert.assertEquals;
@@ -23,10 +24,12 @@ import static org.junit.Assert.assertNull;
 
 public class AapStockMapperTest {
 
+    AapStockMapper aapStockMapper = Mappers.getMapper(AapStockMapper.class);
+
     @Test
     public void testAapStockMapper() {
         AAPStock aapStock = MapperUtil.getAapStock();
-        AapStockEntity aapStockEntity = AapStockMapper.INSTANCE.mapToAapStockEntity(aapStock);
+        AapStockEntity aapStockEntity = aapStockMapper.mapToAapStockEntity(aapStock);
 
         assertEquals(aapStock.getID().getValue(), aapStockEntity.getStockId());
         assertEquals(aapStock.getID().getSchemeID(), aapStockEntity.getStockSchemeId());

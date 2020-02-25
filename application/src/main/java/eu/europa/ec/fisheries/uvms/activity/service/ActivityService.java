@@ -28,7 +28,7 @@ public interface ActivityService {
      * @param query
      * @throws ServiceException
      */
-    FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException;
+    FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException;
 
 
     /**

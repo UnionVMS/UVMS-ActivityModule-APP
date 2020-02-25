@@ -258,15 +258,6 @@ public class MapperUtil {
         faReportDocumentEntity.setAcceptedDatetime(Instant.now());
         faReportDocumentEntity.setFmcMarker("FMC Marker");
         faReportDocumentEntity.setFmcMarkerListId("FMC Marker list Id");
-        Geometry geometry = null;
-
-        try {
-            geometry= wktReader.read("MULTIPOINT ((-10 40), (-40 30), (-20 20), (-30 10))");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        faReportDocumentEntity.setGeom(geometry);
 
         FaReportDocumentRelatedFaReportEntity faReportDocumentRelatedFaReportEntity = new FaReportDocumentRelatedFaReportEntity();
         faReportDocumentRelatedFaReportEntity.setFaReportIdentifierId("Identifier Id 1");

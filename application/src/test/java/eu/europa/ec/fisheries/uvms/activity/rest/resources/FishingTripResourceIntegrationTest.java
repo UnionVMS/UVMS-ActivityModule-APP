@@ -427,96 +427,12 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         assertTrue(landed.getSpeciesList().isEmpty());
     }
 
-//    @Test
-//    public void getTripMapData() throws IOException {
-//        // Given
-//
-//        // When
-//        Response response = getWebTarget()
-//                .path("trip")
-//                .path("mapData")
-//                .path("UUR-XSM-45913768")
-//                .request(MediaType.APPLICATION_JSON)
-//                .header(HttpHeaders.AUTHORIZATION, authToken)
-//                .get();
-//
-//        // Then
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        ResponseDto<ObjectNode> responseDto =
-//                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<ObjectNode>>(){});
-//
-//        assertEquals(200, responseDto.getCode());
-//        assertNull(responseDto.getMsg());
-//
-//        ObjectNode response = responseDto.getData();
-//
-//        ArrayNode featureCollection = (ArrayNode) response.get("features");
-//
-//        assertEquals(12, featureCollection.size());
-//
-//        ArrayList<CoordinateForTest> testCoordinates = Lists.newArrayList(
-//                new CoordinateForTest(2.772, 14.911),
-//                new CoordinateForTest(5.713, 61.891),
-//                new CoordinateForTest(7.955, 13.976),
-//                new CoordinateForTest(4.641, 61.891),
-//                new CoordinateForTest(9.938, 18.292),
-//                new CoordinateForTest(1.237, 61.891),
-//                new CoordinateForTest(2.656, 53.571),
-//                new CoordinateForTest(4.441, 53.571),
-//                new CoordinateForTest(7.266, 33.953),
-//                new CoordinateForTest(3.733, 96.513),
-//                new CoordinateForTest(2.569, 96.513),
-//                new CoordinateForTest(1.298, 56.758)
-//        );
-//
-//        for (JsonNode jsonNode : featureCollection) {
-//            for (int i = 0; i < testCoordinates.size(); i++) {
-//                CoordinateForTest coordinateForTest = testCoordinates.get(i);
-//                if (coordinateForTest.aboutEqualTo(jsonNode)) {
-//                    testCoordinates.remove(i);
-//                    break;
-//                }
-//            }
-//        }
-//
-//        // all expected test coordinates found
-//        assertTrue(testCoordinates.isEmpty());
-//    }
-
-//    @Test
-//    public void getTripMapData_tripNotFound() throws IOException {
-//        // Given
-//
-//        // When
-//        String responseAsString = getWebTarget()
-//                .path("trip")
-//                .path("mapData")
-//                .path("YOU-GOT-TO-FIND-THE-TRIP-ID-WITHIN-YOU-MAN")
-//                .request(MediaType.APPLICATION_JSON)
-//                .header(HttpHeaders.AUTHORIZATION, authToken)
-//                .get(String.class);
-//
-//        // Then
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        ResponseDto<ObjectNode> responseDto =
-//                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<ObjectNode>>(){});
-//
-//        assertEquals(200, responseDto.getCode());
-//        assertNull(responseDto.getMsg());
-//
-//        ObjectNode response = responseDto.getData();
-//
-//        ArrayNode featureCollection = (ArrayNode) response.get("features");
-//
-//        assertEquals(0, featureCollection.size());
-//    }
-
     @Test
-    public void getFishingTripCatchEvolution() throws IOException {
+    public void getFishingTripCatchEvolution() throws JsonProcessingException {
         // Given
 
         // When
-        Response response = getWebTarget()
+        String responseAsString = getWebTarget()
                 .path("trip")
                 .path("catchevolution")
                 .path("UUR-XSM-45913768")
@@ -617,7 +533,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
 
     private void assertLastCatchSpecies(List<SpeciesQuantityDTO> actualSpeciesList) {
         Set<String> actualSpeciesSet = actualSpeciesList.stream().map(s -> s.getSpeciesCode()).collect(Collectors.toSet());
-        HashSet<String> expectedSpeciesSet = Sets.newHashSet("WIT", "HKE", "HAD", "POL", "USK", "POK", "MON", "LIN", "TUR", "HAL", "LEM", "CAT", "WHG", "COD", "SQZ");
+        List<String> expectedSpeciesSet = Arrays.asList("WIT", "HKE", "HAD", "POL", "USK", "POK", "MON", "LIN", "TUR", "HAL", "LEM", "CAT", "WHG", "COD", "SQZ");
 
         assertTrue(actualSpeciesSet.containsAll(expectedSpeciesSet));
     }

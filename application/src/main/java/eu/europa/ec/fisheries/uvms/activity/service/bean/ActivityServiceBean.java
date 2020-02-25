@@ -16,22 +16,18 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.service.ActivityService;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
-import eu.europa.ec.fisheries.uvms.activity.service.SpatialModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaReportDocumentMapper;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityUtilsMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -41,6 +37,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -62,8 +59,11 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     private FishingActivityDao fishingActivityDao;
 
-    @EJB
-    private SpatialModuleService spatialModule;
+    @Inject
+    FaReportDocumentMapper faReportDocumentMapper;
+
+    @Inject
+    FishingActivityUtilsMapper fishingActivityUtilsMapper;
 
     @EJB
     private AssetModuleService assetsServiceBean;
@@ -82,13 +82,13 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
 
         List<FaReportDocumentEntity> historyOfFaReport = faReportDocumentDao.getHistoryOfFaReport(faReport);
-        List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(historyOfFaReport);
+        List<FaReportCorrectionDTO> faReportCorrectionDTOs = faReportDocumentMapper.mapToFaReportCorrectionDtoList(historyOfFaReport);
         Collections.sort(faReportCorrectionDTOs);
         return faReportCorrectionDTOs;
     }
 
     @Override
-    public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
+    public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         log.debug("FishingActivityQuery received: {}", query);
 
         // Get the VesselTransportMeans GUIDs from Assets if one of the Vessel related filters (VESSEL, VESSEL_GROUP) has been issued.
@@ -96,18 +96,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         if (checkAndEnrichIfVesselFiltersArePresent(query)) {
             return createResultDTO(null, 0);
         }
-
-        // Check if any filters are present. If not, We need to return all fishing activity data
-        String areaWkt = getRestrictedAreaGeom(datasets);
-        log.debug("Geometry for the user received from USM: {}", areaWkt);
-        if (areaWkt != null && areaWkt.length() > 0) {
-            Map<SearchFilter, String> mapSearch = query.getSearchCriteriaMap();
-            if (mapSearch == null) {
-                mapSearch = new EnumMap<>(SearchFilter.class);
-                query.setSearchCriteriaMap(mapSearch);
-            }
-            mapSearch.put(SearchFilter.AREA_GEOM, areaWkt);
-        }
+        // TODO: Ok, this needs som testing.
         separateSingleVsMultipleFilters(query);
 
         List<FishingActivityEntity> activityList = fishingActivityDao.getFishingActivityListByQuery(query);
@@ -223,19 +212,11 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         return fishingActivityDao.getCountForFishingActivityListByQuery(query);
     }
 
-    private String getRestrictedAreaGeom(List<Dataset> datasets) {
-        if (CollectionUtils.isEmpty(datasets)) {
-            return null;
-        }
-        List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
-        return spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
-    }
-
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
 
         for (FishingActivityEntity entity : activityList) {
-            FishingActivityReportDTO fishingActivityReportDTO = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity);
+            FishingActivityReportDTO fishingActivityReportDTO = fishingActivityUtilsMapper.mapToFishingActivityReportDTO(entity);
             // Switch the report ids if this activity was canceled or deleted (needed from FE to display correctly)
             if (fishingActivityReportDTO.getCancelingReportID() != 0) {
                 fishingActivityReportDTO.setFaReportID(fishingActivityReportDTO.getCancelingReportID());

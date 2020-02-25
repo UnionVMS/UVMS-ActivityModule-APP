@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.2.5/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="anwall" id="ers-462-drop-pos">
+        <dropColumn tableName="activity_flux_location" columnName="longitude" />
+        <dropColumn tableName="activity_flux_location" columnName="latitude" />
+        <dropColumn tableName="activity_flux_location" columnName="altitude" />
+        <dropColumn tableName="activity_flux_location" columnName="geom" />
+        <dropColumn tableName="activity_fa_report_document" columnName="geom" />
+
+    </changeSet>
+
+    <changeSet author="anwall" id="ers-462-drop-act_cat_fk">
+        <dropColumn tableName="activity_flux_location" columnName="fishing_activity_id" />
+        <dropColumn tableName="activity_flux_location" columnName="fa_catch_id" />
+    </changeSet>
+
+
+    <changeSet author="anwall" id="ers-462-location_m2m_activity">
+        <createTable tableName="activity_fishing_activity_flux_location">
+            <column name="fishing_activity_id" type="int"/>
+            <column name="flux_location_id" type="int"/>
+        </createTable>
+
+        <addUniqueConstraint
+                columnNames="fishing_activity_id, flux_location_id"
+                constraintName="fishing_activity_flux_location_pk"
+                tableName="activity_fishing_activity_flux_location"
+        />
+    </changeSet>
+
+
+    <changeSet author="anwall" id="ers-462-add-pos-activity">
+        <addColumn tableName="activity_fishing_activity">
+            <column name="longitude" type="FLOAT8"/>
+            <column name="latitude" type="FLOAT8"/>
+            <column name="altitude" type="FLOAT8"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="anwall" id="ers-462-location_m2m_catch">
+        <createTable tableName="activity_fa_catch_specified_location">
+            <column name="fa_catch_id" type="int"/>
+            <column name="flux_location_id" type="int"/>
+        </createTable>
+
+        <addUniqueConstraint
+                columnNames="fa_catch_id, flux_location_id"
+                constraintName="fa_catch_id_spec_location_pk"
+                tableName="activity_fa_catch_specified_location"
+        />
+
+        <createTable tableName="activity_fa_catch_destination_location">
+            <column name="fa_catch_id" type="int"/>
+            <column name="flux_location_id" type="int"/>
+        </createTable>
+
+        <addUniqueConstraint
+                columnNames="fa_catch_id, flux_location_id"
+                constraintName="fa_catch_id_dest_location_pk"
+                tableName="activity_fa_catch_destination_location"
+        />
+    </changeSet>
+
+    <changeSet author="anwall" id="fa_change_geom_to_point">
+        <modifyDataType
+                columnName="geom"
+                newDataType="geometry(Point, 4326)"
+                tableName="activity_fishing_activity"/>
+    </changeSet>
+
+    <changeSet author="anwall" id="ers-462-drop-unused_cols">
+        <dropColumn tableName="activity_fa_catch" columnName="territory" />
+        <dropColumn tableName="activity_fa_catch" columnName="fao_area" />
+        <dropColumn tableName="activity_fa_catch" columnName="ices_stat_rectangle" />
+        <dropColumn tableName="activity_fa_catch" columnName="effort_zone" />
+        <dropColumn tableName="activity_fa_catch" columnName="gfcm_gsa" />
+        <dropColumn tableName="activity_fa_catch" columnName="gfcm_stat_rectangle" />
+    </changeSet>
+
+    <changeSet author="anwall" id="gear_problem_add_geom">
+        <dropColumn tableName="activity_flux_location" columnName="gear_problem_id" />
+        <addColumn tableName="activity_gear_problem">
+            <column name="geom" type="geometry(Point, 4326)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="anwall" id="flux_location_drop_mappers">
+        <dropColumn tableName="activity_flux_location" columnName="flux_location_catch_type_mapper_info" />
+    </changeSet>
+
+
+    <changeSet author="anwall" id="activity_structured_address_drop_location">
+        <dropColumn tableName="activity_structured_address" columnName="flux_location_id" />
+    </changeSet>
+</databaseChangeLog>

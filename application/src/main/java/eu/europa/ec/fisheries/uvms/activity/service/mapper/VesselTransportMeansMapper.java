@@ -21,13 +21,13 @@ import org.locationtech.jts.geom.Geometry;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.ContactParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationEvent;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselPositionEvent;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -35,16 +35,25 @@ import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.createPoint;
 
-@Mapper(uses = {FaReportDocumentMapper.class, VesselIdentifierMapper.class, ContactPartyMapper.class, FlapDocumentMapper.class,VesselStorageCharacteristicsMapper.class},
+@Mapper(componentModel = "cdi", uses = {FaReportDocumentMapper.class, VesselIdentifierMapper.class, ContactPartyMapper.class, FlapDocumentMapper.class,VesselStorageCharacteristicsMapper.class},
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class VesselTransportMeansMapper extends BaseMapper {
 
-    public static final VesselTransportMeansMapper INSTANCE = Mappers.getMapper(VesselTransportMeansMapper.class);
+    @Inject
+    VesselPositionEventMapper vesselPositionEventMapper;
 
+    @Inject
+    ContactPartyMapper contactPartyMapper;
+
+    @Inject
+    RegistrationEventMapper registrationEventMapper;
+
+    @Inject
+    VesselTransportMeansMapper vesselTransportMeansMapper;
 
     @Mapping(target = "roleCode", source = "roleCode.value")
     @Mapping(target = "roleCodeListId", source = "roleCode.listID")
-    @Mapping(target = "name", expression = "java(getTextFromList(vesselTransportMeans.getNames()))")
+    @Mapping(target = "name", expression = "java(BaseUtil.getTextFromList(vesselTransportMeans.getNames()))")
     @Mapping(target = "country", source = "registrationVesselCountry.ID.value")
     @Mapping(target = "countrySchemeId", source = "registrationVesselCountry.ID.schemeID")
     @Mapping(target = "vesselIdentifiers", expression = "java(mapToVesselIdentifierEntities(vesselTransportMeans.getIDS(), vesselTransportMeansEntity))")
@@ -78,7 +87,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         }
         Set<VesselPositionEventEntity> vesselPositionEventEntities = new HashSet<>();
         for (VesselPositionEvent vesselPositionEvent : specifiedVesselPositionEvents) {
-            VesselPositionEventEntity entity = VesselPositionEventMapper.INSTANCE.mapToVesselPositionEventEntity(vesselPositionEvent,vesselTransportMeansEntity);
+            VesselPositionEventEntity entity = vesselPositionEventMapper.mapToVesselPositionEventEntity(vesselPositionEvent,vesselTransportMeansEntity);
             Geometry point = createPoint(entity.getLongitude(), entity.getLatitude());
             entity.setGeom(point);
             vesselPositionEventEntities.add(entity);
@@ -92,7 +101,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         }
         Set<ContactPartyEntity> contactPartyEntities = new HashSet<>();
         for (ContactParty contactParty : contactParties) {
-            ContactPartyEntity contactPartyEntity = ContactPartyMapper.INSTANCE.mapToContactPartyEntity(contactParty,vesselTransportMeansEntity);
+            ContactPartyEntity contactPartyEntity = contactPartyMapper.mapToContactPartyEntity(contactParty,vesselTransportMeansEntity);
             contactPartyEntity.setVesselTransportMeans(vesselTransportMeansEntity);
             contactPartyEntities.add(contactPartyEntity);
         }
@@ -103,7 +112,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         if (registrationEvents == null || registrationEvents.isEmpty()) {
             return null;
         }
-        RegistrationEventEntity registrationEventEntity = RegistrationEventMapper.INSTANCE.mapToRegistrationEventEntity(registrationEvents.get(0));
+        RegistrationEventEntity registrationEventEntity = registrationEventMapper.mapToRegistrationEventEntity(registrationEvents.get(0));
         registrationEventEntity.setVesselTransportMeanses(vesselTransportMeansEntity);
         return registrationEventEntity;
     }
@@ -114,7 +123,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         }
         Set<VesselIdentifierEntity> vesselIdentifierEntities = new HashSet<>();
         for (IDType idType : idTypes) {
-            VesselIdentifierEntity vesselIdentifierEntity = VesselTransportMeansMapper.INSTANCE.mapToVesselIdentifierEntity(idType);
+            VesselIdentifierEntity vesselIdentifierEntity = vesselTransportMeansMapper.mapToVesselIdentifierEntity(idType);
             vesselIdentifierEntity.setVesselTransportMeans(vesselTransportMeansEntity);
             vesselIdentifierEntities.add(vesselIdentifierEntity);
         }
