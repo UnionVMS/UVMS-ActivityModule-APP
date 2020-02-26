@@ -21,7 +21,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
@@ -81,8 +80,6 @@ public class FishingActivityUtilsMapperIntegrationTest extends TransactionalTest
         FluxLocationEntity fluxLocationEntity = fishingActivityEntity.getFluxLocations().iterator().next();
         assertNotNull(fluxLocationEntity);
 
-        //assertFishingActivityFields(fishingActivity, fluxLocationEntity.getFishingActivity());
-
         assertNotNull(fishingActivityEntity.getAllRelatedFishingActivities());
         FishingActivityEntity relatedFishingActivityEntity = fishingActivityEntity.getAllRelatedFishingActivities().iterator().next();
         assertNotNull(relatedFishingActivityEntity);
@@ -105,15 +102,12 @@ public class FishingActivityUtilsMapperIntegrationTest extends TransactionalTest
         assertEquals(fishingActivity.getOperationsQuantity().getUnitCode(), fishingActivityEntity.getOperationsQuantity().getUnitCode());
         assertEquals(fishingActivity.getFishingDurationMeasure().getValue().intValue(), fishingActivityEntity.getFishingDurationMeasure().intValue());
         assertEquals(fishingActivity.getFishingDurationMeasure().getUnitCode(), fishingActivityEntity.getFishingDurationMeasureCode());
-    //    assertEquals(fishingActivity.getSpecifiedFLAPDocument().getID().getValue(), fishingActivityEntity.getFlapDocumentId());
-      //  assertEquals(fishingActivity.getSpecifiedFLAPDocument().getID().getSchemeID(), fishingActivityEntity.getFlapDocumentSchemeId());
     }
 
     @Test
     public void testMapToFishingActivityReportDTOList() {
         FishingActivityEntity entity= MapperUtil.getFishingActivityEntity();
         assertNotNull(entity);
-      //  assertNotNull(fishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
     }
 
 

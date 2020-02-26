@@ -168,7 +168,7 @@ public abstract class ActivityEntityToModelMapper extends BaseMapper {
 
         target.setRelatedFLUXLocations(new ArrayList<>());
         target.getRelatedFLUXLocations().addAll(fluxLocationMapper.mapToFluxLocationList(source.getFluxLocations()));
-        if(source.getLongitude() != null || source.getLatitude() != null || source.getLatitude() != null) {
+        if(source.getLongitude() != null || source.getLatitude() != null) {
             FLUXLocation posFluxLocation = new FLUXLocation();
             FLUXGeographicalCoordinate fluxGeographicalCoordinate = new FLUXGeographicalCoordinate();
 
@@ -252,7 +252,7 @@ public abstract class ActivityEntityToModelMapper extends BaseMapper {
     private void mapSpecFluxLocations(FACatch faCatch, Set<FluxLocationEntity> locations) {
         if (CollectionUtils.isNotEmpty(locations)) {
             List<FLUXLocation> specified = new ArrayList<>();
-            for (FluxLocationEntity fluxLocation : Utils.safeIterable(locations)) {
+            for (FluxLocationEntity fluxLocation : locations) {
                 specified.add(fluxLocationMapper.mapToFluxLocation(fluxLocation));
             }
             faCatch.setSpecifiedFLUXLocations(specified);
@@ -263,7 +263,7 @@ public abstract class ActivityEntityToModelMapper extends BaseMapper {
         if (CollectionUtils.isNotEmpty(locations)) {
 
             List<FLUXLocation> destination = new ArrayList<>();
-            for (FluxLocationEntity fluxLocation : Utils.safeIterable(locations)) {
+            for (FluxLocationEntity fluxLocation : locations) {
                 destination.add(fluxLocationMapper.mapToFluxLocation(fluxLocation));
             }
             faCatch.setDestinationFLUXLocations(destination);

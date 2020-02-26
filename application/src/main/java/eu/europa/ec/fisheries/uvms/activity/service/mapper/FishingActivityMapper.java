@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public abstract class FishingActivityMapper {
 
     @Inject
-    FluxLocationMapper LOCATION_MAPPER;
+    FluxLocationMapper locationMapper;
 
     @Inject
     AapProcessMapper aapProcessMapper;
@@ -339,17 +339,18 @@ public abstract class FishingActivityMapper {
         Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
             if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
-                if(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate() != null) {
-                    fishingActivityEntity.setLongitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLongitudeMeasure().getValue().doubleValue());
-                    fishingActivityEntity.setLatitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getLatitudeMeasure().getValue().doubleValue());
-                    if(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure() != null){
-                        fishingActivityEntity.setAltitude(fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate().getAltitudeMeasure().getValue().doubleValue());
+                FLUXGeographicalCoordinate coordinate = fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate();
+                if(coordinate != null) {
+                    fishingActivityEntity.setLongitude(coordinate.getLongitudeMeasure().getValue().doubleValue());
+                    fishingActivityEntity.setLatitude(coordinate.getLatitudeMeasure().getValue().doubleValue());
+                    if(coordinate.getAltitudeMeasure() != null){
+                        fishingActivityEntity.setAltitude(coordinate.getAltitudeMeasure().getValue().doubleValue());
                     }
                 }
             } else {
                 FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
                 if(fluxLocationEntity == null) {
-                    fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+                    fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
                     em.persist(fluxLocationEntity);
                 }
                 fluxLocationEntities.add(fluxLocationEntity);

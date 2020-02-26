@@ -125,12 +125,12 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     @Mapping(target = "faReferenceID", source = "faReportDocument.fluxReportDocument_ReferencedFaReportDocumentId")
     @Mapping(target = "faReferenceSchemeID", source = "faReportDocument.fluxReportDocument_ReferencedFaReportDocumentSchemeId")
     @Mapping(target = "faUniqueReportID", expression = "java(getUniqueFaReportId(entity))")
-    @Mapping(target = "faUniqueReportSchemeID", expression = "java(getUniqueFaReportSchemeId(entity))")// FIXME entity method
+    @Mapping(target = "faUniqueReportSchemeID", expression = "java(getUniqueFaReportSchemeId(entity))")
     @Mapping(target = "reason", source = "reasonCode")
     @Mapping(target = "purposeCode", source = "faReportDocument.fluxReportDocument_PurposeCode")
     @Mapping(target = "faReportDocumentType", source = "faReportDocument.typeCode")
     @Mapping(target = "faReportAcceptedDateTime", source = "faReportDocument.acceptedDatetime", qualifiedByName = "instantToDate")
-    @Mapping(target = "correction", expression = "java(BaseUtil.getCorrection(entity))") // FIXME entity method
+    @Mapping(target = "correction", expression = "java(BaseUtil.getCorrection(entity))")
     @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))")
     @Mapping(target = "faReportID", source = "faReportDocument.id")
     @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
@@ -449,7 +449,7 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     protected String getLandingCountryId(FishingActivityEntity entity) {
         if (entity.getFluxLocations() != null) {
             for (FluxLocationEntity fluxLocation : entity.getFluxLocations()) {
-                // TODO: No, not quite right
+                // TODO: No, not quite right, still needs follow up.
                 if(fluxLocation.getCountryId() != null) {
                     return fluxLocation.getCountryId();
                 }
