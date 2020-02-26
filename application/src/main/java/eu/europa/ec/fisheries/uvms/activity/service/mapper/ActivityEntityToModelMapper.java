@@ -168,7 +168,7 @@ public class ActivityEntityToModelMapper extends BaseMapper {
 
         target.setRelatedFLUXLocations(new ArrayList<>());
         target.getRelatedFLUXLocations().addAll(fluxLocationMapper.mapToFluxLocationList(source.getFluxLocations()));
-        if(source.getLongitude() != null || source.getLatitude() != null || source.getLatitude() != null) {
+        if(source.getLongitude() != null || source.getLatitude() != null) {
             FLUXLocation posFluxLocation = new FLUXLocation();
             FLUXGeographicalCoordinate fluxGeographicalCoordinate = new FLUXGeographicalCoordinate();
 
