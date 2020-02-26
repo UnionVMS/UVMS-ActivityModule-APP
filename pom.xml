@@ -45,7 +45,7 @@
         <activity.model.version>1.0.10</activity.model.version>
 
         <uvms.commons.version>4.0.7</uvms.commons.version>
-        <usm4uvms.version>4.0.21</usm4uvms.version>
+        <usm4uvms.version>4.1.0</usm4uvms.version>
         <uvms.maven.version>2.6</uvms.maven.version>
 
         <config.model.version>4.3.0</config.model.version>
