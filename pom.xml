@@ -30,7 +30,7 @@
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
 
         <!-- Docker configuration -->
-        <docker.dev.version>3.42.3.w18-ERS-SNAPSHOT</docker.dev.version>
+        <docker.dev.version>3.40.22.w18-ERS</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>activity</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
@@ -46,12 +46,12 @@
 
         <uvms.pom.version>3.0</uvms.pom.version>
         <uvms.commons.version>4.1.3</uvms.commons.version>
-        <usm4uvms.version>4.0.21</usm4uvms.version>
+        <usm4uvms.version>4.1.0</usm4uvms.version>
         <uvms.maven.version>2.6</uvms.maven.version>
 
-        <config.model.version>4.3.0</config.model.version>
+        <config.model.version>4.3.1</config.model.version>
         <spatialSwe.model.version>2.0.8-UVMS</spatialSwe.model.version>
-        <exchange.model.version>5.0.19-UVMS</exchange.model.version>
+        <exchange.model.version>5.2.2-UVMS</exchange.model.version>
         <uvms.config.version>4.0.5</uvms.config.version>
         <mdr.model.version>1.0.5</mdr.model.version>
         <mdrSwe.client.version>1.0.18</mdrSwe.client.version>
@@ -62,7 +62,7 @@
         <xmlunit-core.version>2.1.0</xmlunit-core.version>
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <commons.io.version>2.6</commons.io.version>
-        <lombok.version>1.18.10</lombok.version>
+        <lombok.version>1.18.12</lombok.version>
         <slf4j.api.version>1.7.25</slf4j.api.version>
         <jetbrains.annotations.java5.version>16.0.3</jetbrains.annotations.java5.version>
         <geotools.version>22.0</geotools.version>
@@ -70,7 +70,7 @@
         <!-- Test dependency versions -->
         <uvms.test.version>0.0.4</uvms.test.version>
         <activemq.artemis.version>2.11.0</activemq.artemis.version>
-        <arquillian.jacoco.version>1.0.0</arquillian.jacoco.version>
+        <arquillian.jacoco.version>1.1.0</arquillian.jacoco.version>
 
         <!-- Test filter -->
         <activity.integration.test.filter>**/*IntegrationTest.java</activity.integration.test.filter>
