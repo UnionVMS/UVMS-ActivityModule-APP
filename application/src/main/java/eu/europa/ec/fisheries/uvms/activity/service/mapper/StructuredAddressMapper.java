@@ -17,17 +17,13 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.StructuredAddress;
 
 import java.util.List;
 import java.util.Set;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class StructuredAddressMapper {
-
-    public static final StructuredAddressMapper INSTANCE = Mappers.getMapper(StructuredAddressMapper.class);
-
 
     @Mapping(target = "blockName", source = "blockName.value")
     @Mapping(target = "buildingName", source = "buildingName.value")
@@ -53,7 +49,6 @@ public abstract class StructuredAddressMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "structuredAddressType", ignore = true)
     @Mapping(target = "contactParty", ignore = true)
-    @Mapping(target = "fluxLocation", ignore = true)
     public abstract StructuredAddressEntity mapToStructuredAddressEntity(StructuredAddress structuredAddress);
 
     @InheritInverseConfiguration

@@ -13,30 +13,42 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
+import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class FluxFaReportMessageMapperTest {
+@RunWith(Arquillian.class)
+public class FluxFaReportMessageMapperIntegrationTest extends BaseActivityArquillianTest {
+
+    @Inject
+    FluxFaReportMessageMapper fluxFaReportMessageMapper;
 
     @Test
-    public void fluxFaReportMessageMapper() throws JAXBException {
+    public void fluxFaReportMessageMapper() throws JAXBException, IOException {
         // Given
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
-        JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-        FLUXFAReportMessage original = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
+        FLUXFAReportMessage original = getMessageFromTestResource("fa_flux_message.xml");
 
         // When
-        FluxFaReportMessageEntity mapped = FluxFaReportMessageMapper.INSTANCE.mapToFluxFaReportMessage(original, FaReportSourceEnum.FLUX);
+        FluxFaReportMessageEntity mapped = fluxFaReportMessageMapper.mapToFluxFaReportMessage(original, FaReportSourceEnum.FLUX);
 
         // Then
         assertEquals("FLUX_REPORT_ID_1", mapped.getFluxReportDocument_Id());
@@ -60,6 +72,18 @@ public class FluxFaReportMessageMapperTest {
         assertEquals("ID 1", mappedFAReportDocument.getRelatedFaReportIdentifiers().iterator().next().getFaReportIdentifierId());
         assertEquals("47rfh-5hry4-thfur75-4hf743", mappedFAReportDocument.getRelatedFaReportIdentifiers().iterator().next().getFaReportIdentifierSchemeId());
         assertEquals(Instant.parse("2016-07-01T11:14:00Z"), mappedFAReportDocument.getAcceptedDatetime());
+    }
+
+
+    private FLUXFAReportMessage getMessageFromTestResource(String fileName) throws IOException, JAXBException {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        try (InputStream is = contextClassLoader.getResourceAsStream(fileName)) {
+            try (InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+                BufferedReader reader = new BufferedReader(isr);
+                String fileAsString = reader.lines().collect(Collectors.joining(System.lineSeparator()));
+                return JAXBUtils.unMarshallMessage(fileAsString, FLUXFAReportMessage.class);
+            }
+        }
     }
 
 }

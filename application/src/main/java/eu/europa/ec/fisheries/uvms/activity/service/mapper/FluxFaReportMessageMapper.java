@@ -22,20 +22,23 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 
+import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FluxFaReportMessageMapper extends BaseMapper {
 
-    public static final FluxFaReportMessageMapper INSTANCE = Mappers.getMapper(FluxFaReportMessageMapper.class);
+    @Inject
+    FaReportDocumentMapper faReportDocumentMapper;
 
+    @Inject
+    FluxFaReportMessageMapper fluxFaReportMessageMapper;
 
     @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxFaReportMessage.getFLUXReportDocument().getIDS()))")
     @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(fluxFaReportMessage.getFLUXReportDocument().getIDS()))")
@@ -61,7 +64,7 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
             return null;
         }
 
-        FluxFaReportMessageEntity fluxFaReportMessageEntity = FluxFaReportMessageMapper.INSTANCE.mapButExcludeFaReportDocuments(fluxFaReportMessage);
+        FluxFaReportMessageEntity fluxFaReportMessageEntity = fluxFaReportMessageMapper.mapButExcludeFaReportDocuments(fluxFaReportMessage);
 
         Set<FaReportDocumentEntity> faReportDocuments = mapFaReportDocuments(fluxFaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessageEntity);
         fluxFaReportMessageEntity.setFaReportDocuments(faReportDocuments);
@@ -74,14 +77,14 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
 
         Set<FaReportDocumentEntity> faReportDocumentEntities = new HashSet<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
-            FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportSourceEnum);
+            FaReportDocumentEntity entity = faReportDocumentMapper.mapToFAReportDocumentEntity(faReportDocument, faReportSourceEnum);
             VesselTransportMeans specifiedVesselTransportMeans = faReportDocument.getSpecifiedVesselTransportMeans();
-            Set<VesselTransportMeansEntity> vesselTransportMeansEntities = FaReportDocumentMapper.mapVesselTransportMeansEntity(specifiedVesselTransportMeans, entity);
+            Set<VesselTransportMeansEntity> vesselTransportMeansEntities = faReportDocumentMapper.mapVesselTransportMeansEntity(specifiedVesselTransportMeans, entity);
             Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
 
             if (CollectionUtils.isNotEmpty(vesselTransportMeansEntities)) {
                 VesselTransportMeansEntity vessTraspMeans = vesselTransportMeansEntities.iterator().next();
-                fishingActivityEntities = FaReportDocumentMapper.mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(), entity, vessTraspMeans, fishingTripCache);
+                fishingActivityEntities = faReportDocumentMapper.mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(), entity, vessTraspMeans, fishingTripCache);
                 vessTraspMeans.setFaReportDocument(entity);
             }
 

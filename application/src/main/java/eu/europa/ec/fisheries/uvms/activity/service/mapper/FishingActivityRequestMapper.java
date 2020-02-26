@@ -18,16 +18,17 @@ import eu.europa.ec.fisheries.uvms.activity.service.search.FilterMap;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@Mapper
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FishingActivityRequestMapper {
 
-    public static FishingActivityQuery buildFishingActivityQueryFromRequest(FishingTripRequest baseRequest) throws ServiceException {
+    public FishingActivityQuery buildFishingActivityQueryFromRequest(FishingTripRequest baseRequest) throws ServiceException {
         FishingActivityQuery query = new FishingActivityQuery();
         query.setSearchCriteriaMap(extractFiltersAsMap(baseRequest.getSingleValueFilters()));
         query.setSearchCriteriaMapMultipleValues(extractFiltersAsMapWithMultipleValues(baseRequest.getListValueFilters()));
@@ -42,7 +43,7 @@ public abstract class FishingActivityRequestMapper {
      * @return Map<SearchFilter   ,   String> Map of SearchFilter and its value
      * @throws ServiceException
      */
-    private static Map<SearchFilter, String> extractFiltersAsMap(List<SingleValueTypeFilter> filterTypes) throws ServiceException {
+    private Map<SearchFilter, String> extractFiltersAsMap(List<SingleValueTypeFilter> filterTypes) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter, String> searchMap = new EnumMap<>(SearchFilter.class);
         for (SingleValueTypeFilter filterType : filterTypes) {
@@ -62,7 +63,7 @@ public abstract class FishingActivityRequestMapper {
      * @return Map<SearchFilter   ,   List   <   String>> Map of SearchFilter and list of values for the filter
      * @throws ServiceException
      */
-    private static Map<SearchFilter, List<String>> extractFiltersAsMapWithMultipleValues(List<ListValueTypeFilter> filterTypes) throws ServiceException {
+    private Map<SearchFilter, List<String>> extractFiltersAsMapWithMultipleValues(List<ListValueTypeFilter> filterTypes) throws ServiceException {
         Set<SearchFilter> filtersWithMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
         Map<SearchFilter, List<String>> searchMap = new EnumMap<>(SearchFilter.class);
         for (ListValueTypeFilter filterType : filterTypes) {

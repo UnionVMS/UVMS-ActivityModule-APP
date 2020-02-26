@@ -10,19 +10,21 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import org.junit.Test;
+import org.mapstruct.factory.Mappers;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity.builder;
-import static eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselIdentifierMapper.INSTANCE;
 import static org.junit.Assert.assertEquals;
 
 public class VesselIdentifierMapperTest {
+
+    VesselIdentifierMapper vesselIdentifierMapper = Mappers.getMapper(VesselIdentifierMapper.class);
 
     @Test
     public void testMapToIdentifierDtoSet() {
@@ -32,7 +34,10 @@ public class VesselIdentifierMapperTest {
                 .vesselIdentifierId("schemeId")
                 .build();
 
-        Set<AssetIdentifierDto> identifierDtos = INSTANCE.mapToIdentifierDotSet(Sets.newHashSet(entity));
+        Set<VesselIdentifierEntity> vesselIdentifierEntities = new HashSet<>();
+        vesselIdentifierEntities.add(entity);
+
+        Set<AssetIdentifierDto> identifierDtos = vesselIdentifierMapper.mapToIdentifierDotSet(vesselIdentifierEntities);
 
         assertEquals(1, identifierDtos.size());
         assertEquals("schemeId", identifierDtos.iterator().next().getFaIdentifierId());
@@ -46,8 +51,10 @@ public class VesselIdentifierMapperTest {
         VesselIdentifierEntity entity = builder()
                 .vesselIdentifierSchemeId("UNDEFINED")
                 .build();
+        Set<VesselIdentifierEntity> vesselIdentifierEntities = new HashSet<>();
+        vesselIdentifierEntities.add(entity);
 
-        INSTANCE.mapToIdentifierDotSet(Sets.newHashSet(entity));
+        vesselIdentifierMapper.mapToIdentifierDotSet(vesselIdentifierEntities);
     }
 
 }

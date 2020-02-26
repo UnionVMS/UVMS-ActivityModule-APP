@@ -62,7 +62,7 @@ public class GearCharacteristicEntity implements Serializable {
 	@Column(name = "desc_language_id")
 	private String descLanguageId;
 
-	@Column(name = "value_measure", precision = 17, scale = 17)
+	@Column(name = "value_measure")
 	private Double valueMeasure;
 
 	@Column(name = "value_measure_unit_code")
@@ -83,7 +83,7 @@ public class GearCharacteristicEntity implements Serializable {
 	@Column(name = "value_text")
 	private String valueText;
 
-    @Column(name = "value_quantity", precision = 17, scale = 17)
+    @Column(name = "value_quantity")
 	private Double valueQuantity;
 
 	@Column(name = "value_quantity_code")

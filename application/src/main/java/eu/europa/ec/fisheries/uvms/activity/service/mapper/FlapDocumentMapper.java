@@ -25,12 +25,9 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import java.util.List;
 import java.util.Set;
 
-@Mapper(uses = BaseMapper.class,
+@Mapper(componentModel = "cdi", uses = BaseMapper.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class FlapDocumentMapper {
-
-    public static final FlapDocumentMapper INSTANCE = Mappers.getMapper(FlapDocumentMapper.class);
-
 
     @Mapping(target = "flapDocumentId", source = "ID.value")
     @Mapping(target = "flapDocumentSchemeId", source = "ID.schemeID")

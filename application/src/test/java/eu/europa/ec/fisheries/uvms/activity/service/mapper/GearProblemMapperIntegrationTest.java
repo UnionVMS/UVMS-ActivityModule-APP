@@ -15,20 +15,30 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearProblemEntity;
+import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
+import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearProblem;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class GearProblemMapperTest {
+@RunWith(Arquillian.class)
+public class GearProblemMapperIntegrationTest extends BaseActivityArquillianTest {
+
+    @Inject
+    GearProblemMapper gearProblemMapper;
 
     @Test
     public void testGearProblemMapper() {
         GearProblem gearProblem = MapperUtil.getGearProblem();
-        GearProblemEntity gearProblemEntity = GearProblemMapper.INSTANCE.mapToGearProblemEntity(gearProblem);
+        GearProblemEntity gearProblemEntity = gearProblemMapper.mapToGearProblemEntity(gearProblem);
 
         assertEquals(gearProblem.getTypeCode().getValue(), gearProblemEntity.getTypeCode());
         assertEquals(gearProblem.getTypeCode().getListID(), gearProblemEntity.getTypeCodeListId());
@@ -47,8 +57,6 @@ public class GearProblemMapperTest {
 
         assertEquals("Code Type 1", gearProblemEntity.getTypeCode());
         assertEquals("fhty58-gh586t-5tjf8-t58rjewe", gearProblemEntity.getTypeCodeListId());
-        gearProblemEntity.getLocations().iterator().next().onPrePersist();
-        assertNotNull(gearProblemEntity.getLocations().iterator().next().getGeom());
 
     }
 }

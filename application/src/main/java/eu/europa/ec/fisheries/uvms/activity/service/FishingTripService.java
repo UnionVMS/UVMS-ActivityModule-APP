@@ -36,7 +36,7 @@ public interface FishingTripService {
      * @return FishingTripSummaryViewDTO All of summary view data
      * @throws ServiceException
      */
-    FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId, List<Dataset> datasets) throws ServiceException;
+    FishingTripSummaryViewDTO getFishingTripSummaryAndReports(String fishingTripId) throws ServiceException;
 
 
     /**
@@ -61,13 +61,6 @@ public interface FishingTripService {
      * @param fishingTripId
      */
     Map<String, CatchSummaryListDTO> retrieveFaCatchesForFishingTrip(String fishingTripId);
-
-    /**
-     * Retrieve GEO data for Fishing Trip MAp
-     *
-     * @param tripId
-     */
-    ObjectNode getTripMapDetailsForTripId(String tripId);
 
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 

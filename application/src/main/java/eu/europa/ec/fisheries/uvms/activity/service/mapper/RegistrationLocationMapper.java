@@ -18,18 +18,16 @@ import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 
-@Mapper(imports = BaseMapper.class,
+@Mapper(componentModel = "cdi", imports = BaseMapper.class,
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public abstract class RegistrationLocationMapper {
+public abstract class RegistrationLocationMapper extends BaseMapper {
 
-    public static final RegistrationLocationMapper INSTANCE = Mappers.getMapper(RegistrationLocationMapper.class);
-
-    @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(registrationLocation.getDescriptions()))")
-    @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationLocation.getDescriptions()))")
+    @Mapping(target = "description", expression = "java(BaseUtil.getTextFromList(registrationLocation.getDescriptions()))")
+    @Mapping(target = "descLanguageId", expression = "java(BaseUtil.getLanguageIdFromList(registrationLocation.getDescriptions()))")
     @Mapping(target = "regionCode", source = "geopoliticalRegionCode.value")
     @Mapping(target = "regionCodeListId", source = "geopoliticalRegionCode.listID")
-    @Mapping(target = "name", expression = "java(BaseMapper.getTextFromList(registrationLocation.getNames()))")
-    @Mapping(target = "nameLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(registrationLocation.getNames()))")
+    @Mapping(target = "name", expression = "java(BaseUtil.getTextFromList(registrationLocation.getNames()))")
+    @Mapping(target = "nameLanguageId", expression = "java(BaseUtil.getLanguageIdFromList(registrationLocation.getNames()))")
     @Mapping(target = "typeCode", source = "typeCode.value")
     @Mapping(target = "typeCodeListId", source = "typeCode.listID")
     @Mapping(target = "locationCountryId", source = "countryID.value")

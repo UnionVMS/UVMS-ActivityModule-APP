@@ -13,9 +13,9 @@ package eu.europa.ec.fisheries.uvms.activity.service.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
@@ -49,7 +49,7 @@ public class StorageDto {
 
     @JsonProperty("identifiers")
     public Set<StorageIdentifierDto> getIdentifiers() {
-        Set<StorageIdentifierDto> identifiers = Sets.newHashSet();
+        Set<StorageIdentifierDto> identifiers = new HashSet<>();
         if (identifier != null) {
             identifiers.add(identifier);
         }

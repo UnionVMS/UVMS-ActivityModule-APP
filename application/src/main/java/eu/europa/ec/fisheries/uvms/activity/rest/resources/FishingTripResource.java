@@ -19,8 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
-import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
@@ -66,8 +64,7 @@ public class FishingTripResource extends UnionVMSResource {
 
         log.debug("Fishing Trip summary from fishing trip: {}", fishingTripId);
         String username = request.getRemoteUser();
-        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId, datasets));
+        return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId));
     }
 
     @GET
@@ -107,17 +104,6 @@ public class FishingTripResource extends UnionVMSResource {
 
         log.debug("Catches for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveFaCatchesForFishingTrip(fishingTripId));
-    }
-
-    @GET
-    @Path("/mapData/{tripId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Interceptors(ActivityExceptionInterceptor.class)
-    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-    public Response getTripMapData(@Context HttpServletRequest request,
-                                   @Context HttpServletResponse response,
-                                   @PathParam("tripId") String tripId) {
-        return createSuccessResponse(fishingTripService.getTripMapDetailsForTripId(tripId));
     }
 
     @GET

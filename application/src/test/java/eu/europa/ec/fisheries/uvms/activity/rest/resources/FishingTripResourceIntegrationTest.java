@@ -6,9 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
@@ -41,14 +38,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -454,90 +444,6 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getTripMapData() throws JsonProcessingException {
-        // Given
-
-        // When
-        String responseAsString = getWebTarget()
-                .path("trip")
-                .path("mapData")
-                .path("UUR-XSM-45913768")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get(String.class);
-
-        // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-        ResponseDto<ObjectNode> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<ObjectNode>>(){});
-
-        assertEquals(200, responseDto.getCode());
-        assertNull(responseDto.getMsg());
-
-        ObjectNode response = responseDto.getData();
-
-        ArrayNode featureCollection = (ArrayNode) response.get("features");
-
-        assertEquals(12, featureCollection.size());
-
-        ArrayList<CoordinateForTest> testCoordinates = Lists.newArrayList(
-                new CoordinateForTest(2.772, 14.911),
-                new CoordinateForTest(5.713, 61.891),
-                new CoordinateForTest(7.955, 13.976),
-                new CoordinateForTest(4.641, 61.891),
-                new CoordinateForTest(9.938, 18.292),
-                new CoordinateForTest(1.237, 61.891),
-                new CoordinateForTest(2.656, 53.571),
-                new CoordinateForTest(4.441, 53.571),
-                new CoordinateForTest(7.266, 33.953),
-                new CoordinateForTest(3.733, 96.513),
-                new CoordinateForTest(2.569, 96.513),
-                new CoordinateForTest(1.298, 56.758)
-        );
-
-        for (JsonNode jsonNode : featureCollection) {
-            for (int i = 0; i < testCoordinates.size(); i++) {
-                CoordinateForTest coordinateForTest = testCoordinates.get(i);
-                if (coordinateForTest.aboutEqualTo(jsonNode)) {
-                    testCoordinates.remove(i);
-                    break;
-                }
-            }
-        }
-
-        // all expected test coordinates found
-        assertTrue(testCoordinates.isEmpty());
-    }
-
-    @Test
-    public void getTripMapData_tripNotFound() throws JsonProcessingException {
-        // Given
-
-        // When
-        String responseAsString = getWebTarget()
-                .path("trip")
-                .path("mapData")
-                .path("YOU-GOT-TO-FIND-THE-TRIP-ID-WITHIN-YOU-MAN")
-                .request(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, authToken)
-                .get(String.class);
-
-        // Then
-        ObjectMapper objectMapper = new ObjectMapper();
-        ResponseDto<ObjectNode> responseDto =
-                objectMapper.readValue(responseAsString, new TypeReference<ResponseDto<ObjectNode>>(){});
-
-        assertEquals(200, responseDto.getCode());
-        assertNull(responseDto.getMsg());
-
-        ObjectNode response = responseDto.getData();
-
-        ArrayNode featureCollection = (ArrayNode) response.get("features");
-
-        assertEquals(0, featureCollection.size());
-    }
-
-    @Test
     public void getFishingTripCatchEvolution() throws JsonProcessingException {
         // Given
 
@@ -645,7 +551,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
 
     private void assertLastCatchSpecies(List<SpeciesQuantityDTO> actualSpeciesList) {
         Set<String> actualSpeciesSet = actualSpeciesList.stream().map(s -> s.getSpeciesCode()).collect(Collectors.toSet());
-        HashSet<String> expectedSpeciesSet = Sets.newHashSet("WIT", "HKE", "HAD", "POL", "USK", "POK", "MON", "LIN", "TUR", "HAL", "LEM", "CAT", "WHG", "COD", "SQZ");
+        List<String> expectedSpeciesSet = Arrays.asList("WIT", "HKE", "HAD", "POL", "USK", "POK", "MON", "LIN", "TUR", "HAL", "LEM", "CAT", "WHG", "COD", "SQZ");
 
         assertTrue(actualSpeciesSet.containsAll(expectedSpeciesSet));
     }

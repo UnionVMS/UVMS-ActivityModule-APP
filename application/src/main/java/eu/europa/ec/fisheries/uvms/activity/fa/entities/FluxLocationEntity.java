@@ -11,7 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,38 +19,17 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
-import org.geotools.geometry.jts.GeometryBuilder;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.WKTWriter;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.TextType;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT_EPSG_SRID;
 
+
+@NamedQuery(name = FluxLocationEntity.LOOKUP_LOCATION, query ="SELECT l FROM FluxLocationEntity l WHERE l.fluxLocationIdentifier =:identifier and l.fluxLocationIdentifierSchemeId =:schemeId")
 @Entity
 @Table(name = "activity_flux_location")
 @NoArgsConstructor
@@ -59,28 +37,16 @@ import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.DEFAULT
 @Builder
 @Data
 @EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
-@ToString(exclude = {"structuredAddresses", "faCatch", "fishingActivity", "fluxCharacteristic", "gearProblem"})
+@ToString
 public class FluxLocationEntity implements Serializable {
+
+	public static final String LOOKUP_LOCATION = "LOOKUP_LOCATION";
 
 	@Id
 	@Column(unique = true, nullable = false)
 	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_loc_seq", allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
 	private int id;
-
-	@Column(name = "geom", columnDefinition = "Geometry")
-	private Geometry geom;
-
-	@Transient
-	private String wkt;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fa_catch_id")
-	private FaCatchEntity faCatch;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fishing_activity_id")
-	private FishingActivityEntity fishingActivity;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type_code", nullable = false)
@@ -92,16 +58,6 @@ public class FluxLocationEntity implements Serializable {
 	@XmlElement(nillable = true)
 	@Column(name = "country_id")
 	private String countryId;
-
-	@Column(precision = 17, scale = 17)
-	private Double longitude;
-
-	@Column(precision = 17, scale = 17)
-	private Double latitude;
-
-	@Column(name = "flux_location_catch_type_mapper_info", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private FluxLocationCatchTypeEnum fluxLocationCatchTypeMapperInfo;
 
 	@Column(name = "country_id_scheme_id")
 	private String countryIdSchemeId;
@@ -123,35 +79,6 @@ public class FluxLocationEntity implements Serializable {
 
 	@Column(name = "rfmo_code_list_id")
 	private String regionalFisheriesManagementOrganizationCodeListId;
-
-	@Column(precision = 17, scale = 17)
-	private Double altitude;
-
-	@OneToOne(mappedBy = "fluxLocation")
-	private FluxCharacteristicEntity fluxCharacteristic;
-
-	@OneToMany(mappedBy = "fluxLocation", cascade = CascadeType.ALL)
-	private Set<StructuredAddressEntity> structuredAddresses;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "gear_problem_id")
-	private GearProblemEntity gearProblem;
-
-	@PrePersist
-	public void onPrePersist() {
-	    if(longitude != null && latitude != null){
-            Point point = new GeometryBuilder().point(longitude, latitude);
-            point.setSRID(DEFAULT_EPSG_SRID);
-            this.geom = point;
-        }
-	}
-
-	@PostLoad
-	private void onLoad() {
-		if(this.geom != null){
-			this.wkt = new WKTWriter().write(this.geom);
-		}
-	}
 
 	public List<TextType> getNames(){
         List<TextType> names = null;

@@ -17,28 +17,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.WKTWriter;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PostLoad;
-import javax.persistence.PrePersist;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -53,7 +35,7 @@ import static org.apache.commons.collections.CollectionUtils.isEmpty;
 		query = "SELECT DISTINCT a from FishingActivityEntity a " +
 				"JOIN FETCH a.faReportDocument fa " +
 				"JOIN FETCH a.fishingTrip ft " +
-				"where (intersects(fa.geom, :area) = true " +
+				"where (intersects(a.geom, :area) = true " +
 				"and ft.fishingTripKey.tripId =: fishingTripId) " +
 				"order by a.calculatedStartTime ASC, fa.fluxReportDocument_PurposeCode DESC")
 @NamedQuery(name = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM,
@@ -86,7 +68,7 @@ public class FishingActivityEntity implements Serializable {
     private FaReportDocumentEntity faReportDocument;
 
 	@Column(name = "geom", columnDefinition = "Geometry")
-	private Geometry geom;
+	private Point geom;
 
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "source_vessel_char_id")
@@ -192,7 +174,11 @@ public class FishingActivityEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
 	private Set<GearProblemEntity> gearProblems;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "fishingActivity", cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(
+			name = "activity_fishing_activity_flux_location",
+			joinColumns = @JoinColumn(name = "fishing_activity_id"),
+			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
 	private Set<FluxLocationEntity> fluxLocations;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "relatedFishingActivity", cascade = CascadeType.ALL)
@@ -207,7 +193,16 @@ public class FishingActivityEntity implements Serializable {
 	@Transient
     private String wkt;
 
-    public FlapDocumentEntity getFirstFlapDocument() {
+	@Column(precision = 17, scale = 17)
+	private Double longitude;
+
+	@Column(precision = 17, scale = 17)
+	private Double latitude;
+
+	@Column(precision = 17, scale = 17)
+	private Double altitude;
+
+	public FlapDocumentEntity getFirstFlapDocument() {
         FlapDocumentEntity flapDocument = null;
         if (!isEmpty(flapDocuments)) {
             flapDocument = flapDocuments.iterator().next();

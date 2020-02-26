@@ -11,12 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.DelimitedPeriodMapper;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
@@ -30,10 +27,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "activity_fishing_trip")
@@ -116,7 +110,7 @@ public class FishingTripEntity implements Serializable {
         fishingTrip.setIDS(idTypes);
 
         DelimitedPeriod delimitedPeriod = DelimitedPeriodMapper.convert(calculatedTripStartDate, calculatedTripEndDate);
-        fishingTrip.setSpecifiedDelimitedPeriods(Lists.newArrayList(delimitedPeriod));
+        fishingTrip.setSpecifiedDelimitedPeriods(Arrays.asList(delimitedPeriod));
 
         if (typeCode != null && typeCodeListId != null) {
             CodeType codeType = new CodeType();

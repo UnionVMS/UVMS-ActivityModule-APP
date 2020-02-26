@@ -14,23 +14,20 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ProcessingProductsDto;
-import eu.europa.ec.fisheries.uvms.activity.service.util.CustomBigDecimal;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Mapper(uses = CustomBigDecimal.class,
-        unmappedTargetPolicy = ReportingPolicy.ERROR)
+@Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
 public abstract class AapProductMapper {
-
-    public static final AapProductMapper INSTANCE = Mappers.getMapper(AapProductMapper.class);
 
     public static final String FISH_PRESENTATION = "FISH_PRESENTATION";
 
@@ -90,24 +87,10 @@ public abstract class AapProductMapper {
 
     protected Map<String, String> getDenormalizedLocations(AapProductEntity aapProduct) {
         Map<String, String> locations = new HashMap<>();
-        if (aapProduct.getAapProcess().getFaCatch().getIcesStatRectangle() != null) {
-            locations.put("ices_stat_rectangle", aapProduct.getAapProcess().getFaCatch().getIcesStatRectangle());
-        }
-
-        if (aapProduct.getAapProcess().getFaCatch().getFaoArea() != null) {
-            locations.put("fao_area", aapProduct.getAapProcess().getFaCatch().getFaoArea());
-        }
-
-        if (aapProduct.getAapProcess().getFaCatch().getGfcmGsa() != null) {
-            locations.put("gfcm_gsa", aapProduct.getAapProcess().getFaCatch().getGfcmGsa());
-        }
-
-        if (aapProduct.getAapProcess().getFaCatch().getEffortZone() != null) {
-            locations.put("effort_zone", aapProduct.getAapProcess().getFaCatch().getEffortZone());
-        }
-
-        if (aapProduct.getAapProcess().getFaCatch().getTerritory() != null) {
-            locations.put("territory", aapProduct.getAapProcess().getFaCatch().getTerritory());
+        for(FluxLocationEntity location : aapProduct.getAapProcess().getFaCatch().getLocations()) {
+            if(location.getTypeCode().equals(FluxLocationEnum.AREA)) {
+                locations.put(location.getFluxLocationIdentifierSchemeId(), location.getFluxLocationIdentifier());;
+            }
         }
         return locations;
     }
