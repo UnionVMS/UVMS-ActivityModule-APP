@@ -154,17 +154,12 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
                 .collect(Collectors.toList());
     }
 
-    protected Date getEndDate(FishingActivityEntity entity) {
+    protected Instant getEndDate(FishingActivityEntity entity) {
         if (entity == null) {
             return null;
         }
 
-        Instant calculatedEndTime = entity.getCalculatedEndTime();
-        if (calculatedEndTime != null) {
-            return Date.from(calculatedEndTime);
-        }
-
-        return null;
+        return entity.getCalculatedEndTime();
     }
 
     protected List<DelimitedPeriodDTO> getDelimitedPeriodDTOList(FishingActivityEntity entity) {

@@ -10,11 +10,11 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.google.common.collect.Sets;
 import lombok.EqualsAndHashCode;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
+import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode

@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import com.google.common.collect.Sets;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
@@ -35,9 +34,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -60,7 +59,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripSummary_noGeometry() throws IOException {
+    public void getFishingTripSummary_noGeometry() {
         // Given
 
         // When
@@ -176,7 +175,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripSummary_tripNotFound() throws IOException {
+    public void getFishingTripSummary_tripNotFound() {
         // Given
 
         // When
@@ -191,7 +190,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<FishingTripSummaryViewDTO> responseDto = response.readEntity(new GenericType<ResponseDto<FishingTripSummaryViewDTO>>() {});
+        ResponseDto<FishingTripSummaryViewDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -202,7 +201,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getVesselDetails() throws IOException {
+    public void getVesselDetails() {
         // Given
 
         // When
@@ -216,7 +215,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<VesselDetailsDTO> responseDto = response.readEntity(new GenericType<ResponseDto<VesselDetailsDTO>>() {});
+        ResponseDto<VesselDetailsDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -264,7 +263,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getVesselDetails_tripNotFound() throws IOException {
+    public void getVesselDetails_tripNotFound() {
         // Given
 
         // When
@@ -278,7 +277,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<VesselDetailsDTO> responseDto = response.readEntity(new GenericType<ResponseDto<VesselDetailsDTO>>() {});
+        ResponseDto<VesselDetailsDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -286,7 +285,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripMessageCounter() throws IOException {
+    public void getFishingTripMessageCounter() {
         // Given
 
         // When
@@ -299,7 +298,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<MessageCountDTO> responseDto = response.readEntity(new GenericType<ResponseDto<MessageCountDTO>>() {});
+        ResponseDto<MessageCountDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -315,7 +314,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripMessageCounter_tripNotFound() throws IOException {
+    public void getFishingTripMessageCounter_tripNotFound() {
         // Given
 
         // When
@@ -328,7 +327,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<MessageCountDTO> responseDto = response.readEntity(new GenericType<ResponseDto<MessageCountDTO>>() {});
+        ResponseDto<MessageCountDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -344,7 +343,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripCatchReports() throws IOException {
+    public void getFishingTripCatchReports() {
         // Given
 
         // When
@@ -357,7 +356,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<Map<String, CatchSummaryListDTO>> responseDto = response.readEntity(new GenericType<ResponseDto<Map<String, CatchSummaryListDTO>>>() {});
+        ResponseDto<Map<String, CatchSummaryListDTO>> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -397,7 +396,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripCatchReports_tripNotFound() throws IOException {
+    public void getFishingTripCatchReports_tripNotFound() {
         // Given
 
         // When
@@ -410,7 +409,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<Map<String, CatchSummaryListDTO>> responseDto = response.readEntity(new GenericType<ResponseDto<Map<String, CatchSummaryListDTO>>>() {});
+        ResponseDto<Map<String, CatchSummaryListDTO>> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -428,11 +427,11 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
     }
 
     @Test
-    public void getFishingTripCatchEvolution() throws JsonProcessingException {
+    public void getFishingTripCatchEvolution() {
         // Given
 
         // When
-        String responseAsString = getWebTarget()
+        Response response = getWebTarget()
                 .path("trip")
                 .path("catchevolution")
                 .path("UUR-XSM-45913768")
@@ -441,7 +440,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<CatchEvolutionDTO> responseDto = response.readEntity(new GenericType<ResponseDto<CatchEvolutionDTO>>() {});
+        ResponseDto<CatchEvolutionDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -552,7 +551,7 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
                 .get();
 
         // Then
-        ResponseDto<CatchEvolutionDTO> responseDto = response.readEntity(new GenericType<ResponseDto<CatchEvolutionDTO>>() {});
+        ResponseDto<CatchEvolutionDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -561,25 +560,4 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
 
         assertNull(catchEvolutionDTO.getTripDetails());
     }
-//
-//    private static class CoordinateForTest {
-//        public final double latitude;
-//        public final double longitude;
-//
-//        public CoordinateForTest(double latitude, double longitude) {
-//            this.latitude = latitude;
-//            this.longitude = longitude;
-//        }
-//
-//        public boolean aboutEqualTo(JsonNode jsonNode) {
-//            JsonNode geometryNode = jsonNode.get("geometry");
-//            JsonNode coordinates = geometryNode.get("coordinates");
-//            ArrayNode coordsArray = (ArrayNode) coordinates.get(0);
-//            DoubleNode latNode = (DoubleNode) coordsArray.get(0);
-//            DoubleNode longNode = (DoubleNode) coordsArray.get(1);
-//
-//            return  Math.abs(latNode.doubleValue() - latitude) <= 0.000001 &&
-//                    Math.abs(longNode.doubleValue() - longitude) <= 0.000001;
-//        }
-//    }
 }

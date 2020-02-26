@@ -1,6 +1,5 @@
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
-import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
@@ -30,7 +29,12 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -47,7 +51,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getCommunicationChannels_OK() throws IOException {
+    public void getCommunicationChannels_OK() {
         // When
         Response response = getWebTarget()
                 .path("fa")
@@ -57,7 +61,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
                 .get();
 
         // Then
-        ResponseDto<FaReportSourceEnum[]> responseDto = response.readEntity(new GenericType<ResponseDto<FaReportSourceEnum[]>>() {});
+        ResponseDto<FaReportSourceEnum[]> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -67,7 +71,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_noSearchCriteria() throws IOException {
+    public void listActivityReportsByQuery_noSearchCriteria() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -81,7 +85,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         Response response = list(query);
 
         // Then
-        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -116,7 +120,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_multipleActivityTypes() throws IOException {
+    public void listActivityReportsByQuery_multipleActivityTypes() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -132,7 +136,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         Response response = list(query);
 
         // Then
-        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -149,7 +153,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_byReportId() throws IOException {
+    public void listActivityReportsByQuery_byReportId() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -161,7 +165,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         Response response = list(query);
 
         // Then
-        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -181,7 +185,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
 
         Response response2 = list(query2);
 
-        PaginatedResponse<FishingActivityReportDTO> responseDto2 = response2.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto2 = response2.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto2.getCode());
 
@@ -195,7 +199,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_byReportType() throws IOException {
+    public void listActivityReportsByQuery_byReportType() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -211,7 +215,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         Response response = list(query);
 
         // Then
-        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -227,7 +231,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_byReportType_withPagination() throws IOException {
+    public void listActivityReportsByQuery_byReportType_withPagination() {
         // Given
         FishingActivityQuery query1 = new FishingActivityQuery();
         FishingActivityQuery query2 = new FishingActivityQuery();
@@ -261,8 +265,8 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         Response response2 = list(query2);
 
         // Then
-        PaginatedResponse<FishingActivityReportDTO> responseDto1 = response1.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
-        PaginatedResponse<FishingActivityReportDTO> responseDto2 = response2.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto1 = response1.readEntity(new GenericType<>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto2 = response2.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto1.getCode());
         assertEquals(200, responseDto2.getCode());
@@ -280,7 +284,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_byPort() throws IOException {
+    public void listActivityReportsByQuery_byPort() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -296,7 +300,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         Response response = list(query);
 
         // Then
-        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -316,7 +320,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listActivityReportsByQuery_incorrectPurposeCode_expectNoResults() throws IOException {
+    public void listActivityReportsByQuery_incorrectPurposeCode_expectNoResults() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -328,7 +332,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         Response response = list(query);
 
         // Then
-        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -349,7 +353,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
      * TODO: still not working properly even though mock is working
      */
     @Test
-    public void listActivityReportsByQuery_withVesselId() throws IOException {
+    public void listActivityReportsByQuery_withVesselId() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -365,7 +369,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         Response response = list(query);
 
         // Then
-        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -374,7 +378,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void listFishingTripsByQuery() throws IOException {
+    public void listFishingTripsByQuery() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -393,7 +397,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
                 .post(Entity.json(query));
 
         // Then
-        ResponseDto<FishingTripResponse> responseDto = response.readEntity(new GenericType<ResponseDto<FishingTripResponse>>() {});
+        ResponseDto<FishingTripResponse> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -417,7 +421,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getAllCorrections_reportNotFound() throws IOException {
+    public void getAllCorrections_reportNotFound() {
         // When
         Response response = getWebTarget()
                 .path("fa")
@@ -429,7 +433,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
                 .get();
 
         // Then
-        ResponseDto<List<FaReportCorrectionDTO>> responseDto = response.readEntity(new GenericType<ResponseDto<List<FaReportCorrectionDTO>>>() {});
+        ResponseDto<List<FaReportCorrectionDTO>> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -439,7 +443,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getAllCorrections() throws IOException {
+    public void getAllCorrections() {
         // When
         Response response = getWebTarget()
                 .path("fa")
@@ -451,7 +455,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
                 .get();
 
         // Then
-        ResponseDto<List<FaReportCorrectionDTO>> responseDto = response.readEntity(new GenericType<ResponseDto<List<FaReportCorrectionDTO>>>() {});
+        ResponseDto<List<FaReportCorrectionDTO>> responseDto = response.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -479,7 +483,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getPreviousFishingActivity() throws IOException {
+    public void getPreviousFishingActivity() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -492,7 +496,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValues);
 
         Response response = list(query);
-        PaginatedResponse<FishingActivityReportDTO> activityListResponse = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> activityListResponse = response.readEntity(new GenericType<>() {});
 
         List<FishingActivityReportDTO> resultList = activityListResponse.getResultList();
         resultList.sort(Comparator.comparing(FishingActivityDTO::getOccurence));
@@ -511,7 +515,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
                 .get();
 
         // Then
-        ResponseDto<Integer> responseDto = response2.readEntity(new GenericType<ResponseDto<Integer>>() {});
+        ResponseDto<Integer> responseDto = response2.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
@@ -520,7 +524,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
     }
 
     @Test
-    public void getNextFishingActivity() throws IOException {
+    public void getNextFishingActivity() {
         // Given
         FishingActivityQuery query = new FishingActivityQuery();
 
@@ -534,7 +538,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
 
         Response response = list(query);
 
-        PaginatedResponse<FishingActivityReportDTO> activityListResponse = response.readEntity(new GenericType<PaginatedResponse<FishingActivityReportDTO>>() {});
+        PaginatedResponse<FishingActivityReportDTO> activityListResponse = response.readEntity(new GenericType<>() {});
 
         List<FishingActivityReportDTO> resultList = activityListResponse.getResultList();
         resultList.sort(Comparator.comparing(FishingActivityDTO::getOccurence));
@@ -552,7 +556,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
                 .get();
 
         // Then
-        ResponseDto<Integer> responseDto = response2.readEntity(new GenericType<ResponseDto<Integer>>() {});
+        ResponseDto<Integer> responseDto = response2.readEntity(new GenericType<>() {});
 
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
