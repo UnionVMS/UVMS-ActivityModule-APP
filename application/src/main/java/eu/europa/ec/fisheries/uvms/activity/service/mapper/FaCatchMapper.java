@@ -84,7 +84,6 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "calculatedUnitQuantity", ignore = true)
     @Mapping(target = "calculatedWeightMeasure", ignore = true)
     @Mapping(target = "presentation", ignore = true)
-    //TODO: Fix this
     @Mapping(target = "fishingTrip", expression = "java(getFishingTripEntity(faCatch.getRelatedFishingTrips()))")
     @Mapping(target = "gearTypeCode", ignore = true)
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);

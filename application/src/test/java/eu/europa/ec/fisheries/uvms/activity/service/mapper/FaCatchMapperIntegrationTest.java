@@ -60,8 +60,6 @@ public class FaCatchMapperIntegrationTest extends TransactionalTests {
         assertNotNull(faCatchEntity.getFishingTrip());
         FishingTripEntity fishingTripEntity = faCatchEntity.getFishingTrip();
         assertNotNull(fishingTripEntity);
-        // TODO: Makes no sense?
-        //assertFaCatchFields(faCatch, fishingTripEntity.getFaCatch());
 
         assertNotNull(faCatchEntity.getFluxCharacteristics());
         FluxCharacteristicEntity fluxCharacteristicEntity = faCatchEntity.getFluxCharacteristics().iterator().next();
