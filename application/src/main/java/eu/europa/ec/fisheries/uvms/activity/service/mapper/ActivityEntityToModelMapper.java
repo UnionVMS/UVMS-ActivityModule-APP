@@ -49,7 +49,7 @@ import static java.util.Collections.singletonList;
 @Slf4j
 
 @Mapper(componentModel = "cdi", unmappedTargetPolicy = ReportingPolicy.ERROR)
-public class ActivityEntityToModelMapper extends BaseMapper {
+public abstract class ActivityEntityToModelMapper extends BaseMapper {
 
     @Inject
     FishingGearMapper fishingGearMapper;
