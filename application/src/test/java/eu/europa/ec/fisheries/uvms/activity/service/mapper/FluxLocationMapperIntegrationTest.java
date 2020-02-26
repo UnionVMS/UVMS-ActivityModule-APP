@@ -30,12 +30,12 @@ import static org.junit.Assert.assertTrue;
 public class FluxLocationMapperIntegrationTest extends BaseActivityArquillianTest {
 
     @Inject
-    FluxLocationMapper LOCATION_MAPPER;
+    FluxLocationMapper locationMapper;
 
     @Test
     public void fluxLocationMapper() {
         FLUXLocation fluxLocation = MapperUtil.getFluxLocation();
-        FluxLocationEntity fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+        FluxLocationEntity fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
         assertEquals(fluxLocation.getTypeCode().getListID(), fluxLocationEntity.getTypeCodeListId());
         assertEquals(fluxLocation.getTypeCode().getValue(), fluxLocationEntity.getTypeCode().name());
         assertEquals(fluxLocation.getCountryID().getValue(), fluxLocationEntity.getCountryId());

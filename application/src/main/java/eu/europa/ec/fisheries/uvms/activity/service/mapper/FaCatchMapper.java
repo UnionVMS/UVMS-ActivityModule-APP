@@ -45,7 +45,7 @@ import java.util.*;
 public abstract class FaCatchMapper extends BaseMapper {
 
     @Inject
-    FluxLocationMapper LOCATION_MAPPER;
+    FluxLocationMapper locationMapper;
 
     @Inject
     AapStockMapper aapStockMapper;
@@ -203,7 +203,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
             FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
             if(fluxLocationEntity == null) {
-                fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+                fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
                 em.persist(fluxLocationEntity);
             }
             fluxLocationEntities.add(fluxLocationEntity);

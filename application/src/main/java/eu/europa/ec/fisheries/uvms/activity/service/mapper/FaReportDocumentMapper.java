@@ -28,7 +28,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLAPDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
@@ -50,7 +49,7 @@ import java.util.Set;
 public abstract class FaReportDocumentMapper extends BaseMapper {
 
     @Inject
-    FluxLocationMapper LOCATION_MAPPER;
+    FluxLocationMapper locationMapper;
 
     @Inject
     FishingGearMapper fishingGearMapper;
@@ -197,7 +196,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                 for (FLUXLocation specifiedFLUXLocation : Utils.safeIterable(specifiedFLUXLocations)) {
                     FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(specifiedFLUXLocation.getID());
                     if(fluxLocationEntity == null) {
-                        fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(specifiedFLUXLocation);
+                        fluxLocationEntity = locationMapper.mapToFluxLocationEntity(specifiedFLUXLocation);
                         em.persist(fluxLocationEntity);
                     }
                     fluxCharacteristicEntity.setFluxLocation(fluxLocationEntity);

@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public abstract class FishingActivityMapper {
 
     @Inject
-    FluxLocationMapper LOCATION_MAPPER;
+    FluxLocationMapper locationMapper;
     
     @Inject
     AapProcessMapper aapProcessMapper;
@@ -350,7 +350,7 @@ public abstract class FishingActivityMapper {
             } else {
                 FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
                 if(fluxLocationEntity == null) {
-                    fluxLocationEntity = LOCATION_MAPPER.mapToFluxLocationEntity(fluxLocation);
+                    fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
                     em.persist(fluxLocationEntity);
                 }
                 fluxLocationEntities.add(fluxLocationEntity);
