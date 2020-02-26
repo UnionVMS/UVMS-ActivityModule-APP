@@ -15,6 +15,7 @@
     <properties>
         <docker.dev.start.phase>test-compile</docker.dev.start.phase>
         <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
+        <docker.liquibase.phase>test-compile</docker.liquibase.phase>
     </properties>
 
     <dependencies>
