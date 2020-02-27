@@ -149,7 +149,7 @@
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
-					<descriptor>assembly.xml</descriptor>
+					<descriptors>assembly.xml</descriptors>
 					<finalName>${project.artifactId}</finalName>
 					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
