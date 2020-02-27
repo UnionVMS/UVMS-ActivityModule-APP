@@ -59,7 +59,7 @@
 
         <!-- Third-party dependency versions -->
         <mapstruct.version>1.3.1.Final</mapstruct.version>
-        <xmlunit-core.version>2.1.0</xmlunit-core.version>
+        <xmlunit-core.version>2.6.3</xmlunit-core.version>
         <apache.commons.lang3.version>3.9</apache.commons.lang3.version>
         <commons.io.version>2.6</commons.io.version>
         <lombok.version>1.18.12</lombok.version>
