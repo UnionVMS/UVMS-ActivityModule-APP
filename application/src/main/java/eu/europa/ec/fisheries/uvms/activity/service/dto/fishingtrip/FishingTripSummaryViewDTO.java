@@ -13,92 +13,90 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.List;
 import java.util.Map;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class FishingTripSummaryViewDTO {
 
-    @JsonProperty("fishingTripId")
+    @JsonbProperty("fishingTripId")
     private String fishingTripId;
 
-    @JsonProperty("summary")
+    @JsonbProperty("summary")
     private Map<String,FishingActivityTypeDTO> summary;
 
-    @JsonProperty("activityReports")
+    @JsonbProperty("activityReports")
     private List<ReportDTO> activityReports;
 
     private VesselDetailsDTO vesselDetails;
 
-    @JsonProperty("messagesCount")
+    @JsonbProperty("messagesCount")
     private MessageCountDTO messagesCount;
 
-    @JsonProperty("cronology")
+    @JsonbProperty("cronology")
     private List<CronologyDTO> cronology;
 
-    @JsonProperty("currentTripId")
+    @JsonbProperty("currentTripId")
     private String currentTripId;
 
-    @JsonProperty("fishingTripId")
+    @JsonbProperty("fishingTripId")
     public String getFishingTripId() {
         return fishingTripId;
     }
 
-    @JsonProperty("fishingTripId")
+    @JsonbProperty("fishingTripId")
     public void setFishingTripId(String fishingTripId) {
         this.fishingTripId = fishingTripId;
     }
 
-    @JsonProperty("activityReports")
+    @JsonbProperty("activityReports")
     public List<ReportDTO> getActivityReports() {
         return activityReports;
     }
 
-    @JsonProperty("activityReports")
+    @JsonbProperty("activityReports")
     public void setActivityReports(List<ReportDTO> activityReports) {
         this.activityReports = activityReports;
     }
 
-    @JsonProperty("messagesCount")
+    @JsonbProperty("messagesCount")
     public MessageCountDTO getMessagesCount() {
         return messagesCount;
     }
 
-    @JsonProperty("messagesCount")
+    @JsonbProperty("messagesCount")
     public void setMessagesCount(MessageCountDTO messagesCount) {
         this.messagesCount = messagesCount;
     }
 
-    @JsonProperty("cronology")
+    @JsonbProperty("cronology")
     public List<CronologyDTO> getCronology() {
         return cronology;
     }
 
-    @JsonProperty("cronology")
+    @JsonbProperty("cronology")
     public void setCronology(List<CronologyDTO> cronology) {
         this.cronology = cronology;
     }
 
-    @JsonProperty("currentTripId")
+    @JsonbProperty("currentTripId")
     public String getCurrentTripId() {
         return currentTripId;
     }
 
-    @JsonProperty("currentTripId")
+    @JsonbProperty("currentTripId")
     public void setCurrentTripId(String currentTripId) {
         this.currentTripId = currentTripId;
     }
 
-    @JsonProperty("summary")
+    @JsonbProperty("summary")
     public Map<String, FishingActivityTypeDTO> getSummary() {
         return summary;
     }
 
-    @JsonProperty("summary")
+    @JsonbProperty("summary")
     public void setSummary(Map<String, FishingActivityTypeDTO> summary) {
         this.summary = summary;
     }

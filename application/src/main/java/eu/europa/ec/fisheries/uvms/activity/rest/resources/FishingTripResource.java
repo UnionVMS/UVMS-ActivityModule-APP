@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
 import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
@@ -106,6 +107,17 @@ public class FishingTripResource extends UnionVMSResource {
         return createSuccessResponse(fishingTripService.retrieveFaCatchesForFishingTrip(fishingTripId));
     }
 
+//    @GET
+//    @Path("/mapData/{tripId}")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Interceptors(ActivityExceptionInterceptor.class)
+//    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
+//    public Response getTripMapData(@Context HttpServletRequest request,
+//                                   @Context HttpServletResponse response,
+//                                   @PathParam("tripId") String tripId) {
+//        return createSuccessResponse(fishingTripService.getTripMapDetailsForTripId(tripId));
+//    }
+
     @GET
     @Path("/catchevolution/{fishingTripId}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -115,6 +127,7 @@ public class FishingTripResource extends UnionVMSResource {
                                                  @Context HttpServletResponse response,
                                                  @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
         log.debug("Catch evolution for fishing trip: {}", fishingTripId);
-        return createSuccessResponse(fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId));
+        CatchEvolutionDTO data = fishingTripService.retrieveCatchEvolutionForFishingTrip(fishingTripId);
+        return createSuccessResponse(data);
     }
 }

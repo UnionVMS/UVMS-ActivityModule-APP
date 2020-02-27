@@ -11,17 +11,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details.VesselDetailsDTO;
 
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.List;
 import java.util.Set;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-@JsonInclude(NON_NULL)
 public class TripWidgetDto {
 
     private VesselDetailsDTO vesselDetails;
@@ -46,7 +42,7 @@ public class TripWidgetDto {
         this.trips = trips;
     }
 
-    @JsonProperty("authorizations")
+    @JsonbProperty("authorizations")
     public Set<FlapDocumentDto> getFlapDocuments() {
         return flapDocuments;
     }

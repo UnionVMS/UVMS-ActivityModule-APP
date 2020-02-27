@@ -1,16 +1,14 @@
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripWidgetDto;
 
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CatchEvolutionDTO {
-    @JsonProperty("catchProgress")
+    @JsonbProperty("catchProgress")
     private List<CatchEvolutionProgressDTO> catchEvolutionProgress;
-    @JsonProperty("tripDetails")
+    @JsonbProperty("tripDetails")
     private TripWidgetDto tripDetails;
 
     public List<CatchEvolutionProgressDTO> getCatchEvolutionProgress() {

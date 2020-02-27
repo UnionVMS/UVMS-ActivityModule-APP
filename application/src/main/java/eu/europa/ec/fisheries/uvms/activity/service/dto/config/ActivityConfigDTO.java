@@ -13,17 +13,13 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.config;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.json.bind.annotation.JsonbProperty;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_EMPTY)
 public class ActivityConfigDTO {
 
     private FishingActivityConfigDTO fishingActivityConfig;
 
-    @JsonProperty("catchThresholds")
+    @JsonbProperty("catchThresholds")
     private CatchThreshold catchThreshold = new CatchThreshold();
 
     public FishingActivityConfigDTO getFishingActivityConfig() {

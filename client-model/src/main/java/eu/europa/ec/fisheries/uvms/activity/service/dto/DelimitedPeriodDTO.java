@@ -13,27 +13,19 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
-@JsonInclude(NON_NULL)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class DelimitedPeriodDTO {
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date startDate;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
     private Date endDate;
 
     private Double duration;

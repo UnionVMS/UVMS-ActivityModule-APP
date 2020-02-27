@@ -46,7 +46,7 @@ public class FaReportDocumentMapperTest {
         FaReportCorrectionDTO faReportCorrectionDTO = faReportDocumentMapper.mapToFaReportCorrectionDto(faReportDocumentEntity);
 
         assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument_CreationDatetime().toEpochMilli(), faReportCorrectionDTO.getCreationDate().toInstant().toEpochMilli());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument_CreationDatetime().toEpochMilli(), faReportCorrectionDTO.getCreationDate().toEpochMilli());
 
         assertEquals(faReportDocumentEntity.getFluxReportDocument_Id(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
         assertEquals(faReportDocumentEntity.getFluxReportDocument_IdSchemeId(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getValue());
@@ -60,7 +60,7 @@ public class FaReportDocumentMapperTest {
         FaReportCorrectionDTO faReportCorrectionDTO = faReportCorrectionDTOs.get(0);
 
         assertEquals(faReportDocumentEntity.getStatus(), faReportCorrectionDTO.getCorrectionType());
-        assertEquals(faReportDocumentEntity.getFluxReportDocument_CreationDatetime().toEpochMilli(), faReportCorrectionDTO.getCreationDate().toInstant().toEpochMilli());
+        assertEquals(faReportDocumentEntity.getFluxReportDocument_CreationDatetime().toEpochMilli(), faReportCorrectionDTO.getCreationDate().toEpochMilli());
 
         assertEquals(faReportDocumentEntity.getFluxReportDocument_Id(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getKey());
         assertEquals(faReportDocumentEntity.getFluxReportDocument_IdSchemeId(), faReportCorrectionDTO.getFaReportIdentifiers().entrySet().iterator().next().getValue());

@@ -300,7 +300,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         if (activityEntity == null) {
             return null;
         }
-        log.info("FishingActivityEntity loaded from database. ID: {} TypeCode: {} Date: {}", activityEntity.getId(), activityEntity.getTypeCode(), DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        log.info("FishingActivityEntity loaded from database. ID: {} TypeCode: {} Date: {}", activityEntity.getId(), activityEntity.getTypeCode(), DateUtils.dateToHumanReadableString(activityEntity.getCalculatedStartTime()));
         return activityEntity;
     }
 }

@@ -13,58 +13,53 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityDTO;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.Date;
 import java.util.List;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ReportDTO extends FishingActivityDTO {
 
-    @JsonProperty("faReportAcceptedDateTime")
-    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonbProperty("faReportAcceptedDateTime")
     private Date faReportAcceptedDateTime;
 
-    @JsonProperty("faReportDocumentType")
+    @JsonbProperty("faReportDocumentType")
     private String faReportDocumentType;
 
-    @JsonProperty("locations")
+    @JsonbProperty("locations")
     private List<String> locations;
 
-    @JsonProperty("correction")
+    @JsonbProperty("correction")
     private boolean correction;
 
 
-    @JsonProperty("faReportDocumentType")
+    @JsonbProperty("faReportDocumentType")
     public String getFaReportDocumentType() {
         return faReportDocumentType;
     }
 
-    @JsonProperty("faReportDocumentType")
+    @JsonbProperty("faReportDocumentType")
     public void setFaReportDocumentType(String faReportDocumentType) {
         this.faReportDocumentType = faReportDocumentType;
     }
 
-    @JsonProperty("faReportAcceptedDateTime")
-   public Date getFaReportAcceptedDateTime() {
+    @JsonbProperty("faReportAcceptedDateTime")
+    public Date getFaReportAcceptedDateTime() {
         return faReportAcceptedDateTime;
     }
 
-    @JsonProperty("faReportAcceptedDateTime")
+    @JsonbProperty("faReportAcceptedDateTime")
     public void setFaReportAcceptedDateTime(Date faReportAcceptedDateTime) {
         this.faReportAcceptedDateTime = faReportAcceptedDateTime;
     }
 
-    @JsonProperty("correction")
+    @JsonbProperty("correction")
     public boolean isCorrection() {
         return correction;
     }
 
-    @JsonProperty("correction")
+    @JsonbProperty("correction")
     public void setCorrection(boolean correction) {
         this.correction = correction;
     }

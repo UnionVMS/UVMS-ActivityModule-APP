@@ -13,27 +13,22 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonInclude(NON_NULL)
 public class FilterFishingActivityReportResultDTO {
 
-    @JsonProperty("resultList")
+    @JsonbProperty("resultList")
     private List<FishingActivityReportDTO> resultList;
 
     private int totalCountOfRecords;
 
-    @JsonProperty("resultList")
+    @JsonbProperty("resultList")
     public List<FishingActivityReportDTO> getResultList() {
         return resultList;
     }
 
-    @JsonProperty("resultList")
+    @JsonbProperty("resultList")
     public void setResultList(List<FishingActivityReportDTO> resultList) {
         this.resultList = resultList;
     }

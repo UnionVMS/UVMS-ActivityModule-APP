@@ -11,21 +11,17 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-
 @ToString
 @EqualsAndHashCode
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonInclude(NON_NULL)
 public class GearDto {
 
     private String type;

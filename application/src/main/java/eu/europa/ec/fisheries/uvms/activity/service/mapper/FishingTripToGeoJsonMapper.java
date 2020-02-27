@@ -1,18 +1,13 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
-import org.geotools.feature.DefaultFeatureCollection;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.MultiPoint;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
-
-import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 public class FishingTripToGeoJsonMapper {
@@ -25,25 +20,25 @@ public class FishingTripToGeoJsonMapper {
     /**
      * Convert Geometry list into GEO JSON format
      */
-    public static ObjectNode toJson(List<Geometry> geoList)  {
-
-        ObjectNode rootNode=null;
-
-        DefaultFeatureCollection trips = new DefaultFeatureCollection(null, build());
-        for(Geometry geo :geoList){
-            SimpleFeature feature= toFeature(geo);
-            trips.add(feature);
-        }
-
-      try {
-          rootNode = new FeatureToGeoJsonJacksonMapper().convert(trips);
-        } catch (IOException e) {
-          log.error("Error while trying to convert fishing trips to Geo JSON",e);
-
-        }
-
-        return rootNode;
-    }
+//    public static ObjectNode toJson(List<Geometry> geoList)  {
+//
+//        ObjectNode rootNode=null;
+//
+//        DefaultFeatureCollection trips = new DefaultFeatureCollection(null, build());
+//        for(Geometry geo :geoList){
+//            SimpleFeature feature= toFeature(geo);
+//            trips.add(feature);
+//        }
+//
+//      try {
+//          rootNode = new FeatureToGeoJsonJacksonMapper().convert(trips);
+//        } catch (IOException e) {
+//          log.error("Error while trying to convert fishing trips to Geo JSON",e);
+//
+//        }
+//
+//        return rootNode;
+//    }
 
     // build simple Feature type
     private static SimpleFeatureType build() {

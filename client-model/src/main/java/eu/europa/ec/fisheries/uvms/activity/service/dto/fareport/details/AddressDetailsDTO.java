@@ -14,54 +14,50 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonInclude(Include.NON_NULL)
 public class AddressDetailsDTO {
 
-    @JsonIgnore
+    @JsonbTransient
     private String blockName;
 
-    @JsonIgnore
+    @JsonbTransient
     private String buildingName;
 
     private String cityName;
 
-    @JsonIgnore
+    @JsonbTransient
     private String citySubdivisionName;
 
-    @JsonProperty("countryName")
+    @JsonbProperty("countryName")
     private String countryName;
 
-    @JsonProperty("countryCode")
+    @JsonbProperty("countryCode")
     private String countryIDValue;
 
-    @JsonProperty("postCode")
+    @JsonbProperty("postCode")
     private String postalAreaValue;
 
-    @JsonIgnore
+    @JsonbTransient
     private String countrySubdivisionName;
 
-    @JsonIgnore
+    @JsonbTransient
     private String addressId;
 
     private String plotId;
 
-    @JsonIgnore
+    @JsonbTransient
     private String postOfficeBox;
 
     private String postcode;
@@ -172,7 +168,7 @@ public class AddressDetailsDTO {
         this.countryIDValue = countryIDValue;
     }
 
-    @JsonProperty("characteristics")
+    @JsonbProperty("characteristics")
     public Map<String, String> getCharacteristicsMap() {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("buildingName", buildingName);

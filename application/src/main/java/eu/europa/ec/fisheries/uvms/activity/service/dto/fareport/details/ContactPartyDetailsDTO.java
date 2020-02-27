@@ -13,17 +13,13 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.details;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.List;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include;
-
-@JsonInclude(Include.NON_EMPTY)
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -33,7 +29,7 @@ public class ContactPartyDetailsDTO {
 
     private ContactPersonDetailsDTO contactPerson;
 
-    @JsonProperty("structuredAddress")
+    @JsonbProperty("structuredAddress")
     private List<AddressDetailsDTO> structuredAddresses;
 
     public ContactPersonDetailsDTO getContactPerson() {

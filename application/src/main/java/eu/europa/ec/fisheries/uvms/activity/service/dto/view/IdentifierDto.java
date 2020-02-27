@@ -11,8 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,9 +18,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import javax.json.bind.annotation.JsonbProperty;
 
-@JsonInclude(NON_NULL)
 @EqualsAndHashCode
 @AllArgsConstructor
 @RequiredArgsConstructor
@@ -30,10 +27,10 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @ToString
 public class IdentifierDto {
 
-    @JsonProperty("id")
+    @JsonbProperty("id")
     private String faIdentifierId;
 
-    @JsonProperty("schemeId")
+    @JsonbProperty("schemeId")
     @NonNull
     private String faIdentifierSchemeId;
 

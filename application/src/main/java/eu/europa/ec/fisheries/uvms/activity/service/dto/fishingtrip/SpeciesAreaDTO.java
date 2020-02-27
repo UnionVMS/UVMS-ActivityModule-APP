@@ -12,16 +12,14 @@
  */
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.json.bind.annotation.JsonbProperty;
 
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class SpeciesAreaDTO {
 
-    @JsonProperty("areaName")
+    @JsonbProperty("areaName")
     private String areaName;
 
-    @JsonProperty("weight")
+    @JsonbProperty("weight")
     private Double weight;
 
     public SpeciesAreaDTO() {}

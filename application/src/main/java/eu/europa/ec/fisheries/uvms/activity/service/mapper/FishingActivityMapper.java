@@ -27,7 +27,7 @@ public abstract class FishingActivityMapper {
 
     @Inject
     FluxLocationMapper locationMapper;
-    
+
     @Inject
     AapProcessMapper aapProcessMapper;
 

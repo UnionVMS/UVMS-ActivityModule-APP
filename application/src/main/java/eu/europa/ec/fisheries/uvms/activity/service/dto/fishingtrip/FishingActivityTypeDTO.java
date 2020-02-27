@@ -13,39 +13,35 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
-
+import javax.json.bind.annotation.JsonbProperty;
 import java.util.Date;
 import java.util.List;
 
 public class FishingActivityTypeDTO {
 
-    @JsonProperty("date")
-    @JsonSerialize(using = CustomDateSerializer.class)
+    @JsonbProperty("date")
     private Date date;
 
-    @JsonProperty("locations")
+    @JsonbProperty("locations")
     private List<String> locations;
 
 
-    @JsonProperty("date")
+    @JsonbProperty("date")
     public Date getDate() {
         return date;
     }
 
-    @JsonProperty("date")
+    @JsonbProperty("date")
     public void setDate(Date date) {
         this.date = date;
     }
 
-    @JsonProperty("locations")
+    @JsonbProperty("locations")
     public List<String> getLocations() {
         return locations;
     }
 
-    @JsonProperty("locations")
+    @JsonbProperty("locations")
     public void setLocations(List<String> locations) {
         this.locations = locations;
     }
