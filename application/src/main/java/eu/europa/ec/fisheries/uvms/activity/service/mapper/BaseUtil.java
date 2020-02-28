@@ -9,6 +9,9 @@ import java.util.List;
 
 public abstract class BaseUtil {
 
+    private BaseUtil() {
+        // private constructor to prevent instantiation of util class
+    }
 
     public static String getLanguageIdFromList(List<TextType> textTypes) {
         if (CollectionUtils.isEmpty(textTypes)) {

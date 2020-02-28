@@ -15,6 +15,10 @@ public abstract class GeomUtil {
 
     public static final int DEFAULT_EPSG_SRID = 4326;
 
+    private GeomUtil() {
+        // private constructor to prevent instantiation of util class
+    }
+
     public static Point createPoint(Double longitude, Double latitude) {
         if(null == longitude || null == latitude){
             return null;
@@ -52,7 +56,7 @@ public abstract class GeomUtil {
         List<Coordinate> coordinates = new ArrayList<>();
         coordinates.add(point1.getCoordinate());
         coordinates.add(point2.getCoordinate());
-        line = geometryFactory.createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
+        line = geometryFactory.createLineString(coordinates.toArray(new Coordinate[0]));
         line.setSRID(DEFAULT_EPSG_SRID);
 
         return line;
@@ -67,7 +71,7 @@ public abstract class GeomUtil {
         for (Geometry geom : geometries) {
             coordinates.add(geom.getCoordinate());
         }
-        Geometry multiPoint = geometryFactory.createMultiPoint(coordinates.toArray(new Coordinate[coordinates.size()]));
+        Geometry multiPoint = geometryFactory.createMultiPointFromCoords(coordinates.toArray(new Coordinate[0]));
         multiPoint.setSRID(DEFAULT_EPSG_SRID);
         return multiPoint;
     }
