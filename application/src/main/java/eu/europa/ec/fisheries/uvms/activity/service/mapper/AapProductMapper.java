@@ -89,7 +89,7 @@ public abstract class AapProductMapper {
         Map<String, String> locations = new HashMap<>();
         for(FluxLocationEntity location : aapProduct.getAapProcess().getFaCatch().getLocations()) {
             if(location.getTypeCode().equals(FluxLocationEnum.AREA)) {
-                locations.put(location.getFluxLocationIdentifierSchemeId(), location.getFluxLocationIdentifier());;
+                locations.put(location.getFluxLocationIdentifierSchemeId(), location.getFluxLocationIdentifier());
             }
         }
         return locations;

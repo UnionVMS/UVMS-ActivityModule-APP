@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
@@ -37,12 +36,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselStorageCharacteristic;
 
 import javax.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -381,14 +388,6 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
         return new ArrayList<>(ports);
     }
 
-   private String extractFishingGearTypeCode(Set<FishingGearEntity> fishingGears) {
-        if (CollectionUtils.isNotEmpty(fishingGears)) {
-            FishingGearEntity fishingGearEntity = fishingGears.iterator().next();
-            return fishingGearEntity.getTypeCode();
-        }
-        return null;
-    }
-
     protected String getFishingTripId(FishingActivityEntity fishingActivityEntity) {
         if (fishingActivityEntity == null) {
             return null;
@@ -398,26 +397,6 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
         }
 
         return fishingActivityEntity.getFishingTrip().getFishingTripKey().getTripId();
-    }
-
-    protected VesselStorageCharacteristicsEntity getSourceVesselStorageCharacteristics(VesselStorageCharacteristic sourceVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
-        if (sourceVesselStorageChar == null) {
-            return null;
-        }
-        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity =
-                vesselStorageCharacteristicsMapper.mapToDestVesselStorageCharEntity(sourceVesselStorageChar);
-        vesselStorageCharacteristicsEntity.setFishingActivitiesForSourceVesselCharId(fishingActivityEntity);
-        return vesselStorageCharacteristicsEntity;
-    }
-
-    protected VesselStorageCharacteristicsEntity getDestVesselStorageCharacteristics(VesselStorageCharacteristic destVesselStorageChar, FishingActivityEntity fishingActivityEntity) {
-        if (destVesselStorageChar == null) {
-            return null;
-        }
-        VesselStorageCharacteristicsEntity vesselStorageCharacteristicsEntity =
-                vesselStorageCharacteristicsMapper.mapToDestVesselStorageCharEntity(destVesselStorageChar);
-        vesselStorageCharacteristicsEntity.setFishingActivitiesForDestVesselCharId(fishingActivityEntity);
-        return vesselStorageCharacteristicsEntity;
     }
 
     protected String getFlagState(FishingActivityEntity fishingActivity) {

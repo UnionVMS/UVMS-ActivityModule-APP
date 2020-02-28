@@ -21,9 +21,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.FishingTripS
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
-import java.util.List;
 import java.util.Map;
 
 public interface FishingTripService {

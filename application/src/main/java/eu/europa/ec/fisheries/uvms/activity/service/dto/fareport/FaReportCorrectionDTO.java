@@ -13,12 +13,9 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.fareport;
 
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-
 import javax.json.bind.annotation.JsonbProperty;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Date;
 import java.util.Map;
 
 public class FaReportCorrectionDTO implements Serializable, Comparable<FaReportCorrectionDTO> {

@@ -22,9 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.Stateless;
 import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import javax.transaction.Transactional;
-import java.io.IOException;
 
 @Stateless
 @Transactional

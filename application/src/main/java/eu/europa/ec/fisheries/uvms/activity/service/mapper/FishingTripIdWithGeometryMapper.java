@@ -40,8 +40,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil;
-
 import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.createMultipoint;
 
 @Slf4j

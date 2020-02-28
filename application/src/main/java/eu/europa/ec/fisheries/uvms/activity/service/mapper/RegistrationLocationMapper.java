@@ -15,7 +15,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEnti
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.RegistrationLocation;
 
 @Mapper(componentModel = "cdi", imports = BaseMapper.class,

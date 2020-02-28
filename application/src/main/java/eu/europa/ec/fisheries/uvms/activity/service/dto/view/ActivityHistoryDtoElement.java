@@ -12,7 +12,6 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.dto.view;
 
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.Data;
 
 import java.util.Date;

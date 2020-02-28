@@ -83,7 +83,6 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         FishingActivityQuery fishingActivityQuery = fishingActivityQueryWithStringMaps.convert();
 
-        String username = request.getRemoteUser();
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery);
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }
