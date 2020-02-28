@@ -49,7 +49,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
     RegistrationEventMapper registrationEventMapper;
 
     @Inject
-    VesselTransportMeansMapper vesselTransportMeansMapper;
+    VesselTransportMeansMapper vesselTransportMeansMapperImpl;
 
     @Mapping(target = "roleCode", source = "roleCode.value")
     @Mapping(target = "roleCodeListId", source = "roleCode.listID")
@@ -123,7 +123,7 @@ public abstract class VesselTransportMeansMapper extends BaseMapper {
         }
         Set<VesselIdentifierEntity> vesselIdentifierEntities = new HashSet<>();
         for (IDType idType : idTypes) {
-            VesselIdentifierEntity vesselIdentifierEntity = vesselTransportMeansMapper.mapToVesselIdentifierEntity(idType);
+            VesselIdentifierEntity vesselIdentifierEntity = vesselTransportMeansMapperImpl.mapToVesselIdentifierEntity(idType);
             vesselIdentifierEntity.setVesselTransportMeans(vesselTransportMeansEntity);
             vesselIdentifierEntities.add(vesselIdentifierEntity);
         }

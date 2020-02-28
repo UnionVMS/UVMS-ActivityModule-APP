@@ -47,7 +47,7 @@ import static eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil.createM
 public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
 
     @Inject
-    FishingTripIdWithGeometryMapper fishingTripIdWithGeometryMapper;
+    FishingTripIdWithGeometryMapper fishingTripIdWithGeometryMapperImpl;
 
     public FishingTripIdWithGeometry mapToFishingTripIdWithDetails(FishingTripId dto, List<FishingActivityEntity> fishingActivities) {
         FishingTripIdWithGeometry fishingTripIdWithGeometry = new FishingTripIdWithGeometry();
@@ -213,7 +213,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         }
 
         Optional<Instant> tripStartDate = getCalculatedStartTimeForFishingActivity(fishingActivities, FishingActivityTypeEnum.DEPARTURE);
-        return tripStartDate.map(fishingTripIdWithGeometryMapper::convertToXMLGregorianCalendar).orElse(null);
+        return tripStartDate.map(fishingTripIdWithGeometryMapperImpl::convertToXMLGregorianCalendar).orElse(null);
 
     }
 
@@ -223,7 +223,7 @@ public abstract class FishingTripIdWithGeometryMapper extends BaseMapper {
         }
 
         Optional<Instant> tripEndDate = getCalculatedStartTimeForFishingActivity(fishingActivities, FishingActivityTypeEnum.ARRIVAL);
-        return tripEndDate.map(fishingTripIdWithGeometryMapper::convertToXMLGregorianCalendar).orElse(null);
+        return tripEndDate.map(fishingTripIdWithGeometryMapperImpl::convertToXMLGregorianCalendar).orElse(null);
 
     }
 
