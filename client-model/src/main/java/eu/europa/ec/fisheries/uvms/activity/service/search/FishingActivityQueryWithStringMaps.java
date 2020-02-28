@@ -13,6 +13,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.search;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +42,11 @@ public class FishingActivityQueryWithStringMaps {
         fishingActivityQuery.setOffset(offset);
         fishingActivityQuery.setPageSize(pageSize);
 
-        Map<SearchFilter, String> enumSearchCriteriaMap = new HashMap<>();
+        Map<SearchFilter, String> enumSearchCriteriaMap = new EnumMap<>(SearchFilter.class);
         searchCriteriaMap.forEach((s, s2) -> enumSearchCriteriaMap.put(SearchFilter.fromValue(s), s2));
         fishingActivityQuery.setSearchCriteriaMap(enumSearchCriteriaMap);
 
-        Map<SearchFilter, List<String>> enumSearchCriteriaMapMultipleValues = new HashMap<>();
+        Map<SearchFilter, List<String>> enumSearchCriteriaMapMultipleValues = new EnumMap<>(SearchFilter.class);
         searchCriteriaMapMultipleValues.forEach((s, s2) -> enumSearchCriteriaMapMultipleValues.put(SearchFilter.fromValue(s), s2));
         fishingActivityQuery.setSearchCriteriaMapMultipleValues(enumSearchCriteriaMapMultipleValues);
 
