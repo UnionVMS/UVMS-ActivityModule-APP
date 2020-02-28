@@ -14,26 +14,19 @@ import eu.europa.ec.fisheries.uvms.activity.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
-import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.jboss.arquillian.junit.Arquillian;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.w3c.dom.Node;
 import org.xmlunit.builder.DiffBuilder;
-import org.xmlunit.diff.*;
+import org.xmlunit.diff.DefaultNodeMatcher;
+import org.xmlunit.diff.Diff;
+import org.xmlunit.diff.ElementSelectors;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 
 import javax.inject.Inject;
-import javax.naming.NamingException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.SystemException;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,20 +41,11 @@ import static junit.framework.TestCase.assertFalse;
 @RunWith(Arquillian.class)
 public class ActivityEntityToModelMapperIntegrationTest extends TransactionalTests {
 
-    private Unmarshaller unmarshaller;
-
     @Inject
     FluxFaReportMessageMapper fluxFaReportMessageMapper;
     
     @Inject
     ActivityEntityToModelMapper activityEntityToModelMapper;
-
-    @Before
-    public void setUp() throws NamingException, ServiceException, JAXBException, IOException, SystemException, NotSupportedException {
-        super.setUp();
-        JAXBContext context = JAXBContext.newInstance(FLUXFAReportMessage.class);
-        unmarshaller = context.createUnmarshaller();
-    }
 
     @Test
     public void testMapToFLUXFAReportMessage() throws Exception {
@@ -144,12 +128,6 @@ public class ActivityEntityToModelMapperIntegrationTest extends TransactionalTes
     private FAReportDocument getFirstElement(FLUXFAReportMessage source) {
         return source.getFAReportDocuments().get(0);
     }
-
-    private FLUXFAReportMessage sourceToEntity(String resource) throws JAXBException, IOException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(resource);
-        return (FLUXFAReportMessage) unmarshaller.unmarshal(is);
-    }
-
 
     private FLUXFAReportMessage getMessageFromTestResource(String fileName) throws IOException, JAXBException {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();

@@ -24,10 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.FishingActivityConfigDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.SummaryReportDTO;
-import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.io.ParseException;
-import org.locationtech.jts.io.WKTReader;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
@@ -77,7 +73,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -85,11 +80,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MapperUtil {
-
-    private static WKTReader wktReader = new WKTReader();
 
     public static ActivityConfigDTO getSourceActivityConfigDTO() {
         ActivityConfigDTO activityConfigDTO = new ActivityConfigDTO();
@@ -116,13 +108,6 @@ public class MapperUtil {
 
     public static FishingActivityEntity getFishingActivityEntity() {
           return new FishingActivityEntity();
-    }
-
-    public static Set<FishingTripId> getFishingTripIdSet() {
-        Set<FishingTripId> fishingTripIdSet = new HashSet<>();
-        fishingTripIdSet.add(new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID"));
-        fishingTripIdSet.add(new FishingTripId("NOR-ABC-20160517234053706","EU_TRIP_ID"));
-        return fishingTripIdSet;
     }
 
     public static FishingTripEntity getFishingTripEntity() {
@@ -169,80 +154,6 @@ public class MapperUtil {
         entity.setCalculatedTripEndDate(Instant.parse("2016-01-12T00:00:00Z"));
         entity.setCalculatedTripStartDate(Instant.parse("2013-01-12T00:00:00Z"));
         return entity;
-    }
-
-    public static List<FishingActivityEntity> getFishingActivityEntityList() {
-        VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
-        VesselTransportMeansEntity vesselTransportMeansEntity2= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup2", null);
-        VesselTransportMeansEntity vesselTransportMeansEntity3= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup3", null);
-
-        FaReportDocumentEntity faReportDocumentEntity1 = ActivityDataUtil.getFaReportDocumentEntity(
-                "Declaration",
-                "FLUX_FA_REPORT_TYPE",
-                parseDate("2016-06-27 07:47:31"),
-                vesselTransportMeansEntity1,
-                FaReportStatusType.NEW);
-
-        ActivityDataUtil.addFluxReportFieldsToFaReportDocumentEntity(
-                faReportDocumentEntity1,
-                "FLUX_REPORT_DOCUMENT1",
-                null,
-                parseDate("2016-06-27 07:47:31"),
-                "PURPOSE",
-                "PURPOSE_CODE_LIST",
-                null,
-                "OWNER_FLUX_ID1",
-                "flux1"
-        );
-
-        FaReportDocumentEntity faReportDocumentEntity2 = ActivityDataUtil.getFaReportDocumentEntity(
-                "Declaration" ,
-                "FLUX_FA_REPORT_TYPE",
-                parseDate("2015-06-27 07:47:31"),
-                vesselTransportMeansEntity2,
-                FaReportStatusType.NEW);
-
-        ActivityDataUtil.addFluxReportFieldsToFaReportDocumentEntity(
-                faReportDocumentEntity1,
-                "FLUX_REPORT_DOCUMENT2",
-                null,
-                parseDate("2016-06-27 07:47:31"),
-                "PURPOSE",
-                "PURPOSE_CODE_LIST",
-                null,
-                "OWNER_FLUX_ID2",
-                "flux2"
-        );
-
-        FaReportDocumentEntity faReportDocumentEntity3 = ActivityDataUtil.getFaReportDocumentEntity(
-                "Declaration",
-                "FLUX_FA_REPORT_TYPE",
-                parseDate("2015-06-27 07:47:31"),
-                vesselTransportMeansEntity3,
-                FaReportStatusType.NEW);
-
-        ActivityDataUtil.addFluxReportFieldsToFaReportDocumentEntity(
-                faReportDocumentEntity1,
-                "FLUX_REPORT_DOCUMENT3",
-                null,
-                parseDate("2016-06-27 07:47:31"),
-                "PURPOSE",
-                "PURPOSE_CODE_LIST",
-                null,
-                "OWNER_FLUX_ID3",
-                "flux3"
-        );
-
-        FishingActivityEntity fishingActivityEntity1= ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE", parseDate("2014-05-27 07:47:31"), "FISHING", "FIS", faReportDocumentEntity1, null);
-        FishingActivityEntity fishingActivityEntity2= ActivityDataUtil.getFishingActivityEntity("ARRIVAL", "FLUX_FA_TYPE" , parseDate("2014-05-27 07:47:31"), "FISHING", "FIS",faReportDocumentEntity2,null);
-        FishingActivityEntity fishingActivityEntity3= ActivityDataUtil.getFishingActivityEntity("LANDING", "FLUX_FA_TYPE", parseDate("2014-05-27 07:47:31"), "FISHING", "FIS", faReportDocumentEntity3, null);
-
-        List<FishingActivityEntity> fishingActivityEntityList = new ArrayList<>();
-        fishingActivityEntityList.add(fishingActivityEntity1);
-        fishingActivityEntityList.add(fishingActivityEntity2);
-        fishingActivityEntityList.add(fishingActivityEntity3);
-
-        return fishingActivityEntityList;
     }
 
     public static Instant parseDate(String dateStr) {
@@ -710,34 +621,5 @@ public class MapperUtil {
         measureType.setUnitCode(unitCode);
         measureType.setUnitCodeListVersionID(listId);
         return measureType;
-    }
-
-    public static List<Object[]> getFaCaches() {
-
-        Object[] faCatch_1 = new Object[4];
-        Object[] faCatch_2 = new Object[4];
-        Object[] faCatch_3 = new Object[4];
-        Object[] faCatch_4 = new Object[4];
-
-        faCatch_1[0] = "UNLOADED";
-        faCatch_2[0] = "UNLOADED";
-        faCatch_3[0] = "ONBOARD";
-        faCatch_4[0] = "KEPT_IN_NET";
-
-        faCatch_1[1] = "BEAGLE";
-        faCatch_2[1] = "SEAFOOD";
-        faCatch_3[1] = "BEAGLE";
-        faCatch_4[1] = "BEAGLE";
-
-        faCatch_1[2] = "J";
-        faCatch_2[2] = "27.7.j";
-        faCatch_3[2] = "IRL";
-
-        faCatch_1[3] = 50.1;
-        faCatch_2[3] = 100.1;
-        faCatch_3[3] = 100.1;
-        faCatch_4[3] = 150.1;
-
-        return new ArrayList<>(Arrays.asList(faCatch_1, faCatch_2, faCatch_3, faCatch_3));
     }
 }
