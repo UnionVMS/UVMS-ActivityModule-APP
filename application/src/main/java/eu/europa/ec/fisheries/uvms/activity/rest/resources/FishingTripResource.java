@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
@@ -47,9 +46,6 @@ public class FishingTripResource extends UnionVMSResource {
 
     @EJB
     private FishingTripService fishingTripService;
-
-    @EJB
-    private USMService usmService;
 
     @GET
     @Path("/reports/{fishingTripId}")
