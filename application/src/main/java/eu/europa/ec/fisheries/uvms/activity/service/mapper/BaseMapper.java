@@ -19,14 +19,10 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.GearDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.RelatedReportDto;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
-import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -50,7 +46,18 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -60,9 +67,6 @@ public class BaseMapper {
 
     @Inject
     RegistrationLocationMapper registrationLocationMapper;
-
-    @Inject
-    VesselIdentifierMapper vesselIdentifierMapper;
 
     protected static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateUtils.DATE_TIME_UI_FORMAT, Locale.ROOT).withZone(ZoneId.of("UTC"));
 
@@ -78,41 +82,6 @@ public class BaseMapper {
         registrationLocationEntity.setRegistrationEvent(registrationEventEntity);
         return registrationLocationEntity;
     }
-
-    public List<AssetListCriteriaPair> mapToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet) {
-        List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
-        for (AssetIdentifierDto identifierDto : identifierDtoSet) {
-            AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-            ConfigSearchField key = vesselIdentifierMapper.map(identifierSchemeId);
-            String identifierId = identifierDto.getFaIdentifierId();
-
-            if (key != null && identifierId != null) {
-                criteriaPair.setKey(key);
-                criteriaPair.setValue(identifierId);
-                criteriaList.add(criteriaPair);
-            }
-        }
-        return criteriaList;
-    }
-
-    public List<AssetListCriteriaPair> mapMdrCodeListToAssetListCriteriaPairList(Set<AssetIdentifierDto> identifierDtoSet, List<String> vesselIdentifierSchemeList) {
-        List<AssetListCriteriaPair> criteriaList = new ArrayList<>();
-        for (AssetIdentifierDto identifierDto : Utils.safeIterable(identifierDtoSet)) {
-            VesselIdentifierSchemeIdEnum identifierSchemeId = identifierDto.getIdentifierSchemeId();
-            ConfigSearchField keyFromDto = vesselIdentifierMapper.map(identifierSchemeId);
-
-            if (null != identifierSchemeId && null != keyFromDto && vesselIdentifierSchemeList.contains(keyFromDto.name())) {
-                String identifierId = identifierDto.getFaIdentifierId();
-                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
-                criteriaPair.setKey(ConfigSearchField.fromValue(identifierSchemeId.name()));
-                criteriaPair.setValue(identifierId);
-                criteriaList.add(criteriaPair);
-            }
-        }
-        return criteriaList;
-    }
-
 
     private String getIdType(IDType idType) {
         return (idType == null) ? null : idType.getValue();
