@@ -37,7 +37,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import javax.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -57,9 +56,6 @@ import java.util.stream.Collectors;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 @Slf4j
 public abstract class FishingActivityUtilsMapper extends BaseMapper {
-
-    @Inject
-    VesselStorageCharacteristicsMapper vesselStorageCharacteristicsMapper;
 
     @Mapping(target = "fishingActivityId", source = "id")
     @Mapping(target = "uniqueFAReportId", expression = "java(getUniqueId(entity))")
