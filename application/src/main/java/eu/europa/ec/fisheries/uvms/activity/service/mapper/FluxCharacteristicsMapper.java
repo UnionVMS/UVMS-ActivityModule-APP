@@ -54,7 +54,4 @@ public abstract class FluxCharacteristicsMapper extends BaseMapper {
     @Mapping(target = "specifiedFLUXLocations", ignore = true)
     @Mapping(target = "relatedFLAPDocuments", ignore = true)
     public abstract FLUXCharacteristic mapToFLUXCharacteristic(FluxCharacteristicEntity fluxCharacteristicEntity);
-
-    public abstract FluxCharacteristicsDto mapToFluxCharacteristicsDto(FluxCharacteristicEntity fluxCharacteristicEntity);
-
 }

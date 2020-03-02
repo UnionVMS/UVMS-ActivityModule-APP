@@ -57,7 +57,4 @@ public abstract class StructuredAddressMapper {
     public abstract List<StructuredAddress> mapToStructuredAddressList(Set<StructuredAddressEntity> structuredAddress);
 
     public abstract AddressDetailsDTO mapToAddressDetailsDTO(StructuredAddressEntity structuredAddressEntity);
-
-    public abstract Set<AddressDetailsDTO> mapToAddressDetailsDTOList(Set<StructuredAddressEntity> structuredAddressEntities);
-
 }
