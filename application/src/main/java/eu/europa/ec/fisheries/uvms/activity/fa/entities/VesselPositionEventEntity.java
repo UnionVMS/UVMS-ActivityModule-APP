@@ -29,8 +29,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Date;
-import java.util.Optional;
 
 @Entity
 @Table(name = "activity_vessel_position_event")
@@ -71,12 +69,4 @@ public class VesselPositionEventEntity implements Serializable {
 
     @Column(name = "geom", columnDefinition = "Geometry")
     private Geometry geom;
-
-    public Optional<Date> getObtainedOccurrenceAsDate() {
-        if (obtainedOccurrenceDateTime == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(Date.from(obtainedOccurrenceDateTime));
-    }
 }
