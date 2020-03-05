@@ -19,11 +19,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * Created by sanera on 06/09/2016.
@@ -37,21 +36,12 @@ public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
         super.prepare();
     }
 
-    @Test
-    @SneakyThrows
-    public void testGetCurrentTrip() throws Exception {
-        dbSetupTracker.skipNextLaunch();
-        FishingTripIdentifierEntity fishingTrip = dao.getCurrentTrip("CFR123", "CFR");
-        assertNotNull(fishingTrip);
-        assertEquals(fishingTrip.getTripId(), "NOR-TRP-20160517234053706");
-        assertEquals(fishingTrip.getTripSchemeId(), "EU_TRIP_ID");
-    }
 
     @Test
     @SneakyThrows
     public void testGetPreviousTrips() throws Exception {
         dbSetupTracker.skipNextLaunch();
-        List<FishingTripIdentifierEntity> previousTrips = dao.getPreviousTrips("CFR123", "CFR", "NOR-TRP-20160517234053705", 5);
+        List<CronologyData> previousTrips = dao.getPreviousTrips("AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG", java.sql.Date.valueOf("2020-03-06"), 5).collect(Collectors.toList());
         assertNotNull(previousTrips);
         assertNotEquals(0, previousTrips.size());
     }
@@ -60,16 +50,9 @@ public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
     @SneakyThrows
     public void testGetNextTrips() throws Exception {
         dbSetupTracker.skipNextLaunch();
-        List<FishingTripIdentifierEntity> nextTrips = dao.getNextTrips("EXT_MARK123", "EXT_MARK", "NOR-TRP-20160517234053705", 5);
+        List<CronologyData> nextTrips = dao.getNextTrips("AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG", java.sql.Date.valueOf("2020-03-06"), 5).collect(Collectors.toList());
         assertNotNull(nextTrips);
         assertNotEquals(0, nextTrips.size());
     }
 
-    @Test
-    @SneakyThrows
-    public void testGetCurrentTripNullReturn() throws Exception {
-        dbSetupTracker.skipNextLaunch();
-        FishingTripIdentifierEntity fishingTrip = dao.getCurrentTrip("SOME-NON-EXISTENT-VAL", "SOME-NON-EXISTENT-VAL");
-        assertNull(fishingTrip);
-    }
 }

@@ -131,6 +131,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .values(4, "JFO", "EU_TRIP_ID", 4, 4)
                     .values(5, "JFO", "EU_TRIP_ID", 5, 5)
                     .values(6, "JFO", "EU_TRIP_ID", 6, 6)
+                    .values(7, "JFO", "EU_TRIP_ID", null, 11)
+                    .values(8, "JFO", "EU_TRIP_ID", null, 12)
                     .build()
 
     );
@@ -143,6 +145,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .values(4, 4, "NOR-TRP-20160517234053705", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
                     .values(5, 5, "NOR-TRP-20160517234053707", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
                     .values(6, 6, "NOR-TRP-20160517234053708", "EU_TRIP_ID","2016-03-17 19:09:00","2017-05-13 11:00:00")
+                    .values(7, 7, "NOR-TRP-20200305111500000", "EU_TRIP_ID","2020-03-05 11:15:00","2020-03-07 11:00:00")
+                    .values(8, 8, "NOR-TRP-20200307111500000", "EU_TRIP_ID","2020-03-07 11:15:00","2020-03-09 11:00:00")
                     .build()
 
     );
@@ -196,6 +200,10 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,null,"AS1222","NLD","2017-03-29 00:00:00")
                     .values(10, "JOINT_FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2011-12-12"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
                             "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 4,9,"AS1222","NLD","2017-03-29 00:00:00")
+                    .values(11, "JOINT_FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2020-03-05"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 8, null,"AS1222","NLD","2020-03-05 11:15:00")
+                    .values(12, "JOINT_FISHING_OPERATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2020-03-07"), "REASONCODE", "REASON_CODE_LIST", "VESSEL_ACTIVITY", "VESSEL_CODE_LIST",
+                            "FISHERY_CODE", "FISHERY_CODE_LIST", "SPECIES_CODE", "SPECIES_CODE_LIST", 23, "C62", 23.00, 11.20, "C62", 11.20, null, null, 9, null,"AS1222","NLD","2020-03-06 11:15:00")
                     .build()
 
     );
@@ -318,6 +326,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .values(5, "OWNER_NAME5", "EN")
                     .values(6, "OWNER_NAME5", "EN")
                     .values(7, "OWNER_NAME5", "EN")
+                    .values(8, "OWNER_NAME6", "EN")
+                    .values(9, "OWNER_NAME9", "EN")
                     .build()
     );
     protected static final Operation INSERT_ERS_FLUX_PARTY_IDENTIFIER_DATA = sequenceOf(
@@ -344,6 +354,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .values(5, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 5, 5)
                     .values(6, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 6, 6)
                     .values(7, null, "2016-06-27 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 7, 7)
+                    .values(8, null, "2020-03-05 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 8, 8)
+                    .values(9, null, "2020-03-07 07:47:31.711", "9", "PURPOSE_CODE_LIST", null, 9, 9)
                     .build()
     );
     protected static final Operation INSERT_ERS_FLUX_REPORT_IDENTIFIER_DATA = sequenceOf(
@@ -370,6 +382,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .values(5, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111",5,5)
                     .values(6, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111",6,6)
                     .values(7, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AC1111",7,7)
+                    .values(8, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG",11,8)
+                    .values(9, "ROLE_CODE", "LIST_ID", "vessel4", null, "TERRITORY", "FRA","AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG",12,9)
                     .build()
     );
     protected static final Operation INSERT_ERS_VESSEL_IDENTIFIERS_DATA = sequenceOf(
@@ -471,6 +485,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .values(5, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 5, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
                     .values(6, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 6, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
                     .values(7, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2015-10-08"), 7, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
+                    .values(8, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2020-03-05"), 7, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
+                    .values(9, "NOTIFICATION", "FLUX_LOCATION_TYPE", java.sql.Date.valueOf("2020-03-06"), 8, "fmc", "fmc_list", FaReportStatusType.NEW, "FLUX", 1)
                     .build()
     );
     protected static final Operation INSERT_FLUX_FA_REPORT_MESSAGE_DATA = sequenceOf(
@@ -483,6 +499,8 @@ public abstract class BaseErsFaDaoTest extends BaseDAOTest {
                     .values(5)
                     .values(6)
                     .values(7)
+                    .values(8)
+                    .values(9)
                     .build()
     );
     protected static final Operation INSERT_FLUX_CHARACTERISTIC = sequenceOf(
