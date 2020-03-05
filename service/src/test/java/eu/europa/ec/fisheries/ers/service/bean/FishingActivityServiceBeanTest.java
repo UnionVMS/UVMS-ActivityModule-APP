@@ -136,7 +136,7 @@ public class FishingActivityServiceBeanTest {
     @SneakyThrows
     public void getFishingActivityReportAndRelatedDataForFishingTrip() throws ServiceException {
         when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null)).thenReturn(MapperUtil.getFishingActivityEntityList());
-        when(vesselIdentifiersDao.getLatestVesselIdByTrip(Mockito.anyString())).thenReturn(MapperUtil.getVesselIdentifiersList());
+        when(vesselIdentifiersDao.getLatestVesselIdByTrip(Mockito.anyString())).thenReturn("97fbdcf8-45ea-11e7-bec7-4c32759615eb");
     }
 
     @Test

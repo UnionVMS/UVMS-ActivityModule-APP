@@ -102,6 +102,13 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         }
     };
 
+    private static final Comparator<FishingActivityEntity> BY_ACCEPTED_DATE_TIME = new Comparator<FishingActivityEntity>() {
+        @Override
+        public int compare(FishingActivityEntity o1, FishingActivityEntity o2) {
+            return o1.getFaReportDocument().getAcceptedDatetime().compareTo(o2.getFaReportDocument().getAcceptedDatetime());
+        }
+    };
+
     private EntityManager em;
 
     public FishingActivityDao(EntityManager em) {
@@ -234,7 +241,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         if (multipolgon != null)
             query.setParameter("area", multipolgon);
         List<FishingActivityEntity> results = query.getResultList();
-        results.sort(BY_ACTIVITY_TYPE.thenComparing(activity -> activity.getFaReportDocument().getAcceptedDatetime()));
+        results.sort(BY_ACCEPTED_DATE_TIME.thenComparing(BY_ACTIVITY_TYPE));
         return results;
     }
 

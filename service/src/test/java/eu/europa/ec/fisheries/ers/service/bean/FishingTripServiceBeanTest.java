@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,8 +37,8 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.entities.CronologyData;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
@@ -49,10 +50,10 @@ import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.SneakyThrows;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -132,15 +133,14 @@ public class FishingTripServiceBeanTest {
     public void getCronologyOfFishingTrip_limitedRecordsFound() {
 
         //Mock the Dao
-        doReturn(getVesselIdentifiers()).when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
-        FishingTripIdentifierEntity fishingTripIdentifierEntity = getCurrentTrip();
-        doReturn(fishingTripIdentifierEntity).when(fishingTripIdentifierDao).getCurrentTrip(any(String.class), any(String.class));
-        List<FishingTripIdentifierEntity> previousTrips = getPreviousTrips(5);
-        doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(String.class), any(String.class), any(Integer.class));
-        List<FishingTripIdentifierEntity> nextTrips = getNextTrips(5);
-        doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(String.class), any(String.class), any(Integer.class));
-        List<FishingActivityEntity> fishingActivityEntityList = getFishingActivityEntityList();
-        doReturn(fishingActivityEntityList).when(fishingActivityDao).getFishingActivityListByQuery(any(FishingActivityQuery.class));
+        doReturn("XXX-XXXXX-XXXXX").when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
+        Stream<CronologyData> previousTrips = getPreviousTrips();
+        doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(Date.class), any(Integer.class));
+        Stream<CronologyData> nextTrips = getNextTrips();
+        doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getPreviousConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
+        doReturn(DateUtils.stringToDate("2019-03-09 14:39:00 +0000")).when(fishingTripIdentifierDao).getSelectedTripStartDate(any(String.class));
 
         //Trigger
         String selectedTrip = "selected Trip";
@@ -148,60 +148,57 @@ public class FishingTripServiceBeanTest {
 
         //Assert
         assertEquals(selectedTrip, cronology.getSelectedTrip().getTripId());
-        assertEquals(fishingTripIdentifierEntity.getTripId(), cronology.getCurrentTrip().getTripId());
-        List<String> previousIds = getIds(previousTrips);
-        assertEquals(previousIds.subList(3, previousIds.size()), cronology.getPreviousTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
-        List<String> nextIds = getIds(nextTrips);
-        assertEquals(nextIds.subList(0, 2), cronology.getNextTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
+        List<String> previousIds = getIds(getPreviousTrips());
+        assertEquals(previousIds.subList(0, cronology.getPreviousTrips().size()), cronology.getPreviousTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
+        List<String> nextIds = getIds(getNextTrips());
+        Collections.reverse(nextIds);
+        assertEquals(nextIds.subList(3, nextIds.size()), cronology.getNextTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
     }
 
     @Test
     @SneakyThrows
     public void getCronologyOfFishingTrip_OnlyPrevious() {
+
         //Mock the Dao
-        doReturn(getVesselIdentifiers()).when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
-        FishingTripIdentifierEntity fishingTripIdentifierEntity = getCurrentTrip();
-        doReturn(fishingTripIdentifierEntity).when(fishingTripIdentifierDao).getCurrentTrip(any(String.class), any(String.class));
-        List<FishingTripIdentifierEntity> previousTrips = getPreviousTrips(2);
-        doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(String.class), any(String.class), any(Integer.class));
-        List<FishingTripIdentifierEntity> nextTrips = getNextTrips(2);
-        doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(String.class), any(String.class), any(Integer.class));
-        List<FishingActivityEntity> fishingActivityEntityList = getFishingActivityEntityList();
-        doReturn(fishingActivityEntityList).when(fishingActivityDao).getFishingActivityListByQuery(any(FishingActivityQuery.class));
+        doReturn("XXX-XXXXX-XXXXX").when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
+        Stream<CronologyData> previousTrips = getPreviousTrips();
+        doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getPreviousConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
+        doReturn(DateUtils.stringToDate("2019-03-09 14:39:00 +0000")).when(fishingTripIdentifierDao).getSelectedTripStartDate(any(String.class));
 
         //Trigger
         String selectedTrip = "selected Trip";
-        CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 2);
+        CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 5);
 
-        assertEquals(selectedTrip, cronology.getSelectedTrip().getTripId());
-        assertEquals(fishingTripIdentifierEntity.getTripId(), cronology.getCurrentTrip().getTripId());
-        List<String> previousIds = getIds(previousTrips);
-        assertEquals(previousIds.subList(1, previousIds.size()), cronology.getPreviousTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
+
+        List<String> previousIds = getIds(getPreviousTrips());
+        assertEquals(previousIds.subList(0, 4), cronology.getPreviousTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
     }
 
     @Test
     @SneakyThrows
     public void getCronologyOfFishingTrip_All() {
         //Mock the Dao
-        doReturn(getVesselIdentifiers()).when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
-        FishingTripIdentifierEntity fishingTripIdentifierEntity = getCurrentTrip();
-        doReturn(fishingTripIdentifierEntity).when(fishingTripIdentifierDao).getCurrentTrip(any(String.class), any(String.class));
-        List<FishingTripIdentifierEntity> previousTrips = getPreviousTrips(10);
-        doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(String.class), any(String.class), any(Integer.class));
-        List<FishingTripIdentifierEntity> nextTrips = getNextTrips(10);
-        doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(String.class), any(String.class), any(Integer.class));
-        List<FishingActivityEntity> fishingActivityEntityList = getFishingActivityEntityList();
-        doReturn(fishingActivityEntityList).when(fishingActivityDao).getFishingActivityListByQuery(any(FishingActivityQuery.class));
+        doReturn("XXX-XXXXX-XXXXX").when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
+        Stream<CronologyData> previousTrips = getPreviousTrips();
+        doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(Date.class), any(Integer.class));
+        Stream<CronologyData> nextTrips = getNextTrips();
+        doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getPreviousConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
+        doReturn(DateUtils.stringToDate("2019-03-09 14:39:00 +0000")).when(fishingTripIdentifierDao).getSelectedTripStartDate(any(String.class));
+
 
         //Trigger
         String selectedTrip = "selected Trip";
         CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 0);
 
-        assertEquals(selectedTrip, cronology.getSelectedTrip().getTripId());
-        assertEquals(fishingTripIdentifierEntity.getTripId(), cronology.getCurrentTrip().getTripId());
-        List<String> previousIds = getIds(previousTrips);
+        List<String> previousIds = getIds(getPreviousTrips());
         assertEquals(previousIds, cronology.getPreviousTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
-        List<String> nextIds = getIds(nextTrips);
+        List<String> nextIds = getIds(getNextTrips());
+        Collections.reverse(nextIds);
         assertEquals(nextIds, cronology.getNextTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
     }
 
@@ -209,33 +206,25 @@ public class FishingTripServiceBeanTest {
     @SneakyThrows
     public void getCronologyOfFishingTrip_OnlyCurrentAndSelected() {
         //Mock the Dao
-        doReturn(getVesselIdentifiers()).when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
-        FishingTripIdentifierEntity fishingTripIdentifierEntity = getCurrentTrip();
-        doReturn(fishingTripIdentifierEntity).when(fishingTripIdentifierDao).getCurrentTrip(any(String.class), any(String.class));
-        List<FishingTripIdentifierEntity> previousTrips = getPreviousTrips(5);
-        doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(String.class), any(String.class), any(Integer.class));
-        List<FishingTripIdentifierEntity> nextTrips = getNextTrips(5);
-        doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(String.class), any(String.class), any(Integer.class));
-        List<FishingActivityEntity> fishingActivityEntityList = getFishingActivityEntityList();
-        doReturn(fishingActivityEntityList).when(fishingActivityDao).getFishingActivityListByQuery(any(FishingActivityQuery.class));
+        doReturn("XXX-XXXXX-XXXXX").when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
+        Stream<CronologyData> previousTrips = getPreviousTrips();
+        doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(Date.class), any(Integer.class));
+        Stream<CronologyData> nextTrips = getNextTrips();
+        doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getPreviousConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
+        doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
+        doReturn(DateUtils.stringToDate("2019-03-09 14:39:00 +0000")).when(fishingTripIdentifierDao).getSelectedTripStartDate(any(String.class));
 
         //Trigger
         String selectedTrip = "selected Trip";
         CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 1);
 
-        assertEquals(selectedTrip, cronology.getSelectedTrip().getTripId());
-        assertEquals(fishingTripIdentifierEntity.getTripId(), cronology.getCurrentTrip().getTripId());
-
         assertEquals(0, cronology.getPreviousTrips().size());
         assertEquals(0, cronology.getNextTrips().size());
     }
 
-    private List<String> getIds(List<FishingTripIdentifierEntity> entities) {
-        List<String> ids = new ArrayList<>();
-        for (FishingTripIdentifierEntity trip : entities) {
-            ids.add(trip.getTripId());
-        }
-        return ids;
+    private List<String> getIds(Stream<CronologyData> entities) {
+        return entities.map(CronologyData::getTripId).collect(Collectors.toList());
     }
 
     private List<VesselIdentifierEntity> getVesselIdentifiers() {
@@ -253,33 +242,24 @@ public class FishingTripServiceBeanTest {
         return identifierEntities;
     }
 
-    public FishingTripIdentifierEntity getCurrentTrip() {
-        FishingTripIdentifierEntity identifier = new FishingTripIdentifierEntity();
-        identifier.setTripId("Current Trip");
-        identifier.setTripSchemeId("Current Trip scheme Id");
-        return identifier;
+    public Stream<CronologyData> getPreviousTrips() {
+        return Stream.of(
+            new CronologyData("SRC-2020-01-29", "2020-01-29"),
+            new CronologyData("SRC-2020-01-28", "2020-01-28"),
+            new CronologyData("SRC-2020-01-22", "2020-01-22"),
+            new CronologyData("SRC-2020-01-17", "2020-01-17"),
+            new CronologyData("SRC-2020-01-16", "2020-01-16")
+        );
     }
 
-    public List<FishingTripIdentifierEntity> getPreviousTrips(int numberOfRecord) {
-        List<FishingTripIdentifierEntity> previousTrips = new ArrayList<>();
-        for (int i = 1; i <= numberOfRecord; i++) {
-            FishingTripIdentifierEntity identifier = new FishingTripIdentifierEntity();
-            identifier.setTripId("Previous Trip " + i);
-            identifier.setTripSchemeId("Previous Scheme " + i);
-            previousTrips.add(identifier);
-        }
-        return previousTrips;
-    }
-
-    public List<FishingTripIdentifierEntity> getNextTrips(int numberOfRecord) {
-        List<FishingTripIdentifierEntity> nextTrips = new ArrayList<>();
-        for (int i = 1; i <= numberOfRecord; i++) {
-            FishingTripIdentifierEntity identifier = new FishingTripIdentifierEntity();
-            identifier.setTripId("Next Trip " + i);
-            identifier.setTripSchemeId("Next Scheme " + i);
-            nextTrips.add(identifier);
-        }
-        return nextTrips;
+    public Stream<CronologyData> getNextTrips(){
+        return Stream.of(
+                new CronologyData("SRC-2020-03-16", "2020-01-16"),
+                new CronologyData("SRC-2020-03-17", "2020-01-17"),
+                new CronologyData("SRC-2020-03-22", "2020-01-22"),
+                new CronologyData("SRC-2020-03-28", "2020-01-28"),
+                new CronologyData("SRC-2020-03-29", "2020-01-29")
+        );
     }
 
     private List<FishingActivityEntity> getFishingActivityEntityList(){

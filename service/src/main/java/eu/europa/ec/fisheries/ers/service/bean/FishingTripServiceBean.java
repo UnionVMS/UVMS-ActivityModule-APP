@@ -48,7 +48,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.mockito.internal.util.collections.Sets;
 
@@ -58,9 +57,8 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.*;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
@@ -118,22 +116,22 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      */
     @Override
     public CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) throws ServiceException {
-        List<VesselIdentifierEntity> latestVesselIdentifiers = vesselIdentifierDao.getLatestVesselIdByTrip(tripId); // Find the latest Vessel for the Trip for finding the trip of that vessel
+        String vesselGuid = vesselIdentifierDao.getLatestVesselIdByTrip(tripId); // Find the latest Vessel for the Trip for finding the trip of that vessel
         CronologyTripDTO cronologyTripDTO = new CronologyTripDTO();
-        cronologyTripDTO.setCurrentTrip(getCurrentTrip(latestVesselIdentifiers));
-        CronologyDTO selectedTrip = buildCronologyDTO(tripId);
-        cronologyTripDTO.setSelectedTrip(selectedTrip);
+        if(vesselGuid!=null){
+            Date startDate = fishingTripIdentifierDao.getSelectedTripStartDate(tripId);
+            cronologyTripDTO.setSelectedTrip(new CronologyDTO(tripId, DateUtils.dateToString(startDate)));
+            List<CronologyDTO> previousTrips = getPreviousTrips(vesselGuid, startDate, count);
+            List<CronologyDTO> nextTrips = getNextTrips(vesselGuid, startDate, count);
+            previousTrips.addAll(0,getPreviousConcurrentTrips(tripId, vesselGuid, startDate, count));
+            nextTrips.addAll(0, getNextConcurrentTrips(tripId, vesselGuid, startDate, count));
+            Collections.reverse(nextTrips);
 
-        List<CronologyDTO> previousTrips = new ArrayList<>(getPreviousTrips(tripId, count, latestVesselIdentifiers));
-        List<CronologyDTO> nextTrips = new ArrayList<>(getNextTrips(tripId, count, latestVesselIdentifiers));
+            Map<String, Integer> countMap = calculateTripCounts(count, previousTrips.size(), nextTrips.size());
 
-        Map<String, Integer> countMap = calculateTripCounts(count, previousTrips.size(), nextTrips.size());
-        log.info("Number of previous record to find : " + countMap.get(PREVIOUS));
-        log.info("Number of next record to find : " + countMap.get(NEXT));
-
-        cronologyTripDTO.setPreviousTrips(previousTrips.subList(previousTrips.size() - countMap.get(PREVIOUS), previousTrips.size()));
-        cronologyTripDTO.setNextTrips(nextTrips.subList(0, countMap.get(NEXT)));
-
+            cronologyTripDTO.setPreviousTrips(previousTrips.subList(0, countMap.get(PREVIOUS)));
+            cronologyTripDTO.setNextTrips(nextTrips.subList(nextTrips.size() - countMap.get(NEXT), nextTrips.size()));
+        }
         return cronologyTripDTO;
     }
 
@@ -171,52 +169,28 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return ImmutableMap.<String, Integer>builder().put(PREVIOUS, previous).put(NEXT, next).build();
     }
 
-    private CronologyDTO getCurrentTrip(List<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException{
-        CronologyDTO currentTrip = null;
-        if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
-                FishingTripIdentifierEntity identifierEntity = fishingTripIdentifierDao.getCurrentTrip(vesselIdentifier.getVesselIdentifierId(),
-                        vesselIdentifier.getVesselIdentifierSchemeId());
-                currentTrip = identifierEntity != null ? buildCronologyDTO(identifierEntity.getTripId()) : null;
-                if (currentTrip == null || StringUtils.isEmpty(currentTrip.getTripDate())) {
-                    break;
-                }
-            }
-        }
-        log.info("Current Trip : " + currentTrip);
-        return currentTrip;
+    private List<CronologyDTO> getPreviousTrips(String vesselGuid, Date startDate, Integer limit) {
+        return fishingTripIdentifierDao.getPreviousTrips(vesselGuid, startDate, limit)
+                .map(trip -> new CronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .collect(Collectors.toList());
     }
 
-    private Set<CronologyDTO> getPreviousTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
-        Set<CronologyDTO> tripCronologyDTOs = new LinkedHashSet<>();
-        if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
-                List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getPreviousTrips(vesselIdentifier.getVesselIdentifierId(),
-                        vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
-                for (FishingTripIdentifierEntity identifiers : identifierEntities) {
-                    CronologyDTO cronologyDTO = buildCronologyDTO(identifiers.getTripId());
-                    tripCronologyDTOs.add(cronologyDTO);
-                }
-            }
-        }
-        log.debug("Previous Trips : " + tripCronologyDTOs);
-        return tripCronologyDTOs;
+    private List<CronologyDTO> getNextTrips(String vesselGuid, Date startDate, Integer limit) {
+        return fishingTripIdentifierDao.getNextTrips(vesselGuid, startDate,limit)
+                .map(trip -> new CronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .collect(Collectors.toList());
     }
 
-    private Set<CronologyDTO> getNextTrips(String tripId, Integer limit, List<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
-        Set<CronologyDTO> tripCronologyDTOs = new LinkedHashSet<>();
-        if (vesselIdentifiers != null && !vesselIdentifiers.isEmpty()) {
-            for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) { // FIXME
-                List<FishingTripIdentifierEntity> identifierEntities = fishingTripIdentifierDao.getNextTrips(vesselIdentifier.getVesselIdentifierId(),
-                        vesselIdentifier.getVesselIdentifierSchemeId(), tripId, limit);
-                for (FishingTripIdentifierEntity identifiers : identifierEntities) {
-                    CronologyDTO cronologyDTO = buildCronologyDTO(identifiers.getTripId());
-                    tripCronologyDTOs.add(cronologyDTO);
-                }
-            }
-        }
-        log.debug("Next Trips : " + tripCronologyDTOs);
-        return tripCronologyDTOs;
+    private List<CronologyDTO> getPreviousConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
+        return fishingTripIdentifierDao.getPreviousConcurrentTrips(tripId, vesselGuid, startDate, limit)
+                .map(trip -> new CronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .collect(Collectors.toList());
+    }
+
+    private List<CronologyDTO> getNextConcurrentTrips(String tripId, String vesselGuid,  Date startDate, Integer limit) {
+        return fishingTripIdentifierDao.getNextConcurrentTrips(tripId, vesselGuid, startDate, limit)
+                .map(trip -> new CronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -639,25 +613,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         response.setFishingActivityLists(fishingActivitySummaries);
         response.setFishingTripIdLists(fishingTripIdLists);
         return response;
-    }
-
-    private CronologyDTO buildCronologyDTO(String tripId) throws ServiceException {
-        CronologyDTO cronologyDTO = new CronologyDTO();
-        FishingActivityQuery query = new FishingActivityQuery();
-        query.setSearchCriteriaMap(Collections.singletonMap(SearchFilter.TRIP_ID, tripId));
-        query.setSorting(new SortKey(SearchFilter.PERIOD_START, false));
-        List<FishingActivityEntity> fishingActivityEntityList = fishingActivityDao.getFishingActivityListByQuery(query);
-
-        String formattedStartDate = fishingActivityEntityList.stream()
-                .findFirst()
-                .map(FishingActivityEntity::getCalculatedStartTime)
-                .map(DateUtils::dateToString)
-                .orElse(null);
-
-        cronologyDTO.setTripId(tripId);
-        cronologyDTO.setTripDate(formattedStartDate);
-
-        return cronologyDTO;
     }
 
     private List<FishingActivityEntity> cleanFromDeletionsAndCancelations(List<FishingActivityEntity> fishingActivityEntityList) {

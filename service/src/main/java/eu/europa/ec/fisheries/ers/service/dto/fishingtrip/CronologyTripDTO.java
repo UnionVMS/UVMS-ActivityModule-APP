@@ -15,6 +15,8 @@ package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -22,10 +24,9 @@ import java.util.List;
  * Created by padhyad on 9/22/2016.
  */
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@Data
+@NoArgsConstructor
 public class CronologyTripDTO {
-
-    @JsonProperty("currentTrip")
-    private CronologyDTO currentTrip;
 
     @JsonProperty("previousTrips")
     private List<CronologyDTO> previousTrips;
@@ -35,44 +36,4 @@ public class CronologyTripDTO {
 
     @JsonProperty("nextTrips")
     private List<CronologyDTO> nextTrips;
-
-    @JsonProperty("currentTrip")
-    public CronologyDTO getCurrentTrip() {
-        return currentTrip;
-    }
-
-    @JsonProperty("currentTrip")
-    public void setCurrentTrip(CronologyDTO currentTrip) {
-        this.currentTrip = currentTrip;
-    }
-
-    @JsonProperty("previousTrips")
-    public List<CronologyDTO> getPreviousTrips() {
-        return previousTrips;
-    }
-
-    @JsonProperty("previousTrips")
-    public void setPreviousTrips(List<CronologyDTO> previousTrips) {
-        this.previousTrips = previousTrips;
-    }
-
-    @JsonProperty("selectedTrip")
-    public CronologyDTO getSelectedTrip() {
-        return selectedTrip;
-    }
-
-    @JsonProperty("selectedTrip")
-    public void setSelectedTrip(CronologyDTO selectedTrip) {
-        this.selectedTrip = selectedTrip;
-    }
-
-    @JsonProperty("nextTrips")
-    public List<CronologyDTO> getNextTrips() {
-        return nextTrips;
-    }
-
-    @JsonProperty("nextTrips")
-    public void setNextTrips(List<CronologyDTO> nextTrips) {
-        this.nextTrips = nextTrips;
-    }
 }

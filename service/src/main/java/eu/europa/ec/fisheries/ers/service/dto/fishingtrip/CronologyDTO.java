@@ -13,58 +13,23 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 
-import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
  * Created by sanera on 26/08/2016.
  */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(doNotUseGetters=true)
+@ToString(exclude="tripDate", doNotUseGetters=true)
 public class CronologyDTO {
-
 
     private String tripId;
     private String tripDate;
 
-    public CronologyDTO(){
-
-    }
-
-    public String getTripId() {
-        return tripId;
-    }
-
-    public void setTripId(String tripId) {
-        this.tripId = tripId;
-    }
-
-    public String getTripDate() {
-        return tripDate;
-    }
-
-    public void setTripDate(String tripDate) {
-        this.tripDate = tripDate;
-    }
-
-    @Override
-    public String toString() {
-        return "CronologyDTO{" +
-                "tripId='" + tripId + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        CronologyDTO that = (CronologyDTO) o;
-        return Objects.equals(tripId, that.tripId) && Objects.equals(tripDate, that.tripDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(tripId, tripDate);
-    }
 }

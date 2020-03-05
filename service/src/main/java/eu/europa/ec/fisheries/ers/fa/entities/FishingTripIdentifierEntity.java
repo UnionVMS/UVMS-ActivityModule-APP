@@ -11,76 +11,99 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.util.Date;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+
 @NamedQueries({
-		@NamedQuery(name = FishingTripIdentifierEntity.FIND_CURRENT_TRIP,
-				query = "SELECT fti from FishingTripIdentifierEntity fti " +
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_SELECTED_TRIP_START_DATE,
+				query = "SELECT MIN(fa.calculatedStartTime) AS startTime " +
+						"FROM FishingTripIdentifierEntity fti " +
 						"INNER JOIN fti.fishingTrip ft " +
 						"INNER JOIN ft.fishingActivity fa " +
-						"INNER JOIN fa.faReportDocument frd " +
-						"INNER JOIN frd.vesselTransportMeans vtm " +
-						"INNER JOIN vtm.vesselIdentifiers vi " +
-						"WHERE vi.vesselIdentifierId = :vesselId " +
-						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
-						"ORDER BY frd.acceptedDatetime DESC"),
+						"WHERE fti.tripId = :tripId "),
 
-		@NamedQuery(name = FishingTripIdentifierEntity.FIND_PREVIOUS_TRIP,
-				query = "SELECT fti from FishingTripIdentifierEntity fti " +
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_PREVIOUS_TRIPS,
+				query = "SELECT fti.tripId, MIN(fa.calculatedStartTime) as startTime " +
+                        "FROM FishingTripIdentifierEntity fti " +
 						"INNER JOIN fti.fishingTrip ft " +
 						"INNER JOIN ft.fishingActivity fa " +
-						"INNER JOIN fa.faReportDocument frd " +
-						"INNER JOIN frd.vesselTransportMeans vtm " +
-						"INNER JOIN vtm.vesselIdentifiers vi " +
-						"WHERE vi.vesselIdentifierId = :vesselId " +
-						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
-						"AND frd.acceptedDatetime < (" +
-													"SELECT max(sfrd.acceptedDatetime) " +
-													"FROM FishingTripIdentifierEntity sfti " +
-													"INNER JOIN sfti.fishingTrip sft " +
-													"INNER JOIN sft.fishingActivity sfa " +
-													"INNER JOIN sfa.faReportDocument sfrd " +
-													"WHERE sfti.tripId = :tripId" +
-													")" +
-						"ORDER BY frd.acceptedDatetime ASC"),
+						"WHERE EXISTS( " +
+									"SELECT innerTripId.id " +
+									"FROM FishingTripIdentifierEntity innerTripId " +
+									"INNER JOIN innerTripId.fishingTrip innerTrip " +
+									"INNER JOIN innerTrip.fishingActivity innerActivity " +
+									"INNER JOIN innerActivity.faReportDocument innerFaReport " +
+									"INNER JOIN innerFaReport.vesselTransportMeans innerMeans " +
+									"WHERE innerTripId.tripId = fti.tripId " +
+									"AND innerMeans.guid = :vesselGuid " +
+						")" +
+						"GROUP BY fti.tripId " +
+						"HAVING MIN(fa.calculatedStartTime) < :selectedTripStartDate " +
+						"ORDER BY startTime DESC, fti.tripId DESC"),
 
-		@NamedQuery(name = FishingTripIdentifierEntity.FIND_NEXT_TRIP,
-				query = "SELECT fti from FishingTripIdentifierEntity fti " +
+        @NamedQuery(name = FishingTripIdentifierEntity.FIND_NEXT_TRIPS,
+                query = "SELECT fti.tripId, MIN(fa.calculatedStartTime) as startTime " +
+						"FROM FishingTripIdentifierEntity fti " +
+                        "INNER JOIN fti.fishingTrip ft " +
+                        "INNER JOIN ft.fishingActivity fa " +
+						"WHERE EXISTS( " +
+									"SELECT innerTripId.id " +
+									"FROM FishingTripIdentifierEntity innerTripId " +
+									"INNER JOIN innerTripId.fishingTrip innerTrip " +
+									"INNER JOIN innerTrip.fishingActivity innerActivity " +
+									"INNER JOIN innerActivity.faReportDocument innerFaReport " +
+									"INNER JOIN innerFaReport.vesselTransportMeans innerMeans " +
+									"WHERE innerTripId.tripId = fti.tripId " +
+									"AND innerMeans.guid = :vesselGuid " +
+						")" +
+						"GROUP BY fti.tripId " +
+						"HAVING MIN(fa.calculatedStartTime) > :selectedTripStartDate " +
+                        "ORDER BY startTime ASC, fti.tripId ASC"),
+
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_PREVIOUS_CONCURRENT_TRIPS,
+				query = "SELECT fti.tripId, MIN(fa.calculatedStartTime) as startTime " +
+						"FROM FishingTripIdentifierEntity fti " +
 						"INNER JOIN fti.fishingTrip ft " +
 						"INNER JOIN ft.fishingActivity fa " +
-						"INNER JOIN fa.faReportDocument frd " +
-						"INNER JOIN frd.vesselTransportMeans vtm " +
-						"INNER JOIN vtm.vesselIdentifiers vi " +
-						"WHERE vi.vesselIdentifierId = :vesselId " +
-						"AND vi.vesselIdentifierSchemeId = :vesselSchemeId " +
-						"AND frd.acceptedDatetime > (" +
-													"SELECT max(sfrd.acceptedDatetime) " +
-													"FROM FishingTripIdentifierEntity sfti " +
-													"INNER JOIN sfti.fishingTrip sft " +
-													"INNER JOIN sft.fishingActivity sfa " +
-													"INNER JOIN sfa.faReportDocument sfrd " +
-													"WHERE sfti.tripId = :tripId" +
-													")" +
-						"ORDER BY frd.acceptedDatetime ASC")
+						"WHERE EXISTS( " +
+									"SELECT innerTripId.id " +
+									"FROM FishingTripIdentifierEntity innerTripId " +
+									"INNER JOIN innerTripId.fishingTrip innerTrip " +
+									"INNER JOIN innerTrip.fishingActivity innerActivity " +
+									"INNER JOIN innerActivity.faReportDocument innerFaReport " +
+									"INNER JOIN innerFaReport.vesselTransportMeans innerMeans " +
+									"WHERE innerTripId.tripId = fti.tripId " +
+									"AND innerMeans.guid = :vesselGuid " +
+						")" +
+						"AND fti.tripId < :tripId " +
+						"GROUP BY fti.tripId " +
+						"HAVING MIN(fa.calculatedStartTime) = :selectedTripStartDate " +
+						"ORDER BY fti.tripId DESC"),
+
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_NEXT_CONCURRENT_TRIPS,
+				query = "SELECT fti.tripId, MIN(fa.calculatedStartTime) as startTime " +
+						"FROM FishingTripIdentifierEntity fti " +
+						"INNER JOIN fti.fishingTrip ft " +
+						"INNER JOIN ft.fishingActivity fa " +
+						"WHERE EXISTS( " +
+								"SELECT innerTripId.id " +
+								"FROM FishingTripIdentifierEntity innerTripId " +
+								"INNER JOIN innerTripId.fishingTrip innerTrip " +
+								"INNER JOIN innerTrip.fishingActivity innerActivity " +
+								"INNER JOIN innerActivity.faReportDocument innerFaReport " +
+								"INNER JOIN innerFaReport.vesselTransportMeans innerMeans " +
+								"WHERE innerTripId.tripId = fti.tripId " +
+								"AND innerMeans.guid = :vesselGuid " +
+						")" +
+						"AND fti.tripId > :tripId " +
+						"GROUP BY fti.tripId " +
+						"HAVING MIN(fa.calculatedStartTime) = :selectedTripStartDate " +
+						"ORDER BY fti.tripId ASC")
 })
 
 @Entity
@@ -90,9 +113,11 @@ import lombok.ToString;
 @EqualsAndHashCode(of = {"tripId", "tripSchemeId"})
 public class FishingTripIdentifierEntity implements Serializable {
 
-	public static final String FIND_CURRENT_TRIP = "findCurrentTrip";
-	public static final String FIND_PREVIOUS_TRIP = "findPreviousTrip";
-	public static final String FIND_NEXT_TRIP = "findNextTrip";
+	public static final String FIND_SELECTED_TRIP_START_DATE = "findSelectedTripStartDate";
+	public static final String FIND_PREVIOUS_TRIPS = "findPreviousTrips";
+	public static final String FIND_NEXT_TRIPS = "findNextTrips";
+	public static final String FIND_PREVIOUS_CONCURRENT_TRIPS = "findPreviousConcurrentTrips";
+	public static final String FIND_NEXT_CONCURRENT_TRIPS = "findNextConcurrentTrips";
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)

@@ -11,14 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -50,8 +46,7 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    @Ignore
-    public void testGetFishingActivityForTrip(){
+    public void testGetFishingActivityForTrip() {
         dbSetupTracker.skipNextLaunch();
 
         String tripId = "NOR-TRP-20160517234053706";
@@ -59,12 +54,20 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
         String activityTypeCode = "DEPARTURE";
         List<String> purposes = Arrays.asList("1", "3", "5", "9");
 
-        List<FishingActivityEntity> fishingActivityForTrip = dao.getFishingActivityForTrip(tripId, tripSchemeId,
+        List<FishingActivityEntity> fishingActivitiesForTrip = dao.getFishingActivityForTrip(tripId, tripSchemeId,
                 activityTypeCode, purposes);
 
-        assertNotNull(fishingActivityForTrip);
-        assertTrue(!fishingActivityForTrip.isEmpty());
-        assertTrue(fishingActivityForTrip.size() == 1);
+        assertNotNull(fishingActivitiesForTrip);
+        assertEquals(1, fishingActivitiesForTrip.size());
+
+        FishingActivityEntity fa = fishingActivitiesForTrip.get(0);
+        assertEquals(activityTypeCode, fa.getTypeCode());
+        assertTrue(new HashSet<>(purposes).contains(fa.getFaReportDocument().getFluxReportDocument().getPurposeCode()));
+        assertTrue(fa.getFishingTrips().stream()
+                .map(FishingTripEntity::getFishingTripIdentifiers)
+                .flatMap(Set::stream)
+                .anyMatch(tripIdEntity -> tripId.equals(tripIdEntity.getTripId()) && tripSchemeId.equals(tripIdEntity.getTripSchemeId()))
+        );
     }
 
     @Test
@@ -289,12 +292,11 @@ public class FishingActivityDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    @Ignore
-    public void testGetFishingActivityListForFishingTrip() throws Exception {
-
+    public void testGetFishingActivityListForFishingTrip() {
         dbSetupTracker.skipNextLaunch();
-        List<FishingActivityEntity> finishingActivityList = dao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null);
-        assertNotNull(finishingActivityList);
-        assertNotEquals(0, finishingActivityList.size());
+        List<FishingActivityEntity> fishingActivityList = dao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null);
+        assertNotNull(fishingActivityList);
+        assertFalse(fishingActivityList.isEmpty());
+        assertEquals(Arrays.asList(1,2,3), fishingActivityList.stream().map(FishingActivityEntity::getId).collect(Collectors.toList()));
     }
 }
