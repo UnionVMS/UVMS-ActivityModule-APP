@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -70,7 +69,6 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             return null;
         }
 
-        String GeometryWkt = null;
         List<Geometry> activityGeomList = new ArrayList<>();
         for (FishingActivityEntity fishingActivityEntity : fishingActivities) {
             if (fishingActivityEntity.getGeom() != null) {
@@ -86,7 +84,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             }
         }
 
-        return GeometryWkt;
+        return null;
     }
 
     private String getFirstFishingActivityType(List<FishingActivityEntity> fishingActivities) {
@@ -295,33 +293,76 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         if we have only start date received, we will subtract it from current date
      */
     private Double getTotalTripDuration(List<FishingActivityEntity> fishingActivities) {
-        if (CollectionUtils.isEmpty(fishingActivities)) {
+        if (CollectionUtils.isEmpty(fishingActivities) || fishingActivities.size() == 1) {
             return 0d;
         }
 
-        Double duration = 0d;
-        Date startDate = getFishingTripDateTimeFromFishingActivities(fishingActivities, FishingActivityTypeEnum.DEPARTURE.toString());
-        Date endDate = getFishingTripDateTimeFromFishingActivities(fishingActivities, FishingActivityTypeEnum.ARRIVAL.toString());
+        Date startDate = findFirstActivityDateForTrip(fishingActivities);
+        Date endDate = findLastActivityDateForTrip(fishingActivities);
 
-        Date currentDate = new Date();
+
         if (startDate != null && endDate != null) {
-            duration = (double) (endDate.getTime() - startDate.getTime());
-        } else if (endDate == null && startDate != null) { // received null means no ARRIVAL yet received for the trip
-
-            log.info("ARRIVAL is not yet received for the trip");
-
-            // find out date of last activity for the trip
-            int fishingActivityCount = fishingActivities.size();
-            Date lastActivityDate = fishingActivities.get(fishingActivityCount - 1).getCalculatedStartTime();
-            if (lastActivityDate != null && lastActivityDate.compareTo(startDate) > 0) { // If last activity date is later than start date
-                duration = (double) (lastActivityDate.getTime() - startDate.getTime());
-            } else if (currentDate.compareTo(startDate) > 0) {// if not, then compare with current date
-                duration = (double) (currentDate.getTime() - startDate.getTime());
-            }
+           return (double) (endDate.getTime() - startDate.getTime());
         }
 
-        return duration; // value returned is in miliseconds
+        return 0d;
     }
+
+
+
+    private Date findFirstActivityDateForTrip(List<FishingActivityEntity> fishingActivities){
+
+        FishingActivityEntity fishingActivityEntity = getFirstDepartureForTrip(fishingActivities);
+        if(fishingActivityEntity != null){
+            return fishingActivityEntity.getCalculatedStartTime();
+        }
+
+        fishingActivityEntity = fishingActivities.stream()
+                .filter(f -> f.getCalculatedStartTime() != null)
+                .min(Comparator.comparing(f -> f.getCalculatedStartTime()))
+                .orElse(null);
+
+        return fishingActivityEntity == null ? null:fishingActivityEntity.getCalculatedStartTime();
+    }
+
+    private Date findLastActivityDateForTrip(List<FishingActivityEntity> fishingActivities){
+        FishingActivityEntity fishingActivityEntity = getLastArrivalForTrip(fishingActivities);
+
+        if(fishingActivityEntity != null){
+            return fishingActivityEntity.getCalculatedStartTime();
+        }
+
+        fishingActivityEntity = fishingActivities.stream()
+                .filter(f -> f.getCalculatedStartTime() != null)
+                .max(Comparator.comparing(f -> f.getCalculatedStartTime()))
+                .orElse(null);
+
+        return fishingActivityEntity == null ? null: fishingActivityEntity.getCalculatedStartTime();
+    }
+
+    private FishingActivityEntity getFirstDepartureForTrip(List<FishingActivityEntity> fishingActivities) {
+        if (CollectionUtils.isEmpty(fishingActivities)) {
+            return null;
+        }
+        return fishingActivities.stream()
+                .filter(fa -> FishingActivityTypeEnum.DEPARTURE.toString().equals(fa.getTypeCode()))
+                .filter(f -> f.getCalculatedStartTime() != null)
+                .min(Comparator.comparing(FishingActivityEntity::getCalculatedStartTime))
+                .orElse(null);
+    }
+
+    private FishingActivityEntity getLastArrivalForTrip(List<FishingActivityEntity> fishingActivities) {
+        if (CollectionUtils.isEmpty(fishingActivities)) {
+            return null;
+        }
+
+        return fishingActivities.stream()
+                .filter(fa -> FishingActivityTypeEnum.ARRIVAL.toString().equals(fa.getTypeCode()))
+                .filter(f -> f.getCalculatedStartTime() != null)
+                .max(Comparator.comparing(FishingActivityEntity::getCalculatedStartTime))
+                .orElse(null);
+    }
+
 
     private XMLGregorianCalendar getRelativeFirstFishingActivityDateForTrip(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
