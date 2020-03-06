@@ -11,14 +11,10 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.ValueMapping;
 
 import java.util.Set;
 
@@ -34,10 +30,4 @@ public abstract class VesselIdentifierMapper {
     public abstract AssetIdentifierDto mapToIdentifierDto(VesselIdentifierEntity entity);
 
     public abstract Set<AssetIdentifierDto> mapToIdentifierDotSet(Set<VesselIdentifierEntity> entity);
-
-    @ValueMapping(source = "EXT_MARK", target = "EXTERNAL_MARKING")
-    @ValueMapping(source = "UVI", target = MappingConstants.NULL)
-    @ValueMapping(source = "ICCAT", target = MappingConstants.NULL)
-    @ValueMapping(source = "GFCM", target = MappingConstants.NULL)
-    public abstract ConfigSearchField map(VesselIdentifierSchemeIdEnum schemeIdEnum);
 }

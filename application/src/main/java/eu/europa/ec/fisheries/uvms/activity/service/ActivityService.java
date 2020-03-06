@@ -16,7 +16,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.FilterFishingActivityRep
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
 import java.util.List;
 

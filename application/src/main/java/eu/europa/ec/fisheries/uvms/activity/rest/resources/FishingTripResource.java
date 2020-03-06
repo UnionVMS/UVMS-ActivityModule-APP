@@ -19,7 +19,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
@@ -36,7 +35,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.List;
 
 @Path("/trip")
 @Slf4j
@@ -48,9 +46,6 @@ public class FishingTripResource extends UnionVMSResource {
 
     @EJB
     private FishingTripService fishingTripService;
-
-    @EJB
-    private USMService usmService;
 
     @GET
     @Path("/reports/{fishingTripId}")
@@ -64,7 +59,6 @@ public class FishingTripResource extends UnionVMSResource {
                                           @PathParam("fishingTripId") String fishingTripId) throws ServiceException {
 
         log.debug("Fishing Trip summary from fishing trip: {}", fishingTripId);
-        String username = request.getRemoteUser();
         return createSuccessResponse(fishingTripService.getFishingTripSummaryAndReports(fishingTripId));
     }
 
@@ -106,17 +100,6 @@ public class FishingTripResource extends UnionVMSResource {
         log.debug("Catches for fishing trip: {}", fishingTripId);
         return createSuccessResponse(fishingTripService.retrieveFaCatchesForFishingTrip(fishingTripId));
     }
-
-//    @GET
-//    @Path("/mapData/{tripId}")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Interceptors(ActivityExceptionInterceptor.class)
-//    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.FISHING_TRIP_SUMMARY})
-//    public Response getTripMapData(@Context HttpServletRequest request,
-//                                   @Context HttpServletResponse response,
-//                                   @PathParam("tripId") String tripId) {
-//        return createSuccessResponse(fishingTripService.getTripMapDetailsForTripId(tripId));
-//    }
 
     @GET
     @Path("/catchevolution/{fishingTripId}")

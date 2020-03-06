@@ -38,7 +38,7 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
     FaReportDocumentMapper faReportDocumentMapper;
 
     @Inject
-    FluxFaReportMessageMapper fluxFaReportMessageMapper;
+    FluxFaReportMessageMapper fluxFaReportMessageMapperImpl;
 
     @Mapping(target = "fluxReportDocument_Id", expression = "java(singleIDTypeValue(fluxFaReportMessage.getFLUXReportDocument().getIDS()))")
     @Mapping(target = "fluxReportDocument_IdSchemeId", expression = "java(singleIDTypeSchemeID(fluxFaReportMessage.getFLUXReportDocument().getIDS()))")
@@ -64,7 +64,7 @@ public abstract class FluxFaReportMessageMapper extends BaseMapper {
             return null;
         }
 
-        FluxFaReportMessageEntity fluxFaReportMessageEntity = fluxFaReportMessageMapper.mapButExcludeFaReportDocuments(fluxFaReportMessage);
+        FluxFaReportMessageEntity fluxFaReportMessageEntity = fluxFaReportMessageMapperImpl.mapButExcludeFaReportDocuments(fluxFaReportMessage);
 
         Set<FaReportDocumentEntity> faReportDocuments = mapFaReportDocuments(fluxFaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessageEntity);
         fluxFaReportMessageEntity.setFaReportDocuments(faReportDocuments);

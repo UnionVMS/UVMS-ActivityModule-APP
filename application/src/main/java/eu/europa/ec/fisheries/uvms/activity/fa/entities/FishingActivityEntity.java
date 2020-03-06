@@ -20,16 +20,32 @@ import lombok.ToString;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.WKTWriter;
 
-import javax.persistence.*;
+import javax.persistence.AttributeOverride;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PostLoad;
+import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
-
-import static org.apache.commons.collections.CollectionUtils.isEmpty;
 
 @NamedQuery(name = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP,
 		query = "SELECT DISTINCT a from FishingActivityEntity a " +
@@ -202,14 +218,6 @@ public class FishingActivityEntity implements Serializable {
 	@Column(precision = 17, scale = 17)
 	private Double altitude;
 
-	public FlapDocumentEntity getFirstFlapDocument() {
-        FlapDocumentEntity flapDocument = null;
-        if (!isEmpty(flapDocuments)) {
-            flapDocument = flapDocuments.iterator().next();
-        }
-        return flapDocument;
-    }
-
     @PrePersist
     public void prePersist() {
         if (operationsQuantity != null) {
@@ -250,20 +258,4 @@ public class FishingActivityEntity implements Serializable {
         flapDocuments.add(flapDocumentEntity);
         flapDocumentEntity.setFishingActivity(this);
     }
-
-    public Optional<Date> getOccurrenceAsDate() {
-    	if (occurence == null) {
-    		return Optional.empty();
-		}
-
-    	return Optional.of(Date.from(occurence));
-	}
-
-	public Optional<Date> getCalculatedStartTimeAsDate() {
-    	if (calculatedStartTime == null) {
-    		return Optional.empty();
-		}
-
-		return Optional.of(Date.from(calculatedStartTime));
-	}
 }

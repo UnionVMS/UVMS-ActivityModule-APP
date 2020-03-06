@@ -95,18 +95,14 @@ public abstract class FishingActivityMapper {
     }
 
     private Double getDouble(un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType measureType) {
-        if(measureType != null) {
-            if(measureType.getValue() != null) {
-                return measureType.getValue().doubleValue();
-            }
+        if(measureType != null && measureType.getValue() != null) {
+            return measureType.getValue().doubleValue();
         }
         return null;
     }
     private Double getDouble(un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType quantityType) {
-        if(quantityType != null) {
-            if(quantityType.getValue() != null) {
-                return quantityType.getValue().doubleValue();
-            }
+        if(quantityType != null && quantityType.getValue() != null) {
+            return quantityType.getValue().doubleValue();
         }
         return null;
     }

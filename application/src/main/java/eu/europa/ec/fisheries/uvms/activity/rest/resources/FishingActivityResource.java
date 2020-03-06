@@ -24,7 +24,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQueryWithStringMaps;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;
@@ -55,9 +54,6 @@ public class FishingActivityResource extends UnionVMSResource {
     @EJB
     private FishingTripService fishingTripService;
 
-    @EJB
-    private USMService usmService;
-
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/commChannel")
@@ -83,7 +79,6 @@ public class FishingActivityResource extends UnionVMSResource {
         }
         FishingActivityQuery fishingActivityQuery = fishingActivityQueryWithStringMaps.convert();
 
-        String username = request.getRemoteUser();
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery);
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }

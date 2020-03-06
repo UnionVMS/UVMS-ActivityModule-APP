@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,8 +31,6 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Date;
-import java.util.Optional;
 import java.util.Set;
 
 @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
@@ -179,12 +178,4 @@ public class FaReportDocumentEntity implements Serializable {
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<VesselTransportMeansEntity> vesselTransportMeans;
-
-    public Optional<Date> getAcceptedDateTimeAsDate() {
-        if (acceptedDatetime == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(Date.from(acceptedDatetime));
-    }
 }

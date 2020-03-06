@@ -36,7 +36,7 @@ import java.util.Set;
 public abstract class GearProblemMapper extends BaseMapper {
 
     @Inject
-    GearProblemMapper gearProblemMapper;
+    GearProblemMapper gearProblemMapperImpl;
 
     @Inject
     FishingGearMapper fishingGearMapper;
@@ -75,7 +75,7 @@ public abstract class GearProblemMapper extends BaseMapper {
         }
         Set<GearProblemRecoveryEntity> gearProblemRecoveries = new HashSet<>();
         for (CodeType codeType : codeTypes) {
-            GearProblemRecoveryEntity gearProblemRecovery = gearProblemMapper.mapToGearProblemRecoveryEntity(codeType);
+            GearProblemRecoveryEntity gearProblemRecovery = gearProblemMapperImpl.mapToGearProblemRecoveryEntity(codeType);
             gearProblemRecovery.setGearProblem(gearProblemEntity);
             gearProblemRecoveries.add(gearProblemRecovery);
         }
