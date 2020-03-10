@@ -1,6 +1,6 @@
 /*
  *
- * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries © European Union, 2015-2016.
+ * Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries European Union, 2015-2016.
  *
  * This file is part of the Integrated Fisheries Data Management (IFDM) Suite. The IFDM Suite is free software: you can redistribute it
  * and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of
@@ -13,27 +13,23 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fishingtrip;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.ToString;
 
 /**
- * Created by padhyad on 9/22/2016.
+ * Created by sanera on 26/08/2016.
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
-public class CronologyTripDTO {
+@EqualsAndHashCode(doNotUseGetters=true)
+@ToString(exclude="tripDate", doNotUseGetters=true)
+public class ChronologyDTO {
 
-    @JsonProperty("previousTrips")
-    private List<CronologyDTO> previousTrips;
+    private String tripId;
+    private String tripDate;
 
-    @JsonProperty("selectedTrip")
-    private CronologyDTO selectedTrip;
-
-    @JsonProperty("nextTrips")
-    private List<CronologyDTO> nextTrips;
 }

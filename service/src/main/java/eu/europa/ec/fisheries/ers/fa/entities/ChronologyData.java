@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CronologyData {
+public class ChronologyData {
 
     String tripId;
     String tripDate;

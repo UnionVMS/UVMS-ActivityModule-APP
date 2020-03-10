@@ -37,13 +37,13 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
-import eu.europa.ec.fisheries.ers.fa.entities.CronologyData;
+import eu.europa.ec.fisheries.ers.fa.entities.ChronologyData;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ChronologyDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ChronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
@@ -130,13 +130,13 @@ public class FishingTripServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void getCronologyOfFishingTrip_limitedRecordsFound() {
+    public void getChronologyOfFishingTrip_limitedRecordsFound() {
 
         //Mock the Dao
         doReturn("XXX-XXXXX-XXXXX").when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
-        Stream<CronologyData> previousTrips = getPreviousTrips();
+        Stream<ChronologyData> previousTrips = getPreviousTrips();
         doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(Date.class), any(Integer.class));
-        Stream<CronologyData> nextTrips = getNextTrips();
+        Stream<ChronologyData> nextTrips = getNextTrips();
         doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(Date.class), any(Integer.class));
         doReturn(Stream.empty()).when(fishingTripIdentifierDao).getPreviousConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
         doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
@@ -144,24 +144,24 @@ public class FishingTripServiceBeanTest {
 
         //Trigger
         String selectedTrip = "selected Trip";
-        CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 5);
+        ChronologyTripDTO chronology = fishingTripService.getChronologyOfFishingTrip(selectedTrip, 5);
 
         //Assert
-        assertEquals(selectedTrip, cronology.getSelectedTrip().getTripId());
+        assertEquals(selectedTrip, chronology.getSelectedTrip().getTripId());
         List<String> previousIds = getIds(getPreviousTrips());
-        assertEquals(previousIds.subList(0, cronology.getPreviousTrips().size()), cronology.getPreviousTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
+        assertEquals(previousIds.subList(0, chronology.getPreviousTrips().size()), chronology.getPreviousTrips().stream().map(ChronologyDTO::getTripId).collect(Collectors.toList()));
         List<String> nextIds = getIds(getNextTrips());
         Collections.reverse(nextIds);
-        assertEquals(nextIds.subList(3, nextIds.size()), cronology.getNextTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
+        assertEquals(nextIds.subList(3, nextIds.size()), chronology.getNextTrips().stream().map(ChronologyDTO::getTripId).collect(Collectors.toList()));
     }
 
     @Test
     @SneakyThrows
-    public void getCronologyOfFishingTrip_OnlyPrevious() {
+    public void getChronologyOfFishingTrip_OnlyPrevious() {
 
         //Mock the Dao
         doReturn("XXX-XXXXX-XXXXX").when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
-        Stream<CronologyData> previousTrips = getPreviousTrips();
+        Stream<ChronologyData> previousTrips = getPreviousTrips();
         doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(Date.class), any(Integer.class));
         doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(Date.class), any(Integer.class));
         doReturn(Stream.empty()).when(fishingTripIdentifierDao).getPreviousConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
@@ -170,21 +170,21 @@ public class FishingTripServiceBeanTest {
 
         //Trigger
         String selectedTrip = "selected Trip";
-        CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 5);
+        ChronologyTripDTO chronology = fishingTripService.getChronologyOfFishingTrip(selectedTrip, 5);
 
 
         List<String> previousIds = getIds(getPreviousTrips());
-        assertEquals(previousIds.subList(0, 4), cronology.getPreviousTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
+        assertEquals(previousIds.subList(0, 4), chronology.getPreviousTrips().stream().map(ChronologyDTO::getTripId).collect(Collectors.toList()));
     }
 
     @Test
     @SneakyThrows
-    public void getCronologyOfFishingTrip_All() {
+    public void getChronologyOfFishingTrip_All() {
         //Mock the Dao
         doReturn("XXX-XXXXX-XXXXX").when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
-        Stream<CronologyData> previousTrips = getPreviousTrips();
+        Stream<ChronologyData> previousTrips = getPreviousTrips();
         doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(Date.class), any(Integer.class));
-        Stream<CronologyData> nextTrips = getNextTrips();
+        Stream<ChronologyData> nextTrips = getNextTrips();
         doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(Date.class), any(Integer.class));
         doReturn(Stream.empty()).when(fishingTripIdentifierDao).getPreviousConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
         doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
@@ -193,23 +193,23 @@ public class FishingTripServiceBeanTest {
 
         //Trigger
         String selectedTrip = "selected Trip";
-        CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 0);
+        ChronologyTripDTO chronology = fishingTripService.getChronologyOfFishingTrip(selectedTrip, 0);
 
         List<String> previousIds = getIds(getPreviousTrips());
-        assertEquals(previousIds, cronology.getPreviousTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
+        assertEquals(previousIds, chronology.getPreviousTrips().stream().map(ChronologyDTO::getTripId).collect(Collectors.toList()));
         List<String> nextIds = getIds(getNextTrips());
         Collections.reverse(nextIds);
-        assertEquals(nextIds, cronology.getNextTrips().stream().map(CronologyDTO::getTripId).collect(Collectors.toList()));
+        assertEquals(nextIds, chronology.getNextTrips().stream().map(ChronologyDTO::getTripId).collect(Collectors.toList()));
     }
 
     @Test
     @SneakyThrows
-    public void getCronologyOfFishingTrip_OnlyCurrentAndSelected() {
+    public void getChronologyOfFishingTrip_OnlyCurrentAndSelected() {
         //Mock the Dao
         doReturn("XXX-XXXXX-XXXXX").when(vesselIdentifiersDao).getLatestVesselIdByTrip(any(String.class));
-        Stream<CronologyData> previousTrips = getPreviousTrips();
+        Stream<ChronologyData> previousTrips = getPreviousTrips();
         doReturn(previousTrips).when(fishingTripIdentifierDao).getPreviousTrips(any(String.class), any(Date.class), any(Integer.class));
-        Stream<CronologyData> nextTrips = getNextTrips();
+        Stream<ChronologyData> nextTrips = getNextTrips();
         doReturn(nextTrips).when(fishingTripIdentifierDao).getNextTrips(any(String.class), any(Date.class), any(Integer.class));
         doReturn(Stream.empty()).when(fishingTripIdentifierDao).getPreviousConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
         doReturn(Stream.empty()).when(fishingTripIdentifierDao).getNextConcurrentTrips(any(String.class), any(String.class), any(Date.class), any(Integer.class));
@@ -217,14 +217,14 @@ public class FishingTripServiceBeanTest {
 
         //Trigger
         String selectedTrip = "selected Trip";
-        CronologyTripDTO cronology = fishingTripService.getCronologyOfFishingTrip(selectedTrip, 1);
+        ChronologyTripDTO chronology = fishingTripService.getChronologyOfFishingTrip(selectedTrip, 1);
 
-        assertEquals(0, cronology.getPreviousTrips().size());
-        assertEquals(0, cronology.getNextTrips().size());
+        assertEquals(0, chronology.getPreviousTrips().size());
+        assertEquals(0, chronology.getNextTrips().size());
     }
 
-    private List<String> getIds(Stream<CronologyData> entities) {
-        return entities.map(CronologyData::getTripId).collect(Collectors.toList());
+    private List<String> getIds(Stream<ChronologyData> entities) {
+        return entities.map(ChronologyData::getTripId).collect(Collectors.toList());
     }
 
     private List<VesselIdentifierEntity> getVesselIdentifiers() {
@@ -242,23 +242,23 @@ public class FishingTripServiceBeanTest {
         return identifierEntities;
     }
 
-    public Stream<CronologyData> getPreviousTrips() {
+    public Stream<ChronologyData> getPreviousTrips() {
         return Stream.of(
-            new CronologyData("SRC-2020-01-29", "2020-01-29"),
-            new CronologyData("SRC-2020-01-28", "2020-01-28"),
-            new CronologyData("SRC-2020-01-22", "2020-01-22"),
-            new CronologyData("SRC-2020-01-17", "2020-01-17"),
-            new CronologyData("SRC-2020-01-16", "2020-01-16")
+            new ChronologyData("SRC-2020-01-29", "2020-01-29"),
+            new ChronologyData("SRC-2020-01-28", "2020-01-28"),
+            new ChronologyData("SRC-2020-01-22", "2020-01-22"),
+            new ChronologyData("SRC-2020-01-17", "2020-01-17"),
+            new ChronologyData("SRC-2020-01-16", "2020-01-16")
         );
     }
 
-    public Stream<CronologyData> getNextTrips(){
+    public Stream<ChronologyData> getNextTrips(){
         return Stream.of(
-                new CronologyData("SRC-2020-03-16", "2020-01-16"),
-                new CronologyData("SRC-2020-03-17", "2020-01-17"),
-                new CronologyData("SRC-2020-03-22", "2020-01-22"),
-                new CronologyData("SRC-2020-03-28", "2020-01-28"),
-                new CronologyData("SRC-2020-03-29", "2020-01-29")
+                new ChronologyData("SRC-2020-03-16", "2020-01-16"),
+                new ChronologyData("SRC-2020-03-17", "2020-01-17"),
+                new ChronologyData("SRC-2020-03-22", "2020-01-22"),
+                new ChronologyData("SRC-2020-03-28", "2020-01-28"),
+                new ChronologyData("SRC-2020-03-29", "2020-01-29")
         );
     }
 

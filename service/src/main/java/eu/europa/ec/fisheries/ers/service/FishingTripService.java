@@ -22,7 +22,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ChronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
@@ -31,7 +31,6 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 
 /**
@@ -41,7 +40,7 @@ public interface FishingTripService {
 
     /**
      * <p>
-     * This API returns the list of cronology of selected fishing trip,
+     * This API returns the list of chronology of selected fishing trip,
      * Additionally it also return the current trip for the vessel.
      * <p>
      * <code>if (Count == 0)</code> Then return all the previous and next
@@ -51,7 +50,7 @@ public interface FishingTripService {
      * @param count  number of trip Id to view
      * @return list of fishing trips
      */
-    CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) throws ServiceException;
+    ChronologyTripDTO getChronologyOfFishingTrip(String tripId, Integer count) throws ServiceException;
 
 
     /**

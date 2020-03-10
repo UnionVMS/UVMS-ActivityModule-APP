@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import eu.europa.ec.fisheries.ers.fa.entities.CronologyData;
+import eu.europa.ec.fisheries.ers.fa.entities.ChronologyData;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
@@ -50,26 +50,26 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
         return query.getSingleResult();
     }
 
-    public Stream<CronologyData> getPreviousTrips(String vesselGuid, Date startDate, Integer limit) {
+    public Stream<ChronologyData> getPreviousTrips(String vesselGuid, Date startDate, Integer limit) {
         return getTrips(FishingTripIdentifierEntity.FIND_PREVIOUS_TRIPS, QueryParameter.with(VESSEL_GUID, vesselGuid).and(SELECTED_TRIP_START_DATE, startDate), limit);
     }
 
-    public Stream<CronologyData> getNextTrips(String vesselGuid, Date startDate, Integer limit) {
+    public Stream<ChronologyData> getNextTrips(String vesselGuid, Date startDate, Integer limit) {
         return getTrips(FishingTripIdentifierEntity.FIND_NEXT_TRIPS, QueryParameter.with(VESSEL_GUID, vesselGuid).and(SELECTED_TRIP_START_DATE, startDate), limit);
     }
 
-    public Stream<CronologyData> getNextConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
+    public Stream<ChronologyData> getNextConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
         return getTrips(FishingTripIdentifierEntity.FIND_NEXT_CONCURRENT_TRIPS, QueryParameter.with(VESSEL_GUID, vesselGuid).and(SELECTED_TRIP_START_DATE, startDate).and(TRIP_ID, tripId), limit);
     }
 
-    public Stream<CronologyData> getPreviousConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
+    public Stream<ChronologyData> getPreviousConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
         return getTrips(FishingTripIdentifierEntity.FIND_PREVIOUS_CONCURRENT_TRIPS, QueryParameter.with(VESSEL_GUID, vesselGuid).and(SELECTED_TRIP_START_DATE, startDate).and(TRIP_ID, tripId), limit);
     }
 
-    private Stream<CronologyData> getTrips(String queryName, QueryParameter params, int limit) {
+    private Stream<ChronologyData> getTrips(String queryName, QueryParameter params, int limit) {
         TypedQuery<Object[]> query = getEntityManager().createNamedQuery(queryName, Object[].class);
         params.parameters().forEach(query::setParameter);
         query.setMaxResults(limit);
-        return query.getResultList().stream().map(obj -> new CronologyData(obj[0].toString(), DateUtils.dateToString((Date) obj[1])));
+        return query.getResultList().stream().map(obj -> new ChronologyData(obj[0].toString(), DateUtils.dateToString((Date) obj[1])));
     }
 }
