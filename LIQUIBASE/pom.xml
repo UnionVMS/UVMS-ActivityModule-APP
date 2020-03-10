@@ -45,7 +45,7 @@
 			</activation>
 			<properties>
 				<db.driver>org.postgresql.Driver</db.driver>
-				<db.url>jdbc:postgresql://localhost:15432/db71u</db.url>
+				<db.url>jdbc:postgresql://localhost:25432/db71u</db.url>
 				<db.user>activity</db.user>
 				<db.passwd>activity</db.passwd>
 				<db.defaultSchema>activity</db.defaultSchema>

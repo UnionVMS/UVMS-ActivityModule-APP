@@ -26,13 +26,7 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 import javax.inject.Inject;
@@ -75,8 +69,8 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))")
     @Mapping(target = "aapProcesses", ignore = true)
     @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))")
-    @Mapping(target = "locations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations()))")
-    @Mapping(target = "destinations", expression = "java(getFluxLocationEntities(faCatch.getDestinationFLUXLocations()))")
+    @Mapping(target = "locations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatchEntity))")
+    @Mapping(target = "destinations", expression = "java(getFluxLocationEntities(faCatch.getDestinationFLUXLocations(), faCatchEntity))")
     @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))")
     @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))")
     @Mapping(target = "id", ignore = true)
@@ -86,6 +80,10 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "presentation", ignore = true)
     @Mapping(target = "fishingTrip", expression = "java(getFishingTripEntity(faCatch.getRelatedFishingTrips()))")
     @Mapping(target = "gearTypeCode", ignore = true)
+    @Mapping(target = "geom", ignore = true)
+    @Mapping(target = "longitude", ignore = true)
+    @Mapping(target = "latitude", ignore = true)
+    @Mapping(target = "altitude", ignore = true)
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
     @InheritInverseConfiguration
@@ -196,16 +194,31 @@ public abstract class FaCatchMapper extends BaseMapper {
         return fluxCharacteristicEntities;
     }
 
-    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations) {
-        Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
+    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FaCatchEntity faCatchEntity) {
+        if (fluxLocations == null || fluxLocations.isEmpty()) {
+            return Collections.emptySet();
+        }
         FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
+        Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
+        // TODO: POSITIONS!!!!
         for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
-            FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
-            if(fluxLocationEntity == null) {
-                fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
-                em.persist(fluxLocationEntity);
+            if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
+                FLUXGeographicalCoordinate coordinate = fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate();
+                if(coordinate != null) {
+                    faCatchEntity.setLongitude(coordinate.getLongitudeMeasure().getValue().doubleValue());
+                    faCatchEntity.setLatitude(coordinate.getLatitudeMeasure().getValue().doubleValue());
+                    if(coordinate.getAltitudeMeasure() != null){
+                        faCatchEntity.setAltitude(coordinate.getAltitudeMeasure().getValue().doubleValue());
+                    }
+                }
+            } else {
+                FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+                if(fluxLocationEntity == null) {
+                    fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
+                    em.persist(fluxLocationEntity);
+                }
+                fluxLocationEntities.add(fluxLocationEntity);
             }
-            fluxLocationEntities.add(fluxLocationEntity);
         }
 
         return fluxLocationEntities;

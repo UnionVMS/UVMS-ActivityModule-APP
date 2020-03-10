@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -146,6 +147,18 @@ public class FaCatchEntity implements Serializable {
 	@JoinColumn(name = "trip_id", referencedColumnName = "trip_id")
 	@JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
 	private FishingTripEntity fishingTrip;
+
+	@Column(precision = 17, scale = 17)
+	private Double longitude;
+
+	@Column(precision = 17, scale = 17)
+	private Double latitude;
+
+	@Column(precision = 17, scale = 17)
+	private Double altitude;
+
+	@Column(name = "geom", columnDefinition = "Geometry")
+	private Point geom;
 
 	@PrePersist
 	public void prePersist() {

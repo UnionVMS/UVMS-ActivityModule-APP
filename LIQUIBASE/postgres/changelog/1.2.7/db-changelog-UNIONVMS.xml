@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.2.5/db-changelog-UNIONVMS.xml">
+    <changeSet author="anwall" id="ers-catch_add-pos">
+        <addColumn tableName="activity_fa_catch">
+            <column name="longitude" type="FLOAT8"/>
+            <column name="latitude" type="FLOAT8"/>
+            <column name="altitude" type="FLOAT8"/>
+            <column name="geom" type="geometry(Point, 4326)" />
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
