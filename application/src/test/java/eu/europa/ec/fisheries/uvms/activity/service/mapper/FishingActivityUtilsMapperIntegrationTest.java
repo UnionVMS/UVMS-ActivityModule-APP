@@ -20,7 +20,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
@@ -77,8 +77,8 @@ public class FishingActivityUtilsMapperIntegrationTest extends TransactionalTest
         assertFishingActivityFields(fishingActivity, fishingActivityEntity.getDestVesselCharId().getFishingActivitiesForDestVesselCharId());
 
         assertNotNull(fishingActivityEntity.getFluxLocations());
-        FluxLocationEntity fluxLocationEntity = fishingActivityEntity.getFluxLocations().iterator().next();
-        assertNotNull(fluxLocationEntity);
+        LocationEntity locationEntity = fishingActivityEntity.getFluxLocations().iterator().next();
+        assertNotNull(locationEntity);
 
         assertNotNull(fishingActivityEntity.getAllRelatedFishingActivities());
         FishingActivityEntity relatedFishingActivityEntity = fishingActivityEntity.getAllRelatedFishingActivities().iterator().next();

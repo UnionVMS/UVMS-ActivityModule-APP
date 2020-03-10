@@ -12,4 +12,9 @@
             <column name="geom" type="geometry(Point, 4326)" />
         </addColumn>
     </changeSet>
+
+    <changeSet author="anwall" id="">
+        <renameTable newTableName="activity_location" oldTableName="activity_flux_location" />
+    </changeSet>
+
 </databaseChangeLog>

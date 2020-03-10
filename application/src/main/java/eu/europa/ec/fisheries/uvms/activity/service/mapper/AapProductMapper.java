@@ -14,8 +14,8 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.LocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.ProcessingProductsDto;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -87,8 +87,8 @@ public abstract class AapProductMapper {
 
     protected Map<String, String> getDenormalizedLocations(AapProductEntity aapProduct) {
         Map<String, String> locations = new HashMap<>();
-        for(FluxLocationEntity location : aapProduct.getAapProcess().getFaCatch().getLocations()) {
-            if(location.getTypeCode().equals(FluxLocationEnum.AREA)) {
+        for(LocationEntity location : aapProduct.getAapProcess().getFaCatch().getLocations()) {
+            if(location.getTypeCode().equals(LocationEnum.AREA)) {
                 locations.put(location.getFluxLocationIdentifierSchemeId(), location.getFluxLocationIdentifier());
             }
         }

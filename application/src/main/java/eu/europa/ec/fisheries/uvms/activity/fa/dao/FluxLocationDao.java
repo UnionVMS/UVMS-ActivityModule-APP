@@ -13,7 +13,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.persistence.EntityManager;
@@ -28,18 +28,18 @@ public class FluxLocationDao {
         this.em = em;
     }
 
-    public FluxLocationEntity findLocation(IDType idType) {
+    public LocationEntity findLocation(IDType idType) {
         if(idType == null) {
             return null;
         }
-        TypedQuery<FluxLocationEntity> query = em.createNamedQuery(FluxLocationEntity.LOOKUP_LOCATION, FluxLocationEntity.class);
+        TypedQuery<LocationEntity> query = em.createNamedQuery(LocationEntity.LOOKUP_LOCATION, LocationEntity.class);
         query.setParameter("identifier", idType.getValue());
         query.setParameter("schemeId", idType.getSchemeID());
-        FluxLocationEntity fluxLocationEntity = null;
+        LocationEntity locationEntity = null;
         try {
-            fluxLocationEntity = query.getSingleResult();
+            locationEntity = query.getSingleResult();
         } catch (NoResultException ignore) {}
-        return fluxLocationEntity;
+        return locationEntity;
     }
 
 }

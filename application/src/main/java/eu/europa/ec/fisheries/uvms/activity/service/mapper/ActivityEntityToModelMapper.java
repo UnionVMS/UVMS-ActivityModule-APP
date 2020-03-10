@@ -10,21 +10,8 @@
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.ContactPartyRoleEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentRelatedFaReportEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.RegistrationLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharCodeEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselStorageCharacteristicsEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +23,8 @@ import org.mapstruct.ReportingPolicy;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.*;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.MeasureType;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.QuantityType;
 
 import javax.inject.Inject;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -249,21 +238,21 @@ public abstract class ActivityEntityToModelMapper extends BaseMapper {
         target.setSpecifiedFACatches(faCatchList);
     }
 
-    private void mapSpecFluxLocations(FACatch faCatch, Set<FluxLocationEntity> locations) {
+    private void mapSpecFluxLocations(FACatch faCatch, Set<LocationEntity> locations) {
         if (CollectionUtils.isNotEmpty(locations)) {
             List<FLUXLocation> specified = new ArrayList<>();
-            for (FluxLocationEntity fluxLocation : locations) {
+            for (LocationEntity fluxLocation : locations) {
                 specified.add(fluxLocationMapper.mapToFluxLocation(fluxLocation));
             }
             faCatch.setSpecifiedFLUXLocations(specified);
         }
     }
 
-    private void mapDestFluxLocations(FACatch faCatch, Set<FluxLocationEntity> locations) {
+    private void mapDestFluxLocations(FACatch faCatch, Set<LocationEntity> locations) {
         if (CollectionUtils.isNotEmpty(locations)) {
 
             List<FLUXLocation> destination = new ArrayList<>();
-            for (FluxLocationEntity fluxLocation : locations) {
+            for (LocationEntity fluxLocation : locations) {
                 destination.add(fluxLocationMapper.mapToFluxLocation(fluxLocation));
             }
             faCatch.setDestinationFLUXLocations(destination);
@@ -274,7 +263,7 @@ public abstract class ActivityEntityToModelMapper extends BaseMapper {
         List<FLUXCharacteristic> fluxCharacteristicList = new ArrayList<>();
         for (FluxCharacteristicEntity fluxCharacteristicEntity : fluxCharacteristics) {
             FLUXCharacteristic fLUXCharacteristic = FluxCharacteristicsMapper.INSTANCE.mapToFLUXCharacteristic(fluxCharacteristicEntity);
-            FluxLocationEntity fluxLocation = fluxCharacteristicEntity.getFluxLocation();
+            LocationEntity fluxLocation = fluxCharacteristicEntity.getFluxLocation();
             FLUXLocation location = fluxLocationMapper.mapToFluxLocation(fluxLocation);
             if (fluxLocation != null) {
                 fLUXCharacteristic.setSpecifiedFLUXLocations(Collections.singletonList(location));

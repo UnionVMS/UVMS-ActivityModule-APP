@@ -327,12 +327,12 @@ public abstract class FishingActivityMapper {
         return null;
     }
 
-    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FishingActivityEntity fishingActivityEntity) {
+    protected Set<LocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FishingActivityEntity fishingActivityEntity) {
         if (fluxLocations == null || fluxLocations.isEmpty()) {
             return Collections.emptySet();
         }
         FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
-        Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
+        Set<LocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
             if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
                 FLUXGeographicalCoordinate coordinate = fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate();
@@ -344,12 +344,12 @@ public abstract class FishingActivityMapper {
                     }
                 }
             } else {
-                FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
-                if(fluxLocationEntity == null) {
-                    fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
-                    em.persist(fluxLocationEntity);
+                LocationEntity locationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+                if(locationEntity == null) {
+                    locationEntity = locationMapper.mapToLocationEntity(fluxLocation);
+                    em.persist(locationEntity);
                 }
-                fluxLocationEntities.add(fluxLocationEntity);
+                fluxLocationEntities.add(locationEntity);
             }
         }
         return fluxLocationEntities;

@@ -12,12 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxLocationDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
@@ -194,12 +190,12 @@ public abstract class FaCatchMapper extends BaseMapper {
         return fluxCharacteristicEntities;
     }
 
-    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FaCatchEntity faCatchEntity) {
+    protected Set<LocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FaCatchEntity faCatchEntity) {
         if (fluxLocations == null || fluxLocations.isEmpty()) {
             return Collections.emptySet();
         }
         FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
-        Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
+        Set<LocationEntity> fluxLocationEntities = new HashSet<>();
         // TODO: POSITIONS!!!!
         for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
             if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
@@ -212,12 +208,12 @@ public abstract class FaCatchMapper extends BaseMapper {
                     }
                 }
             } else {
-                FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
-                if(fluxLocationEntity == null) {
-                    fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
-                    em.persist(fluxLocationEntity);
+                LocationEntity locationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+                if(locationEntity == null) {
+                    locationEntity = locationMapper.mapToLocationEntity(fluxLocation);
+                    em.persist(locationEntity);
                 }
-                fluxLocationEntities.add(fluxLocationEntity);
+                fluxLocationEntities.add(locationEntity);
             }
         }
 

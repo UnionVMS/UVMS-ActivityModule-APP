@@ -128,14 +128,14 @@ public class FaCatchEntity implements Serializable {
 			name = "activity_fa_catch_specified_location",
 			joinColumns = @JoinColumn(name = "fa_catch_id"),
 			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
-	private Set<FluxLocationEntity> locations = new HashSet<>();
+	private Set<LocationEntity> locations = new HashSet<>();
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "activity_fa_catch_destination_location",
 			joinColumns = @JoinColumn(name = "fa_catch_id"),
 			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
-	private Set<FluxLocationEntity> destinations = new HashSet<>();
+	private Set<LocationEntity> destinations = new HashSet<>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<>();

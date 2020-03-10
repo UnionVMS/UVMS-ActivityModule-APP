@@ -195,7 +195,7 @@ public class FishingActivityEntity implements Serializable {
 			name = "activity_fishing_activity_flux_location",
 			joinColumns = @JoinColumn(name = "fishing_activity_id"),
 			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
-	private Set<FluxLocationEntity> fluxLocations;
+	private Set<LocationEntity> fluxLocations;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "relatedFishingActivity", cascade = CascadeType.ALL)
 	private Set<FishingActivityEntity> allRelatedFishingActivities;

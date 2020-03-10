@@ -14,13 +14,8 @@
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.TransactionalTests;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.rest.BaseActivityArquillianTest;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.util.MapperUtil;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Test;
@@ -67,8 +62,8 @@ public class FaCatchMapperIntegrationTest extends TransactionalTests {
         assertFaCatchFields(faCatch, fluxCharacteristicEntity.getFaCatch());
 
         assertNotNull(faCatchEntity.getLocations());
-        FluxLocationEntity fluxLocationEntity = faCatchEntity.getLocations().iterator().next();
-        assertNotNull(fluxLocationEntity);
+        LocationEntity locationEntity = faCatchEntity.getLocations().iterator().next();
+        assertNotNull(locationEntity);
     }
 
     private void assertFaCatchFields(FACatch faCatch, FaCatchEntity faCatchEntity) {

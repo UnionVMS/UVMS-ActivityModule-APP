@@ -11,16 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.LocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxReportIdentifierDTO;
@@ -287,10 +281,10 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
             return Collections.emptyList();
         }
         Set<String> areas = new HashSet<>();
-        Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
+        Set<LocationEntity> fluxLocations = entity.getFluxLocations();
 
-        for (FluxLocationEntity location : fluxLocations) {
-            if (location.getTypeCode() == FluxLocationEnum.AREA) {
+        for (LocationEntity location : fluxLocations) {
+            if (location.getTypeCode() == LocationEnum.AREA) {
                 areas.add(location.getFluxLocationIdentifier());
             }
         }
@@ -303,9 +297,9 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
             return Collections.emptyList();
         }
         Set<String> ports = new HashSet<>();
-        Set<FluxLocationEntity> fluxLocations = entity.getFluxLocations();
-        for (FluxLocationEntity location : fluxLocations) {
-            if (location.getTypeCode() == FluxLocationEnum.LOCATION) {
+        Set<LocationEntity> fluxLocations = entity.getFluxLocations();
+        for (LocationEntity location : fluxLocations) {
+            if (location.getTypeCode() == LocationEnum.LOCATION) {
                 ports.add(location.getFluxLocationIdentifier());
             }
         }

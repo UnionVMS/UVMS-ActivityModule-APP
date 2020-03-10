@@ -101,7 +101,7 @@ public class FluxCharacteristicEntity implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "specified_flux_location_id")
-    private FluxLocationEntity fluxLocation;
+    private LocationEntity fluxLocation;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "specified_flap_document_id")

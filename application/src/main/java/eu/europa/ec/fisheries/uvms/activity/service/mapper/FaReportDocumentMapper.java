@@ -17,7 +17,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripCache;
@@ -194,12 +194,12 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                 FluxCharacteristicEntity fluxCharacteristicEntity = fluxCharacteristicsMapper.mapToFluxCharEntity(specifiedFLUXCharacteristic);
                 List<FLUXLocation> specifiedFLUXLocations = specifiedFLUXCharacteristic.getSpecifiedFLUXLocations();
                 for (FLUXLocation specifiedFLUXLocation : Utils.safeIterable(specifiedFLUXLocations)) {
-                    FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(specifiedFLUXLocation.getID());
-                    if(fluxLocationEntity == null) {
-                        fluxLocationEntity = locationMapper.mapToFluxLocationEntity(specifiedFLUXLocation);
-                        em.persist(fluxLocationEntity);
+                    LocationEntity locationEntity = fluxLocationDao.findLocation(specifiedFLUXLocation.getID());
+                    if(locationEntity == null) {
+                        locationEntity = locationMapper.mapToLocationEntity(specifiedFLUXLocation);
+                        em.persist(locationEntity);
                     }
-                    fluxCharacteristicEntity.setFluxLocation(fluxLocationEntity);
+                    fluxCharacteristicEntity.setFluxLocation(locationEntity);
                     fluxCharacteristicEntity.setFishingActivity(fishingActivityEntity);
                 }
                 fishingActivityEntity.addFluxCharacteristics(fluxCharacteristicEntity);
