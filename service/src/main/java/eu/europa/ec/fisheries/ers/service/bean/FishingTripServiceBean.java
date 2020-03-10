@@ -115,24 +115,24 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
      * {@inheritDoc}
      */
     @Override
-    public CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) throws ServiceException {
+    public ChronologyTripDTO getChronologyOfFishingTrip(String tripId, Integer count) throws ServiceException {
         String vesselGuid = vesselIdentifierDao.getLatestVesselIdByTrip(tripId); // Find the latest Vessel for the Trip for finding the trip of that vessel
-        CronologyTripDTO cronologyTripDTO = new CronologyTripDTO();
+        ChronologyTripDTO chronologyTripDTO = new ChronologyTripDTO();
         if(vesselGuid!=null){
             Date startDate = fishingTripIdentifierDao.getSelectedTripStartDate(tripId);
-            cronologyTripDTO.setSelectedTrip(new CronologyDTO(tripId, DateUtils.dateToString(startDate)));
-            List<CronologyDTO> previousTrips = getPreviousTrips(vesselGuid, startDate, count);
-            List<CronologyDTO> nextTrips = getNextTrips(vesselGuid, startDate, count);
+            chronologyTripDTO.setSelectedTrip(new ChronologyDTO(tripId, DateUtils.dateToString(startDate)));
+            List<ChronologyDTO> previousTrips = getPreviousTrips(vesselGuid, startDate, count);
+            List<ChronologyDTO> nextTrips = getNextTrips(vesselGuid, startDate, count);
             previousTrips.addAll(0,getPreviousConcurrentTrips(tripId, vesselGuid, startDate, count));
             nextTrips.addAll(0, getNextConcurrentTrips(tripId, vesselGuid, startDate, count));
             Collections.reverse(nextTrips);
 
             Map<String, Integer> countMap = calculateTripCounts(count, previousTrips.size(), nextTrips.size());
 
-            cronologyTripDTO.setPreviousTrips(previousTrips.subList(0, countMap.get(PREVIOUS)));
-            cronologyTripDTO.setNextTrips(nextTrips.subList(nextTrips.size() - countMap.get(NEXT), nextTrips.size()));
+            chronologyTripDTO.setPreviousTrips(previousTrips.subList(0, countMap.get(PREVIOUS)));
+            chronologyTripDTO.setNextTrips(nextTrips.subList(nextTrips.size() - countMap.get(NEXT), nextTrips.size()));
         }
-        return cronologyTripDTO;
+        return chronologyTripDTO;
     }
 
     private Map<String, Integer> calculateTripCounts(Integer count, Integer previousTripCount, Integer nextTripCount) {
@@ -169,27 +169,27 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return ImmutableMap.<String, Integer>builder().put(PREVIOUS, previous).put(NEXT, next).build();
     }
 
-    private List<CronologyDTO> getPreviousTrips(String vesselGuid, Date startDate, Integer limit) {
+    private List<ChronologyDTO> getPreviousTrips(String vesselGuid, Date startDate, Integer limit) {
         return fishingTripIdentifierDao.getPreviousTrips(vesselGuid, startDate, limit)
-                .map(trip -> new CronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .map(trip -> new ChronologyDTO(trip.getTripId(), trip.getTripDate()))
                 .collect(Collectors.toList());
     }
 
-    private List<CronologyDTO> getNextTrips(String vesselGuid, Date startDate, Integer limit) {
+    private List<ChronologyDTO> getNextTrips(String vesselGuid, Date startDate, Integer limit) {
         return fishingTripIdentifierDao.getNextTrips(vesselGuid, startDate,limit)
-                .map(trip -> new CronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .map(trip -> new ChronologyDTO(trip.getTripId(), trip.getTripDate()))
                 .collect(Collectors.toList());
     }
 
-    private List<CronologyDTO> getPreviousConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
+    private List<ChronologyDTO> getPreviousConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
         return fishingTripIdentifierDao.getPreviousConcurrentTrips(tripId, vesselGuid, startDate, limit)
-                .map(trip -> new CronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .map(trip -> new ChronologyDTO(trip.getTripId(), trip.getTripDate()))
                 .collect(Collectors.toList());
     }
 
-    private List<CronologyDTO> getNextConcurrentTrips(String tripId, String vesselGuid,  Date startDate, Integer limit) {
+    private List<ChronologyDTO> getNextConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
         return fishingTripIdentifierDao.getNextConcurrentTrips(tripId, vesselGuid, startDate, limit)
-                .map(trip -> new CronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .map(trip -> new ChronologyDTO(trip.getTripId(), trip.getTripDate()))
                 .collect(Collectors.toList());
     }
 

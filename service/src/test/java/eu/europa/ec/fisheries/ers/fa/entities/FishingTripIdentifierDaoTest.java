@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,18 +40,18 @@ public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
 
     @Test
     @SneakyThrows
-    public void testGetPreviousTrips() throws Exception {
+    public void testGetPreviousTrips() {
         dbSetupTracker.skipNextLaunch();
-        List<CronologyData> previousTrips = dao.getPreviousTrips("AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG", java.sql.Date.valueOf("2020-03-06"), 5).collect(Collectors.toList());
+        List<ChronologyData> previousTrips = dao.getPreviousTrips("AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG", DateUtils.stringToDate("2020-03-06 00:00:00 +0000"), 5).collect(Collectors.toList());
         assertNotNull(previousTrips);
         assertNotEquals(0, previousTrips.size());
     }
 
     @Test
     @SneakyThrows
-    public void testGetNextTrips() throws Exception {
+    public void testGetNextTrips() {
         dbSetupTracker.skipNextLaunch();
-        List<CronologyData> nextTrips = dao.getNextTrips("AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG", java.sql.Date.valueOf("2020-03-06"), 5).collect(Collectors.toList());
+        List<ChronologyData> nextTrips = dao.getNextTrips("AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG", DateUtils.stringToDate("2020-03-06 00:00:00 +0000"), 5).collect(Collectors.toList());
         assertNotNull(nextTrips);
         assertNotEquals(0, nextTrips.size());
     }
