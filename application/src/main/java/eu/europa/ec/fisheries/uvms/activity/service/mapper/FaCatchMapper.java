@@ -12,12 +12,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxLocationDao;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import org.apache.commons.collections.CollectionUtils;
@@ -26,13 +22,7 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPStock;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FACatch;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXCharacteristic;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.SizeDistribution;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
 import javax.inject.Inject;
@@ -75,8 +65,8 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))")
     @Mapping(target = "aapProcesses", ignore = true)
     @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))")
-    @Mapping(target = "locations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations()))")
-    @Mapping(target = "destinations", expression = "java(getFluxLocationEntities(faCatch.getDestinationFLUXLocations()))")
+    @Mapping(target = "locations", expression = "java(getLocationEntitiesAndSetPosition(faCatch.getSpecifiedFLUXLocations(), faCatchEntity))")
+    @Mapping(target = "destinations", expression = "java(getLocationEntities(faCatch.getDestinationFLUXLocations()))")
     @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))")
     @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))")
     @Mapping(target = "id", ignore = true)
@@ -86,6 +76,10 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "presentation", ignore = true)
     @Mapping(target = "fishingTrip", expression = "java(getFishingTripEntity(faCatch.getRelatedFishingTrips()))")
     @Mapping(target = "gearTypeCode", ignore = true)
+    @Mapping(target = "geom", ignore = true)
+    @Mapping(target = "longitude", ignore = true)
+    @Mapping(target = "latitude", ignore = true)
+    @Mapping(target = "altitude", ignore = true)
     public abstract FaCatchEntity mapToFaCatchEntity(FACatch faCatch);
 
     @InheritInverseConfiguration
@@ -196,16 +190,50 @@ public abstract class FaCatchMapper extends BaseMapper {
         return fluxCharacteristicEntities;
     }
 
-    protected Set<FluxLocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations) {
-        Set<FluxLocationEntity> fluxLocationEntities = new HashSet<>();
+    protected Set<LocationEntity> getLocationEntitiesAndSetPosition(List<FLUXLocation> fluxLocations, FaCatchEntity faCatchEntity) {
+        if (fluxLocations == null || fluxLocations.isEmpty()) {
+            return Collections.emptySet();
+        }
         FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
+        Set<LocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
-            FluxLocationEntity fluxLocationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
-            if(fluxLocationEntity == null) {
-                fluxLocationEntity = locationMapper.mapToFluxLocationEntity(fluxLocation);
-                em.persist(fluxLocationEntity);
+            if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
+                FLUXGeographicalCoordinate coordinate = fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate();
+                if(coordinate != null) {
+                    faCatchEntity.setLongitude(coordinate.getLongitudeMeasure().getValue().doubleValue());
+                    faCatchEntity.setLatitude(coordinate.getLatitudeMeasure().getValue().doubleValue());
+                    if(coordinate.getAltitudeMeasure() != null){
+                        faCatchEntity.setAltitude(coordinate.getAltitudeMeasure().getValue().doubleValue());
+                    }
+                }
+            } else {
+                LocationEntity locationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+                if(locationEntity == null) {
+                    locationEntity = locationMapper.mapToLocationEntity(fluxLocation);
+                    em.persist(locationEntity);
+                }
+                fluxLocationEntities.add(locationEntity);
             }
-            fluxLocationEntities.add(fluxLocationEntity);
+        }
+
+        return fluxLocationEntities;
+    }
+
+    protected Set<LocationEntity> getLocationEntities(List<FLUXLocation> fluxLocations) {
+        if (fluxLocations == null || fluxLocations.isEmpty()) {
+            return Collections.emptySet();
+        }
+        FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
+        Set<LocationEntity> fluxLocationEntities = new HashSet<>();
+        for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
+            if(fluxLocation.getTypeCode() == null || (fluxLocation.getTypeCode() != null && !fluxLocation.getTypeCode().getValue().equals("POSITION"))) {
+                LocationEntity locationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+                if(locationEntity == null) {
+                    locationEntity = locationMapper.mapToLocationEntity(fluxLocation);
+                    em.persist(locationEntity);
+                }
+                fluxLocationEntities.add(locationEntity);
+            }
         }
 
         return fluxLocationEntities;

@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.uvms.activity.fa.utils.LocationEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,16 +29,16 @@ import java.util.List;
 
 
 
-@NamedQuery(name = FluxLocationEntity.LOOKUP_LOCATION, query ="SELECT l FROM FluxLocationEntity l WHERE l.fluxLocationIdentifier =:identifier and l.fluxLocationIdentifierSchemeId =:schemeId")
+@NamedQuery(name = LocationEntity.LOOKUP_LOCATION, query ="SELECT l FROM LocationEntity l WHERE l.fluxLocationIdentifier =:identifier and l.fluxLocationIdentifierSchemeId =:schemeId")
 @Entity
-@Table(name = "activity_flux_location")
+@Table(name = "activity_location")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
 @EqualsAndHashCode(of = {"fluxLocationIdentifier", "fluxLocationIdentifierSchemeId"})
 @ToString
-public class FluxLocationEntity implements Serializable {
+public class LocationEntity implements Serializable {
 
 	public static final String LOOKUP_LOCATION = "LOOKUP_LOCATION";
 
@@ -50,7 +50,7 @@ public class FluxLocationEntity implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "type_code", nullable = false)
-	private FluxLocationEnum typeCode;
+	private LocationEnum typeCode;
 
 	@Column(name = "type_code_list_id", nullable = false)
 	private String typeCodeListId;

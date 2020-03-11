@@ -98,7 +98,7 @@ public class SearchQueryBuilderTest {
                 "LEFT  JOIN FETCH  a.delimitedPeriods dp   " +
                 "JOIN FETCH fa.vesselTransportMeans vt " +
                 "JOIN vt.vesselIdentifiers vi  RIGHT  " +
-                "JOIN a.fluxLocations fluxLoc  " +
+                "JOIN a.locations fluxLoc  " +
                 "JOIN FETCH  a.fishingGears fg   " +
                 "RIGHT  JOIN  a.faCatchs faCatch  " +
                 "LEFT JOIN  faCatch.aapProcesses aprocess  " +

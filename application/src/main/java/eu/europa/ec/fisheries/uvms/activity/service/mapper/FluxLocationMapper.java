@@ -11,7 +11,7 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import org.mapstruct.*;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXLocation;
 
@@ -32,11 +32,11 @@ public interface FluxLocationMapper {
     @Mapping(target = "nameLanguageId", expression = "java(BaseUtil.getLanguageIdFromList(fluxLocation.getNames()))")
     @Mapping(target = "regionalFisheriesManagementOrganizationCode", source = "regionalFisheriesManagementOrganizationCode.value")
     @Mapping(target = "regionalFisheriesManagementOrganizationCodeListId", source = "regionalFisheriesManagementOrganizationCode.listID")
-    FluxLocationEntity mapToFluxLocationEntity(FLUXLocation fluxLocation);
+    LocationEntity mapToLocationEntity(FLUXLocation fluxLocation);
 
     @InheritInverseConfiguration
     @Mapping(target = "specifiedPhysicalFLUXGeographicalCoordinate", ignore = true)
-    FLUXLocation mapToFluxLocation(FluxLocationEntity fluxLocation);
+    FLUXLocation mapToFluxLocation(LocationEntity fluxLocation);
 
-    List<FLUXLocation> mapToFluxLocationList(Set<FluxLocationEntity> fluxLocation);
+    List<FLUXLocation> mapToFluxLocationList(Set<LocationEntity> fluxLocation);
 }

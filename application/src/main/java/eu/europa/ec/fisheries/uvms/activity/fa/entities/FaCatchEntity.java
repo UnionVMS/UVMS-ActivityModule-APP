@@ -16,6 +16,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.locationtech.jts.geom.Point;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -38,7 +39,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(of = {"typeCode", "speciesCode", "typeCodeListId", "speciesCodeListid", "unitQuantity", "unitQuantityCode", "calculatedUnitQuantity", "weightMeasureUnitCode", "weightMeasure", "usageCode", "territory", "fishClassCode"})
-@ToString(exclude = {"fishingActivity", "aapProcesses", "fluxLocations", "fluxCharacteristics", "aapStocks"})
+@ToString(exclude = {"fishingActivity", "aapProcesses", "locations", "fluxCharacteristics", "aapStocks"})
 public class FaCatchEntity implements Serializable {
 
 	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";
@@ -127,14 +128,14 @@ public class FaCatchEntity implements Serializable {
 			name = "activity_fa_catch_specified_location",
 			joinColumns = @JoinColumn(name = "fa_catch_id"),
 			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
-	private Set<FluxLocationEntity> locations = new HashSet<>();
+	private Set<LocationEntity> locations = new HashSet<>();
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "activity_fa_catch_destination_location",
 			joinColumns = @JoinColumn(name = "fa_catch_id"),
 			inverseJoinColumns = @JoinColumn(name = "flux_location_id"))
-	private Set<FluxLocationEntity> destinations = new HashSet<>();
+	private Set<LocationEntity> destinations = new HashSet<>();
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "faCatch", cascade = CascadeType.ALL)
 	private Set<FluxCharacteristicEntity> fluxCharacteristics = new HashSet<>();
@@ -146,6 +147,18 @@ public class FaCatchEntity implements Serializable {
 	@JoinColumn(name = "trip_id", referencedColumnName = "trip_id")
 	@JoinColumn(name = "trip_scheme_id", referencedColumnName = "trip_scheme_id")
 	private FishingTripEntity fishingTrip;
+
+	@Column(precision = 17, scale = 17)
+	private Double longitude;
+
+	@Column(precision = 17, scale = 17)
+	private Double latitude;
+
+	@Column(precision = 17, scale = 17)
+	private Double altitude;
+
+	@Column(name = "geom", columnDefinition = "Geometry")
+	private Point geom;
 
 	@PrePersist
 	public void prePersist() {

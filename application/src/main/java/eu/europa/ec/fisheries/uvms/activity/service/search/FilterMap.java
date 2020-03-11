@@ -236,8 +236,8 @@ public class FilterMap {
         filterMappings.put(SearchFilter.FA_STATUS, new FilterDetails(FA_REPORT_DOC_TABLE_ALIAS, "fa.status IN (:" + STATUS_LIST + ")"));
         filterMappings.put(SearchFilter.REPORT_TYPE, new FilterDetails(StringUtils.SPACE, "fa.typeCode IN (:" + REPORT_TYPE_CODE + ")"));
         filterMappings.put(SearchFilter.ACTIVITY_TYPE, new FilterDetails(StringUtils.SPACE, "a.typeCode IN (:" + ACTIVITY_TYPE_CODE + ")"));
-        filterMappings.put(SearchFilter.AREAS, new FilterDetails("a.fluxLocations fluxLoc", "( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:" + AREA_ID + " )"));
-        filterMappings.put(SearchFilter.PORT, new FilterDetails("a.fluxLocations fluxLoc", " (fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:" + PORT_ID  + " )"));
+        filterMappings.put(SearchFilter.AREAS, new FilterDetails("a.locations fluxLoc", "( fluxLoc.typeCode IN ('AREA') and fluxLoc.fluxLocationIdentifier =:" + AREA_ID + " )"));
+        filterMappings.put(SearchFilter.PORT, new FilterDetails("a.locations fluxLoc", " (fluxLoc.typeCode IN ('LOCATION') and fluxLoc.fluxLocationIdentifier =:" + PORT_ID  + " )"));
         filterMappings.put(SearchFilter.GEAR, new FilterDetails(GEAR_TYPE_TABLE_ALIAS, "fg.typeCode IN (:" + FISHING_GEAR + ")"));
         filterMappings.put(SearchFilter.SPECIES, new FilterDetails(FA_CATCH_TABLE_ALIAS + LEFT_JOIN + AAP_PROCESS_TABLE_ALIAS + LEFT_JOIN + AAP_PRODUCT_TABLE_ALIAS, "( faCatch.speciesCode IN (:" + SPECIES_CODE + ") " + " OR aprod.speciesCode IN (:" + SPECIES_CODE + "))"));
         filterMappings.put(SearchFilter.QUANTITY_MIN, new FilterDetails(FA_CATCH_TABLE_ALIAS + LEFT_JOIN + " FETCH " + AAP_PROCESS_TABLE_ALIAS + LEFT_JOIN + " FETCH " + AAP_PRODUCT_TABLE_ALIAS, " (faCatch.calculatedWeightMeasure  BETWEEN :" + QUANTITY_MIN));

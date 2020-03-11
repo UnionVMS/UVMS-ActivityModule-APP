@@ -13,13 +13,8 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.utils;
 
-/**
- * @author padhyad
- * @author Gregory Rinaldi
- */
-public enum FluxLocationEnum {
+public enum LocationEnum {
 
     AREA,
-    LOCATION,
-    POSITION
+    LOCATION
 }
