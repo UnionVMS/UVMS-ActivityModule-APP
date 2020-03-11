@@ -65,8 +65,8 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))")
     @Mapping(target = "aapProcesses", ignore = true)
     @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))")
-    @Mapping(target = "locations", expression = "java(getLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatchEntity))")
-    @Mapping(target = "destinations", expression = "java(getLocationEntities(faCatch.getDestinationFLUXLocations(), faCatchEntity))")
+    @Mapping(target = "locations", expression = "java(getLocationEntitiesAndSetPosition(faCatch.getSpecifiedFLUXLocations(), faCatchEntity))")
+    @Mapping(target = "destinations", expression = "java(getLocationEntities(faCatch.getDestinationFLUXLocations()))")
     @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))")
     @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))")
     @Mapping(target = "id", ignore = true)
@@ -190,13 +190,12 @@ public abstract class FaCatchMapper extends BaseMapper {
         return fluxCharacteristicEntities;
     }
 
-    protected Set<LocationEntity> getLocationEntities(List<FLUXLocation> fluxLocations, FaCatchEntity faCatchEntity) {
+    protected Set<LocationEntity> getLocationEntitiesAndSetPosition(List<FLUXLocation> fluxLocations, FaCatchEntity faCatchEntity) {
         if (fluxLocations == null || fluxLocations.isEmpty()) {
             return Collections.emptySet();
         }
         FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
         Set<LocationEntity> fluxLocationEntities = new HashSet<>();
-        // TODO: POSITIONS!!!!
         for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
             if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
                 FLUXGeographicalCoordinate coordinate = fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate();
@@ -208,6 +207,26 @@ public abstract class FaCatchMapper extends BaseMapper {
                     }
                 }
             } else {
+                LocationEntity locationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
+                if(locationEntity == null) {
+                    locationEntity = locationMapper.mapToLocationEntity(fluxLocation);
+                    em.persist(locationEntity);
+                }
+                fluxLocationEntities.add(locationEntity);
+            }
+        }
+
+        return fluxLocationEntities;
+    }
+
+    protected Set<LocationEntity> getLocationEntities(List<FLUXLocation> fluxLocations) {
+        if (fluxLocations == null || fluxLocations.isEmpty()) {
+            return Collections.emptySet();
+        }
+        FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
+        Set<LocationEntity> fluxLocationEntities = new HashSet<>();
+        for (FLUXLocation fluxLocation : Utils.safeIterable(fluxLocations)) {
+            if(fluxLocation.getTypeCode() == null || (fluxLocation.getTypeCode() != null && !fluxLocation.getTypeCode().getValue().equals("POSITION"))) {
                 LocationEntity locationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
                 if(locationEntity == null) {
                     locationEntity = locationMapper.mapToLocationEntity(fluxLocation);

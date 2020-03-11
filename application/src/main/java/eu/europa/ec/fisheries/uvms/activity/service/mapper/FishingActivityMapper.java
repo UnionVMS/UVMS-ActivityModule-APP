@@ -61,7 +61,6 @@ public abstract class FishingActivityMapper {
         entity.setAllRelatedFishingActivities(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, entity));
         entity.setVesselTransportMeans(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity, entity));
         entity.setFaCatchs(mapToFaCatchEntities(fishingActivity.getSpecifiedFACatches(), entity));
-        entity.setLocations(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), entity));
         entity.setGearProblems(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), entity));
         entity.setFishingTrip(BaseMapper.mapToFishingTripEntity(fishingActivity.getSpecifiedFishingTrip()));
         entity.setSourceVesselCharId(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), entity));
@@ -80,6 +79,9 @@ public abstract class FishingActivityMapper {
         entity.setFisheryTypeCodeListId(getCodeTypeListId(fishingActivity.getFisheryTypeCode()));
         entity.setSpeciesTargetCode(getCodeType(fishingActivity.getSpeciesTargetCode()));
         entity.setSpeciesTargetCodeListId(getCodeTypeListId(fishingActivity.getSpeciesTargetCode()));
+        entity.setLocations(getLocationEntities(fishingActivity.getRelatedFLUXLocations()));
+        setPosition(entity, fishingActivity.getRelatedFLUXLocations());
+
 
         if(fishingActivity.getOperationsQuantity() != null) {
             QuantityType quantityType = new QuantityType();
@@ -327,33 +329,45 @@ public abstract class FishingActivityMapper {
         return null;
     }
 
-    protected Set<LocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FishingActivityEntity fishingActivityEntity) {
+    protected Set<LocationEntity> getLocationEntities(List<FLUXLocation> fluxLocations) {
         if (fluxLocations == null || fluxLocations.isEmpty()) {
             return Collections.emptySet();
         }
         FluxLocationDao fluxLocationDao = new FluxLocationDao(em);
         Set<LocationEntity> fluxLocationEntities = new HashSet<>();
         for (FLUXLocation fluxLocation : fluxLocations) {
-            if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
-                FLUXGeographicalCoordinate coordinate = fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate();
-                if(coordinate != null) {
-                    fishingActivityEntity.setLongitude(coordinate.getLongitudeMeasure().getValue().doubleValue());
-                    fishingActivityEntity.setLatitude(coordinate.getLatitudeMeasure().getValue().doubleValue());
-                    if(coordinate.getAltitudeMeasure() != null){
-                        fishingActivityEntity.setAltitude(coordinate.getAltitudeMeasure().getValue().doubleValue());
-                    }
-                }
-            } else {
+            if(fluxLocation.getTypeCode() == null || (fluxLocation.getTypeCode() != null && !fluxLocation.getTypeCode().getValue().equals("POSITION"))) {
                 LocationEntity locationEntity = fluxLocationDao.findLocation(fluxLocation.getID());
                 if(locationEntity == null) {
                     locationEntity = locationMapper.mapToLocationEntity(fluxLocation);
                     em.persist(locationEntity);
                 }
                 fluxLocationEntities.add(locationEntity);
+
             }
         }
         return fluxLocationEntities;
     }
+
+    protected void setPosition(FishingActivityEntity entity, List<FLUXLocation> fluxLocations) {
+        if (fluxLocations == null || fluxLocations.isEmpty()) {
+            return;
+        }
+        for (FLUXLocation fluxLocation : fluxLocations) {
+            if(fluxLocation.getTypeCode() != null && fluxLocation.getTypeCode().getValue().equals("POSITION")) {
+                FLUXGeographicalCoordinate coordinate = fluxLocation.getSpecifiedPhysicalFLUXGeographicalCoordinate();
+                if(coordinate != null) {
+                    entity.setLongitude(coordinate.getLongitudeMeasure().getValue().doubleValue());
+                    entity.setLatitude(coordinate.getLatitudeMeasure().getValue().doubleValue());
+                    if(coordinate.getAltitudeMeasure() != null){
+                        entity.setAltitude(coordinate.getAltitudeMeasure().getValue().doubleValue());
+                    }
+                    return;
+                }
+            }
+        }
+    }
+
 
     protected Set<GearProblemEntity> getGearProblemEntities(List<GearProblem> gearProblems, FishingActivityEntity fishingActivityEntity) {
         if (gearProblems == null || gearProblems.isEmpty()) {
