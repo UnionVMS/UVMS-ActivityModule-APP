@@ -156,7 +156,7 @@ public abstract class ActivityEntityToModelMapper extends BaseMapper {
         mapDestinationVesselStorageCharacteristic(target, source.getDestVesselCharId());
 
         target.setRelatedFLUXLocations(new ArrayList<>());
-        target.getRelatedFLUXLocations().addAll(fluxLocationMapper.mapToFluxLocationList(source.getFluxLocations()));
+        target.getRelatedFLUXLocations().addAll(fluxLocationMapper.mapToFluxLocationList(source.getLocations()));
         if(source.getLongitude() != null || source.getLatitude() != null) {
             FLUXLocation posFluxLocation = new FLUXLocation();
             FLUXGeographicalCoordinate fluxGeographicalCoordinate = new FLUXGeographicalCoordinate();

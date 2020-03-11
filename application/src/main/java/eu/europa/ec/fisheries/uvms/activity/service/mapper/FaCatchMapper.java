@@ -65,8 +65,8 @@ public abstract class FaCatchMapper extends BaseMapper {
     @Mapping(target = "sizeDistributionClassCodeListId", expression = "java(getSizeDistributionClassCodeListId(faCatch.getSpecifiedSizeDistribution()))")
     @Mapping(target = "aapProcesses", ignore = true)
     @Mapping(target = "fishingGears", expression = "java(getFishingGearEntities(faCatch.getUsedFishingGears(), faCatchEntity))")
-    @Mapping(target = "locations", expression = "java(getFluxLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatchEntity))")
-    @Mapping(target = "destinations", expression = "java(getFluxLocationEntities(faCatch.getDestinationFLUXLocations(), faCatchEntity))")
+    @Mapping(target = "locations", expression = "java(getLocationEntities(faCatch.getSpecifiedFLUXLocations(), faCatchEntity))")
+    @Mapping(target = "destinations", expression = "java(getLocationEntities(faCatch.getDestinationFLUXLocations(), faCatchEntity))")
     @Mapping(target = "fluxCharacteristics", expression = "java(getFluxCharacteristicEntities(faCatch.getApplicableFLUXCharacteristics(), faCatchEntity))")
     @Mapping(target = "aapStocks", expression = "java(getAapStockEntities(faCatch.getRelatedAAPStocks(), faCatchEntity))")
     @Mapping(target = "id", ignore = true)
@@ -190,7 +190,7 @@ public abstract class FaCatchMapper extends BaseMapper {
         return fluxCharacteristicEntities;
     }
 
-    protected Set<LocationEntity> getFluxLocationEntities(List<FLUXLocation> fluxLocations, FaCatchEntity faCatchEntity) {
+    protected Set<LocationEntity> getLocationEntities(List<FLUXLocation> fluxLocations, FaCatchEntity faCatchEntity) {
         if (fluxLocations == null || fluxLocations.isEmpty()) {
             return Collections.emptySet();
         }

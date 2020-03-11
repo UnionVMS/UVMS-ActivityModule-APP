@@ -39,7 +39,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode(of = {"typeCode", "speciesCode", "typeCodeListId", "speciesCodeListid", "unitQuantity", "unitQuantityCode", "calculatedUnitQuantity", "weightMeasureUnitCode", "weightMeasure", "usageCode", "territory", "fishClassCode"})
-@ToString(exclude = {"fishingActivity", "aapProcesses", "fluxLocations", "fluxCharacteristics", "aapStocks"})
+@ToString(exclude = {"fishingActivity", "aapProcesses", "locations", "fluxCharacteristics", "aapStocks"})
 public class FaCatchEntity implements Serializable {
 
 	public static final String CATCHES_FOR_FISHING_TRIP = "findCatchesForFishingTrip";

@@ -61,7 +61,7 @@ public abstract class FishingActivityMapper {
         entity.setAllRelatedFishingActivities(getAllRelatedFishingActivities(fishingActivity.getRelatedFishingActivities(), faReportDocumentEntity, entity));
         entity.setVesselTransportMeans(getVesselTransportMeansEntity(fishingActivity, faReportDocumentEntity, entity));
         entity.setFaCatchs(mapToFaCatchEntities(fishingActivity.getSpecifiedFACatches(), entity));
-        entity.setFluxLocations(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), entity));
+        entity.setLocations(getFluxLocationEntities(fishingActivity.getRelatedFLUXLocations(), entity));
         entity.setGearProblems(getGearProblemEntities(fishingActivity.getSpecifiedGearProblems(), entity));
         entity.setFishingTrip(BaseMapper.mapToFishingTripEntity(fishingActivity.getSpecifiedFishingTrip()));
         entity.setSourceVesselCharId(getSourceVesselStorageCharacteristics(fishingActivity.getSourceVesselStorageCharacteristic(), entity));

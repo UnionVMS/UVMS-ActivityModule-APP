@@ -24,6 +24,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 
 import java.time.Duration;
@@ -87,6 +88,7 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     @Mapping(target = "delimitedPeriod", expression = "java(getDelimitedPeriodDTOList(entity))")
     @Mapping(target = "faReportID", source = "faReportDocument.id")
     @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
+    @Mapping(target = "locations", ignore=true)
     public abstract ReportDTO mapToReportDTO(FishingActivityEntity entity);
 
     protected VesselTransportMeansEntity getFaReportDocVesselTransportMeans(FishingActivityEntity entity) {
@@ -277,13 +279,13 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     }
 
     protected List<String> getAreasForFishingActivity(FishingActivityEntity entity) {
-        if (entity == null || entity.getFluxLocations() == null) {
+        if (entity == null || entity.getLocations() == null) {
             return Collections.emptyList();
         }
         Set<String> areas = new HashSet<>();
-        Set<LocationEntity> fluxLocations = entity.getFluxLocations();
+        Set<LocationEntity> locations = entity.getLocations();
 
-        for (LocationEntity location : fluxLocations) {
+        for (LocationEntity location : locations) {
             if (location.getTypeCode() == LocationEnum.AREA) {
                 areas.add(location.getFluxLocationIdentifier());
             }
@@ -293,11 +295,11 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     }
 
     protected List<String> getPortsForFishingActivity(FishingActivityEntity entity) {
-        if (entity == null || entity.getFluxLocations() == null) {
+        if (entity == null || entity.getLocations() == null) {
             return Collections.emptyList();
         }
         Set<String> ports = new HashSet<>();
-        Set<LocationEntity> fluxLocations = entity.getFluxLocations();
+        Set<LocationEntity> fluxLocations = entity.getLocations();
         for (LocationEntity location : fluxLocations) {
             if (location.getTypeCode() == LocationEnum.LOCATION) {
                 ports.add(location.getFluxLocationIdentifier());

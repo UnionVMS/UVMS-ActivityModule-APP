@@ -76,8 +76,8 @@ public class FishingActivityUtilsMapperIntegrationTest extends TransactionalTest
         assertNotNull(fishingActivityEntity.getDestVesselCharId());
         assertFishingActivityFields(fishingActivity, fishingActivityEntity.getDestVesselCharId().getFishingActivitiesForDestVesselCharId());
 
-        assertNotNull(fishingActivityEntity.getFluxLocations());
-        LocationEntity locationEntity = fishingActivityEntity.getFluxLocations().iterator().next();
+        assertNotNull(fishingActivityEntity.getLocations());
+        LocationEntity locationEntity = fishingActivityEntity.getLocations().iterator().next();
         assertNotNull(locationEntity);
 
         assertNotNull(fishingActivityEntity.getAllRelatedFishingActivities());

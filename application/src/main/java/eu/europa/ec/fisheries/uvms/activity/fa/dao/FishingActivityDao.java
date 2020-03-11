@@ -153,7 +153,7 @@ public class FishingActivityDao {
     private TypedQuery<FishingActivityEntity> createFishingActivityEntityQuery(Geometry geometry) {
         StringBuilder stringBuilder = new StringBuilder("SELECT DISTINCT a from FishingActivityEntity a ")
                 .append("LEFT JOIN FETCH a.faReportDocument fa ")
-                .append("LEFT JOIN FETCH a.fluxLocations fl ")
+                .append("LEFT JOIN FETCH a.locations fl ")
                 .append("LEFT JOIN FETCH a.fishingGears fg ")
                 .append("LEFT JOIN FETCH a.fluxCharacteristics fc ")
                 .append("LEFT JOIN FETCH a.faCatchs fCatch ")
