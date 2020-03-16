@@ -51,7 +51,7 @@
 
         <config.model.version>4.3.2</config.model.version>
         <spatialSwe.model.version>2.0.8-UVMS</spatialSwe.model.version>
-        <exchange.model.version>5.2.3-UVMS</exchange.model.version>
+        <exchange.model.version>5.2.4-UVMS</exchange.model.version>
         <uvms.config.version>4.0.5</uvms.config.version>
         <mdr.model.version>1.0.5</mdr.model.version>
         <mdrSwe.client.version>1.0.18</mdrSwe.client.version>
