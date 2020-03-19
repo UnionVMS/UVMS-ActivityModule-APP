@@ -49,7 +49,7 @@
         <usm4uvms.version>4.1.0</usm4uvms.version>
         <uvms.maven.version>2.6</uvms.maven.version>
 
-        <config.model.version>4.3.2</config.model.version>
+        <config.model.version>4.3.3</config.model.version>
         <spatialSwe.model.version>2.0.8-UVMS</spatialSwe.model.version>
         <exchange.model.version>5.2.5-UVMS</exchange.model.version>
         <uvms.config.version>4.0.5</uvms.config.version>
