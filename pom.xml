@@ -6,7 +6,7 @@
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom</artifactId>
         <relativePath />
-        <version>3.0</version>
+        <version>3.1</version>
     </parent>
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
