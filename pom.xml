@@ -47,7 +47,7 @@
         <uvms.pom.version>3.1</uvms.pom.version>
         <uvms.commons.version>4.1.6</uvms.commons.version>
         <usm4uvms.version>4.1.0</usm4uvms.version>
-        <uvms.maven.version>2.6</uvms.maven.version>
+        <uvms.maven.version>3.2</uvms.maven.version>
 
         <config.model.version>4.3.3</config.model.version>
         <spatialSwe.model.version>2.0.8-UVMS</spatialSwe.model.version>
