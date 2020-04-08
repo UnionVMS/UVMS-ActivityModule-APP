@@ -15,7 +15,7 @@ package eu.europa.ec.fisheries.uvms.activity.service;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
-import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 import java.util.Collection;
@@ -34,5 +34,5 @@ public interface AssetModuleService {
 
     List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearchName) throws ServiceException;
 
-    List<AssetDTO> getAssets(AssetQuery assetQuery);
+    List<AssetDTO> getAssets(SearchBranch assetQuery);
 }

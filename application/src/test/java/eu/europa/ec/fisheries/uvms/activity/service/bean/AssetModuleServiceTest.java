@@ -12,7 +12,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
-import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,6 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -48,7 +47,7 @@ public class AssetModuleServiceTest {
         List<AssetDTO> assetList = new ArrayList<>();
         assetList.add(assetDTO);
 
-        when(assetClient.getAssetList(any(AssetQuery.class), eq(false))).thenReturn(assetList);
+        when(assetClient.getAssetList(any(SearchBranch.class))).thenReturn(assetList);
 
         // When
         List<String> assetGuids = assetsModuleBean.getAssetGuids("JEANNE", UUID.randomUUID().toString());
