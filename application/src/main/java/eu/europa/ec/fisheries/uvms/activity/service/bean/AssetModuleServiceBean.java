@@ -14,26 +14,24 @@
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.activity.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
-import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchFields;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -51,58 +49,24 @@ public class AssetModuleServiceBean implements AssetModuleService {
     }
 
     @Override
-    public List<AssetDTO> getAssets(AssetQuery assetQuery) {
-        final boolean dynamic = false;
-        return assetClient.getAssetList(assetQuery, dynamic);
+    public List<AssetDTO> getAssets(SearchBranch query) {
+        return assetClient.getAssetList(query);
     }
 
     @Override
     public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) {
-        Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new EnumMap<>(VesselTypeAssetQueryEnum.class);
+        SearchBranch query = new SearchBranch();
+        query.setLogicalAnd(false);
 
         for (VesselIdentifierEntity vesselIdentifier : vesselIdentifiers) {
-            VesselTypeAssetQueryEnum queryEnum = VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(vesselIdentifier.getVesselIdentifierSchemeId());
-            if (queryEnum != null && queryEnum.getConfigSearchField() != null && StringUtils.isNotEmpty(vesselIdentifier.getVesselIdentifierId())) {
-                List<String> queryEnumValues = identifierTypeToValuesMap.computeIfAbsent(queryEnum, key -> new ArrayList<>());
-                queryEnumValues.add(vesselIdentifier.getVesselIdentifierId());
+            SearchFields searchField = EnumUtils.getEnumIgnoreCase(SearchFields.class, vesselIdentifier.getVesselIdentifierSchemeId());
+            if (searchField != null && StringUtils.isNotEmpty(vesselIdentifier.getVesselIdentifierId())) {
+                query.addNewSearchLeaf(searchField, vesselIdentifier.getVesselIdentifierId());
             }
         }
 
-        AssetQuery assetQuery = deriveAssetQuery(identifierTypeToValuesMap);
-        final boolean dynamic = false;
-        List<AssetDTO> assetList = assetClient.getAssetList(assetQuery, dynamic);
+        List<AssetDTO> assetList = assetClient.getAssetList(query);
         return extractGuidsFromAssets(assetList);
-    }
-
-    @NotNull
-    private AssetQuery deriveAssetQuery(Map<VesselTypeAssetQueryEnum, List<String>> identifierMap) {
-        AssetQuery assetQuery = new AssetQuery();
-        identifierMap.forEach((VesselTypeAssetQueryEnum vesselTypeAssetQueryEnum, List<String> vesselIdentifierStrings) -> {
-            switch (vesselTypeAssetQueryEnum) {
-                case CFR:
-                    assetQuery.setCfr(vesselIdentifierStrings);
-                    break;
-                case IRCS:
-                    assetQuery.setIrcs(vesselIdentifierStrings);
-                    break;
-                case EXT_MARK:
-                    assetQuery.setExternalMarking(vesselIdentifierStrings);
-                    break;
-                case FLAG_STATE:
-                    assetQuery.setFlagState(vesselIdentifierStrings);
-                    break;
-                case NAME:
-                    assetQuery.setName(vesselIdentifierStrings);
-                    break;
-                case ICCAT:
-                    assetQuery.setIccat(vesselIdentifierStrings);
-                    break;
-                case UVI:
-                    assetQuery.setUvi(vesselIdentifierStrings);
-                    break;
-            }
-        });
-        return assetQuery;
     }
 
     @Override
@@ -111,16 +75,14 @@ public class AssetModuleServiceBean implements AssetModuleService {
 
         // Get the list of guids from assets if vesselIdsSearchStr is provided
         if (StringUtils.isNotEmpty(vesselIdsSearchStr)) {
-            Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = createMultipleIdTypesQueryMap(vesselIdsSearchStr);
-            AssetQuery assetQuery = deriveAssetQuery(identifierTypeToValuesMap);
-            boolean dynamic = false;
-            List<AssetDTO> assetList = assetClient.getAssetList(assetQuery, dynamic);
+            SearchBranch query = createMultipleIdTypesSearchBranch(vesselIdsSearchStr);
+            List<AssetDTO> assetList = assetClient.getAssetList(query);
             resultingGuids.addAll(extractGuidsFromAssets(assetList));
         }
 
         // Get the list of guids from assets if vesselGroupSearchName is provided
         if (StringUtils.isNotEmpty(vesselGroupGuidSearchStr)) {
-            UUID vesselGroupGuidSearch = null;
+            UUID vesselGroupGuidSearch;
             try {
                 vesselGroupGuidSearch = UUID.fromString(vesselGroupGuidSearchStr);
             } catch (IllegalArgumentException iae) {
@@ -142,13 +104,17 @@ public class AssetModuleServiceBean implements AssetModuleService {
                 .collect(Collectors.toList());
     }
 
-    private Map<VesselTypeAssetQueryEnum, List<String>> createMultipleIdTypesQueryMap(String vesselIdentifierValueToSearchFor) {
-        Map<VesselTypeAssetQueryEnum, List<String>> identifierTypeToValuesMap = new EnumMap<>(VesselTypeAssetQueryEnum.class);
-        for (VesselTypeAssetQueryEnum queryEnum : VesselTypeAssetQueryEnum.values()) {
-            if (queryEnum.getConfigSearchField() != null) {
-                identifierTypeToValuesMap.put(queryEnum, Arrays.asList(vesselIdentifierValueToSearchFor));
-            }
-        }
-        return identifierTypeToValuesMap;
+    private SearchBranch createMultipleIdTypesSearchBranch(String vesselIdentifierValueToSearchFor) {
+        SearchBranch result = new SearchBranch();
+        result.setLogicalAnd(false);
+        result.addNewSearchLeaf(SearchFields.CFR, vesselIdentifierValueToSearchFor);
+        result.addNewSearchLeaf(SearchFields.IRCS, vesselIdentifierValueToSearchFor);
+        result.addNewSearchLeaf(SearchFields.EXTERNAL_MARKING, vesselIdentifierValueToSearchFor);
+        result.addNewSearchLeaf(SearchFields.FLAG_STATE, vesselIdentifierValueToSearchFor);
+        result.addNewSearchLeaf(SearchFields.NAME, vesselIdentifierValueToSearchFor);
+        result.addNewSearchLeaf(SearchFields.ICCAT, vesselIdentifierValueToSearchFor);
+        result.addNewSearchLeaf(SearchFields.UVI, vesselIdentifierValueToSearchFor);
+
+        return result;
     }
 }

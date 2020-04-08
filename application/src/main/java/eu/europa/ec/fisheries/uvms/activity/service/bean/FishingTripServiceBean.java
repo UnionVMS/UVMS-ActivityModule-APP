@@ -46,13 +46,19 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution.CatchEvolutionProgressProcessor;
 import eu.europa.ec.fisheries.uvms.activity.service.facatch.evolution.TripCatchEvolutionProgressRegistry;
-import eu.europa.ec.fisheries.uvms.activity.service.mapper.*;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.BaseUtil;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.FaCatchMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityUtilsMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingTripIdWithGeometryMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselStorageCharacteristicsMapper;
+import eu.europa.ec.fisheries.uvms.activity.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
-import eu.europa.ec.fisheries.uvms.asset.client.model.AssetQuery;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
+import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchFields;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -68,7 +74,6 @@ import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -172,34 +177,35 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if (vesselIdentifiers == null || codeList == null) {
             return;
         }
-        AssetQuery assetQuery = new AssetQuery();
+
+        SearchBranch query = new SearchBranch();
+        query.setLogicalAnd(false);
         for (AssetIdentifierDto assetIdentifierDto : vesselIdentifiers) {
             if (codeList.contains(assetIdentifierDto.getIdentifierSchemeId().name())) {
-                final List<String> idValueAsList = Arrays.asList(assetIdentifierDto.getFaIdentifierId());
                 switch (assetIdentifierDto.getIdentifierSchemeId()) {
                     case CFR:
-                        assetQuery.setCfr(idValueAsList);
+                        query.addNewSearchLeaf(SearchFields.CFR, assetIdentifierDto.getFaIdentifierId());
                         break;
                     case EXT_MARK:
-                        assetQuery.setExternalMarking(idValueAsList);
+                        query.addNewSearchLeaf(SearchFields.EXTERNAL_MARKING, assetIdentifierDto.getFaIdentifierId());
                         break;
                     case GFCM:
-                        assetQuery.setGfcm(idValueAsList);
+                        query.addNewSearchLeaf(SearchFields.GFCM, assetIdentifierDto.getFaIdentifierId());
                         break;
                     case ICCAT:
-                        assetQuery.setIccat(idValueAsList);
+                        query.addNewSearchLeaf(SearchFields.ICCAT, assetIdentifierDto.getFaIdentifierId());
                         break;
                     case IRCS:
-                        assetQuery.setIrcs(idValueAsList);
+                        query.addNewSearchLeaf(SearchFields.IRCS, assetIdentifierDto.getFaIdentifierId());
                         break;
                     case UVI:
-                        assetQuery.setUvi(idValueAsList);
+                        query.addNewSearchLeaf(SearchFields.UVI, assetIdentifierDto.getFaIdentifierId());
                         break;
                     default:
                 }
             }
         }
-        List<AssetDTO> assetList = assetModuleService.getAssets(assetQuery);
+        List<AssetDTO> assetList = assetModuleService.getAssets(query);
         if (!CollectionUtils.isEmpty(assetList)) {
             vesselDetailsDTO.enrichVesselIdentifiersFromAsset(assetList.get(0));
         }
