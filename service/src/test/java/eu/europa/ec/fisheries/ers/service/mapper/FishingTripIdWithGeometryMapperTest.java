@@ -1,5 +1,6 @@
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
@@ -114,6 +115,13 @@ public class FishingTripIdWithGeometryMapperTest {
         FishingActivityEntity fishingActivityEntity6 = new FishingActivityEntity();
         fishingActivityEntity6.setCalculatedStartTime(df.parse("2019-02-12 15:32:00"));
         fishingActivityEntity6.setTypeCode(FishingActivityTypeEnum.ARRIVAL.toString());
+        fishingActivityEntity6.setFaReportDocument(new FaReportDocumentEntity());
+        fishingActivityEntity6.getFaReportDocument().setTypeCode("DECLARATION");
+        FishingActivityEntity fishingActivityEntity7 = new FishingActivityEntity();
+        fishingActivityEntity7.setFaReportDocument(new FaReportDocumentEntity());
+        fishingActivityEntity7.setCalculatedStartTime(df.parse("2019-02-13 15:32:00"));
+        fishingActivityEntity7.setTypeCode(FishingActivityTypeEnum.ARRIVAL.toString());
+        fishingActivityEntity7.getFaReportDocument().setTypeCode("NOTIFICATION ");
         fishingActivityEntities.add(fishingActivityEntity1);
         fishingActivityEntities.add(fishingActivityEntity2);
         fishingActivityEntities.add(fishingActivityEntity3);

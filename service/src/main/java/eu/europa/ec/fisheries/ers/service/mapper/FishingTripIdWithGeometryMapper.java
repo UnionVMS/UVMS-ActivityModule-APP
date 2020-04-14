@@ -358,6 +358,8 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
 
         return fishingActivities.stream()
                 .filter(fa -> FishingActivityTypeEnum.ARRIVAL.toString().equals(fa.getTypeCode()))
+                .filter(fa -> fa.getFaReportDocument()!= null && fa.getFaReportDocument().getTypeCode() != null)
+                .filter(fa -> "DECLARATION".equals(fa.getFaReportDocument().getTypeCode()))
                 .filter(f -> f.getCalculatedStartTime() != null)
                 .max(Comparator.comparing(FishingActivityEntity::getCalculatedStartTime))
                 .orElse(null);
