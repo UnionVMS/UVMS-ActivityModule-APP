@@ -10,10 +10,12 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service;
 
+import javax.ejb.Local;
+
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMapperException;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
-import javax.ejb.Local;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 @Local
@@ -29,6 +31,17 @@ public interface ActivityRulesModuleService {
      * @throws ActivityModelMapperException
      */
     void composeAndSendTripUpdateFaQueryToRules(String tripId) throws ActivityModuleException;
+
+    /**
+     *  0. Checks the existence of OwnerFluxParty for this @param vesselId (aka SendTo parameter)
+     *  1. Composes FaQuery
+     *  2. Checks if there is a subscription for this FaQuery
+     *  3. Sends FaQuery to Rules (If subscription is present)
+     *
+     * param request
+     * @throws ActivityModuleException
+     */
+    void composeAndSendVesselUpdateFaQueryToRules(CreateAndSendFAQueryRequest request) throws ActivityModuleException;
 
     void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXML, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId) throws ActivityModuleException;
 }
