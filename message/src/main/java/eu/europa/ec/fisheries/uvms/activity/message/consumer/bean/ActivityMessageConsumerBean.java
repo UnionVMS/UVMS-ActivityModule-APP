@@ -64,6 +64,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> getFishingActivityForTrips;
 
     @Inject
+    @CreateAndSendFAQueryEvent
+    private Event<EventMessage> createAndSendFAQuery;
+
+    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -101,6 +105,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     break;
                 case GET_FISHING_ACTIVITY_FOR_TRIPS:
                     getFishingActivityForTrips.fire(new EventMessage(textMessage));
+                    break;
+                case CREATE_AND_SEND_FA_QUERY:
+                    createAndSendFAQuery.fire(new EventMessage(textMessage));
                     break;
                 default:
                     log.error("[ Request method {} is not implemented ]", method.name());

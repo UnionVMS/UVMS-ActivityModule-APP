@@ -10,13 +10,16 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
-import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.UUID;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.XMLGregorianCalendar;
+
+import eu.europa.ec.fisheries.ers.service.mdrcache.MDRAcronymType;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQueryParameter;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
@@ -27,8 +30,41 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 @Slf4j
 public class FaQueryFactory {
 
+    public static final String FA_QUERY_TYPE = MDRAcronymType.FA_QUERY_TYPE.name();
+    public static final String FA_QUERY_PARAMETER = MDRAcronymType.FA_QUERY_PARAMETER.name();
+    public static final String FLUX_GP_PARTY = MDRAcronymType.FLUX_GP_PARTY.name();
+    public static final String TRIP = "TRIP";
+    public static final String VESSEL = "VESSEL";
+    public static final String TRIPID = "TRIPID";
+    public static final String VESSELID = "VESSELID";
+    public static final String CONSOLIDATED = "CONSOLIDATED";
+    public static final String BOOLEAN_VALUE = "BOOLEAN_VALUE";
+    public static final String UUID_ = "UUID";
+
     private FaQueryFactory(){
         super();
+    }
+
+    public static FAQuery createFaQueryForVesselId(String submitterFluxParty, String vesselId, String vesselSchemeId, boolean consolidated, XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
+        FAQuery faq = createFAQuery();
+        DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
+        delimitedPeriod.setStartDateTime(new DateTimeType(startDate, null));
+        delimitedPeriod.setEndDateTime(new DateTimeType(endDate, null));
+        faq.setSpecifiedDelimitedPeriod(delimitedPeriod);
+        faq.setTypeCode(createCodeType(VESSEL, FA_QUERY_TYPE));
+        faq.setSubmitterFLUXParty(new FLUXParty(
+                Collections.singletonList(createIDType(submitterFluxParty, FLUX_GP_PARTY)), null));
+        faq.setSimpleFAQueryParameters(Arrays.asList(
+                new FAQueryParameter(
+                        createCodeType(VESSELID, FA_QUERY_PARAMETER),
+                        null, null,
+                        createIDType(vesselId, vesselSchemeId)
+                ),
+                new FAQueryParameter(
+                        createCodeType(CONSOLIDATED, FA_QUERY_PARAMETER),
+                        createCodeType(consolidated?"Y":"N", BOOLEAN_VALUE),
+                        null, null)));
+        return faq;
     }
 
     public static FAQuery createFaQueryForTrip(String tripId, String sendTo, boolean consolidated) {
@@ -62,5 +98,28 @@ public class FaQueryFactory {
                                 null, null, null, null, null, null),
                         null, null)));
         return faq;
+    }
+
+    public static FAQuery createFAQuery() {
+        FAQuery faq = new FAQuery();
+        faq.setID(createIDType(UUID.randomUUID().toString(), UUID_));
+        try {
+            final XMLGregorianCalendar currentDate = DateUtils.getCurrentDate();
+            faq.setSubmittedDateTime(new DateTimeType(currentDate, null));
+        } catch (DatatypeConfigurationException e) {
+            throw new IllegalStateException(e);
+        }
+        return faq;
+    }
+    
+    public static CodeType createCodeType(String value,
+                                          String schemeID) {
+        return new CodeType(value, schemeID, null, null, null, null,
+                null, null, null, null);
+    }
+
+    public static IDType createIDType(String value, String schemeID) {
+        return new IDType(value, schemeID, null, null, null,
+                null, null, null);
     }
 }
