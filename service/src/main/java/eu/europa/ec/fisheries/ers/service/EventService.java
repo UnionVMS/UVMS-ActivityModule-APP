@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service;
 
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
@@ -37,4 +38,6 @@ public interface EventService {
     void getNonUniqueIdsRequest(@Observes @GetNonUniqueIdsRequestEvent EventMessage message);
 
     void getFishingActivityForTripsRequest(@Observes @GetFishingActivityForTripsRequestEvent EventMessage message);
+
+    void createAndSendFAQuery(@Observes @CreateAndSendFAQueryEvent EventMessage message);
 }

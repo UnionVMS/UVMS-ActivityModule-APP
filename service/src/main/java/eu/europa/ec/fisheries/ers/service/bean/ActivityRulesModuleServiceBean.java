@@ -11,8 +11,10 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -26,8 +28,11 @@ import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQue
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
+import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionParameter;
@@ -48,6 +53,8 @@ import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 @Slf4j
 public class ActivityRulesModuleServiceBean extends ModuleService implements ActivityRulesModuleService {
 
+    private static final String FLUX_LOCAL_NATION_CODE = "flux_local_nation_code";
+
     @EJB
     private ActivityRulesProducerBean rulesProducerBean;
 
@@ -62,6 +69,20 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
 
     @EJB
     private ActivityResponseQueueProducerBean activityResponseQueueProducer;
+
+    @Inject
+    ParameterService parameterService;
+
+    private String localNodeName;
+
+    @PostConstruct
+    public void init() {
+        try {
+            localNodeName = parameterService.getParamValueById(FLUX_LOCAL_NATION_CODE);
+        } catch (ConfigServiceException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void composeAndSendTripUpdateFaQueryToRules(String tripId) throws ActivityModuleException {
@@ -100,6 +121,40 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                         dataFlow, "BEL"), activityConsumerBean.getDestination());
             } else {
                 throw new ActivityModuleException("The FaQuery that was build with the following parameters [" + tripId + "," + sendTo + ",consolidated : " + consolidated + "] doesn't match to any subscription!");
+            }
+        } catch (MessageException | RulesModelMapperException | ActivityModelMarshallException e) {
+            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)!", e);
+            throw new ActivityModuleException("JAXBException or MessageException!", e);
+        }
+    }
+
+    @Override
+    public void composeAndSendVesselUpdateFaQueryToRules(CreateAndSendFAQueryRequest request) throws ActivityModuleException {
+        FAQuery faQueryForTrip;
+        try{
+            faQueryForTrip = FaQueryFactory.createFaQueryForVesselId(localNodeName, request.getVesselId(), request.getVesselSchemeId(), request.isConsolidated(), request.getStartDate(), request.getEndDate());
+        } catch (NullPointerException e) {
+            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)! Missing query data!", e);
+            throw new ActivityModuleException("NullPointerException while creating FaQuery", e);
+        }
+        if (faQueryForTrip == null) {
+            throw new ActivityModuleException("Fa Query is null!! Check the [tripId, sendTo] parameters!");
+        }
+        try {
+            SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaQuery(faQueryForTrip);
+            if (SubscriptionPermissionAnswer.YES.equals(subscriptionPermissionResponse.getSubscriptionCheck())) {
+                String dataFlow = request.getChannel();
+                if(StringUtils.isEmpty(dataFlow)) {
+                    log.error("[ERROR] Subscription is missing the dataFlow parameter! Cannot send FaQuery! ");
+                    throw new ActivityModuleException("Subscription is missing the dataFlow parameter! Cannot send FaQuery!");
+                }
+                String logId = faQueryForTrip.getID().getValue();
+                FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage(faQueryForTrip);
+                final String faqReqStr = JAXBMarshaller.marshallJaxBObjectToString(fluxfaQueryMessage);
+                rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFaQueryMessageRequest(faqReqStr, "FLUX", logId,
+                        dataFlow, request.getEndpoint()), activityConsumerBean.getDestination());
+            } else {
+                throw new ActivityModuleException("The FaQuery that was build with the following parameters [" + request.getVesselId() + ",consolidated : " + request.isConsolidated() + "] doesn't match to any subscription!");
             }
         } catch (MessageException | RulesModelMapperException | ActivityModelMarshallException e) {
             log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)!", e);
