@@ -12,6 +12,7 @@
  */
 package eu.europa.ec.fisheries.ers.service;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
@@ -61,4 +62,8 @@ public interface ActivityService {
     int getPreviousFishingActivity(int fishingActivityId);
 
     int getNextFishingActivity(int fishingActivityId);
+
+    FaReportDocumentEntity findFaReportByFluxReportIdentifierRefIdAndRefScheme(String reportRefId, String schemeId);
+
+    List<FaReportDocumentEntity> findFaReportDocumentsByTripId(String tripId, Boolean consolidated);
 }

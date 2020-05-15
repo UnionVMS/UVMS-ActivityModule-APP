@@ -11,14 +11,30 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.Type;
@@ -30,6 +46,13 @@ import org.hibernate.annotations.Type;
                         "LEFT JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
                         "WHERE identifier.fluxReportIdentifierId IN (lower(:reportId), upper(:reportId), :reportId) " +
                         "AND identifier.fluxReportIdentifierSchemeId = :schemeId"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FLUX_REPORT_IDENTIFIER_REF_FA_ID_AND_SCHEME,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
+                        "LEFT JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
+                        "WHERE identifier.fluxReportIdentifierId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
+                        "AND identifier.fluxReportIdentifierSchemeId = :schemeRefId"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME,
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
@@ -76,6 +99,7 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
     public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
+    public static final String FIND_BY_FLUX_REPORT_IDENTIFIER_REF_FA_ID_AND_SCHEME = "findByFluxReportIdentifierRefFaId";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
