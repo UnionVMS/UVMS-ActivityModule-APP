@@ -10,7 +10,6 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
-
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.enterprise.event.Event;
@@ -23,6 +22,9 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEv
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportFromPosition;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
@@ -84,6 +86,18 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> createAndSendGetAttachmentsForGuidAndQueryPeriod;
 
     @Inject
+    @ForwardMultipleFAReports
+    private Event<EventMessage> forwardMultipleFAReports;
+
+    @Inject
+    @ForwardFAReportWithLogbook
+    private Event<EventMessage> forwardFAReportWithLogbook;
+
+    @Inject
+    @ForwardFAReportFromPosition
+    private Event<EventMessage> forwardFAReportFromPosition;
+
+    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -131,6 +145,15 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 case FIND_ATTACHMENTS_FOR_GUID_AND_QUERY_PERIOD:
                     createAndSendGetAttachmentsForGuidAndQueryPeriod.fire(new EventMessage(textMessage));
                     break;
+                case FORWARD_MULTIPLE_FA_REPORTS:
+                    forwardMultipleFAReports.fire(new EventMessage(textMessage));
+                    break;
+                case FORWARD_FA_REPORT_WITH_LOGBOOK:
+                    forwardFAReportWithLogbook.fire(new EventMessage(textMessage));
+                    break;
+                case FORWARD_FA_REPORT_FROM_POSITION:
+                    forwardFAReportFromPosition.fire(new EventMessage(textMessage));
+                    break;
                 default:
                     log.error("[ Request method {} is not implemented ]", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + method.name() + "  is not implemented ]")));
@@ -140,5 +163,4 @@ public class ActivityMessageConsumerBean implements MessageListener {
             errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message")));
         }
     }
-
 }

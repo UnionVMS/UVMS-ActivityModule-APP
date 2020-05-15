@@ -10,6 +10,14 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
+import javax.enterprise.event.Event;
+import javax.jms.TextMessage;
+
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ReceiveSalesReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityMessageConsumerBean;
@@ -35,14 +43,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import javax.enterprise.event.Event;
-import javax.jms.TextMessage;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 /**
  * Created by kovian on 17/07/2017.
@@ -84,6 +84,15 @@ public class ActivityMessageConsumerBeanTest {
 
     @Mock @SuppressWarnings("unused")
     private Event<EventMessage> createAndSendFAQueryForTrip;
+
+    @Mock @SuppressWarnings("unused")
+    private Event<EventMessage> forwardMultipleFAReports;
+
+    @Mock @SuppressWarnings("unused")
+    private Event<EventMessage> forwardFAReportWithLogbook;
+
+    @Mock @SuppressWarnings("unused")
+    private Event<EventMessage> forwardFAReportFromPosition;
 
     @Mock
     Event<EventMessage> errorEvent;

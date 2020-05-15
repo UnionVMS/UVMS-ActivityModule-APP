@@ -244,4 +244,28 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
         }
         return paramValue;
     }
+
+    @Override
+    public void forwardFluxFAReportMessageToRules(FLUXFAReportMessage message, String dataFlow, String receiver) throws ActivityModuleException {
+        try {
+            String fluxFAReportMessageString = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(message));
+            rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(fluxFAReportMessageString, "FLUX", message.getFLUXReportDocument().getIDS().get(0).getValue(),
+                    dataFlow, receiver, null, false), activityConsumerBean.getDestination());
+        } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
+            throw new ActivityModuleException("Exception thrown ", e);
+        }
+    }
+
+    private String clearEmptyTags(String testSource) {
+        testSource = testSource
+                .replaceAll("<([a-zA-Z][a-zA-Z0-9]*)[^>]*/>", "") // clear tags like  <udt:IndicatorString/>
+                .replaceAll("\n?\\s*<(\\w+)></\\1>", "")
+                .replaceAll("<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>\\s*</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>", "")
+                .replaceAll("<SpecifiedPhysicalFLUXGeographicalCoordinate>\\s*</SpecifiedPhysicalFLUXGeographicalCoordinate>", "")
+                .replaceAll("<ram:ValueIndicator>\\s*</ram:ValueIndicator>","")
+                .replaceAll("<ValueIndicator>\\s*</ValueIndicator>","")
+                .replaceAll("(?m)^[ \t]*\r?\n", "");// clear empty lines
+
+        return testSource;
+    }
 }

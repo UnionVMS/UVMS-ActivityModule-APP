@@ -56,4 +56,6 @@ public interface ActivityRulesModuleService {
     String composeAndSendTripFaQueryToRules(CreateAndSendFAQueryForTripRequest request) throws ActivityModuleException;
 
     void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXML, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId) throws ActivityModuleException;
+
+    void forwardFluxFAReportMessageToRules(FLUXFAReportMessage report, String dataFlow, String receiver) throws ActivityModuleException;
 }

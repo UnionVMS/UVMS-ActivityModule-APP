@@ -132,6 +132,21 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return singleResult;
     }
 
+
+    /**
+     * Load FaReportDocument by one or more fluxReportIdentifier ids
+     *
+     * @param reportRefId
+     * @param refSchemeId
+     * @return FaReportDocumentEntity
+     */
+    public FaReportDocumentEntity findFaReportByFluxReportIdentifierRefIdAndRefScheme(String reportRefId, String refSchemeId) {
+        TypedQuery<FaReportDocumentEntity> query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FLUX_REPORT_IDENTIFIER_REF_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
+        query.setParameter(REPORT_REF_ID, reportRefId);
+        query.setParameter(SCHEME_REF_ID, refSchemeId);
+        return query.getResultList().stream().findFirst().orElse(null);
+    }
+
     public List<FaReportDocumentEntity> loadReports(String tripId, String consolidated) {
         return loadReports(tripId, consolidated, null, null, null, null);
     }

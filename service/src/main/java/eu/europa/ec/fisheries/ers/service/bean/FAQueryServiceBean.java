@@ -23,6 +23,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -31,6 +32,8 @@ import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.FaQueryService;
 import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
+import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +44,8 @@ import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessag
 @Slf4j
 public class FAQueryServiceBean implements FaQueryService {
 
+    private static final String FLUX_LOCAL_NATION_CODE = "flux_local_nation_code";
+
     @PersistenceContext(unitName = "activityPUpostgres")
     private EntityManager postgres;
 
@@ -49,6 +54,11 @@ public class FAQueryServiceBean implements FaQueryService {
 
     private EntityManager em;
     private FaReportDocumentDao FAReportDAO;
+
+    @Inject
+    ParameterService parameterService;
+
+    private String localNodeName;
 
     @PostConstruct
     public void init() {
@@ -60,6 +70,11 @@ public class FAQueryServiceBean implements FaQueryService {
             em = postgres;
         }
         FAReportDAO = new FaReportDocumentDao(em);
+        try {
+            localNodeName = parameterService.getParamValueById(FLUX_LOCAL_NATION_CODE);
+        } catch (ConfigServiceException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -91,7 +106,7 @@ public class FAQueryServiceBean implements FaQueryService {
             }
 
             List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(tripID, consolidated, vesselId, schemeId, startDate, endDate);
-            return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip);
+            return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip, localNodeName);
 
         }
 

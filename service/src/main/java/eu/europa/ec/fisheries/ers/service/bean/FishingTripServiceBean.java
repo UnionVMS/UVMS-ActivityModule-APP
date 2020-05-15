@@ -91,6 +91,8 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
+import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
@@ -120,6 +122,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayOutputStream;
@@ -156,6 +159,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private static final String NOTIFICATION ="Notification";
     private static final String PREVIOUS = "PREVIOUS";
     private static final String NEXT = "NEXT";
+    private static final String FLUX_LOCAL_NATION_CODE = "flux_local_nation_code";
 
     @EJB
     private SpatialModuleService spatialModule;
@@ -177,9 +181,15 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private FishingTripDao fishingTripDao;
     private FaCatchDao faCatchDao;
     private ActivityConfigurationDao activityConfigurationDao;
+    private String localNodeName;
 
     private static final CatchProgressProcessor catchProgressProcessor =
             new CatchProgressProcessor(new TripCatchProgressRegistry());
+
+    @Inject
+    void extractLocalNodeName(ParameterService parameterService) throws ConfigServiceException {
+        localNodeName = parameterService.getParamValueById(FLUX_LOCAL_NATION_CODE);
+    }
 
     @PostConstruct
     public void init() {
@@ -582,7 +592,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         if(query.isXml()){
-            FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities);
+            FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName);
             try {
                 AttachmentResponseObject responseObject = new AttachmentResponseObject();
                 String controlSource = JAXBUtils.marshallJaxBObjectToString(toBeMarshalled, "UTF-8", false, new FANamespaceMapper());
