@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
@@ -243,5 +244,29 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             }
         }
         return paramValue;
+    }
+
+    @Override
+    public void forwardFAReportToRules(FLUXFAReportMessage report, String reportId,String dataFlow, String receiver) throws ActivityModuleException {
+        try {
+            String reportString = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(report));
+            rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(reportString, "FLUX", reportId,
+                    dataFlow, receiver, null, false), activityConsumerBean.getDestination());
+        } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
+            throw new ActivityModuleException("Exception thrown ", e);
+        }
+    }
+
+    private String clearEmptyTags(String testSource) {
+        testSource = testSource
+                .replaceAll("<([a-zA-Z][a-zA-Z0-9]*)[^>]*/>", "") // clear tags like  <udt:IndicatorString/>
+                .replaceAll("\n?\\s*<(\\w+)></\\1>", "")
+                .replaceAll("<ram:SpecifiedPhysicalFLUXGeographicalCoordinate>\\s*</ram:SpecifiedPhysicalFLUXGeographicalCoordinate>", "")
+                .replaceAll("<SpecifiedPhysicalFLUXGeographicalCoordinate>\\s*</SpecifiedPhysicalFLUXGeographicalCoordinate>", "")
+                .replaceAll("<ram:ValueIndicator>\\s*</ram:ValueIndicator>","")
+                .replaceAll("<ValueIndicator>\\s*</ValueIndicator>","")
+                .replaceAll("(?m)^[ \t]*\r?\n", "");// clear empty lines
+
+        return testSource;
     }
 }

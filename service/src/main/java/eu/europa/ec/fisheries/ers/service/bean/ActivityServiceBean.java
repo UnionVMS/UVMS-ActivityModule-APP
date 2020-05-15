@@ -508,4 +508,9 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
         return fishingActivityDao.getNextFishingActivityId(activityEntity.getId(), activityEntity.getTypeCode(), activityEntity.getCalculatedStartTime());
     }
+
+    @Override
+    public FaReportDocumentEntity findFaReportByFluxReportIdentifierRefIdAndRefScheme(String reportRefId, String schemeId) {
+        return faReportDocumentDao.findFaReportByFluxReportIdentifierRefIdAndRefScheme(reportRefId, schemeId);
+    }
 }

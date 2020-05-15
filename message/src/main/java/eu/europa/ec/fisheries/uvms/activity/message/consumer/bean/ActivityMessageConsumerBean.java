@@ -79,6 +79,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> createAndSendFAQueryForTrip;
 
     @Inject
+    @ForwardFAReportEvent
+    private Event<EventMessage> forwardFAReport;
+
+    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -123,6 +127,8 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 case CREATE_AND_SEND_FA_QUERY_FOR_TRIP:
                     createAndSendFAQueryForTrip.fire(new EventMessage(textMessage));
                     break;
+                case FORWARD_FA_REPORT:
+                    forwardFAReport.fire(new EventMessage(textMessage));
                 default:
                     log.error("[ Request method {} is not implemented ]", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + method.name() + "  is not implemented ]")));

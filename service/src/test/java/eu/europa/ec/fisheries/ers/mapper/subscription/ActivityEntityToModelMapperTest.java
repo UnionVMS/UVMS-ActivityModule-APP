@@ -92,7 +92,7 @@ public class ActivityEntityToModelMapperTest {
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
         FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(null, fluxfaReportMessage, FaReportSourceEnum.MANUAL, new FluxFaReportMessageEntity());
 
-        FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()));
+        FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()), "");
 
         String controlSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(fluxfaReportMessage), "ISO-8859-15", true, new FANamespaceMapper());
         String testSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(target), "ISO-8859-15", true, new FANamespaceMapper());

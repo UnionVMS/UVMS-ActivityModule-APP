@@ -38,7 +38,7 @@ public class ActivityEntityToModelMapper {
 
     }
 
-    public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity){
+    public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity, String localNodeName){
         FLUXFAReportMessage target = new FLUXFAReportMessage();
 
         FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
@@ -70,7 +70,7 @@ public class ActivityEntityToModelMapper {
         FLUXParty party = new FLUXParty();
         IDType idType1 = new IDType();
         idType1.setSchemeID("FLUX_GP_PARTY");
-        idType1.setValue("TODO_SET_NODE_ALIAS");
+        idType1.setValue(localNodeName);
         party.setIDS(Collections.singletonList(idType1));
         fluxReportDocument.setOwnerFLUXParty(party);
 
