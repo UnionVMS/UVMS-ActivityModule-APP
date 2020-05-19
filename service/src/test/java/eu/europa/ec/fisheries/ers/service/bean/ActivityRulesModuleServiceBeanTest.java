@@ -1,7 +1,6 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -10,6 +9,7 @@ import static org.mockito.Mockito.when;
 import javax.jms.Destination;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import java.util.Collections;
 
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
@@ -18,6 +18,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionAnswer;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
@@ -52,7 +53,7 @@ public class ActivityRulesModuleServiceBeanTest {
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
         CreateAndSendFAQueryRequest request = new CreateAndSendFAQueryRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY, PluginType.FLUX,
-                "12345678", VesselIdentifierSchemeIdEnum.CFR.toString(), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T12:00:00"), "XEU.XEU", "durn:un:unece:uncefact:fisheries:FLUX:FA:EU:2");
+                Collections.singletonList(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, "CFR123456789")), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T12:00:00"), "XEU.XEU", "durn:un:unece:uncefact:fisheries:FLUX:FA:EU:2");
         sut.composeAndSendVesselUpdateFaQueryToRules(request);
         verify(rulesProducerBean).sendModuleMessage(anyString(), any());
     }
@@ -64,7 +65,7 @@ public class ActivityRulesModuleServiceBeanTest {
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
         CreateAndSendFAQueryRequest request = new CreateAndSendFAQueryRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY, PluginType.FLUX,
-                "12345678", VesselIdentifierSchemeIdEnum.CFR.toString(), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"),
+                Collections.singletonList(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, "CFR123456789")), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"),
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T12:00:00"), "XEU.XEU", "");
         sut.composeAndSendVesselUpdateFaQueryToRules(request);
     }
@@ -76,7 +77,7 @@ public class ActivityRulesModuleServiceBeanTest {
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
         CreateAndSendFAQueryRequest request = new CreateAndSendFAQueryRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY, PluginType.FLUX,
-                "12345678", VesselIdentifierSchemeIdEnum.CFR.toString(), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"),
+                Collections.singletonList(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, "CFR123456789")), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"),
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T12:00:00"), "XEU.XEU", "durn:un:unece:uncefact:fisheries:FLUX:FA:EU:2");
         sut.composeAndSendVesselUpdateFaQueryToRules(request);
     }

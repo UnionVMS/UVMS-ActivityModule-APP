@@ -12,11 +12,14 @@ package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import eu.europa.ec.fisheries.ers.service.mdrcache.MDRAcronymType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
@@ -45,7 +48,7 @@ public class FaQueryFactory {
         super();
     }
 
-    public static FAQuery createFaQueryForVesselId(String submitterFluxParty, String vesselId, String vesselSchemeId, boolean consolidated, XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
+    public static FAQuery createFaQueryForVesselId(String submitterFluxParty, List<VesselIdentifierType> vesselIdentifiers, boolean consolidated, XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
         FAQuery faq = createFAQuery();
         DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
         delimitedPeriod.setStartDateTime(new DateTimeType(startDate, null));
@@ -54,16 +57,20 @@ public class FaQueryFactory {
         faq.setTypeCode(createCodeType(VESSEL, FA_QUERY_TYPE));
         faq.setSubmitterFLUXParty(new FLUXParty(
                 Collections.singletonList(createIDType(submitterFluxParty, FLUX_GP_PARTY)), null));
-        faq.setSimpleFAQueryParameters(Arrays.asList(
+        List<FAQueryParameter> simpleParams = new ArrayList<>();
+        vesselIdentifiers.forEach( identifier ->
+            simpleParams.add(
                 new FAQueryParameter(
-                        createCodeType(VESSELID, FA_QUERY_PARAMETER),
-                        null, null,
-                        createIDType(vesselId, vesselSchemeId)
-                ),
+                    createCodeType(VESSELID, FA_QUERY_PARAMETER),
+                    null, null,
+                    createIDType(identifier.getValue(), identifier.getKey().name())
+        )));
+        simpleParams.add(
                 new FAQueryParameter(
                         createCodeType(CONSOLIDATED, FA_QUERY_PARAMETER),
                         createCodeType(consolidated?"Y":"N", BOOLEAN_VALUE),
-                        null, null)));
+                        null, null));
+        faq.setSimpleFAQueryParameters(simpleParams);
         return faq;
     }
 
