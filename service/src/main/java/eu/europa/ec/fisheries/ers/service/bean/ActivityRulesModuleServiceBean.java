@@ -131,7 +131,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     @Override
     public void composeAndSendVesselUpdateFaQueryToRules(CreateAndSendFAQueryRequest request) throws ActivityModuleException {
         try {
-            FAQuery faQueryForTrip = FaQueryFactory.createFaQueryForVesselId(localNodeName, request.getVesselId(), request.getVesselSchemeId(), request.isConsolidated(), request.getStartDate(), request.getEndDate());
+            FAQuery faQueryForTrip = FaQueryFactory.createFaQueryForVesselId(localNodeName, request.getVesselIdentifiers(), request.isConsolidated(), request.getStartDate(), request.getEndDate());
             SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaQuery(faQueryForTrip);
             if (SubscriptionPermissionAnswer.YES.equals(subscriptionPermissionResponse.getSubscriptionCheck())) {
                 String dataFlow = request.getDataflow();
@@ -145,7 +145,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFaQueryMessageRequest(faqReqStr, "FLUX", logId,
                         dataFlow, request.getReceiver()), activityConsumerBean.getDestination());
             } else {
-                throw new ActivityModuleException("The FaQuery that was build with the following parameters [" + request.getVesselId() + ",consolidated : " + request.isConsolidated() + "] doesn't match to any subscription!");
+                throw new ActivityModuleException("The FaQuery that was build with the following parameters [" + request.getVesselIdentifiers() + ",consolidated : " + request.isConsolidated() + "] doesn't match to any subscription!");
             }
         } catch (MessageException | RulesModelMapperException | ActivityModelMarshallException e) {
             log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)!", e);
