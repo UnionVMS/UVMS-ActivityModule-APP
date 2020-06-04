@@ -10,15 +10,26 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.ICCAT;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
+
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import eu.europa.ec.fisheries.ers.service.mdrcache.MDRAcronymType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -36,13 +47,22 @@ public class FaQueryFactory {
     public static final String FA_QUERY_TYPE = MDRAcronymType.FA_QUERY_TYPE.name();
     public static final String FA_QUERY_PARAMETER = MDRAcronymType.FA_QUERY_PARAMETER.name();
     public static final String FLUX_GP_PARTY = MDRAcronymType.FLUX_GP_PARTY.name();
-    public static final String TRIP = "TRIP";
     public static final String VESSEL = "VESSEL";
-    public static final String TRIPID = "TRIPID";
     public static final String VESSELID = "VESSELID";
     public static final String CONSOLIDATED = "CONSOLIDATED";
     public static final String BOOLEAN_VALUE = "BOOLEAN_VALUE";
     public static final String UUID_ = "UUID";
+
+    private static final Map<VesselIdentifierSchemeIdEnum,Integer> VESSELID_PRIORITIES;
+    static {
+        EnumMap<VesselIdentifierSchemeIdEnum,Integer> map = new EnumMap<>(VesselIdentifierSchemeIdEnum.class);
+        map.put(CFR, 5);
+        map.put(IRCS, 4);
+        map.put(UVI, 3);
+        map.put(EXT_MARK, 2);
+        map.put(ICCAT, 1);
+        VESSELID_PRIORITIES = Collections.unmodifiableMap(map);
+    }
 
     private FaQueryFactory(){
         super();
@@ -58,13 +78,7 @@ public class FaQueryFactory {
         faq.setSubmitterFLUXParty(new FLUXParty(
                 Collections.singletonList(createIDType(submitterFluxParty, FLUX_GP_PARTY)), null));
         List<FAQueryParameter> simpleParams = new ArrayList<>();
-        vesselIdentifiers.forEach( identifier ->
-            simpleParams.add(
-                new FAQueryParameter(
-                    createCodeType(VESSELID, FA_QUERY_PARAMETER),
-                    null, null,
-                    createIDType(identifier.getValue(), identifier.getKey().name())
-        )));
+        chooseVesselIdentifier(vesselIdentifiers).ifPresent(simpleParams::add);
         simpleParams.add(
                 new FAQueryParameter(
                         createCodeType(CONSOLIDATED, FA_QUERY_PARAMETER),
@@ -72,6 +86,12 @@ public class FaQueryFactory {
                         null, null));
         faq.setSimpleFAQueryParameters(simpleParams);
         return faq;
+    }
+
+    private static Optional<FAQueryParameter> chooseVesselIdentifier(List<VesselIdentifierType> vesselIdentifiers) {
+        return vesselIdentifiers.stream()
+                .max(Comparator.comparing(VesselIdentifierType::getKey, Comparator.comparing(VESSELID_PRIORITIES::get, Comparator.nullsFirst(Comparator.naturalOrder()))))
+                .map(id -> new FAQueryParameter(createCodeType(VESSELID, FA_QUERY_PARAMETER), null, null, createIDType(id.getValue(), id.getKey().name())));
     }
 
     public static FAQuery createFaQueryForTrip(String tripId, String sendTo, boolean consolidated) {
