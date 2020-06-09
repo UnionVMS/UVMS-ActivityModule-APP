@@ -36,8 +36,8 @@ import java.util.Set;
 @Table(name = "activity_gear_problem")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"locations", "gearProblemRecovery", "fishingGears"})
-@ToString(exclude = {"locations", "gearProblemRecovery", "fishingGears"})
+@EqualsAndHashCode(exclude = {"gearProblemRecovery"})
+@ToString(exclude = {"gearProblemRecovery"})
 public class GearProblemEntity implements Serializable {
 
 	@Id
