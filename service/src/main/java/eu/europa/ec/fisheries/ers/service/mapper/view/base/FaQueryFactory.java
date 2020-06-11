@@ -48,10 +48,13 @@ public class FaQueryFactory {
     public static final String FA_QUERY_PARAMETER = MDRAcronymType.FA_QUERY_PARAMETER.name();
     public static final String FLUX_GP_PARTY = MDRAcronymType.FLUX_GP_PARTY.name();
     public static final String VESSEL = "VESSEL";
+    public static final String TRIP = "TRIP";
     public static final String VESSELID = "VESSELID";
+    public static final String TRIPID = "TRIPID";
     public static final String CONSOLIDATED = "CONSOLIDATED";
     public static final String BOOLEAN_VALUE = "BOOLEAN_VALUE";
     public static final String UUID_ = "UUID";
+    public static final String EU_TRIP_ID = "EU_TRIP_ID";
 
     private static final Map<VesselIdentifierSchemeIdEnum,Integer> VESSELID_PRIORITIES;
     static {
@@ -68,7 +71,28 @@ public class FaQueryFactory {
         super();
     }
 
-    public static FAQuery createFaQueryForVesselId(String submitterFluxParty, List<VesselIdentifierType> vesselIdentifiers, boolean consolidated, XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
+    public static FAQuery createFaQueryWithTripId(String submitterFluxParty, String tripId, boolean consolidated) {
+        FAQuery faq = createFAQuery();
+        faq.setTypeCode(createCodeType(TRIP, FA_QUERY_TYPE));
+        faq.setSubmitterFLUXParty(new FLUXParty(
+                Collections.singletonList(createIDType(submitterFluxParty, FLUX_GP_PARTY)), null));
+        List<FAQueryParameter> simpleParams = new ArrayList<>();
+        simpleParams.add(
+            new FAQueryParameter(
+            createCodeType(TRIPID, FA_QUERY_PARAMETER),
+            null, null,
+            createIDType(tripId, EU_TRIP_ID))
+        );
+        simpleParams.add(
+            new FAQueryParameter(
+                    createCodeType(CONSOLIDATED, FA_QUERY_PARAMETER),
+                    createCodeType(consolidated?"Y":"N", BOOLEAN_VALUE),
+                    null, null));
+        faq.setSimpleFAQueryParameters(simpleParams);
+        return faq;
+    }
+
+    public static FAQuery createFaQueryWithVesselId(String submitterFluxParty, List<VesselIdentifierType> vesselIdentifiers, boolean consolidated, XMLGregorianCalendar startDate, XMLGregorianCalendar endDate) {
         FAQuery faq = createFAQuery();
         DelimitedPeriod delimitedPeriod = new DelimitedPeriod();
         delimitedPeriod.setStartDateTime(new DateTimeType(startDate, null));
@@ -80,10 +104,10 @@ public class FaQueryFactory {
         List<FAQueryParameter> simpleParams = new ArrayList<>();
         chooseVesselIdentifier(vesselIdentifiers).ifPresent(simpleParams::add);
         simpleParams.add(
-                new FAQueryParameter(
-                        createCodeType(CONSOLIDATED, FA_QUERY_PARAMETER),
-                        createCodeType(consolidated?"Y":"N", BOOLEAN_VALUE),
-                        null, null));
+            new FAQueryParameter(
+                    createCodeType(CONSOLIDATED, FA_QUERY_PARAMETER),
+                    createCodeType(consolidated?"Y":"N", BOOLEAN_VALUE),
+                    null, null));
         faq.setSimpleFAQueryParameters(simpleParams);
         return faq;
     }

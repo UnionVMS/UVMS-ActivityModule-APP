@@ -14,7 +14,8 @@ import javax.ejb.Local;
 
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMapperException;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
@@ -33,15 +34,24 @@ public interface ActivityRulesModuleService {
     void composeAndSendTripUpdateFaQueryToRules(String tripId) throws ActivityModuleException;
 
     /**
-     *  0. Checks the existence of OwnerFluxParty for this @param vesselId (aka SendTo parameter)
-     *  1. Composes FaQuery
-     *  2. Checks if there is a subscription for this FaQuery
-     *  3. Sends FaQuery to Rules (If subscription is present)
+     *  Composes FaQuery with vessel id
+     *  Checks if there is a subscription for this FaQuery
+     *  Sends FaQuery to Rules (If subscription is present)
      *
      * param request
      * @throws ActivityModuleException
      */
-    void composeAndSendVesselUpdateFaQueryToRules(CreateAndSendFAQueryRequest request) throws ActivityModuleException;
+    void composeAndSendVesselFaQueryToRules(CreateAndSendFAQueryForVesselRequest request) throws ActivityModuleException;
+
+    /**
+     *  Composes FaQuery with trip id
+     *  Checks if there is a subscription for this FaQuery
+     *  Sends FaQuery to Rules (If subscription is present)
+     *
+     * param request
+     * @throws ActivityModuleException
+     */
+    void composeAndSendTripFaQueryToRules(CreateAndSendFAQueryForTripRequest request) throws ActivityModuleException;
 
     void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXML, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId) throws ActivityModuleException;
 }
