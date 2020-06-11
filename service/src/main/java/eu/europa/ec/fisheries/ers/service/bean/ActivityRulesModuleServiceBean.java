@@ -28,7 +28,8 @@ import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQue
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
@@ -129,27 +130,41 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     }
 
     @Override
-    public void composeAndSendVesselUpdateFaQueryToRules(CreateAndSendFAQueryRequest request) throws ActivityModuleException {
+    public void composeAndSendVesselFaQueryToRules(CreateAndSendFAQueryForVesselRequest request) throws ActivityModuleException {
         try {
-            FAQuery faQueryForTrip = FaQueryFactory.createFaQueryForVesselId(localNodeName, request.getVesselIdentifiers(), request.isConsolidated(), request.getStartDate(), request.getEndDate());
-            SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaQuery(faQueryForTrip);
-            if (SubscriptionPermissionAnswer.YES.equals(subscriptionPermissionResponse.getSubscriptionCheck())) {
-                String dataFlow = request.getDataflow();
-                if(StringUtils.isEmpty(dataFlow)) {
-                    log.error("[ERROR] Subscription is missing the dataFlow parameter! Cannot send FaQuery! ");
-                    throw new ActivityModuleException("Subscription is missing the dataFlow parameter! Cannot send FaQuery!");
-                }
-                String logId = faQueryForTrip.getID().getValue();
-                FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage(faQueryForTrip);
-                final String faqReqStr = JAXBMarshaller.marshallJaxBObjectToString(fluxfaQueryMessage);
-                rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFaQueryMessageRequest(faqReqStr, "FLUX", logId,
-                        dataFlow, request.getReceiver()), activityConsumerBean.getDestination());
-            } else {
-                throw new ActivityModuleException("The FaQuery that was build with the following parameters [" + request.getVesselIdentifiers() + ",consolidated : " + request.isConsolidated() + "] doesn't match to any subscription!");
-            }
-        } catch (MessageException | RulesModelMapperException | ActivityModelMarshallException e) {
-            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)!", e);
+            FAQuery faQuery = FaQueryFactory.createFaQueryWithVesselId(localNodeName, request.getVesselIdentifiers(), request.isConsolidated(), request.getStartDate(), request.getEndDate());
+            sendFAQueryToRules(faQuery, request.getDataflow(), request.getReceiver());
+        } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
+            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules(...)!", e);
             throw new ActivityModuleException("JAXBException or MessageException!", e);
+        }
+    }
+
+    @Override
+    public void composeAndSendTripFaQueryToRules(CreateAndSendFAQueryForTripRequest request) throws ActivityModuleException {
+        try {
+            FAQuery faQuery = FaQueryFactory.createFaQueryWithTripId(localNodeName, request.getTripId(), request.isConsolidated());
+            sendFAQueryToRules(faQuery, request.getDataflow(), request.getReceiver());
+        } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
+            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules(...)!", e);
+            throw new ActivityModuleException("JAXBException or MessageException!", e);
+        }
+    }
+
+    private void sendFAQueryToRules(FAQuery faQuery, String dataFlow, String receiver) throws ActivityModuleException, ActivityModelMarshallException, RulesModelMapperException, MessageException {
+        SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaQuery(faQuery);
+        if (SubscriptionPermissionAnswer.YES.equals(subscriptionPermissionResponse.getSubscriptionCheck())) {
+            if(StringUtils.isEmpty(dataFlow)) {
+                log.error("[ERROR] Subscription is missing the dataFlow parameter! Cannot send FaQuery! ");
+                throw new ActivityModuleException("Subscription is missing the dataFlow parameter! Cannot send FaQuery!");
+            }
+            String logId = faQuery.getID().getValue();
+            FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage(faQuery);
+            final String faqReqStr = JAXBMarshaller.marshallJaxBObjectToString(fluxfaQueryMessage);
+            rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFaQueryMessageRequest(faqReqStr, "FLUX", logId,
+                    dataFlow, receiver), activityConsumerBean.getDestination());
+        } else {
+            throw new ActivityModuleException("The FaQuery that was built doesn't match to any subscription!");
         }
     }
 

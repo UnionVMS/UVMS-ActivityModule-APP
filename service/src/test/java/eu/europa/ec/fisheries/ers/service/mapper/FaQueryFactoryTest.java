@@ -31,7 +31,7 @@ public class FaQueryFactoryTest {
         List<VesselIdentifierType> identifiers = new ArrayList<>();
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, "CFR123456789"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, "121212"));
-        FAQuery query = FaQueryFactory.createFaQueryForVesselId("submitter", identifiers, true,
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
         Assert.assertNotNull(query);
         Assert.assertNotNull(query.getID());
@@ -55,7 +55,7 @@ public class FaQueryFactoryTest {
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.UVI, "UVI1212"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.EXT_MARK, "EXT_MARK1212"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, "ICCAT12"));
-        FAQuery query = FaQueryFactory.createFaQueryForVesselId("submitter", identifiers, true,
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
         Assert.assertEquals("CFR123456789", query.getSimpleFAQueryParameters().get(0).getValueID().getValue());
         Assert.assertEquals("CFR", query.getSimpleFAQueryParameters().get(0).getValueID().getSchemeID());
@@ -70,7 +70,7 @@ public class FaQueryFactoryTest {
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.GFCM, "GFCM"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.EXT_MARK, "EXT_MARK1212"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, "ICCAT12"));
-        FAQuery query = FaQueryFactory.createFaQueryForVesselId("submitter", identifiers, true,
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
         Assert.assertEquals("IRCS12", query.getSimpleFAQueryParameters().get(0).getValueID().getValue());
         Assert.assertEquals("IRCS", query.getSimpleFAQueryParameters().get(0).getValueID().getSchemeID());
@@ -81,7 +81,7 @@ public class FaQueryFactoryTest {
     public void testVesselIdentifierPriorityOther() throws DatatypeConfigurationException {
         List<VesselIdentifierType> identifiers = new ArrayList<>();
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.GFCM, "GFCM VAL"));
-        FAQuery query = FaQueryFactory.createFaQueryForVesselId("submitter", identifiers, true,
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
         Assert.assertEquals("GFCM VAL", query.getSimpleFAQueryParameters().get(0).getValueID().getValue());
         Assert.assertEquals("GFCM", query.getSimpleFAQueryParameters().get(0).getValueID().getSchemeID());
@@ -95,7 +95,7 @@ public class FaQueryFactoryTest {
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.UVI, "UVI1212"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.EXT_MARK, "EXT_MARK1212"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, "ICCAT12"));
-        FAQuery query = FaQueryFactory.createFaQueryForVesselId("submitter", identifiers, true,
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
         Assert.assertEquals("UVI1212", query.getSimpleFAQueryParameters().get(0).getValueID().getValue());
         Assert.assertEquals("UVI", query.getSimpleFAQueryParameters().get(0).getValueID().getSchemeID());
@@ -108,7 +108,7 @@ public class FaQueryFactoryTest {
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.GFCM, "GFCM"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.EXT_MARK, "EXT_MARK1212"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, "ICCAT12"));
-        FAQuery query = FaQueryFactory.createFaQueryForVesselId("submitter", identifiers, true,
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
         Assert.assertEquals("EXT_MARK1212", query.getSimpleFAQueryParameters().get(0).getValueID().getValue());
         Assert.assertEquals("EXT_MARK", query.getSimpleFAQueryParameters().get(0).getValueID().getSchemeID());
@@ -120,7 +120,7 @@ public class FaQueryFactoryTest {
         List<VesselIdentifierType> identifiers = new ArrayList<>();
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.GFCM, "GFCM"));
         identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, "ICCAT12"));
-        FAQuery query = FaQueryFactory.createFaQueryForVesselId("submitter", identifiers, true,
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
         Assert.assertEquals("ICCAT12", query.getSimpleFAQueryParameters().get(0).getValueID().getValue());
         Assert.assertEquals("ICCAT", query.getSimpleFAQueryParameters().get(0).getValueID().getSchemeID());
@@ -129,7 +129,7 @@ public class FaQueryFactoryTest {
 
     @Test
     public void testVesselIdentifierPriorityNoIdentifier() throws DatatypeConfigurationException {
-        FAQuery query = FaQueryFactory.createFaQueryForVesselId("submitter", Collections.emptyList(), true,
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", Collections.emptyList(), true,
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
         Assert.assertFalse(query.getSimpleFAQueryParameters().stream().anyMatch(p -> p.getTypeCode().getValue().equals(FaQueryFactory.VESSELID)));
         Assert.assertEquals(1, query.getSimpleFAQueryParameters().size());

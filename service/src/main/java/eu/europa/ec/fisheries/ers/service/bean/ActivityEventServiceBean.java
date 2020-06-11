@@ -29,7 +29,8 @@ import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
@@ -40,7 +41,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshal
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
@@ -182,14 +184,23 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     @Override
-    public void createAndSendFAQuery(@Observes @CreateAndSendFAQueryEvent EventMessage message) {
+    public void createAndSendFAQueryForVessel(@Observes @CreateAndSendFAQueryForVesselEvent EventMessage message) {
         try{
-            CreateAndSendFAQueryRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), CreateAndSendFAQueryRequest.class);
-            activityRulesModuleServiceBean.composeAndSendVesselUpdateFaQueryToRules(request);
+            CreateAndSendFAQueryForVesselRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), CreateAndSendFAQueryForVesselRequest.class);
+            activityRulesModuleServiceBean.composeAndSendVesselFaQueryToRules(request);
         } catch (ActivityModelMarshallException | ActivityModuleException e) {
             sendError(message, e);
         }
+    }
 
+    @Override
+    public void createAndSendFAQueryForTrip(@Observes @CreateAndSendFAQueryForTripEvent EventMessage message) {
+        try{
+            CreateAndSendFAQueryForTripRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), CreateAndSendFAQueryForTripRequest.class);
+            activityRulesModuleServiceBean.composeAndSendTripFaQueryToRules(request);
+        } catch (ActivityModelMarshallException | ActivityModuleException e) {
+            sendError(message, e);
+        }
     }
 
     private void sendError(EventMessage message, Exception e) {
