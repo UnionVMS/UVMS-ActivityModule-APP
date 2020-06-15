@@ -40,8 +40,9 @@ public interface ActivityRulesModuleService {
      *
      * param request
      * @throws ActivityModuleException
+     * @return the id of the generated query
      */
-    void composeAndSendVesselFaQueryToRules(CreateAndSendFAQueryForVesselRequest request) throws ActivityModuleException;
+    String composeAndSendVesselFaQueryToRules(CreateAndSendFAQueryForVesselRequest request) throws ActivityModuleException;
 
     /**
      *  Composes FaQuery with trip id
@@ -50,8 +51,9 @@ public interface ActivityRulesModuleService {
      *
      * param request
      * @throws ActivityModuleException
+     * @return the id of the generated query
      */
-    void composeAndSendTripFaQueryToRules(CreateAndSendFAQueryForTripRequest request) throws ActivityModuleException;
+    String composeAndSendTripFaQueryToRules(CreateAndSendFAQueryForTripRequest request) throws ActivityModuleException;
 
     void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXML, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId) throws ActivityModuleException;
 }

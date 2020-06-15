@@ -37,6 +37,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEven
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
@@ -89,6 +90,9 @@ public class ActivityEventServiceBean implements EventService {
 
     @EJB
     private FaReportSaverBean saveReportBean;
+
+    @Inject
+    private ActivityResponseQueueProducerBean activityResponseQueueProducerBean;
 
     public ActivityEventServiceBean() {
     }
@@ -187,8 +191,9 @@ public class ActivityEventServiceBean implements EventService {
     public void createAndSendFAQueryForVessel(@Observes @CreateAndSendFAQueryForVesselEvent EventMessage message) {
         try{
             CreateAndSendFAQueryForVesselRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), CreateAndSendFAQueryForVesselRequest.class);
-            activityRulesModuleServiceBean.composeAndSendVesselFaQueryToRules(request);
-        } catch (ActivityModelMarshallException | ActivityModuleException e) {
+            String messageId = activityRulesModuleServiceBean.composeAndSendVesselFaQueryToRules(request);
+            activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), ActivityModuleResponseMapper.mapToCreateAndSendFAQueryResponse(messageId));
+        } catch (ActivityModelMarshallException | ActivityModuleException | MessageException e) {
             sendError(message, e);
         }
     }
@@ -197,8 +202,9 @@ public class ActivityEventServiceBean implements EventService {
     public void createAndSendFAQueryForTrip(@Observes @CreateAndSendFAQueryForTripEvent EventMessage message) {
         try{
             CreateAndSendFAQueryForTripRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), CreateAndSendFAQueryForTripRequest.class);
-            activityRulesModuleServiceBean.composeAndSendTripFaQueryToRules(request);
-        } catch (ActivityModelMarshallException | ActivityModuleException e) {
+            String messageId = activityRulesModuleServiceBean.composeAndSendTripFaQueryToRules(request);
+            activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), ActivityModuleResponseMapper.mapToCreateAndSendFAQueryResponse(messageId));
+        } catch (ActivityModelMarshallException | ActivityModuleException | MessageException e) {
             sendError(message, e);
         }
     }
