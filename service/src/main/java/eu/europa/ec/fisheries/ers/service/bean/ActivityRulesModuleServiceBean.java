@@ -130,10 +130,11 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     }
 
     @Override
-    public void composeAndSendVesselFaQueryToRules(CreateAndSendFAQueryForVesselRequest request) throws ActivityModuleException {
+    public String composeAndSendVesselFaQueryToRules(CreateAndSendFAQueryForVesselRequest request) throws ActivityModuleException {
         try {
             FAQuery faQuery = FaQueryFactory.createFaQueryWithVesselId(localNodeName, request.getVesselIdentifiers(), request.isConsolidated(), request.getStartDate(), request.getEndDate());
             sendFAQueryToRules(faQuery, request.getDataflow(), request.getReceiver());
+            return faQuery.getID().getValue();
         } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
             log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules(...)!", e);
             throw new ActivityModuleException("JAXBException or MessageException!", e);
@@ -141,10 +142,11 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     }
 
     @Override
-    public void composeAndSendTripFaQueryToRules(CreateAndSendFAQueryForTripRequest request) throws ActivityModuleException {
+    public String composeAndSendTripFaQueryToRules(CreateAndSendFAQueryForTripRequest request) throws ActivityModuleException {
         try {
             FAQuery faQuery = FaQueryFactory.createFaQueryWithTripId(localNodeName, request.getTripId(), request.isConsolidated());
             sendFAQueryToRules(faQuery, request.getDataflow(), request.getReceiver());
+            return faQuery.getID().getValue();
         } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
             log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules(...)!", e);
             throw new ActivityModuleException("JAXBException or MessageException!", e);
