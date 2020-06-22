@@ -39,6 +39,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFARepor
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListReportingEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -155,6 +156,24 @@ public class ActivityEventServiceBean implements EventService {
         } catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
             sendError(message, e);
         }
+    }
+
+    @Override
+    public void getFishingTripListReporting(@Observes @GetFishingTripListReportingEvent EventMessage message) {
+    	log.info(GOT_JMS_INSIDE_ACTIVITY_TO_GET + "FishingTripIds:");
+    	try {
+    		log.debug("JMS Incoming text message: {}", message.getJmsMessage().getText());
+    		FishingTripRequest baseRequest = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FishingTripRequest.class);
+    		log.debug("FishingTriId Request Unmarshalled");
+    		FishingTripResponse baseResponse = fishingTripService.filterFishingTripsForReporting(FishingActivityRequestMapper.buildFishingActivityQueryFromRequest(baseRequest));
+    		log.debug("FishingTripResponse ::: "+FACatchSummaryHelper.printJsonstructure(baseResponse));
+    		String response = JAXBMarshaller.marshallJaxBObjectToString(baseResponse);
+    		log.debug("FishingTriId response marshalled");
+    		producer.sendResponseMessageToSender(message.getJmsMessage(), response, 3_600_000L);
+    		log.debug("Response sent back.");
+    	} catch (ActivityModelMarshallException | JMSException | ServiceException | MessageException e) {
+    		sendError(message, e);
+    	}
     }
 
 

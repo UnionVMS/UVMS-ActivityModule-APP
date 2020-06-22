@@ -54,4 +54,6 @@ public interface EventService {
     void forwardFAReportWithLogbook(@Observes @ForwardFAReportWithLogbook EventMessage message);
 
     void forwardFAReportFromPosition(@Observes @ForwardFAReportFromPosition EventMessage message);
+
+	void getFishingTripListReporting(EventMessage message);
 }

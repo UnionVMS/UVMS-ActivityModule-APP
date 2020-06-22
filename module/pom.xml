@@ -12,6 +12,10 @@
         <version>${uvms.activity.module.version}</version>
     </parent> 
 
+    <properties>
+        <wildfly.maven.plugin.version>2.1.0.Beta1</wildfly.maven.plugin.version>
+    </properties>
+
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
@@ -19,6 +23,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
+                <version>3.0.0</version>
                 <configuration>
                     <modules>
                         <ejbModule>
@@ -115,9 +120,9 @@
                     <plugin>
                         <groupId>org.wildfly.plugins</groupId>
                         <artifactId>wildfly-maven-plugin</artifactId>
-                        <version>1.1.0.Alpha11</version>
+                        <version>${wildfly.maven.plugin.version}</version>
                         <executions>
-                            <!-- Undeploy the application on clean -->
+							<!-- Undeploy the application on clean 
 		                    <execution>
 		                        <id>undeploy</id>
 		                        <phase>clean</phase>
@@ -128,6 +133,7 @@
 		                            <ignoreMissingDeployment>true</ignoreMissingDeployment>
 		                        </configuration>
                     		</execution>
+							-->
                     		<execution>
 		                        <id>deploy</id>
 		                        <phase>install</phase>

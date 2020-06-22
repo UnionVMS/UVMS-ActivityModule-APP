@@ -28,6 +28,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFARepor
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListReportingEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -60,6 +61,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @Inject
     @GetFishingTripListEvent
     private Event<EventMessage> getFishingTripListEvent;
+    
+    @Inject
+    @GetFishingTripListReportingEvent
+    private Event<EventMessage> getFishingTripListReportingEvent;
 
     @Inject
     @GetFACatchSummaryReportEvent
@@ -127,6 +132,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 case GET_FISHING_TRIPS:
                     getFishingTripListEvent.fire(new EventMessage(textMessage));
                     break;
+                case GET_FISHING_TRIPS_RPT:
+                	getFishingTripListReportingEvent.fire(new EventMessage(textMessage));
+                	break;
                 case GET_FA_CATCH_SUMMARY_REPORT:
                     getFACatchSummaryReportEvent.fire(new EventMessage(textMessage));
                     break;

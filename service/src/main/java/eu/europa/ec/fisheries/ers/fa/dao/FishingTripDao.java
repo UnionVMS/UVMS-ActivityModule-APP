@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -31,6 +32,7 @@ import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilde
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.uvms.commons.service.interceptor.TracingInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -159,7 +161,9 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         return nrOfFa.intValue();
 
     }
+    
 
+    @Interceptors(TracingInterceptor.class)
     private Query getQueryForFilterFishingTrips(FishingActivityQuery query) throws ServiceException {
         FishingTripSearchBuilder search = new FishingTripSearchBuilder();
         StringBuilder sqlToGetActivityList = search.createSQL(query);
