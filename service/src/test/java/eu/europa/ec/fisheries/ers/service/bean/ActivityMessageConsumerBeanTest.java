@@ -76,8 +76,14 @@ public class ActivityMessageConsumerBeanTest {
     @Mock
     Event<EventMessage> getNonUniqueIdsRequest;
 
-    @Mock
+    @Mock @SuppressWarnings("unused")
     Event<EventMessage> getFishingActivityForTrips;
+
+    @Mock @SuppressWarnings("unused")
+    private Event<EventMessage> createAndSendFAQueryForVessel;
+
+    @Mock @SuppressWarnings("unused")
+    private Event<EventMessage> createAndSendFAQueryForTrip;
 
     @Mock
     Event<EventMessage> errorEvent;

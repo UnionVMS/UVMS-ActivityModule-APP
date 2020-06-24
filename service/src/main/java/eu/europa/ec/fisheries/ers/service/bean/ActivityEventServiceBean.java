@@ -29,18 +29,21 @@ import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForTripRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
@@ -87,6 +90,9 @@ public class ActivityEventServiceBean implements EventService {
 
     @EJB
     private FaReportSaverBean saveReportBean;
+
+    @Inject
+    private ActivityResponseQueueProducerBean activityResponseQueueProducerBean;
 
     public ActivityEventServiceBean() {
     }
@@ -182,14 +188,25 @@ public class ActivityEventServiceBean implements EventService {
     }
 
     @Override
-    public void createAndSendFAQuery(@Observes @CreateAndSendFAQueryEvent EventMessage message) {
+    public void createAndSendFAQueryForVessel(@Observes @CreateAndSendFAQueryForVesselEvent EventMessage message) {
         try{
-            CreateAndSendFAQueryRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), CreateAndSendFAQueryRequest.class);
-            activityRulesModuleServiceBean.composeAndSendVesselUpdateFaQueryToRules(request);
-        } catch (ActivityModelMarshallException | ActivityModuleException e) {
+            CreateAndSendFAQueryForVesselRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), CreateAndSendFAQueryForVesselRequest.class);
+            String messageId = activityRulesModuleServiceBean.composeAndSendVesselFaQueryToRules(request);
+            activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), ActivityModuleResponseMapper.mapToCreateAndSendFAQueryResponse(messageId));
+        } catch (ActivityModelMarshallException | ActivityModuleException | MessageException e) {
             sendError(message, e);
         }
+    }
 
+    @Override
+    public void createAndSendFAQueryForTrip(@Observes @CreateAndSendFAQueryForTripEvent EventMessage message) {
+        try{
+            CreateAndSendFAQueryForTripRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), CreateAndSendFAQueryForTripRequest.class);
+            String messageId = activityRulesModuleServiceBean.composeAndSendTripFaQueryToRules(request);
+            activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), ActivityModuleResponseMapper.mapToCreateAndSendFAQueryResponse(messageId));
+        } catch (ActivityModelMarshallException | ActivityModuleException | MessageException e) {
+            sendError(message, e);
+        }
     }
 
     private void sendError(EventMessage message, Exception e) {
