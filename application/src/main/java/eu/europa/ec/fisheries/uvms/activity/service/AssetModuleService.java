@@ -32,7 +32,7 @@ public interface AssetModuleService {
      */
     List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers);
 
-    List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearchName) throws ServiceException;
+    List<String> getAssetGuids(String vesselSearchStr) throws ServiceException;
 
     List<AssetDTO> getAssets(SearchBranch assetQuery);
 }

@@ -50,7 +50,7 @@ public class AssetModuleServiceTest {
         when(assetClient.getAssetList(any(SearchBranch.class))).thenReturn(assetList);
 
         // When
-        List<String> assetGuids = assetsModuleBean.getAssetGuids("JEANNE", UUID.randomUUID().toString());
+        List<String> assetGuids = assetsModuleBean.getAssetGuids("JEANNE");
 
         // Verify
         assertEquals(1, assetGuids.size());

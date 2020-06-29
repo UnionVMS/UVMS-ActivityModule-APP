@@ -29,7 +29,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -42,6 +41,9 @@ public class AssetModuleServiceBean implements AssetModuleService {
 
     @EJB
     private AssetClient assetClient;
+
+    public AssetModuleServiceBean() {
+    }
 
     @Inject
     public AssetModuleServiceBean(AssetClient assetClient) {
@@ -70,25 +72,13 @@ public class AssetModuleServiceBean implements AssetModuleService {
     }
 
     @Override
-    public List<String> getAssetGuids(String vesselIdsSearchStr, String vesselGroupGuidSearchStr) throws ServiceException {
+    public List<String> getAssetGuids(String vesselIdsSearchStr) throws ServiceException {
         List<String> resultingGuids = new ArrayList<>();
 
         // Get the list of guids from assets if vesselIdsSearchStr is provided
         if (StringUtils.isNotEmpty(vesselIdsSearchStr)) {
             SearchBranch query = createMultipleIdTypesSearchBranch(vesselIdsSearchStr);
             List<AssetDTO> assetList = assetClient.getAssetList(query);
-            resultingGuids.addAll(extractGuidsFromAssets(assetList));
-        }
-
-        // Get the list of guids from assets if vesselGroupSearchName is provided
-        if (StringUtils.isNotEmpty(vesselGroupGuidSearchStr)) {
-            UUID vesselGroupGuidSearch;
-            try {
-                vesselGroupGuidSearch = UUID.fromString(vesselGroupGuidSearchStr);
-            } catch (IllegalArgumentException iae) {
-                throw new ServiceException("Provided group id, " + vesselGroupGuidSearchStr + ", was not a valid UUID", iae);
-            }
-            List<AssetDTO> assetList = assetClient.getAssetsByGroupIds(Arrays.asList(vesselGroupGuidSearch));
             resultingGuids.addAll(extractGuidsFromAssets(assetList));
         }
 
