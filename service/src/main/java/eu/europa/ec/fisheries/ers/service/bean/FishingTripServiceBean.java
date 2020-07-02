@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -60,9 +61,12 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
 import eu.europa.ec.fisheries.ers.fa.entities.ChronologyData;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -84,6 +88,7 @@ import eu.europa.ec.fisheries.ers.service.dto.FACatchModel;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.LogbookModel;
 import eu.europa.ec.fisheries.ers.service.dto.PortLogBookModel;
+import eu.europa.ec.fisheries.ers.service.dto.TranshipmentLandingModel;
 import eu.europa.ec.fisheries.ers.service.dto.TripInfoLogBookModel;
 import eu.europa.ec.fisheries.ers.service.dto.VesselIdentifierLogBookModel;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
@@ -240,7 +245,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             Collections.reverse(nextTrips);
 
             Map<String, Integer> countMap = calculateTripCounts(count, previousTrips.size(), nextTrips.size());
-
             chronologyTripDTO.setPreviousTrips(previousTrips.subList(0, countMap.get(PREVIOUS)));
             chronologyTripDTO.setNextTrips(nextTrips.subList(nextTrips.size() - countMap.get(NEXT), nextTrips.size()));
         }
@@ -576,7 +580,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             throw new ServiceException(e.getMessage(), e);
         }
     }
-
     @Override
     public List<AttachmentResponseObject> getAttachmentsForGuidAndPeriod(GetAttachmentsForGuidAndQueryPeriod query) throws ServiceException {
         if(query.getGuid() == null) {
@@ -632,14 +635,15 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         JRBeanCollectionDataSource vesselCollection = new JRBeanCollectionDataSource(logbookModel.getVesselIdentifier());
         JRBeanCollectionDataSource tripCollection = new JRBeanCollectionDataSource(logbookModel.getTripInfo());
         JRBeanCollectionDataSource catchCollection = new JRBeanCollectionDataSource(logbookModel.getCatches());
+        JRBeanCollectionDataSource transhipmentLandingCollection = new JRBeanCollectionDataSource(logbookModel.getTranshipmentLandings());
         Map<String,Object> params = new HashMap<>();
         params.put("PortParam",portsCollection);
         params.put("VesselParam", vesselCollection);
         params.put("TripParam", tripCollection);
         params.put("CatchParam", catchCollection);
+        params.put("TranshipmentLandingParam", transhipmentLandingCollection);
         return params;
     }
-
 
     private LogbookModel getJasperReportData(List<FaReportDocumentEntity> faReportDocumentEntities,String tripId){
         LogbookModel logbookModel = new LogbookModel();
@@ -647,12 +651,19 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         List<FishingActivityEntity> activities = new ArrayList<>();
         Map<String,VesselIdentifierLogBookModel> vesselIdentifierLogBookModelList = new HashMap<>();
         List<FACatchModel> catchModel = new ArrayList<>();
+        List<TranshipmentLandingModel> transhipmentLandings = new ArrayList<>();
 
         faReportDocumentEntities.stream().forEach( t -> t.getFishingActivities().forEach(fa -> {
 
                     activities.add(fa);
                     String identifier = getIdentifierByOrder(fa);
-                    catchModel.addAll(createCatch(fa,identifier));
+
+                    if("TRANSHIPMENT".equals(fa.getTypeCode()) || "LANDING".equals(fa.getTypeCode())) {
+                        transhipmentLandings.addAll(createTranshipmentLanding(fa, identifier));
+                    } else {
+                        catchModel.addAll(createCatch(fa, identifier));
+                    }
+
                     if (vesselIdentifierLogBookModelList.get(identifier) == null) {
 
                         VesselIdentifierLogBookModel dto = new VesselIdentifierLogBookModel();
@@ -660,7 +671,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                         dto.setIdentifier(identifier);
                         dto.setCountry(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getCountry());
                         dto.setName(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getName());
-
+                        dto.setExtMark(getIdentifier(fa,"EXT_MARK"));
+                        dto.setIrcs(getIdentifier(fa,"IRCS"));
                         String address = fa.getVesselTransportMeans() == null || fa.getVesselTransportMeans().isEmpty()?
                                 null : fa.getVesselTransportMeans().iterator().next().getContactParty() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().isEmpty()?
                                 null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses().isEmpty()?
@@ -676,7 +688,69 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         logbookModel.setVesselIdentifier( new ArrayList(vesselIdentifierLogBookModelList.values()));
         logbookModel.setTripInfo(tripInfoList);
         logbookModel.setCatches(catchModel);
+        logbookModel.setTranshipmentLandings(transhipmentLandings);
         return logbookModel;
+    }
+
+    private String getIdentifier(FishingActivityEntity fishingActivityEntity, String identifierType){
+        Set<VesselIdentifierEntity> identifierEntitySet = new HashSet<>();
+        fishingActivityEntity.getFaReportDocument().getVesselTransportMeans().forEach( z-> identifierEntitySet.addAll(z.getVesselIdentifiers()));
+
+        for(VesselIdentifierEntity vesselIdentifier:identifierEntitySet){
+            if(identifierType.equals(vesselIdentifier.getVesselIdentifierSchemeId())){
+                return vesselIdentifier.getVesselIdentifierId();
+            }
+        }
+
+        return null;
+    }
+
+    private List<TranshipmentLandingModel> createTranshipmentLanding(FishingActivityEntity fa,String identifier){
+
+        if(fa.getFaCatchs() == null || fa.getFaCatchs().isEmpty()){
+            return new ArrayList<>();
+        }
+
+        List<TranshipmentLandingModel> modelList = new ArrayList<>();
+
+        Date catchDate = fa.getCalculatedStartTime();
+        fa.getFaCatchs().stream().forEach( katch -> katch.getFluxLocations().stream().forEach(location ->{
+            TranshipmentLandingModel model = new TranshipmentLandingModel();
+            model.setCalculatedStartTime(catchDate);
+            model.setIdentifier(identifier);
+            model.setCalculatedUnitQuantity(katch.getCalculatedUnitQuantity());
+            model.setPresentation(getPresentation(katch));
+            model.setWeight(getProductWeight(katch));
+            model.setGears(katch.getGearTypeCode());
+            model.setFluxLocationIdentifierSchemeId(location.getFluxLocationIdentifierSchemeId());
+            if(location.getLatitude() != null) {
+                model.setLatitude(BigDecimal.valueOf(location.getLatitude()).setScale(6, RoundingMode.DOWN));
+            }
+            if(location.getLongitude() != null) {
+                model.setLongitude(BigDecimal.valueOf(location.getLongitude()).setScale(6, RoundingMode.DOWN));
+            }
+            modelList.add(model);
+        }));
+        return modelList;
+    }
+    //temp code until we implement the updates specs
+    private String getPresentation(FaCatchEntity catchEntity){
+        for(AapProcessEntity process:catchEntity.getAapProcesses()){
+            for(AapProcessCodeEntity processCode:process.getAapProcessCode()){
+                if("FISH_PRESENTATION".equals(processCode.getTypeCodeListId())){
+                    return processCode.getTypeCode();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    //temp code until we implement the updates specs
+    private String getProductWeight(FaCatchEntity catchEntity){
+        double sum = catchEntity.getAapProcesses().stream().map(t -> t.getAapProducts().stream().mapToDouble(r -> r.getWeightMeasure())).mapToDouble(z -> z.sum()).sum();
+
+        return String.valueOf(sum)+catchEntity.getAapProcesses().iterator().next().getAapProducts().iterator().next().getWeightMeasureUnitCode();
     }
 
     private List<FACatchModel> createCatch(FishingActivityEntity fa,String identifier){
@@ -695,9 +769,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             model.setCalculatedUnitQuantity(katch.getCalculatedUnitQuantity());
             model.setSpeciesCode(katch.getSpeciesCode());
             model.setWeight(katch.getWeightMeasure() + katch.getWeightMeasureUnitCode());
+            model.setGears(katch.getGearTypeCode());
             model.setFluxLocationIdentifierSchemeId(location.getFluxLocationIdentifierSchemeId());
-            model.setLatitude(location.getLatitude());
-            model.setLongitude(location.getLongitude());
+            if(location.getLatitude() != null) {
+                model.setLatitude(BigDecimal.valueOf(location.getLatitude()).setScale(6, RoundingMode.DOWN));
+            }
+            if(location.getLongitude() != null) {
+                model.setLongitude(BigDecimal.valueOf(location.getLongitude()).setScale(6, RoundingMode.DOWN));
+            }
             modelList.add(model);
         }));
         return modelList;
@@ -739,7 +818,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
         }
         //first return cfr value if found, then gfcm or iccat
-        return cfr == null ? gfcm == null ? iccat : gfcm : cfr;
+        return cfr == null ? gfcm == null ? "ICCAT:"+iccat : "GFCM:"+gfcm : cfr;
     }
 
 
@@ -750,8 +829,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         fillPortLogBookModel(firstDepartureForTrip,logBookModelList);
         FishingActivityEntity lastArrivalForTrip = FishingTripIdWithGeometryMapper.getLastArrivalForTrip(activities);
         fillPortLogBookModel(lastArrivalForTrip,logBookModelList);
-        FishingActivityEntity firstTranshipmentForTrip = FishingTripIdWithGeometryMapper.getFirstTranshipmentForTrip(activities);
-        fillPortLogBookModel(firstTranshipmentForTrip,logBookModelList);
+        List<FishingActivityEntity> transhipmentsForTrip = FishingTripIdWithGeometryMapper.getTranshipmentsForTrip(activities);
+        transhipmentsForTrip.forEach( f-> fillPortLogBookModel(f,logBookModelList));
+        List<FishingActivityEntity> landingsForTrip = FishingTripIdWithGeometryMapper.getLandingsForTrip(activities);
+        landingsForTrip.forEach(f ->fillPortLogBookModel(f,logBookModelList));
         return logBookModelList;
     }
 
@@ -774,7 +855,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if(coordinate == null){
             return null;
         }
-        DecimalFormat df = new DecimalFormat("###.########");
+        DecimalFormat df = new DecimalFormat("###.######");
         df.setRoundingMode(RoundingMode.DOWN);
         return String.valueOf(df.format(coordinate.x))+","+String.valueOf(df.format(coordinate.y));
     }

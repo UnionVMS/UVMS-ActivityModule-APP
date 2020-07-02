@@ -7,8 +7,9 @@ public class VesselIdentifierLogBookModel {
 	
 	private String name;
 	private String country;
-	private String identifier;//ircs,cfr, etc..
+	private String identifier;//cfr,gfcm,iccat
 	private Double dimensions;
 	private String address;
-
+	private String extMark;
+	private String ircs;
 }

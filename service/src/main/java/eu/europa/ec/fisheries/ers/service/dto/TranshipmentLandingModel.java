@@ -14,13 +14,21 @@ package eu.europa.ec.fisheries.ers.service.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
-@Data
-public class TripInfoLogBookModel {
 
-    private String tripId;
-    private Date firstActivityDateForTrip;
-    private Date lastActivityDateForTrip;
-    private String duration;
+@Data
+public class TranshipmentLandingModel {
+
+    private String identifier;
+    private Date calculatedStartTime;
+    private BigDecimal longitude;
+    private BigDecimal latitude;
+    private String fluxLocationIdentifierSchemeId;
+    private String gears;
+    private String presentation;
+    private Double calculatedUnitQuantity;
+    private String weight;
+
 }
