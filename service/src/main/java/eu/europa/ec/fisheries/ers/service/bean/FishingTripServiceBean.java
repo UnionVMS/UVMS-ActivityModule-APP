@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
+import eu.europa.ec.fisheries.ers.service.dto.FaReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
@@ -45,6 +46,16 @@ import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -56,6 +67,11 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -438,6 +454,52 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
         }
         return createMessageCounter(reports);
+    }
+
+    public FileOutputStream getLogBookReport(String tripId,String consolidated,String vesselId,String schemeId,String startDate,String endDate) throws ServiceException {
+        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.loadReports(tripId, consolidated, vesselId, schemeId, startDate, endDate);
+        List<FaReportDTO> jasperReportData = getJasperReportData(faReportDocumentEntities);
+        JRBeanCollectionDataSource  dsCollection = new JRBeanCollectionDataSource(jasperReportData);
+        Map<String,Object> params = new HashMap<>();
+        params.put("CollectionBeanParam",dsCollection);
+
+        try {
+            InputStream input = new FileInputStream(new File("C:\\Users\\inomikos\\eclipse-workspace\\JasperReports\\src\\main\\java\\sample_report.jrxml"));
+            JasperDesign jasperDesign = JRXmlLoader.load(input);
+            JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JREmptyDataSource());
+            FileOutputStream outputStream = new FileOutputStream(tripId+".pdf");
+            byte[] bytes = JasperExportManager.exportReportToPdf(jasperPrint);
+            outputStream.write(bytes);
+            return  outputStream;
+        } catch (JRException | IOException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }
+
+
+    private List<FaReportDTO> getJasperReportData(List<FaReportDocumentEntity> faReportDocumentEntities){
+        List<FaReportDTO> reportDTOList = new ArrayList<>();
+
+        for(FaReportDocumentEntity documentEntity:faReportDocumentEntities){
+            FaReportDTO reportDTO = new FaReportDTO();
+            reportDTO.setId(documentEntity.getId());
+            reportDTO.setFmcMarker(documentEntity.getFmcMarker());
+            reportDTO.setSource(documentEntity.getSource());
+            reportDTO.setStatus(documentEntity.getStatus());
+            reportDTO.setTypeCode(documentEntity.getTypeCode());
+            reportDTO.setDateTime(documentEntity.getAcceptedDatetime() == null? null:documentEntity.getAcceptedDatetime().toString());
+            reportDTOList.add(reportDTO);
+        }
+            return reportDTOList;
+    }
+
+    private String getJasperFilePath(){
+        String internalPath = this.getClass().getName().replace(".", File.separator).replace("FishingTripServiceBean","");
+        String externalPath = System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+ "sample_report.jrxml";
+//        String workDir = externalPath+File.separator+internalPath.substring(0, internalPath.lastIndexOf(File.separator));
+        return  internalPath;
+//        return Paths.get("").toAbsolutePath()+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"sample_report.jrxml";
     }
 
     /**

@@ -13,6 +13,8 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -130,4 +132,5 @@ public interface FishingTripService {
     String getOwnerFluxPartyFromTripId(String tripId);
 
 
+    FileOutputStream getLogBookReport(String tripId, String consolidated, String vesselId, String schemeId, String startDate, String endDate) throws ServiceException;
 }
