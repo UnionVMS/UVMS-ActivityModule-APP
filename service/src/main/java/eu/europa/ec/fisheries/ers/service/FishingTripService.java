@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -122,12 +123,11 @@ public interface FishingTripService {
      */
     List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException;
 
-
     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 
     CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
 
     String getOwnerFluxPartyFromTripId(String tripId);
 
-
+    void generateLogBookReport(String tripId, String consolidated, OutputStream destination) throws ServiceException;
 }
