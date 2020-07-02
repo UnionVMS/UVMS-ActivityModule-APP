@@ -37,6 +37,8 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.List;
 
 @Path("/fa")
@@ -62,6 +64,28 @@ public class FishingActivityResource extends UnionVMSResource {
     public Response getCommunicationChannel() throws ServiceException {
         return createSuccessResponse(FaReportSourceEnum.values());
     }
+
+
+    @GET
+    @Path("/report/logbook")
+    @Produces("application/pdf")
+    @Interceptors(ActivityExceptionInterceptor.class)
+//    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
+    public Response logbookReport(@QueryParam("tripId") String tripId,@DefaultValue("Y")@QueryParam("consolidated") String consolidated,@QueryParam("vesselId") String vesselId,@QueryParam("schemeId") String schemeId,@QueryParam("startDate") String startDate,@QueryParam("endDate") String endDate){
+
+
+        FileOutputStream logBookReport;
+        try {
+            logBookReport = fishingTripService.getLogBookReport(tripId, consolidated, vesselId, schemeId, startDate, endDate);
+        } catch (ServiceException e) {
+           return  Response.serverError().build();
+        }
+        Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.ok(logBookReport);
+        responseBuilder.type("application/pdf");
+        responseBuilder.header("Content-Disposition", "filename="+tripId+".pdf");
+        return responseBuilder.build();
+    }
+
 
 
     @POST
