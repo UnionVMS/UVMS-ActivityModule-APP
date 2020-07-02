@@ -351,15 +351,24 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
                 .orElse(null);
     }
 
-    public static FishingActivityEntity getFirstTranshipmentForTrip(List<FishingActivityEntity> fishingActivities) {
+    public static List<FishingActivityEntity> getTranshipmentsForTrip(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return null;
         }
         return fishingActivities.stream()
                 .filter(fa -> FishingActivityTypeEnum.TRANSHIPMENT.toString().equals(fa.getTypeCode()))
                 .filter(f -> f.getCalculatedStartTime() != null)
-                .min(Comparator.comparing(FishingActivityEntity::getCalculatedStartTime))
-                .orElse(null);
+                .collect(Collectors.toList());
+    }
+
+    public static List<FishingActivityEntity> getLandingsForTrip(List<FishingActivityEntity> fishingActivities) {
+        if (CollectionUtils.isEmpty(fishingActivities)) {
+            return null;
+        }
+        return fishingActivities.stream()
+                .filter(fa -> FishingActivityTypeEnum.LANDING.toString().equals(fa.getTypeCode()))
+                .filter(f -> f.getCalculatedStartTime() != null)
+                .collect(Collectors.toList());
     }
 
     public static FishingActivityEntity getLastArrivalForTrip(List<FishingActivityEntity> fishingActivities) {
