@@ -83,6 +83,7 @@
     <geotools.version>14.4</geotools.version>
     <mave.plugin.api.version>2.0</mave.plugin.api.version>
     <dom4j.version>1.6.1</dom4j.version>
+    <jasper.version>6.13.0</jasper.version>
 
     <scm.connection>scm:git:https://github.com/UnionVMS/UVMS-ActivityModule-APP.git</scm.connection>
   </properties>
@@ -419,8 +420,29 @@
         <version>1.7.25</version>
       </dependency>
 
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports</artifactId>
+        <version>${jasper.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports-fonts</artifactId>
+        <version>${jasper.version}</version>
+      </dependency>
+      <!--
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports-functions</artifactId>
+        <version>${jasper.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports-metadata</artifactId>
+        <version>${jasper.version}</version>
+      </dependency>
+      -->
     </dependencies>
-
   </dependencyManagement>
 
   <dependencies>
