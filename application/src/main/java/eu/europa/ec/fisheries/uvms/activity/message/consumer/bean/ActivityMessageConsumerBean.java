@@ -67,7 +67,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
 
     @Override
     public void onMessage(Message message) {
-        log.debug("Received subscription message");
+        log.debug("Received message");
 
         TextMessage textMessage = (TextMessage) message;
         try {
