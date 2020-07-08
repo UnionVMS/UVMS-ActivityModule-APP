@@ -420,8 +420,29 @@
         <version>1.7.25</version>
       </dependency>
 
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports</artifactId>
+        <version>${jasper.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports-fonts</artifactId>
+        <version>${jasper.version}</version>
+      </dependency>
+      <!--
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports-functions</artifactId>
+        <version>${jasper.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.sf.jasperreports</groupId>
+        <artifactId>jasperreports-metadata</artifactId>
+        <version>${jasper.version}</version>
+      </dependency>
+      -->
     </dependencies>
-
   </dependencyManagement>
 
   <dependencies>
@@ -435,27 +456,6 @@
       <artifactId>dom4j</artifactId>
       <version>${dom4j.version}</version>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>net.sf.jasperreports</groupId>
-      <artifactId>jasperreports</artifactId>
-      <version>${jasper.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.jasperreports</groupId>
-      <artifactId>jasperreports-fonts</artifactId>
-      <version>${jasper.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.jasperreports</groupId>
-      <artifactId>jasperreports-functions</artifactId>
-      <version>${jasper.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.sf.jasperreports</groupId>
-      <artifactId>jasperreports-metadata</artifactId>
-      <version>${jasper.version}</version>
     </dependency>
   </dependencies>
 

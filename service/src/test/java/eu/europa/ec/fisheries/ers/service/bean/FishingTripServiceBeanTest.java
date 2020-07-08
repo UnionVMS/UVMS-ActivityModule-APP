@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -431,5 +432,11 @@ public class FishingTripServiceBeanTest {
 
         assertNotNull(response);
 
+    }
+
+    @Test
+    public void calculateTime() {
+        String duration = FishingTripServiceBean.calculateDuration(3720000l);
+        assertEquals("1h 2m",duration);
     }
 }

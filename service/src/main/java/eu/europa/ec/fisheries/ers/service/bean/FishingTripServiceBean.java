@@ -15,35 +15,80 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
-import eu.europa.ec.fisheries.ers.fa.dao.*;
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.dao.ActivityConfigurationDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
+import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
+import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
+import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
+import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.service.*;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.ers.service.dto.FaReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.LogbookModel;
+import eu.europa.ec.fisheries.ers.service.dto.PortLogBookModel;
+import eu.europa.ec.fisheries.ers.service.dto.TripInfoLogBookModel;
+import eu.europa.ec.fisheries.ers.service.dto.VesselIdentifierLogBookModel;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.*;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ChronologyDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ChronologyTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripIdDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.facatch.evolution.CatchProgressProcessor;
 import eu.europa.ec.fisheries.ers.service.facatch.evolution.TripCatchProgressRegistry;
-import eu.europa.ec.fisheries.ers.service.mapper.*;
+import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingTripToGeoJsonMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FlapDocumentMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
-import eu.europa.ec.fisheries.wsdl.asset.types.*;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -67,16 +112,24 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
-import java.util.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.*;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Stateless
@@ -456,50 +509,174 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return createMessageCounter(reports);
     }
 
-    public FileOutputStream getLogBookReport(String tripId,String consolidated,String vesselId,String schemeId,String startDate,String endDate) throws ServiceException {
-        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.loadReports(tripId, consolidated, vesselId, schemeId, startDate, endDate);
-        List<FaReportDTO> jasperReportData = getJasperReportData(faReportDocumentEntities);
-        JRBeanCollectionDataSource  dsCollection = new JRBeanCollectionDataSource(jasperReportData);
-        Map<String,Object> params = new HashMap<>();
-        params.put("CollectionBeanParam",dsCollection);
+    @Override
+    public void generateLogBookReport(String tripId, String consolidated, OutputStream destination) throws ServiceException {
+        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.loadReports(tripId, consolidated);
+        LogbookModel logbookModel = getJasperReportData(faReportDocumentEntities, tripId);
 
         try {
-            InputStream input = new FileInputStream(new File("C:\\Users\\inomikos\\eclipse-workspace\\JasperReports\\src\\main\\java\\sample_report.jrxml"));
+            InputStream input = getClass().getClassLoader().getResourceAsStream("sample_report.jrxml");
             JasperDesign jasperDesign = JRXmlLoader.load(input);
             JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JREmptyDataSource());
-            FileOutputStream outputStream = new FileOutputStream(tripId+".pdf");
-            byte[] bytes = JasperExportManager.exportReportToPdf(jasperPrint);
-            outputStream.write(bytes);
-            return  outputStream;
-        } catch (JRException | IOException e) {
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,  prepareParams(logbookModel), new JREmptyDataSource());
+            JasperExportManager.exportReportToPdfStream(jasperPrint, destination);
+        } catch (JRException e) {
             throw new ServiceException(e.getMessage(), e);
         }
     }
 
-
-    private List<FaReportDTO> getJasperReportData(List<FaReportDocumentEntity> faReportDocumentEntities){
-        List<FaReportDTO> reportDTOList = new ArrayList<>();
-
-        for(FaReportDocumentEntity documentEntity:faReportDocumentEntities){
-            FaReportDTO reportDTO = new FaReportDTO();
-            reportDTO.setId(documentEntity.getId());
-            reportDTO.setFmcMarker(documentEntity.getFmcMarker());
-            reportDTO.setSource(documentEntity.getSource());
-            reportDTO.setStatus(documentEntity.getStatus());
-            reportDTO.setTypeCode(documentEntity.getTypeCode());
-            reportDTO.setDateTime(documentEntity.getAcceptedDatetime() == null? null:documentEntity.getAcceptedDatetime().toString());
-            reportDTOList.add(reportDTO);
-        }
-            return reportDTOList;
+    private Map<String,Object> prepareParams(LogbookModel logbookModel){
+        JRBeanCollectionDataSource  portsCollection = new JRBeanCollectionDataSource(logbookModel.getPorts());
+        JRBeanCollectionDataSource vesselCollection = new JRBeanCollectionDataSource(logbookModel.getVesselIdentifier());
+        JRBeanCollectionDataSource tripCollection = new JRBeanCollectionDataSource(logbookModel.getTripInfo());
+        Map<String,Object> params = new HashMap<>();
+        params.put("PortParam",portsCollection);
+        params.put("VesselParam", vesselCollection);
+        params.put("TripParam", tripCollection);
+        return params;
     }
 
-    private String getJasperFilePath(){
-        String internalPath = this.getClass().getName().replace(".", File.separator).replace("FishingTripServiceBean","");
-        String externalPath = System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+ "sample_report.jrxml";
-//        String workDir = externalPath+File.separator+internalPath.substring(0, internalPath.lastIndexOf(File.separator));
-        return  internalPath;
-//        return Paths.get("").toAbsolutePath()+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"sample_report.jrxml";
+
+    private LogbookModel getJasperReportData(List<FaReportDocumentEntity> faReportDocumentEntities,String tripId){
+        LogbookModel logbookModel = new LogbookModel();
+
+        Set<FishingActivityEntity> activities = new HashSet<>();
+        Map<String,VesselIdentifierLogBookModel> vesselIdentifierLogBookModelList = new HashMap<>();
+
+        faReportDocumentEntities.stream().forEach( t -> t.getFishingActivities().forEach(fa -> {
+
+                    activities.add(fa);
+                    String identifier = getIdentifierByOrder(fa);
+                    if (vesselIdentifierLogBookModelList.get(identifier) == null) {
+
+                        VesselIdentifierLogBookModel dto = new VesselIdentifierLogBookModel();
+
+                        dto.setIdentifier(identifier);
+                        dto.setCountry(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getCountry());
+                        dto.setName(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getName());
+
+                        String address = fa.getVesselTransportMeans() == null || fa.getVesselTransportMeans().isEmpty()?
+                                null : fa.getVesselTransportMeans().iterator().next().getContactParty() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().isEmpty()?
+                                null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses().isEmpty()?
+                                null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses().iterator().next().getStreetName();
+
+                        dto.setAddress(address);
+                        vesselIdentifierLogBookModelList.put(identifier, dto);
+                    }
+        }));
+
+            //activity_vessel_transport_means name,country
+            //activity_vessel_identifier cfr,ircs,ext_mark
+            //activity_structured_address streetname,country //activity_fishing_activity -> activity_flux_location -> activity_structured_address
+
+            //activity_flux_location flux_location_identifier,flux_location_identifier_scheme_id
+            //activity_fa_report_document type_code(activity type)
+            //activity_fa_catch type_code(onboard,discarded etc),species_code,weight_measure,weight_measure_unit_code,calculated_weight_measure,fish_class_code
+
+        List<FishingActivityEntity> faList = new ArrayList<>(activities);
+        List<TripInfoLogBookModel> tripInfoList = calculateTripInfo(faList,tripId);
+
+        logbookModel.setPorts(retrievePortLogBookModel(faList));
+        logbookModel.setVesselIdentifier( new ArrayList(vesselIdentifierLogBookModelList.values()));
+        logbookModel.setTripInfo(tripInfoList);
+        return logbookModel;
+    }
+
+    private List<TripInfoLogBookModel> calculateTripInfo(List<FishingActivityEntity> faList,String tripId){
+        List<TripInfoLogBookModel> tripInfoList = new ArrayList<>();
+        TripInfoLogBookModel tripInfoLogBookModel = new TripInfoLogBookModel();
+
+        Double totalTripDuration = FishingTripIdWithGeometryMapper.getTotalTripDuration(faList);
+        Date firstActivityDateForTrip = FishingTripIdWithGeometryMapper.findFirstActivityDateForTrip(faList);
+        Date lastActivityDateForTrip = FishingTripIdWithGeometryMapper.findLastActivityDateForTrip(faList);
+        String duration = calculateDuration(totalTripDuration.longValue());
+        tripInfoLogBookModel.setFirstActivityDateForTrip(firstActivityDateForTrip);
+        tripInfoLogBookModel.setLastActivityDateForTrip(lastActivityDateForTrip);
+        tripInfoLogBookModel.setDuration(duration);
+        tripInfoLogBookModel.setTripId(tripId);
+
+        tripInfoList.add(tripInfoLogBookModel);
+        return tripInfoList;
+    }
+
+    private String getIdentifierByOrder(FishingActivityEntity fishingActivityEntity){
+        Set<VesselIdentifierEntity> identifierEntitySet = new HashSet<>();
+        fishingActivityEntity.getFaReportDocument().getVesselTransportMeans().forEach( z-> identifierEntitySet.addAll(z.getVesselIdentifiers()));
+
+        String cfr, gfcm, iccat;
+        cfr = gfcm = iccat = null;
+
+        for(VesselIdentifierEntity vesselIdentifier:identifierEntitySet){
+            if("CFR".equals(vesselIdentifier.getVesselIdentifierSchemeId())){
+                cfr = vesselIdentifier.getVesselIdentifierId();
+            }
+            if("GFCM".equals(vesselIdentifier.getVesselIdentifierSchemeId())){
+                gfcm = vesselIdentifier.getVesselIdentifierId();
+            }
+            if("ICCAT".equals(vesselIdentifier.getVesselIdentifierSchemeId())){
+                iccat = vesselIdentifier.getVesselIdentifierId();
+            }
+        }
+        //first return cfr value if found, then gfcm or iccat
+        return cfr == null ? gfcm == null ? iccat : gfcm : cfr;
+    }
+
+
+    private List<PortLogBookModel> retrievePortLogBookModel(List<FishingActivityEntity> activities){
+        List<PortLogBookModel> logBookModelList = new ArrayList<>();
+
+        FishingActivityEntity firstDepartureForTrip = FishingTripIdWithGeometryMapper.getFirstDepartureForTrip(activities);
+        fillPortLogBookModel(firstDepartureForTrip,logBookModelList);
+        FishingActivityEntity lastArrivalForTrip = FishingTripIdWithGeometryMapper.getLastArrivalForTrip(activities);
+        fillPortLogBookModel(lastArrivalForTrip,logBookModelList);
+        FishingActivityEntity firstTranshipmentForTrip = FishingTripIdWithGeometryMapper.getFirstTranshipmentForTrip(activities);
+        fillPortLogBookModel(firstTranshipmentForTrip,logBookModelList);
+        return logBookModelList;
+    }
+
+    private List<PortLogBookModel> fillPortLogBookModel(FishingActivityEntity fa, List<PortLogBookModel> logBookModelList){
+
+        if(fa == null){
+            return logBookModelList;
+        }
+
+        PortLogBookModel portLogBookModel = new PortLogBookModel();
+        portLogBookModel.setActivityType(fa.getTypeCode());
+        Coordinate coordinates = fa.getGeom().getCoordinates()[0];
+        portLogBookModel.setCoordinates(getCoordinates(coordinates));
+        portLogBookModel.setDate(fa.getCalculatedStartTime());
+        logBookModelList.add(portLogBookModel);
+        return logBookModelList;
+    }
+
+    private String getCoordinates(Coordinate coordinate){
+        DecimalFormat df = new DecimalFormat("#.#######");
+        //        df.setRoundingMode(RoundingMode.DOWN);
+        return String.valueOf(df.format(coordinate.x))+","+String.valueOf(df.format(coordinate.y));
+    }
+
+    public static String calculateDuration(Long millis) {
+
+        if(millis == 0){
+            return "";
+        }
+
+        long seconds = millis / 1000;
+        long min = seconds % 3600 / 60;
+        long hours = seconds % 86400 / 3600;
+        long days = seconds / 86400;
+        StringBuilder sb  = new StringBuilder();
+        if(days != 0) {
+            sb.append(days);
+            sb.append("d ");
+        }
+        if(hours != 0) {
+            sb.append(hours);
+            sb.append("h ");
+        }
+        sb.append(min);
+        sb.append("m");
+        return sb.toString();
     }
 
     /**

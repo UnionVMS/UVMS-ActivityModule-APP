@@ -37,8 +37,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 @Path("/fa")
@@ -65,28 +68,23 @@ public class FishingActivityResource extends UnionVMSResource {
         return createSuccessResponse(FaReportSourceEnum.values());
     }
 
-
     @GET
     @Path("/report/logbook")
     @Produces("application/pdf")
     @Interceptors(ActivityExceptionInterceptor.class)
-//    @IUserRoleInterceptor(requiredUserRole = {ActivityFeaturesEnum.LIST_ACTIVITY_REPORTS})
-    public Response logbookReport(@QueryParam("tripId") String tripId,@DefaultValue("Y")@QueryParam("consolidated") String consolidated,@QueryParam("vesselId") String vesselId,@QueryParam("schemeId") String schemeId,@QueryParam("startDate") String startDate,@QueryParam("endDate") String endDate){
-
-
-        FileOutputStream logBookReport;
-        try {
-            logBookReport = fishingTripService.getLogBookReport(tripId, consolidated, vesselId, schemeId, startDate, endDate);
-        } catch (ServiceException e) {
-           return  Response.serverError().build();
-        }
-        Response.ResponseBuilder responseBuilder = javax.ws.rs.core.Response.ok(logBookReport);
-        responseBuilder.type("application/pdf");
-        responseBuilder.header("Content-Disposition", "filename="+tripId+".pdf");
-        return responseBuilder.build();
+    public Response logbookReport(@QueryParam("tripId") String tripId, @DefaultValue("Y") @QueryParam("consolidated") String consolidated) {
+        StreamingOutput stream = output -> {
+            try {
+                fishingTripService.generateLogBookReport(tripId, consolidated, output);
+            } catch (ServiceException e) {
+                throw new ServerErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
+            }
+        };
+        return Response.ok(stream)
+                .type("application/pdf")
+                .header("Content-Disposition", "filename="+tripId+".pdf")
+                .build();
     }
-
-
 
     @POST
     @Path("/list")
