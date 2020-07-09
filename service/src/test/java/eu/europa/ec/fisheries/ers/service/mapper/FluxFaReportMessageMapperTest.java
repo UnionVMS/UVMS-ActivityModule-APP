@@ -39,9 +39,10 @@ public class FluxFaReportMessageMapperTest {
         JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        FluxFaReportMessageEntity fluxRepMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
+        FluxFaReportMessageMappingContext ctx = new FluxFaReportMessageMappingContext();
+        FluxFaReportMessageEntity fluxRepMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(ctx, fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
 
-        List<FaReportDocumentEntity> faReportDocuments = new ArrayList(fluxRepMessageEntity.getFaReportDocuments());
+        List<FaReportDocumentEntity> faReportDocuments = new ArrayList<>(fluxRepMessageEntity.getFaReportDocuments());
         FluxReportDocumentEntity fluxReportDocument = fluxRepMessageEntity.getFluxReportDocument();
 
         assertNotNull(fluxRepMessageEntity);
@@ -52,4 +53,23 @@ public class FluxFaReportMessageMapperTest {
         assertEquals(1, faReportDocuments.size());
     }
 
+    @Test
+    @SneakyThrows
+    public void testFluxFaReportMessageMapperWithNullCtx(){
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message.xml");
+        JAXBContext jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
+        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        FLUXFAReportMessage fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
+        FluxFaReportMessageEntity fluxRepMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(null, fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
+
+        List<FaReportDocumentEntity> faReportDocuments = new ArrayList<>(fluxRepMessageEntity.getFaReportDocuments());
+        FluxReportDocumentEntity fluxReportDocument = fluxRepMessageEntity.getFluxReportDocument();
+
+        assertNotNull(fluxRepMessageEntity);
+        assertNotNull(fluxReportDocument);
+        assertNotNull(fluxReportDocument.getFluxFaReportMessage());
+        assertNotNull(faReportDocuments.get(0));
+
+        assertEquals(1, faReportDocuments.size());
+    }
 }

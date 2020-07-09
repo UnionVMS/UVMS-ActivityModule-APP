@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class FluxFaReportMessageMapper {
 
-    public FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage) {
+    public FluxFaReportMessageEntity mapToFluxFaReportMessage(FluxFaReportMessageMappingContext ctx, FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage) {
         if (fluxfaReportMessage == null && faReportSourceEnum == null) {
             return null;
         }
@@ -38,7 +38,7 @@ public class FluxFaReportMessageMapper {
             FluxReportDocumentEntity fluxReportDocumentEntity = mapFluxReportDocumentEntity(fluxReportDocument);
             fluxReportDocumentEntity.setFluxFaReportMessage(fluxFaReportMessage);
             fluxFaReportMessage.setFluxReportDocument(fluxReportDocumentEntity);
-            fluxFaReportMessage.setFaReportDocuments(mapFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
+            fluxFaReportMessage.setFaReportDocuments(mapFaReportDocuments(ctx, fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
         }
         return fluxFaReportMessage;
     }
@@ -49,7 +49,7 @@ public class FluxFaReportMessageMapper {
         return fluxReportDocumentEntity;
     }
 
-    private Set<FaReportDocumentEntity> mapFaReportDocuments(List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage){
+    private Set<FaReportDocumentEntity> mapFaReportDocuments(FluxFaReportMessageMappingContext ctx, List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage){
         Set<FaReportDocumentEntity> faReportDocumentEntities = new HashSet<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
             FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportSourceEnum);
@@ -58,7 +58,7 @@ public class FluxFaReportMessageMapper {
             Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
             if (CollectionUtils.isNotEmpty(vesselTransportMeansEntities)){
                 VesselTransportMeansEntity vessTraspMeans = vesselTransportMeansEntities.iterator().next();
-                fishingActivityEntities = FaReportDocumentMapper.mapFishingActivityEntities(faReportDocument.getSpecifiedFishingActivities(), entity, vessTraspMeans);
+                fishingActivityEntities = FaReportDocumentMapper.mapFishingActivityEntities(ctx, faReportDocument.getSpecifiedFishingActivities(), entity, vessTraspMeans);
                 vessTraspMeans.setFaReportDocument(entity);
             }
             entity.setFishingActivities(fishingActivityEntities);

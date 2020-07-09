@@ -224,4 +224,19 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         assetListQuery.setPagination(pagination);
         return assetListQuery;
     }
+
+    @Override
+    public String getAssetHistoryGuid(String assetGuid, Date occurrenceDate) throws ServiceException {
+        String assetHistGuid;
+        try {
+            String assetsRequest = AssetModuleRequestMapper.createFindAssetHistGuidByAssetGuidAndOccurrenceDateRequest(assetGuid, occurrenceDate);
+            String correlationID = assetProducer.sendModuleMessage(assetsRequest, activityConsumer.getDestination());
+            TextMessage response = activityConsumer.getMessage(correlationID, TextMessage.class);
+            assetHistGuid = AssetModuleResponseMapper.unmarshalFindAssetHistGuidByAssetGuidAndOccurrenceDateResponse(response);
+        } catch (AssetModelMapperException | MessageException e) {
+            log.error("Error while trying to get Asset List..");
+            throw new ServiceException(e.getMessage(), e.getCause());
+        }
+        return assetHistGuid;
+    }
 }

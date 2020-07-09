@@ -1,14 +1,44 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static eu.europa.ec.fisheries.schema.movement.v1.MovementTypeType.EXI;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
-import eu.europa.ec.fisheries.ers.service.*;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
+import eu.europa.ec.fisheries.ers.service.MovementModuleService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.dto.fareport.enrichment.MovementLocationData;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMappingContext;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
 import eu.europa.ec.fisheries.ers.service.util.Postgres;
@@ -18,13 +48,7 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.*;
+import org.apache.commons.lang3.tuple.Pair;
 
 
 @Stateless
@@ -69,7 +93,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         }
     }
 
-    public void enrichFaReportDocuments(Set<FaReportDocumentEntity> faReportDocuments){
+    public void enrichFaReportDocuments(FluxFaReportMessageMappingContext ctx, Set<FaReportDocumentEntity> faReportDocuments){
         log.info("[START-ENRICHING] Going to enrich [ " + faReportDocuments.size() + " ] FaReportDocuments..");
         for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
             try {
@@ -77,7 +101,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
                 List<String> nextRepVessGuids = enrichFishingActivityWithGuiID(faReportDocument);
                 log.info("[END] Finished enriching with guids from assets module..");
                 log.info("[INFO] Updating geometry with movements module..");
-                updateGeometry(faReportDocument, nextRepVessGuids);
+                updateGeometry(ctx, faReportDocument, nextRepVessGuids);
                 log.info("[END] Finished updating geometry with movements module..");
             } catch (Exception e) {
                 log.error("[ERROR ENRICHMENT-FAILED] Could not update Geometry OR enrich Activities for faReportDocument (asset/movement modules):" + faReportDocument.getId());
@@ -94,25 +118,26 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
      * @param faReportDocumentEntity
      * @param nextRepVessGuids
      */
-    private void updateGeometry(FaReportDocumentEntity faReportDocumentEntity, List<String> nextRepVessGuids) throws ServiceException {
-        List<MovementType> movements = getInterpolatedGeomForArea(faReportDocumentEntity, nextRepVessGuids);
+    private void updateGeometry(FluxFaReportMessageMappingContext ctx, FaReportDocumentEntity faReportDocumentEntity, List<String> nextRepVessGuids) throws ServiceException {
+        List<MovementType> movements = getInterpolatedGeomForArea(ctx, faReportDocumentEntity, nextRepVessGuids);
         Set<FishingActivityEntity> fishingActivityEntities = faReportDocumentEntity.getFishingActivities();
-        List<Geometry> multiPointForFaReport = populateGeometriesForFishingActivities(movements, fishingActivityEntities);
+        List<Geometry> multiPointForFaReport = populateGeometriesForFishingActivities(ctx, movements, fishingActivityEntities);
         faReportDocumentEntity.setGeom(GeometryUtils.createMultipoint(multiPointForFaReport));
     }
 
-    private List<Geometry> populateGeometriesForFishingActivities(List<MovementType> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
+    private List<Geometry> populateGeometriesForFishingActivities(FluxFaReportMessageMappingContext ctx, List<MovementType> movements, Set<FishingActivityEntity> fishingActivityEntities) throws ServiceException {
         List<Geometry> multiPointForFaReport = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
                 List<Geometry> multiPointForFa = new ArrayList<>();
                 Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
-                Geometry interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
+                MovementLocationData interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
+                ctx.put(fishingActivity, interpolatedPoint.getAreas());
                 for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
                     Geometry point = null;
                     String fluxLocationStr = fluxLocation.getTypeCode();
                     if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) {
-                        point = interpolatedPoint;
+                        point = interpolatedPoint.getGeometry();
                         fluxLocation.setGeom(point);
                     } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) {
                         point = getGeometryForLocation(fluxLocation);
@@ -146,13 +171,26 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         return point;
     }
 
-    private List<MovementType> getInterpolatedGeomForArea(FaReportDocumentEntity faReportDocumentEntity, List<String> nextRepVessGuids) throws ServiceException {
+    private List<MovementType> getInterpolatedGeomForArea(FluxFaReportMessageMappingContext ctx, FaReportDocumentEntity faReportDocumentEntity, List<String> nextRepVessGuids) throws ServiceException {
         if (CollectionUtils.isEmpty(faReportDocumentEntity.getVesselTransportMeans())) {
             return Collections.emptyList();
         }
         Set<VesselIdentifierEntity> vesselIdentifiers = faReportDocumentEntity.getVesselTransportMeans().iterator().next().getVesselIdentifiers();
         Map<String, Date> dateMap = findStartAndEndDate(faReportDocumentEntity);
-        return getAllMovementsForDateRange(vesselIdentifiers, dateMap.get(START_DATE), dateMap.get(END_DATE), nextRepVessGuids);
+        List<String> assetHistGuids = findAssetHistGuids(ctx, dateMap.get(START_DATE), nextRepVessGuids);
+        return getAllMovementsForDateRange(vesselIdentifiers, dateMap.get(START_DATE), dateMap.get(END_DATE), assetHistGuids);
+    }
+
+    private List<String> findAssetHistGuids(FluxFaReportMessageMappingContext ctx, Date occurrenceDate, List<String> nextRepVessGuids) throws ServiceException {
+        List<String> assetHistGuids = new ArrayList<>();
+        for(String assetGuid: nextRepVessGuids) {
+            String response = assetService.getAssetHistoryGuid(assetGuid, new Date());
+            if(response != null) {
+                assetHistGuids.add(response);
+                ctx.put(Pair.of(assetGuid, occurrenceDate), response);
+            }
+        }
+        return assetHistGuids;
     }
 
     /**
@@ -197,10 +235,11 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         return movementService.getMovement(nextRepVessGuids, startDate, endDate); // Send Vessel Guids to movements
     }
 
-    private Geometry interpolatePointFromMovements(List<MovementType> movements, Date activityDate) throws ServiceException {
+    private MovementLocationData interpolatePointFromMovements(List<MovementType> movements, Date activityDate) throws ServiceException {
         if (movements == null || movements.isEmpty()) {
             return null;
         }
+        MovementLocationData movementLocationData = new MovementLocationData();
         Geometry faReportGeom;
         movements.sort(new MovementTypeComparator());
         Map<String, MovementType> movementTypeMap = getPreviousAndNextMovement(movements, activityDate);
@@ -209,20 +248,23 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         try {
 
             if (previousMovement == null && nextMovement == null) {
-                faReportGeom = null;
+                return movementLocationData;
             } else if (nextMovement == null) {
                 faReportGeom = GeometryMapper.INSTANCE.wktToGeometry(previousMovement.getWkt()).getValue();
                 faReportGeom.setSRID(dialect.defaultSRID());
+                movementLocationData.setGeometry(faReportGeom);
+                movementLocationData.setAreas(previousMovement.getMetaData().getAreas().stream().filter(a -> a.getTransitionType() != EXI).collect(Collectors.toList()));
             } else if (previousMovement == null) {
                 faReportGeom = GeometryMapper.INSTANCE.wktToGeometry(nextMovement.getWkt()).getValue();
                 faReportGeom.setSRID(dialect.defaultSRID());
+                movementLocationData.setAreas(nextMovement.getMetaData().getAreas().stream().filter(a -> a.getTransitionType() != EXI).collect(Collectors.toList()));
             } else {
-                faReportGeom = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
+                movementLocationData = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);
             }
         } catch (ParseException e) {
             throw new ServiceException(e.getMessage(), e);
         }
-        return faReportGeom;
+        return movementLocationData;
     }
 
     private Map<String, MovementType> getPreviousAndNextMovement(List<MovementType> movements, Date inputDate) {
@@ -238,8 +280,9 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         return movementMap;
     }
 
-    private Geometry calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date acceptedDate) throws ServiceException {
+    private MovementLocationData calculateIntermediatePoint(MovementType previousMovement, MovementType nextMovement, Date acceptedDate) throws ServiceException {
 
+        MovementLocationData movementLocationData = new MovementLocationData();
         Geometry point;
         Long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getPositionTime().getTime();
         long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().getTime();
@@ -248,20 +291,32 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             if (durationAC == 0) {
                 log.info("The point is same as the start point");
                 point = GeometryMapper.INSTANCE.wktToGeometry(previousMovement.getWkt()).getValue();
+                movementLocationData.setAreas(previousMovement.getMetaData().getAreas().stream().filter(a -> a.getTransitionType() != EXI).collect(Collectors.toList()));
             } else if (durationBC == 0) {
                 log.info("The point is the same as end point");
                 point = GeometryMapper.INSTANCE.wktToGeometry(nextMovement.getWkt()).getValue();
+                movementLocationData.setAreas(nextMovement.getMetaData().getAreas().stream().filter(a -> a.getTransitionType() != EXI).collect(Collectors.toList()));
             } else {
                 log.info("The point is between start and end point");
                 LengthIndexedLine lengthIndexedLine = GeometryUtils.createLengthIndexedLine(previousMovement.getWkt(), nextMovement.getWkt());
                 Double index = durationAC * (lengthIndexedLine.getEndIndex() - lengthIndexedLine.getStartIndex()) / durationAB;
                 point = GeometryUtils.calculateIntersectingPoint(lengthIndexedLine, index);
+                if (durationAC < durationAB) {
+                    movementLocationData.setAreas(previousMovement.getMetaData().getAreas().stream().filter(a -> a.getTransitionType() != EXI).collect(Collectors.toList()));
+                } else if (durationAC > durationAB) {
+                    movementLocationData.setAreas(nextMovement.getMetaData().getAreas().stream().filter(a -> a.getTransitionType() != EXI).collect(Collectors.toList()));
+                } else {
+                    movementLocationData.setAreas(Stream.concat(previousMovement.getMetaData().getAreas().stream(), nextMovement.getMetaData().getAreas().stream())
+                            .filter(a -> a.getTransitionType() != EXI)
+                            .collect(Collectors.toList()));
+                }
             }
         } catch (ParseException e) {
             throw new ServiceException(e.getMessage(), e);
         }
         point.setSRID(dialect.defaultSRID());
-        return point;
+        movementLocationData.setGeometry(point);
+        return movementLocationData;
     }
 
     private Map<String, Date> findStartAndEndDate(FaReportDocumentEntity faReportDocumentEntity) {

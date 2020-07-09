@@ -1,23 +1,6 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 
-import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
-import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
-import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -27,11 +10,35 @@ import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.xml.bind.JAXBException;
+import java.util.Collections;
+import java.util.List;
+
+import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionDataProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ReportToSubscription;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
+import eu.europa.ec.fisheries.uvms.config.constants.ConfigHelper;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
+import lombok.extern.slf4j.Slf4j;
+import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 @LocalBean
 @Stateless
 @Slf4j
-public class ActivitySubscriptionEventServiceBean {
+public class ActivitySubscriptionServiceBean {
 
     @Inject
     @ActivityMessageErrorEvent
@@ -39,6 +46,12 @@ public class ActivitySubscriptionEventServiceBean {
 
     @EJB
     private SubscriptionProducerBean subscriptionProducer;
+
+    @EJB
+    private SubscriptionDataProducerBean subscriptionDataProducerBean;
+
+    @EJB
+    private ConfigHelper configHelper;
 
     public void getMapToSubscriptionMessage(@Observes @MapToSubscriptionRequestEvent EventMessage message) {
         log.info("Got JMS inside Activity to get MapToSubscriptionRequestEvent");
@@ -65,6 +78,15 @@ public class ActivitySubscriptionEventServiceBean {
                     subscriptionProducer.getDestination(), JMSUtils.lookupQueue(MessageConstants.QUEUE_RULES),null, jmsCorrelationID);
         } catch ( JAXBException | MessageException | JMSException e) {
             sendError(message, e);
+        }
+    }
+
+    public void sendForwardReportToSubscriptionRequest(List<ReportToSubscription> faReports) {
+        try {
+            String request = ActivityModuleRequestMapper.mapToForwardReportToSubscriptionRequest(faReports);
+            subscriptionDataProducerBean.sendModuleMessageWithProps(request, null,  Collections.singletonMap(MessageConstants.JMS_SUBSCRIPTION_SOURCE_PROPERTY, configHelper.getModuleName()));
+        } catch (ActivityModelMarshallException | MessageException e) {
+            e.printStackTrace();
         }
     }
 
