@@ -31,6 +31,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorM
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
@@ -42,12 +43,15 @@ import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshal
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.AttachmentResponseObject;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriodRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriodResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
@@ -58,6 +62,8 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+
+import java.util.List;
 
 @LocalBean
 @Stateless
@@ -205,6 +211,17 @@ public class ActivityEventServiceBean implements EventService {
             String messageId = activityRulesModuleServiceBean.composeAndSendTripFaQueryToRules(request);
             activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), ActivityModuleResponseMapper.mapToCreateAndSendFAQueryResponse(messageId));
         } catch (ActivityModelMarshallException | ActivityModuleException | MessageException e) {
+            sendError(message, e);
+        }
+    }
+
+    @Override
+    public void createAndSendGetAttachmentsForGuidAndQueryPeriod(@Observes @CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent EventMessage message){
+        try{
+            GetAttachmentsForGuidAndQueryPeriodRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), GetAttachmentsForGuidAndQueryPeriodRequest.class);
+            List<AttachmentResponseObject> responseObjects = fishingTripService.getAttachmentsForGuidAndPeriod(request.getQuery());
+            activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), JAXBMarshaller.marshallJaxBObjectToString(new GetAttachmentsForGuidAndQueryPeriodResponse(responseObjects)));
+        } catch (ActivityModelMarshallException | ServiceException | MessageException e) {
             sendError(message, e);
         }
     }
