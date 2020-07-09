@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--All data is fictuous. Any similarity with reality is based on pure coincidence.-->
+<ns3:FLUXFAReportMessage
+        xmlns="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20"
+        xmlns:ns2="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20"
+        xmlns:ns3="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3">
+    <ns3:FLUXReportDocument>
+        <ID schemeID="UUID">844bc1b5-0d31-49af-972d-cfb8888e744b</ID>
+        <CreationDateTime>
+            <ns2:DateTime>2015-02-01T09:00:00.000Z</ns2:DateTime>
+        </CreationDateTime>
+        <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+        <Purpose>DEP</Purpose>
+        <OwnerFLUXParty>
+            <ID schemeID="FLUX_GP_PARTY">SRC</ID>
+        </OwnerFLUXParty>
+    </ns3:FLUXReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</TypeCode>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2015-02-01T09:00:00.000Z</ns2:DateTime>
+        </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="UUID">9db2de40-e3ee-4c98-887a-fb2042d2b691</ID>
+            <CreationDateTime>
+                <ns2:DateTime>2015-02-01T09:00:00.000Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+            <OwnerFLUXParty>
+                <ID schemeID="FLUX_GP_PARTY">SRC</ID>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
+        <SpecifiedFishingActivity>
+            <TypeCode listID="FLUX_FA_TYPE">AREA_EXIT</TypeCode>
+            <OccurrenceDateTime>
+                <ns2:DateTime>2015-02-01T09:00:00.000Z</ns2:DateTime>
+            </OccurrenceDateTime>
+            <SpeciesTargetCode listID="FAO_SPECIES">ALF</SpeciesTargetCode>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">COD</SpeciesCode>
+                <WeightMeasure unitCode="KGM">3000</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">WHG</SpeciesCode>
+                <WeightMeasure unitCode="KGM">8500</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+            </SpecifiedFACatch>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                <ID schemeID="EFFORT_ZONE">A</ID>
+            </RelatedFLUXLocation>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">POSITION</TypeCode>
+                <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                    <LongitudeMeasure>-14.616</LongitudeMeasure>
+                    <LatitudeMeasure>46.678</LatitudeMeasure>
+                </SpecifiedPhysicalFLUXGeographicalCoordinate>
+            </RelatedFLUXLocation>
+            <SpecifiedFishingTrip>
+                <ID schemeID="EU_TRIP_ID">SRC-TRP-TTT20200617123256104</ID>
+            </SpecifiedFishingTrip>
+        </SpecifiedFishingActivity>
+        <SpecifiedVesselTransportMeans>
+            <ID schemeID="CFR">PRT000024414</ID>
+            <Name>TIMAR</Name>
+            <RegistrationVesselCountry>
+                <ID schemeID="TERRITORY">PRT</ID>
+            </RegistrationVesselCountry>
+            <SpecifiedContactParty>
+                <RoleCode listID="FLUX_CONTACT_ROLE">MASTER</RoleCode>
+                <SpecifiedStructuredAddress>
+                    <StreetName>ll</StreetName>
+                    <CityName>CABOURG</CityName>
+                    <CountryID schemeID="TERRITORY">XEU</CountryID>
+                    <PlotIdentification>17</PlotIdentification>
+                    <PostalArea> 14390</PostalArea>
+                </SpecifiedStructuredAddress>
+                <SpecifiedContactPerson>
+                    <GivenName>Jack Kelly</GivenName>
+                    <FamilyName>E</FamilyName>
+                    <Alias>kell</Alias>
+                </SpecifiedContactPerson>
+            </SpecifiedContactParty>
+        </SpecifiedVesselTransportMeans>
+    </ns3:FAReportDocument>
+    <ns3:FAReportDocument>
+        <TypeCode listID="FLUX_FA_REPORT_TYPE">DECLARATION</TypeCode>
+        <AcceptanceDateTime>
+            <ns2:DateTime>2020-04-08T11:22:32.000Z</ns2:DateTime>
+        </AcceptanceDateTime>
+        <RelatedFLUXReportDocument>
+            <ID schemeID="UUID">b0481f16-4327-493a-ba85-7eae2e6ae650</ID>
+            <CreationDateTime>
+                <ns2:DateTime>2020-04-08T11:22:32.000Z</ns2:DateTime>
+            </CreationDateTime>
+            <PurposeCode listID="FLUX_GP_PURPOSE">9</PurposeCode>
+            <OwnerFLUXParty>
+                <ID schemeID="FLUX_GP_PARTY">SRC</ID>
+            </OwnerFLUXParty>
+        </RelatedFLUXReportDocument>
+        <SpecifiedFishingActivity>
+            <TypeCode listID="FLUX_FA_TYPE">AREA_ENTRY</TypeCode>
+            <OccurrenceDateTime>
+                <ns2:DateTime>2020-04-08T11:22:32.000Z</ns2:DateTime>
+            </OccurrenceDateTime>
+            <SpeciesTargetCode listID="FAO_SPECIES">ALF</SpeciesTargetCode>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">COD</SpeciesCode>
+                <WeightMeasure unitCode="KGM">3000</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+            </SpecifiedFACatch>
+            <SpecifiedFACatch>
+                <SpeciesCode listID="FAO_SPECIES">WHG</SpeciesCode>
+                <WeightMeasure unitCode="KGM">8500</WeightMeasure>
+                <TypeCode listID="FA_CATCH_TYPE">ONBOARD</TypeCode>
+                <SpecifiedSizeDistribution>
+                    <ClassCode listID="FISH_SIZE_CLASS">LSC</ClassCode>
+                </SpecifiedSizeDistribution>
+            </SpecifiedFACatch>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">AREA</TypeCode>
+                <ID schemeID="EFFORT_ZONE">A</ID>
+            </RelatedFLUXLocation>
+            <RelatedFLUXLocation>
+                <TypeCode listID="FLUX_LOCATION_TYPE">POSITION</TypeCode>
+                <SpecifiedPhysicalFLUXGeographicalCoordinate>
+                    <LongitudeMeasure>-14.616</LongitudeMeasure>
+                    <LatitudeMeasure>46.678</LatitudeMeasure>
+                </SpecifiedPhysicalFLUXGeographicalCoordinate>
+            </RelatedFLUXLocation>
+            <SpecifiedFishingTrip>
+                <ID schemeID="EU_TRIP_ID">SRC-TRP-TTT20200617123256104</ID>
+            </SpecifiedFishingTrip>
+        </SpecifiedFishingActivity>
+        <SpecifiedVesselTransportMeans>
+            <ID schemeID="CFR">CYP123456789</ID>
+            <Name>GOLF</Name>
+            <RegistrationVesselCountry>
+                <ID schemeID="TERRITORY">CYP</ID>
+            </RegistrationVesselCountry>
+            <SpecifiedContactParty>
+                <RoleCode listID="FLUX_CONTACT_ROLE">MASTER</RoleCode>
+                <SpecifiedStructuredAddress>
+                    <StreetName>ll</StreetName>
+                    <CityName>CABOURG</CityName>
+                    <CountryID schemeID="TERRITORY">XEU</CountryID>
+                    <PlotIdentification>17</PlotIdentification>
+                    <PostalArea> 14390</PostalArea>
+                </SpecifiedStructuredAddress>
+                <SpecifiedContactPerson>
+                    <GivenName>Jack Kelly</GivenName>
+                    <FamilyName>E</FamilyName>
+                    <Alias>kell</Alias>
+                </SpecifiedContactPerson>
+            </SpecifiedContactParty>
+        </SpecifiedVesselTransportMeans>
+    </ns3:FAReportDocument>
+</ns3:FLUXFAReportMessage>

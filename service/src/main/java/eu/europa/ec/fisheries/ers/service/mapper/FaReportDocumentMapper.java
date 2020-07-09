@@ -119,7 +119,7 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         return entities;
     }
 
-    public static Set<FishingActivityEntity> mapFishingActivityEntities(List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity) {
+    public static Set<FishingActivityEntity> mapFishingActivityEntities(FluxFaReportMessageMappingContext ctx, List<FishingActivity> fishingActivities, FaReportDocumentEntity faReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity) {
         Set<FishingActivityEntity> specifiedFishingActivityEntities = new HashSet<>();
 
         if (CollectionUtils.isEmpty(fishingActivities)) {
@@ -129,6 +129,9 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
         for (FishingActivity fishingActivity : fishingActivities) {
             List<FishingGear> specifiedFishingGears = fishingActivity.getSpecifiedFishingGears();
             FishingActivityEntity fishActEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, faReportDocumentEntity, new FishingActivityEntity());
+            if(ctx != null) {
+                ctx.put(fishingActivity, fishActEntity);
+            }
             if (CollectionUtils.isNotEmpty(specifiedFishingGears)) {
                 Set<FishingGearEntity> fishingGearEntitySet = new HashSet<>();
                 for (FishingGear fishingGear : specifiedFishingGears) {

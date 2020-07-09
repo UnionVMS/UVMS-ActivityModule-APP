@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMappingContext;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import junitparams.JUnitParamsRunner;
@@ -52,7 +53,44 @@ public class ActivityEntityToModelMapperTest {
     public void testMapToFLUXFAReportMessage(String resource) throws Exception {
 
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
-        FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(fluxfaReportMessage, FaReportSourceEnum.MANUAL, new FluxFaReportMessageEntity());
+        FluxFaReportMessageMappingContext ctx = new FluxFaReportMessageMappingContext();
+        FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(ctx, fluxfaReportMessage, FaReportSourceEnum.MANUAL, new FluxFaReportMessageEntity());
+
+        FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()));
+
+        String controlSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(fluxfaReportMessage), "ISO-8859-15", true, new FANamespaceMapper());
+        String testSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(target), "ISO-8859-15", true, new FANamespaceMapper());
+
+        XMLUnit.setIgnoreWhitespace(true);
+        XMLUnit.setIgnoreComments(true);
+        XMLUnit.setIgnoreAttributeOrder(true);
+
+        String clearControlSource = clearEmptyTags(controlSource);
+        String clearTestSource = clearEmptyTags(testSource);
+
+        System.out.println(clearControlSource);
+        System.out.println(clearTestSource);
+
+        org.xmlunit.diff.Diff myDiffSimilar = DiffBuilder
+                .compare(clearControlSource)
+                .withTest(clearTestSource)
+                .ignoreWhitespace()
+                .ignoreComments()
+                .checkForSimilar()
+                .withNodeMatcher(
+                         new DefaultNodeMatcher(ElementSelectors.and(
+                                 ElementSelectors.byNameAndText,
+                                 ElementSelectors.byNameAndAllAttributes)))
+                .build();
+
+        assertFalse("XML similar " + myDiffSimilar.toString(), myDiffSimilar.hasDifferences());    }
+
+    @Test
+    @Parameters(method = "resources")
+    public void testMapToFLUXFAReportMessageWithNullCtx(String resource) throws Exception {
+
+        FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
+        FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(null, fluxfaReportMessage, FaReportSourceEnum.MANUAL, new FluxFaReportMessageEntity());
 
         FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()));
 

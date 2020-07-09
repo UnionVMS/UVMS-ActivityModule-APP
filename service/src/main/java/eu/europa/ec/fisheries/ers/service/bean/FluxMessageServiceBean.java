@@ -71,7 +71,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
     public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
         log.info("[START-SAVING] Going to save [ " + faReportMessage.getFAReportDocuments().size() + " ] FaReportDocuments..");
-        FluxFaReportMessageEntity messageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
+        FluxFaReportMessageEntity messageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(null, faReportMessage, faReportSourceEnum, new FluxFaReportMessageEntity());
         Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
         FluxFaReportMessageEntity entity = faMessageSaverBean.saveReportMessageNow(messageEntity);//trySavingFaReport(messageEntity, 0);
         updateFaReportCorrectionsOrCancellations(entity.getFaReportDocuments());

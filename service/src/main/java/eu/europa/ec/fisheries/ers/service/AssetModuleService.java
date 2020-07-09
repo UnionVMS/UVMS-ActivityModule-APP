@@ -14,6 +14,7 @@
 package eu.europa.ec.fisheries.ers.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
@@ -38,4 +39,6 @@ public interface AssetModuleService {
     List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException;
 
     List<BatchAssetListResponseElement> getAssetListResponseBatch(List<AssetListQuery> assetListQuery) throws ServiceException;
+
+    String getAssetHistoryGuid(String assetGuid, Date occurrenceDate) throws ServiceException;
 }

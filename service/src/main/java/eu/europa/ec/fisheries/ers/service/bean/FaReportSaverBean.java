@@ -10,25 +10,52 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMappingContext;
+import eu.europa.ec.fisheries.schema.movement.v1.MovementMetaDataAreaType;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.Area;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-
-import javax.ejb.*;
-import javax.transaction.Transactional;
-import java.util.*;
 
 
 @Slf4j
@@ -52,6 +79,9 @@ public class FaReportSaverBean {
     @EJB
     private FishingActivityEnricherBean activityEnricher;
 
+    @Inject
+    SubscriptionReportForwarder subscriptionReportForwarder;
+
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
         mdrModuleServiceBean.loadCache();
@@ -64,11 +94,12 @@ public class FaReportSaverBean {
             return;
         }
         deleteDuplicatedReportsFromXMLDocument(fluxFAReportMessage);
-        FluxFaReportMessageEntity messageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(fluxFAReportMessage, extractPluginType(request.getPluginType()), new FluxFaReportMessageEntity());
+        FluxFaReportMessageMappingContext ctx = new FluxFaReportMessageMappingContext();
+        FluxFaReportMessageEntity messageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(ctx, fluxFAReportMessage, extractPluginType(request.getPluginType()), new FluxFaReportMessageEntity());
         try {
             if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
                 // Enriches with asset and movement data before saving
-                activityEnricher.enrichFaReportDocuments(messageEntity.getFaReportDocuments());
+                activityEnricher.enrichFaReportDocuments(ctx, messageEntity.getFaReportDocuments());
             } else {
                 log.warn("[WARN] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
             }
@@ -86,6 +117,7 @@ public class FaReportSaverBean {
             log.error("[ERROR] Error while trying to FaReportSaverBean.handleFaReportSaving(...). Failed to save it! Going to change the state in exchange log!", e);
             exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
         }
+        subscriptionReportForwarder.forwardReportToSubscription(ctx, messageEntity);
     }
 
     private void deleteDuplicatedReportsFromXMLDocument(FLUXFAReportMessage repMsg) {
