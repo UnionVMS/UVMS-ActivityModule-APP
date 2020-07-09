@@ -12,6 +12,7 @@ package eu.europa.ec.fisheries.ers.service;
 
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
@@ -42,4 +43,6 @@ public interface EventService {
     void createAndSendFAQueryForVessel(@Observes @CreateAndSendFAQueryForVesselEvent EventMessage message);
 
     void createAndSendFAQueryForTrip(@Observes @CreateAndSendFAQueryForTripEvent EventMessage message);
+
+    void createAndSendGetAttachmentsForGuidAndQueryPeriod(@Observes @CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent EventMessage message);
 }

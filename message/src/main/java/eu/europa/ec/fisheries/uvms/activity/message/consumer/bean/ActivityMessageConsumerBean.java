@@ -22,6 +22,7 @@ import javax.jms.TextMessage;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
@@ -79,6 +80,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> createAndSendFAQueryForTrip;
 
     @Inject
+    @CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent
+    private Event<EventMessage> createAndSendGetAttachmentsForGuidAndQueryPeriod;
+
+    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -122,6 +127,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     break;
                 case CREATE_AND_SEND_FA_QUERY_FOR_TRIP:
                     createAndSendFAQueryForTrip.fire(new EventMessage(textMessage));
+                    break;
+                case FIND_ATTACHMENTS_FOR_GUID_AND_QUERY_PERIOD:
+                    createAndSendGetAttachmentsForGuidAndQueryPeriod.fire(new EventMessage(textMessage));
                     break;
                 default:
                     log.error("[ Request method {} is not implemented ]", method.name());

@@ -65,6 +65,24 @@ import java.util.Date;
 						"HAVING MIN(fa.calculatedStartTime) > :selectedTripStartDate " +
                         "ORDER BY startTime ASC, fti.tripId ASC"),
 
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_TRIPS_BETWEEN,
+				query = "SELECT fti.tripId, MIN(fa.calculatedStartTime) as startTime " +
+						"FROM FishingTripIdentifierEntity fti " +
+						"INNER JOIN fti.fishingTrip ft " +
+						"INNER JOIN ft.fishingActivity fa " +
+						"WHERE EXISTS( " +
+							"SELECT innerTripId.id " +
+							"FROM FishingTripIdentifierEntity innerTripId " +
+							"INNER JOIN innerTripId.fishingTrip innerTrip " +
+							"INNER JOIN innerTrip.fishingActivity innerActivity " +
+							"INNER JOIN innerActivity.faReportDocument innerFaReport " +
+							"INNER JOIN innerFaReport.vesselTransportMeans innerMeans " +
+							"WHERE innerTripId.tripId = fti.tripId AND innerMeans.guid = :vesselGuid " +
+						")" +
+						" AND MIN(fa.calculatedStartTime) >= :selectedTripStartDate AND MAX(fa.calculatedStartTime) <:selectedTripEndDate" +
+						"GROUP BY fti.tripId " +
+						"ORDER BY startTime ASC, fti.tripId ASC"),
+
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_PREVIOUS_CONCURRENT_TRIPS,
 				query = "SELECT fti.tripId, MIN(fa.calculatedStartTime) as startTime " +
 						"FROM FishingTripIdentifierEntity fti " +
@@ -116,6 +134,7 @@ public class FishingTripIdentifierEntity implements Serializable {
 	public static final String FIND_SELECTED_TRIP_START_DATE = "findSelectedTripStartDate";
 	public static final String FIND_PREVIOUS_TRIPS = "findPreviousTrips";
 	public static final String FIND_NEXT_TRIPS = "findNextTrips";
+	public static final String FIND_TRIPS_BETWEEN = "FishingTripIdentifierEntity.findTripsBetween";
 	public static final String FIND_PREVIOUS_CONCURRENT_TRIPS = "findPreviousConcurrentTrips";
 	public static final String FIND_NEXT_CONCURRENT_TRIPS = "findNextConcurrentTrips";
 
