@@ -27,6 +27,7 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
 import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
+import eu.europa.ec.fisheries.ers.fa.entities.ChronologyData;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -64,6 +65,7 @@ import eu.europa.ec.fisheries.ers.service.dto.view.TripOverviewDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.facatch.evolution.CatchProgressProcessor;
 import eu.europa.ec.fisheries.ers.service.facatch.evolution.TripCatchProgressRegistry;
+import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
@@ -75,14 +77,19 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.AttachmentResponseObject;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.AttachmentType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeometry;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
@@ -107,18 +114,24 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.jetbrains.annotations.Nullable;
 import org.mockito.internal.util.collections.Sets;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
+import javax.ws.rs.core.StreamingOutput;
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumMap;
@@ -261,6 +274,11 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private List<ChronologyDTO> getNextConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
         return fishingTripIdentifierDao.getNextConcurrentTrips(tripId, vesselGuid, startDate, limit)
                 .map(trip -> new ChronologyDTO(trip.getTripId(), trip.getTripDate()))
+                .collect(Collectors.toList());
+    }
+
+    private List<ChronologyData> getTripsBetween(String vesselGuid, Date startDate, Date endDate, Integer limit) {
+        return fishingTripIdentifierDao.getTripsBetween(vesselGuid, startDate,endDate,limit)
                 .collect(Collectors.toList());
     }
 
@@ -525,6 +543,61 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         } catch (JRException e) {
             throw new ServiceException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public List<AttachmentResponseObject> getAttachmentsForGuidAndPeriod(GetAttachmentsForGuidAndQueryPeriod query) throws ServiceException {
+        if(query.getGuid() == null) {
+            throw new ServiceException("Query guid required");
+        }
+        if(query.getStartDate() == null || query.getEndDate() == null) {
+            throw new ServiceException("Query date period required");
+        }
+        List<ChronologyData> chronologyData = getTripsBetween(query.getGuid(),query.getStartDate().toGregorianCalendar().getTime(),query.getEndDate().toGregorianCalendar().getTime(),1);
+        List<AttachmentResponseObject> responseList = new ArrayList<>();
+        if(chronologyData == null || chronologyData.isEmpty()){
+            return responseList;
+        }
+
+        String tripId = chronologyData.get(0).getTripId();
+        if(query.isPdf()) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            StreamingOutput stream = output -> {
+                try {
+                    generateLogBookReport(tripId, query.isConsolidated() ? "Y" : "N", output);
+                } catch (ServiceException e) {
+                    e.printStackTrace();
+                }
+            };
+            try {
+                stream.write(outputStream);
+                AttachmentResponseObject responseObject = new AttachmentResponseObject();
+                responseObject.setContent(Base64.getEncoder().encodeToString(outputStream.toByteArray()));
+                responseObject.setTripId(tripId);
+                responseObject.setType(AttachmentType.PDF);
+                responseList.add(responseObject);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(query.isXml()){
+            List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.loadReports(tripId, query.isConsolidated() ? "Y" : "N");
+            FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities);
+            try {
+                AttachmentResponseObject responseObject = new AttachmentResponseObject();
+                String controlSource = JAXBUtils.marshallJaxBObjectToString(toBeMarshalled, "ISO-8859-15", true, new FANamespaceMapper());
+                responseObject.setContent(controlSource);
+                responseObject.setTripId(tripId);
+                responseObject.setType(AttachmentType.XML);
+                responseList.add(responseObject);
+            } catch (JAXBException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return responseList;
     }
 
     private Map<String,Object> prepareParams(LogbookModel logbookModel){

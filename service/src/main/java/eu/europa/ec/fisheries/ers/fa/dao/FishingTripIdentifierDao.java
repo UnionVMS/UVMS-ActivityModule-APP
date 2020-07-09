@@ -34,6 +34,7 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
     private static final String VESSEL_GUID = "vesselGuid";
     private static final String TRIP_ID = "tripId";
     private static final String SELECTED_TRIP_START_DATE = "selectedTripStartDate";
+    private static final String SELECTED_TRIP_END_DATE = "selectedTripEndDate";
 
     public FishingTripIdentifierDao(EntityManager em) {
         this.em = em;
@@ -56,6 +57,10 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
 
     public Stream<ChronologyData> getNextTrips(String vesselGuid, Date startDate, Integer limit) {
         return getTrips(FishingTripIdentifierEntity.FIND_NEXT_TRIPS, QueryParameter.with(VESSEL_GUID, vesselGuid).and(SELECTED_TRIP_START_DATE, startDate), limit);
+    }
+
+    public Stream<ChronologyData> getTripsBetween(String connectId, Date startDate,Date endDate, Integer limit) {
+        return getTrips(FishingTripIdentifierEntity.FIND_TRIPS_BETWEEN, QueryParameter.with(VESSEL_GUID, connectId).and(SELECTED_TRIP_START_DATE, startDate).and(SELECTED_TRIP_END_DATE, endDate), limit);
     }
 
     public Stream<ChronologyData> getNextConcurrentTrips(String tripId, String vesselGuid, Date startDate, Integer limit) {
