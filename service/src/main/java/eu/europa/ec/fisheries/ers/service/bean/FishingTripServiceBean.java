@@ -545,10 +545,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     @Override
     public List<AttachmentResponseObject> getAttachmentsForGuidAndPeriod(GetAttachmentsForGuidAndQueryPeriod query) throws ServiceException {
-
+        if(query.getGuid() == null) {
+            throw new ServiceException("Query guid required");
+        }
+        if(query.getStartDate() == null || query.getEndDate() == null) {
+            throw new ServiceException("Query date period required");
+        }
         List<ChronologyData> chronologyData = getTripsBetween(query.getGuid(),query.getStartDate().toGregorianCalendar().getTime(),query.getEndDate().toGregorianCalendar().getTime(),1);
         List<AttachmentResponseObject> responseList = new ArrayList<>();
-
         if(chronologyData == null || chronologyData.isEmpty()){
             return responseList;
         }

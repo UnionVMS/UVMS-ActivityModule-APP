@@ -79,8 +79,8 @@ import java.util.Date;
 							"INNER JOIN innerFaReport.vesselTransportMeans innerMeans " +
 							"WHERE innerTripId.tripId = fti.tripId AND innerMeans.guid = :vesselGuid " +
 						")" +
-						" AND MIN(fa.calculatedStartTime) >= :selectedTripStartDate AND MAX(fa.calculatedStartTime) <:selectedTripEndDate" +
 						"GROUP BY fti.tripId " +
+						"HAVING MIN(fa.calculatedStartTime) >= :selectedTripStartDate AND MAX(fa.calculatedStartTime) <:selectedTripEndDate " +
 						"ORDER BY startTime ASC, fti.tripId ASC"),
 
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_PREVIOUS_CONCURRENT_TRIPS,
