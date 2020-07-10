@@ -68,16 +68,17 @@ import java.util.Date;
 		@NamedQuery(name = FishingTripIdentifierEntity.FIND_TRIPS_BETWEEN,
 				query = "SELECT fti.tripId, MIN(fa.calculatedStartTime) as startTime " +
 						"FROM FishingTripIdentifierEntity fti " +
-						"INNER JOIN fti.fishingTrip ft " +
-						"INNER JOIN ft.fishingActivity fa " +
+							"INNER JOIN fti.fishingTrip ft " +
+							"INNER JOIN ft.fishingActivity fa " +
 						"WHERE EXISTS( " +
-							"SELECT innerTripId.id " +
+							"SELECT 1 " +
 							"FROM FishingTripIdentifierEntity innerTripId " +
-							"INNER JOIN innerTripId.fishingTrip innerTrip " +
-							"INNER JOIN innerTrip.fishingActivity innerActivity " +
-							"INNER JOIN innerActivity.faReportDocument innerFaReport " +
-							"INNER JOIN innerFaReport.vesselTransportMeans innerMeans " +
-							"WHERE innerTripId.tripId = fti.tripId AND innerMeans.guid = :vesselGuid " +
+								"INNER JOIN innerTripId.fishingTrip innerTrip " +
+								"INNER JOIN innerTrip.fishingActivity innerActivity " +
+								"INNER JOIN innerActivity.faReportDocument innerFaReport " +
+								"INNER JOIN innerFaReport.vesselTransportMeans innerMeans " +
+							"WHERE innerTripId.tripId = fti.tripId " +
+								"AND innerMeans.guid = :vesselGuid " +
 						")" +
 						"GROUP BY fti.tripId " +
 						"HAVING MIN(fa.calculatedStartTime) >= :selectedTripStartDate AND MAX(fa.calculatedStartTime) <:selectedTripEndDate " +
