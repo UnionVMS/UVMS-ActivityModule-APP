@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
@@ -40,6 +41,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorM
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
@@ -59,6 +61,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRe
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FluxReportIdentifier;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportWithLogbookRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardMultipleFAReportsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
@@ -260,6 +263,28 @@ public class ActivityEventServiceBean implements EventService {
 
     private FaReportDocumentEntity findFAReport(FluxReportIdentifier reportIdentifier) {
         return activityServiceBean.findFaReportByFluxReportIdentifierRefIdAndRefScheme(reportIdentifier.getId(), reportIdentifier.getSchemeId());
+    }
+
+    @Override
+    public void forwardFAReportWithLogbook(@Observes @ForwardFAReportWithLogbook EventMessage message) {
+        try{
+            ForwardFAReportWithLogbookRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), ForwardFAReportWithLogbookRequest.class);
+            List<FaReportDocumentEntity> faReportDocumentEntities = request.getTripIds().stream()
+                                                                                        .flatMap(tripId -> findFAReportsByTripId(tripId, request.isConsolidated()))
+                                                                                        .filter(Objects::nonNull)
+                                                                                        .collect(Collectors.toList());
+            FLUXFAReportMessage fluxfaReportMessage = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName);
+            if(request.isNewReportIds()) {
+                fluxfaReportMessage.getFAReportDocuments().forEach(this::setNewReportId);
+            }
+            activityRulesModuleServiceBean.forwardFluxFAReportMessageToRules(fluxfaReportMessage, request.getDataflow(), request.getReceiver());
+        } catch (ActivityModelMarshallException | ActivityModuleException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Stream<FaReportDocumentEntity> findFAReportsByTripId(String tripId, Boolean consolidated) {
+        return activityServiceBean.findFaReportDocumentsByTripId(tripId, consolidated).stream();
     }
 
     private void setNewReportId(FAReportDocument faReportDocument) {

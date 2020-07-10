@@ -64,4 +64,6 @@ public interface ActivityService {
     int getNextFishingActivity(int fishingActivityId);
 
     FaReportDocumentEntity findFaReportByFluxReportIdentifierRefIdAndRefScheme(String reportRefId, String schemeId);
+
+    List<FaReportDocumentEntity> findFaReportDocumentsByTripId(String tripId, Boolean consolidated);
 }

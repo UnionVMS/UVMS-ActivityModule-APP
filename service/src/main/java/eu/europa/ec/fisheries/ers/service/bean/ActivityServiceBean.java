@@ -513,4 +513,10 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     public FaReportDocumentEntity findFaReportByFluxReportIdentifierRefIdAndRefScheme(String reportRefId, String schemeId) {
         return faReportDocumentDao.findFaReportByFluxReportIdentifierRefIdAndRefScheme(reportRefId, schemeId);
     }
+
+    @Override
+    public List<FaReportDocumentEntity> findFaReportDocumentsByTripId(String tripId, Boolean consolidated) {
+        String consolidatedString = consolidated ? "Y" : "N";
+        return faReportDocumentDao.loadReports(tripId, consolidatedString);
+    }
 }
