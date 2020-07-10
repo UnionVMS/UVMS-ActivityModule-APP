@@ -59,7 +59,7 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
         return getTrips(FishingTripIdentifierEntity.FIND_NEXT_TRIPS, QueryParameter.with(VESSEL_GUID, vesselGuid).and(SELECTED_TRIP_START_DATE, startDate), limit);
     }
 
-    public Stream<ChronologyData> getTripsBetween(String connectId, Date startDate,Date endDate, Integer limit) {
+    public Stream<ChronologyData> getTripsBetween(String connectId, Date startDate, Date endDate, Integer limit) {
         return getTrips(FishingTripIdentifierEntity.FIND_TRIPS_BETWEEN, QueryParameter.with(VESSEL_GUID, connectId).and(SELECTED_TRIP_START_DATE, startDate).and(SELECTED_TRIP_END_DATE, endDate), limit);
     }
 

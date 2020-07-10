@@ -121,7 +121,6 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -532,6 +531,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     @Override
     public void generateLogBookReport(String tripId, String consolidated, OutputStream destination) throws ServiceException {
         List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.loadReports(tripId, consolidated);
+        generateLogBookReport(tripId, faReportDocumentEntities, destination);
+    }
+
+    private void generateLogBookReport(String tripId, List<FaReportDocumentEntity> faReportDocumentEntities, OutputStream destination) throws ServiceException {
         LogbookModel logbookModel = getJasperReportData(faReportDocumentEntities, tripId);
 
         try {
@@ -553,6 +556,8 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if(query.getStartDate() == null || query.getEndDate() == null) {
             throw new ServiceException("Query date period required");
         }
+        // WHY LIMIT TO 1 TRIP ID???
+        // WHY CHOOSE THE OLDEST???
         List<ChronologyData> chronologyData = getTripsBetween(query.getGuid(),query.getStartDate().toGregorianCalendar().getTime(),query.getEndDate().toGregorianCalendar().getTime(),1);
         List<AttachmentResponseObject> responseList = new ArrayList<>();
         if(chronologyData == null || chronologyData.isEmpty()){
@@ -560,41 +565,34 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         String tripId = chronologyData.get(0).getTripId();
+        List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.loadReports(tripId, query.isConsolidated() ? "Y" : "N");
+
         if(query.isPdf()) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            StreamingOutput stream = output -> {
-                try {
-                    generateLogBookReport(tripId, query.isConsolidated() ? "Y" : "N", output);
-                } catch (ServiceException e) {
-                    e.printStackTrace();
-                }
-            };
-            try {
-                stream.write(outputStream);
-                AttachmentResponseObject responseObject = new AttachmentResponseObject();
-                responseObject.setContent(Base64.getEncoder().encodeToString(outputStream.toByteArray()));
-                responseObject.setTripId(tripId);
-                responseObject.setType(AttachmentType.PDF);
-                responseList.add(responseObject);
+            try (OutputStream os = Base64.getEncoder().wrap(outputStream)) {
+                generateLogBookReport(tripId, faReportDocumentEntities, os);
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new ServiceException("IO error while generating PDF", e);
             }
+            AttachmentResponseObject responseObject = new AttachmentResponseObject();
+            responseObject.setContent(new String(outputStream.toByteArray()));
+            responseObject.setTripId(tripId);
+            responseObject.setType(AttachmentType.PDF);
+            responseList.add(responseObject);
         }
 
         if(query.isXml()){
-            List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.loadReports(tripId, query.isConsolidated() ? "Y" : "N");
             FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities);
             try {
                 AttachmentResponseObject responseObject = new AttachmentResponseObject();
-                String controlSource = JAXBUtils.marshallJaxBObjectToString(toBeMarshalled, "ISO-8859-15", true, new FANamespaceMapper());
+                String controlSource = JAXBUtils.marshallJaxBObjectToString(toBeMarshalled, "UTF-8", false, new FANamespaceMapper());
                 responseObject.setContent(controlSource);
                 responseObject.setTripId(tripId);
                 responseObject.setType(AttachmentType.XML);
                 responseList.add(responseObject);
             } catch (JAXBException e) {
-                e.printStackTrace();
+                throw new ServiceException("error while generating XML", e);
             }
-
         }
 
         return responseList;
