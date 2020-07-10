@@ -57,5 +57,5 @@ public interface ActivityRulesModuleService {
 
     void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXML, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId) throws ActivityModuleException;
 
-    void forwardFAReportToRules(FLUXFAReportMessage report, String reportId, String dataFlow, String receiver) throws ActivityModuleException;
+    void forwardFluxFAReportMessageToRules(FLUXFAReportMessage report, String dataFlow, String receiver) throws ActivityModuleException;
 }

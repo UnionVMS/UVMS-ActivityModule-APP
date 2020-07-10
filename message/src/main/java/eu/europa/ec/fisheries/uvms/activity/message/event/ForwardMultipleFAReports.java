@@ -17,10 +17,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Event for the case of creating and sending a FAQuery.
+ * Event for the case of forwarding multiple FA Reports.
  */
 @Qualifier
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.TYPE})
-public @interface ForwardFAReportEvent {
+public @interface ForwardMultipleFAReports {
 }

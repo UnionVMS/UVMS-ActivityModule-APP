@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
@@ -247,10 +246,10 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     }
 
     @Override
-    public void forwardFAReportToRules(FLUXFAReportMessage report, String reportId,String dataFlow, String receiver) throws ActivityModuleException {
+    public void forwardFluxFAReportMessageToRules(FLUXFAReportMessage message, String dataFlow, String receiver) throws ActivityModuleException {
         try {
-            String reportString = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(report));
-            rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(reportString, "FLUX", reportId,
+            String fluxFAReportMessageString = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(message));
+            rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(fluxFAReportMessageString, "FLUX", message.getFLUXReportDocument().getIDS().get(0).getValue(),
                     dataFlow, receiver, null, false), activityConsumerBean.getDestination());
         } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
             throw new ActivityModuleException("Exception thrown ", e);

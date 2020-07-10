@@ -22,6 +22,9 @@ import javax.jms.TextMessage;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportFromPosition;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
@@ -79,8 +82,16 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> createAndSendFAQueryForTrip;
 
     @Inject
-    @ForwardFAReportEvent
-    private Event<EventMessage> forwardFAReport;
+    @ForwardMultipleFAReports
+    private Event<EventMessage> forwardMultipleFAReports;
+
+    @Inject
+    @ForwardFAReportWithLogbook
+    private Event<EventMessage> forwardFAReportWithLogbook;
+
+    @Inject
+    @ForwardFAReportFromPosition
+    private Event<EventMessage> forwardFAReportFromPosition;
 
     @Inject
     @ActivityMessageErrorEvent
@@ -127,8 +138,15 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 case CREATE_AND_SEND_FA_QUERY_FOR_TRIP:
                     createAndSendFAQueryForTrip.fire(new EventMessage(textMessage));
                     break;
-                case FORWARD_FA_REPORT:
-                    forwardFAReport.fire(new EventMessage(textMessage));
+                case FORWARD_MULTIPLE_FA_REPORTS:
+                    forwardMultipleFAReports.fire(new EventMessage(textMessage));
+                    break;
+                case FORWARD_FA_REPORT_WITH_LOGBOOK:
+                    forwardFAReportWithLogbook.fire(new EventMessage(textMessage));
+                    break;
+                case FORWARD_FA_REPORT_FROM_POSITION:
+                    forwardFAReportFromPosition.fire(new EventMessage(textMessage));
+                    break;
                 default:
                     log.error("[ Request method {} is not implemented ]", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + method.name() + "  is not implemented ]")));
