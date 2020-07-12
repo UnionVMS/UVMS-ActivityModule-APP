@@ -36,7 +36,7 @@
     <spatial.model.version>${uvms.spatial.model.version}</spatial.model.version>
     <exchange.model>${uvms.exchange.model.version}</exchange.model>
     <!-- TODO: isn't this a circular dependency? get model out of module for subscription?  -->
-    <subscription.model>1.4.2-W14J8</subscription.model>
+    <subscription.model>${uvms.subscription.module.version}</subscription.model>
     <!-- TODO: isn't this a circular dependency? get model out of module for rules?  -->
     <rules.model>${uvms.rules.module.version}</rules.model>
     <mdr.model.version>${uvms.mdr.model.version}</mdr.model.version>
