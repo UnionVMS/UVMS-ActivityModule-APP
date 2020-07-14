@@ -78,7 +78,7 @@
 					<plugin>
 						<groupId>org.liquibase</groupId>
 						<artifactId>liquibase-maven-plugin</artifactId>
-						<version>3.10.1</version>
+						<version>4.0.0</version>
 						<configuration>
 							<url>${db.docker.url}</url>
 							<migrationSqlOutputFile>${project.build.directory}/full-update.sql</migrationSqlOutputFile>
@@ -130,7 +130,7 @@
 				<plugin>
 					<groupId>org.liquibase</groupId>
 					<artifactId>liquibase-maven-plugin</artifactId>
-					<version>3.10.1</version>
+					<version>4.0.0</version>
 					<configuration>
 						<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
 						<changeLogFile>${db.changeLogFile}</changeLogFile>
