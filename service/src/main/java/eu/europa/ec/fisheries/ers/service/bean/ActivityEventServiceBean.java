@@ -33,6 +33,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEv
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportFromPosition;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
@@ -54,6 +55,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRe
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportFromPositionRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriodRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriodResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportWithLogbookRequest;
@@ -65,8 +67,6 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRespons
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
-import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.wsdl.subscription.module.ActivityReportGenerationResultsRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.AttachmentType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionModuleMethod;
@@ -110,16 +110,6 @@ public class ActivityEventServiceBean implements EventService {
 
     @Inject
     private ActivityResponseQueueProducerBean activityResponseQueueProducerBean;
-
-    private String localNodeName;
-
-    public ActivityEventServiceBean() {
-    }
-
-    @Inject
-    void extractLocalNodeName(ParameterService parameterService) throws ConfigServiceException {
-        localNodeName = parameterService.getParamValueById(FLUX_LOCAL_NATION_CODE);
-    }
 
     @Override
     public void receiveFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
@@ -261,6 +251,18 @@ public class ActivityEventServiceBean implements EventService {
         try{
             ForwardFAReportWithLogbookRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), ForwardFAReportWithLogbookRequest.class);
             ActivityReportGenerationResults response = fishingTripService.forwardFaReportWithLogbook(request);
+            ActivityReportGenerationResultsRequest requestToSubscription = makeActivityReportGenerationResultsRequest(response);
+            activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), JAXBMarshaller.marshallJaxBObjectToString(requestToSubscription));
+        } catch (ActivityModelMarshallException | MessageException | ServiceException e) {
+            sendError(message, e);
+        }
+    }
+
+    @Override
+    public void forwardFAReportFromPosition(@Observes @ForwardFAReportFromPosition EventMessage message) {
+        try{
+            ForwardFAReportFromPositionRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), ForwardFAReportFromPositionRequest.class);
+            ActivityReportGenerationResults response = fishingTripService.forwardFAReportFromPosition(request);
             ActivityReportGenerationResultsRequest requestToSubscription = makeActivityReportGenerationResultsRequest(response);
             activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), JAXBMarshaller.marshallJaxBObjectToString(requestToSubscription));
         } catch (ActivityModelMarshallException | MessageException | ServiceException e) {
