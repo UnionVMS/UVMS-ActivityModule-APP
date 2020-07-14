@@ -84,6 +84,17 @@ import org.hibernate.annotations.Type;
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_IDS_LIST,
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
                         "WHERE fareport.id IN (:ids)"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_ASSET_GUID_AND_DATE_PERIOD,
+                query = "SELECT DISTINCT faReport FROM FaReportDocumentEntity faReport " +
+                        "LEFT JOIN FETCH faReport.vesselTransportMeans vesselTransportMeans " +
+                        "WHERE vesselTransportMeans.guid = :assetGuid " +
+                        "AND EXISTS( " +
+                        "SELECT fishingActivity FROM FishingActivityEntity fishingActivity " +
+                        "WHERE fishingActivity.occurence BETWEEN :startDate and :endDate " +
+                        "AND fishingActivity.faReportDocument.id = faReport.id  " +
+                        ")"
+
         )
 })
 @Entity
@@ -100,6 +111,7 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
     public static final String FIND_BY_FLUX_REPORT_IDENTIFIER_REF_FA_ID_AND_SCHEME = "findByFluxReportIdentifierRefFaId";
+    public static final String FIND_BY_ASSET_GUID_AND_DATE_PERIOD = "findByAssetGuidAndDatePeriod";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)

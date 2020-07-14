@@ -22,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.asset.types.BatchAssetListResponseElement;
+import eu.europa.ec.fisheries.wsdl.asset.types.VesselIdentifiersHolder;
 
 public interface AssetModuleService {
 
@@ -41,4 +42,6 @@ public interface AssetModuleService {
     List<BatchAssetListResponseElement> getAssetListResponseBatch(List<AssetListQuery> assetListQuery) throws ServiceException;
 
     String getAssetHistoryGuid(String assetGuid, Date occurrenceDate) throws ServiceException;
+
+    VesselIdentifiersHolder getAssetVesselIdentifiersByAssetHistoryGuid(String assetHistoryGuid) throws ServiceException;
 }

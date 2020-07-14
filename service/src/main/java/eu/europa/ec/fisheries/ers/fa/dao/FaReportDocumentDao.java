@@ -16,9 +16,11 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -187,6 +189,14 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
     public List<FaReportDocumentEntity> findReportsByIdsList(List<Integer> ids){
         Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_FA_IDS_LIST, FaReportDocumentEntity.class);
         query.setParameter("ids", ids);
+        return query.getResultList();
+    }
+
+    public List<FaReportDocumentEntity> findReportsByAssetGuidAndDatePeriod(String assetGuid, Date startDate, Date endDate) {
+        Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_ASSET_GUID_AND_DATE_PERIOD, FaReportDocumentEntity.class);
+        query.setParameter("assetGuid", assetGuid);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
         return query.getResultList();
     }
 

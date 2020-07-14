@@ -13,6 +13,40 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
+import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
+import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.xml.bind.JAXBException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.math.BigInteger;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -79,6 +113,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.SortKey;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityReportGenerationResults;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.AttachmentResponseObject;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.AttachmentType;
@@ -88,12 +123,12 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripIdWithGeome
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FluxReportIdentifier;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportBaseRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportFromPositionRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportWithLogbookRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardMultipleFAReportsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
-import eu.europa.ec.fisheries.uvms.activity.model.mapper.FANamespaceMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -107,6 +142,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.types.VesselIdentifiersHolder;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JREmptyDataSource;
@@ -128,40 +164,6 @@ import org.mockito.internal.util.collections.Sets;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import javax.xml.bind.JAXBException;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.math.BigInteger;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
-import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
-import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 @Stateless
 @Local(FishingTripService.class)
@@ -1184,25 +1186,29 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     @Override
     public ActivityReportGenerationResults forwardMultipleFaReports(ForwardMultipleFAReportsRequest request) throws ServiceException {
-        try {
-            List<FaReportDocumentEntity> faReportDocumentEntities = request.getReportIds().stream().map(this::findFAReport).filter(Objects::nonNull).collect(Collectors.toList());
-            FLUXFAReportMessage fluxfaReportMessage = makeMessageIfNeededAndForwardToRules(request, faReportDocumentEntities);
-            ActivityReportGenerationResults results = makeActivityReportGenerationResults(request, faReportDocumentEntities, fluxfaReportMessage);
-            handleAttachments(results, request, fluxfaReportMessage);
-            return results;
-        } catch (ActivityModuleException e) {
-            throw new ServiceException("error forwarding multiple FA Reports to rules " + makeMessageForErrorReporting(request), e);
-        }
+        List<FaReportDocumentEntity> faReportDocumentEntities = request.getReportIds().stream().map(this::findFAReport).filter(Objects::nonNull).collect(Collectors.toList());
+        return forwardFAReportsForIndividualReports(faReportDocumentEntities, request);
     }
 
     @Override
     public ActivityReportGenerationResults forwardFaReportWithLogbook(ForwardFAReportWithLogbookRequest request) throws ServiceException {
+        return forwardFAReportsForLogbook(request.getTripIds(), request);
+    }
+
+    @Override
+    public ActivityReportGenerationResults forwardFAReportFromPosition(ForwardFAReportFromPositionRequest request) throws ServiceException {
+        String assetGuid = getAssetGuidFromAssetModule(request.getAssetHistoryGuid());
+        if(request.isLogbook()) {
+            return forwardFAReportsForLogbook(extractTripIds(request, assetGuid), request);
+        } else {
+            List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.findReportsByAssetGuidAndDatePeriod(assetGuid, request.getStartDate().toGregorianCalendar().getTime(), request.getEndDate().toGregorianCalendar().getTime());
+            return forwardFAReportsForIndividualReports(faReportDocumentEntities, request);
+        }
+    }
+
+    private ActivityReportGenerationResults forwardFAReportsForLogbook(List<String> tripIds, ForwardFAReportBaseRequest request) throws ServiceException {
         try {
-            @SuppressWarnings("unchecked")
-            Map<String, List<FaReportDocumentEntity>> tripIdToReportsMap = request.getTripIds().stream()
-                    .map(tripId -> new Object[] { tripId, findFAReportsByTripId(tripId, request.isConsolidated()) })
-                    .filter(pair -> pair[1] != null)
-                    .collect(Collectors.toMap(pair -> (String) pair[0], pair -> (List<FaReportDocumentEntity>) pair[1]));
+            Map<String, List<FaReportDocumentEntity>> tripIdToReportsMap = findReportsPerTrip(tripIds, request.isConsolidated());
             List<FaReportDocumentEntity> faReportDocumentEntities = tripIdToReportsMap.values().stream()
                     .flatMap(List::stream)
                     .filter(Objects::nonNull)
@@ -1212,8 +1218,44 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             handleAttachments(results, request, fluxfaReportMessage, tripIdToReportsMap);
             return results;
         } catch (ActivityModuleException e) {
-            throw new ServiceException("error forwarding logbook(s) to rules " + makeMessageForErrorReporting(request), e);
+            throw new ServiceException("error forwarding multiple FA Reports to rules " + makeMessageForErrorReporting(request), e);
         }
+    }
+
+    private ActivityReportGenerationResults forwardFAReportsForIndividualReports(List<FaReportDocumentEntity> faReportDocumentEntities, ForwardFAReportBaseRequest request) throws ServiceException {
+        try {
+            FLUXFAReportMessage fluxfaReportMessage = makeMessageIfNeededAndForwardToRules(request, faReportDocumentEntities);
+            ActivityReportGenerationResults results = makeActivityReportGenerationResults(request, faReportDocumentEntities, fluxfaReportMessage);
+            handleAttachments(results, request, fluxfaReportMessage);
+            return results;
+        } catch (ActivityModuleException e) {
+            throw new ServiceException("error forwarding multiple FA Reports to rules " + makeMessageForErrorReporting(request), e);
+        }
+    }
+
+    private Map<String, List<FaReportDocumentEntity>> findReportsPerTrip(List<String> tripIds, Boolean consolidated) {
+        @SuppressWarnings("unchecked")
+        Map<String, List<FaReportDocumentEntity>> result = tripIds.stream()
+                .map(tripId -> new Object[] { tripId, findFAReportsByTripId(tripId, consolidated) })
+                .filter(pair -> pair[1] != null)
+                .collect(Collectors.toMap(pair -> (String) pair[0], pair -> (List<FaReportDocumentEntity>) pair[1]));
+        return result;
+    }
+
+    private List<String> extractTripIds(ForwardFAReportFromPositionRequest request, String assetGuid) {
+        // THIS IS VERY EXPENSIVE, IMPLEMENT IN DB!!!
+        return faReportDocumentDao.findReportsByAssetGuidAndDatePeriod(assetGuid, request.getStartDate().toGregorianCalendar().getTime(), request.getEndDate().toGregorianCalendar().getTime()).stream()
+                .flatMap(faReport -> faReport.getFishingActivities().stream())
+                .flatMap(activity -> activity.getFishingTrips().stream())
+                .flatMap(trip -> trip.getFishingTripIdentifiers().stream())
+                .map(FishingTripIdentifierEntity::getTripId)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    private String getAssetGuidFromAssetModule(String assetHistGuid) throws ServiceException {
+        VesselIdentifiersHolder vesselIdentifiersHolder = assetModuleService.getAssetVesselIdentifiersByAssetHistoryGuid(assetHistGuid);
+        return Optional.ofNullable(vesselIdentifiersHolder.getAssetGuid()).orElse(null);
     }
 
     private FaReportDocumentEntity findFAReport(FluxReportIdentifier reportIdentifier) {
@@ -1260,18 +1302,16 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         faReportDocument.getRelatedFLUXReportDocument().setIDS(Collections.singletonList(identifier));
     }
 
-    private void handleAttachments(ActivityReportGenerationResults result, ForwardMultipleFAReportsRequest request, FLUXFAReportMessage fluxfaReportMessage) throws ServiceException {
+    private void handleAttachments(ActivityReportGenerationResults result, ForwardFAReportBaseRequest request, FLUXFAReportMessage fluxfaReportMessage) throws ServiceException {
         ArrayList<AttachmentResponseObject> attachments = new ArrayList<>();
         if (request.getEmailConfig() != null && (request.getEmailConfig().isXml() || request.getEmailConfig().isPdf())) {
             addXmlAttachmentIfNeeded(attachments, request, fluxfaReportMessage);
-            if (request.getEmailConfig().isPdf()) {
-                log.warn("CAN WE GENERATE PDF FOR INDIVIDUAL REPORTS???? " + makeMessageForErrorReporting(request));
-            }
+            // We do not generate PDFs for individual reports
         }
         result.setResponseLists(attachments);
     }
 
-    private void handleAttachments(ActivityReportGenerationResults result, ForwardFAReportWithLogbookRequest request, FLUXFAReportMessage fluxfaReportMessage, Map<String, List<FaReportDocumentEntity>> tripIdToReportsMap) throws ServiceException {
+    private void handleAttachments(ActivityReportGenerationResults result, ForwardFAReportBaseRequest request, FLUXFAReportMessage fluxfaReportMessage, Map<String, List<FaReportDocumentEntity>> tripIdToReportsMap) throws ServiceException {
         ArrayList<AttachmentResponseObject> attachments = new ArrayList<>();
         if (request.getEmailConfig() != null && (request.getEmailConfig().isXml() || request.getEmailConfig().isPdf())) {
             addXmlAttachmentIfNeeded(attachments, request, fluxfaReportMessage);
@@ -1295,7 +1335,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
     }
 
-    private void addPdfAttachmentsIfNeeded(ArrayList<AttachmentResponseObject> attachments, ForwardFAReportWithLogbookRequest request, FLUXFAReportMessage fluxfaReportMessage, Map<String, List<FaReportDocumentEntity>> tripIdToReportsMap) throws ServiceException {
+    private void addPdfAttachmentsIfNeeded(ArrayList<AttachmentResponseObject> attachments, ForwardFAReportBaseRequest request, FLUXFAReportMessage fluxfaReportMessage, Map<String, List<FaReportDocumentEntity>> tripIdToReportsMap) throws ServiceException {
         if (request.getEmailConfig().isPdf()) {
             for (Map.Entry<String,List<FaReportDocumentEntity>> entry : tripIdToReportsMap.entrySet() ) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -22,10 +22,12 @@ import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.asset.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
+import eu.europa.ec.fisheries.wsdl.asset.module.FindVesselIdsByAssetHistGuidResponse;
 import eu.europa.ec.fisheries.wsdl.asset.types.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -238,5 +240,20 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             throw new ServiceException(e.getMessage(), e.getCause());
         }
         return assetHistGuid;
+    }
+
+    @Override
+    public VesselIdentifiersHolder getAssetVesselIdentifiersByAssetHistoryGuid(String assetHistoryGuid) throws ServiceException {
+        VesselIdentifiersHolder vesselIdentifiersHolder = null;
+        try {
+            String request  = AssetModuleRequestMapper.createFindVesselIdsByAssetHistGuidRequest(assetHistoryGuid);
+            String correlationID = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
+            TextMessage message = activityConsumer.getMessage(correlationID, TextMessage.class);
+            FindVesselIdsByAssetHistGuidResponse response = JAXBMarshaller.unmarshallTextMessage(message, FindVesselIdsByAssetHistGuidResponse.class);
+            vesselIdentifiersHolder = response.getIdentifiers();
+        } catch (AssetModelMapperException | MessageException e) {
+            e.printStackTrace();
+        }
+        return vesselIdentifiersHolder;
     }
 }

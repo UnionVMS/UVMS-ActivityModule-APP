@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service;
 
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportFromPosition;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
@@ -51,4 +52,6 @@ public interface EventService {
     void forwardMultipleFAReports(@Observes @ForwardMultipleFAReports EventMessage message);
 
     void forwardFAReportWithLogbook(@Observes @ForwardFAReportWithLogbook EventMessage message);
+
+    void forwardFAReportFromPosition(@Observes @ForwardFAReportFromPosition EventMessage message);
 }
