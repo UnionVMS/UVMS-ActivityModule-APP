@@ -20,8 +20,10 @@ import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -76,5 +78,13 @@ public class FishingTripIdentifierDao extends AbstractDAO<FishingTripIdentifierE
         params.parameters().forEach(query::setParameter);
         query.setMaxResults(limit);
         return query.getResultList().stream().map(obj -> new ChronologyData(obj[0].toString(), DateUtils.dateToString((Date) obj[1])));
+    }
+
+    public List<String> getTripIdsReportedForAssetAndDatePeriod(String assetGuid, Date startDate, Date endDate) {
+        Query query = getEntityManager().createNamedQuery(FishingTripIdentifierEntity.FIND_TRIP_IDS_BY_ASSET_GUID_AND_DATE_PERIOD, String.class);
+        query.setParameter("assetGuid", assetGuid);
+        query.setParameter("startDate", startDate);
+        query.setParameter("endDate", endDate);
+        return query.getResultList();
     }
 }

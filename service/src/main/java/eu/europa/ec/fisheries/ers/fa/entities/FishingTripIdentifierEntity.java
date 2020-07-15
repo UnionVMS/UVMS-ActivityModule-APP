@@ -122,7 +122,16 @@ import java.util.Date;
 						"AND fti.tripId > :tripId " +
 						"GROUP BY fti.tripId " +
 						"HAVING MIN(fa.calculatedStartTime) = :selectedTripStartDate " +
-						"ORDER BY fti.tripId ASC")
+						"ORDER BY fti.tripId ASC"),
+		@NamedQuery(name = FishingTripIdentifierEntity.FIND_TRIP_IDS_BY_ASSET_GUID_AND_DATE_PERIOD,
+				query = "SELECT DISTINCT fishingTripIdentifier.tripId FROM FishingTripIdentifierEntity fishingTripIdentifier " +
+						"INNER JOIN fishingTripIdentifier.fishingTrip fishingTrip " +
+						"INNER JOIN fishingTrip.fishingActivity fishingActivity " +
+						"INNER JOIN fishingActivity.faReportDocument faReport " +
+						"INNER JOIN faReport.vesselTransportMeans vesselTransportMeans " +
+						"WHERE vesselTransportMeans.guid = :assetGuid " +
+						"AND fishingActivity.occurence BETWEEN :startDate and :endDate"
+		)
 })
 
 @Entity
@@ -138,6 +147,8 @@ public class FishingTripIdentifierEntity implements Serializable {
 	public static final String FIND_TRIPS_BETWEEN = "FishingTripIdentifierEntity.findTripsBetween";
 	public static final String FIND_PREVIOUS_CONCURRENT_TRIPS = "findPreviousConcurrentTrips";
 	public static final String FIND_NEXT_CONCURRENT_TRIPS = "findNextConcurrentTrips";
+	public static final String FIND_TRIP_IDS_BY_ASSET_GUID_AND_DATE_PERIOD = "findTripIdsByAssetGuidAndDatePeriod";
+
 
 	@Id
 	@Column(name = "id", unique = true, nullable = false)
