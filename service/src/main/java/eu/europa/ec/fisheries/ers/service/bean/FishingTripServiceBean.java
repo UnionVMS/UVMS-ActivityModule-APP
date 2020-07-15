@@ -129,6 +129,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardMultipleFARepor
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -1264,6 +1265,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private FLUXFAReportMessage makeMessageIfNeededAndForwardToRules(ForwardFAReportBaseRequest request, List<FaReportDocumentEntity> faReportDocumentEntities) throws ActivityModuleException {
         if (shouldSendFaReport(request) || (request.getEmailConfig() != null && request.getEmailConfig().isXml())) {
             FLUXFAReportMessage fluxfaReportMessage = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName);
+            fluxfaReportMessage.getFAReportDocuments().forEach(faReport -> filterVesselIdentifiers(request.getVesselIdentifiers(), faReport));
             if (request.isNewReportIds()) {
                 fluxfaReportMessage.getFAReportDocuments().forEach(this::setNewReportId);
             }
@@ -1274,6 +1276,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         } else {
             return null;
         }
+    }
+
+    private void filterVesselIdentifiers(List<VesselIdentifierSchemeIdEnum> vesselIdentifiers, FAReportDocument faReportDocument) {
+        faReportDocument.getSpecifiedVesselTransportMeans().getIDS().removeIf(id -> !vesselIdentifiers.contains(VesselIdentifierSchemeIdEnum.fromValue(id.getSchemeID())));
     }
 
     private ActivityReportGenerationResults makeActivityReportGenerationResults(ForwardFAReportBaseRequest request, List<FaReportDocumentEntity> faReportDocumentEntities, FLUXFAReportMessage fluxfaReportMessage) throws ServiceException {
