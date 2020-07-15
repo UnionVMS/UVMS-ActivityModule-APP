@@ -13,14 +13,14 @@
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import eu.europa.ec.fisheries.ers.fa.entities.*;
-import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import org.junit.Test;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
+import org.junit.Test;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingTrip;
 
 /**
  * Created by padhyad on 7/29/2016.
@@ -30,9 +30,7 @@ public class FishingTripMapperTest {
     @Test
     public void getFishingTripWithFishingActivity() {
         FishingTrip fishingTrip = MapperUtil.getFishingTrip();
-        FishingTripEntity fishingTripEntity = new FishingTripEntity();
-        FishingActivityEntity fishingActivityEntity = null;
-        FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, fishingActivityEntity, fishingTripEntity);
+        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
 
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
@@ -40,23 +38,13 @@ public class FishingTripMapperTest {
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
         assertNotNull(fishingTripEntity.getFishingTripIdentifiers());
-        FishingTripIdentifierEntity identifierEntity = fishingTripEntity.getFishingTripIdentifiers().iterator().next();
-        assertNotNull(identifierEntity);
-        assertEquals(fishingTrip.getIDS().get(0).getValue(), identifierEntity.getTripId());
-        assertEquals(fishingTrip.getIDS().get(0).getSchemeID(), identifierEntity.getTripSchemeId());
 
-        DelimitedPeriodEntity delimitedPeriodEntity = fishingTripEntity.getDelimitedPeriods().iterator().next();
-        assertNotNull(delimitedPeriodEntity);
-        assertEquals(fishingTrip.getTypeCode().getValue(), delimitedPeriodEntity.getFishingTrip().getTypeCode());
-        assertEquals(fishingTrip.getTypeCode().getListID(), delimitedPeriodEntity.getFishingTrip().getTypeCodeListId());
     }
 
     @Test
     public void getFishingTripWithFACatch() {
         FishingTrip fishingTrip = MapperUtil.getFishingTrip();
-        FishingTripEntity fishingTripEntity = new FishingTripEntity();
-        FaCatchEntity faCatchEntity = null;
-        FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip, faCatchEntity, fishingTripEntity);
+        FishingTripEntity fishingTripEntity = FishingTripMapper.INSTANCE.mapToFishingTripEntity(fishingTrip);
 
         assertEquals(fishingTrip.getTypeCode().getValue(), fishingTripEntity.getTypeCode());
         assertEquals(fishingTrip.getTypeCode().getListID(), fishingTripEntity.getTypeCodeListId());
@@ -64,14 +52,6 @@ public class FishingTripMapperTest {
         assertNotNull(fishingTripEntity.getDelimitedPeriods());
 
         assertNotNull(fishingTripEntity.getFishingTripIdentifiers());
-        FishingTripIdentifierEntity identifierEntity = fishingTripEntity.getFishingTripIdentifiers().iterator().next();
-        assertNotNull(identifierEntity);
-        assertEquals(fishingTrip.getIDS().get(0).getValue(), identifierEntity.getTripId());
-        assertEquals(fishingTrip.getIDS().get(0).getSchemeID(), identifierEntity.getTripSchemeId());
 
-        DelimitedPeriodEntity delimitedPeriodEntity = fishingTripEntity.getDelimitedPeriods().iterator().next();
-        assertNotNull(delimitedPeriodEntity);
-        assertEquals(fishingTrip.getTypeCode().getValue(), delimitedPeriodEntity.getFishingTrip().getTypeCode());
-        assertEquals(fishingTrip.getTypeCode().getListID(), delimitedPeriodEntity.getFishingTrip().getTypeCodeListId());
     }
 }

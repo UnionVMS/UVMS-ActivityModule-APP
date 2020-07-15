@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
@@ -29,60 +30,102 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 import com.vividsolutions.jts.geom.Geometry;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.Type;
 
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
                 query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
-                        "INNER JOIN fareport.fluxReportDocument fluxreport " +
-                        "INNER JOIN fluxreport.fluxReportIdentifiers identifier " +
-                        "WHERE identifier.fluxReportIdentifierId = :reportId " +
-                        "AND identifier.fluxReportIdentifierSchemeId = :schemeId"),
-
+                        "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
+                        "LEFT JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
+                        "WHERE identifier.fluxReportIdentifierId IN (lower(:reportId), upper(:reportId), :reportId) " +
+                        "AND identifier.fluxReportIdentifierSchemeId = :schemeId"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FLUX_REPORT_IDENTIFIER_REF_FA_ID_AND_SCHEME,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
+                        "LEFT JOIN FETCH fluxreport.fluxReportIdentifiers identifier " +
+                        "WHERE identifier.fluxReportIdentifierId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
+                        "AND identifier.fluxReportIdentifierSchemeId = :schemeRefId"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "LEFT JOIN FETCH fareport.fluxReportDocument fluxreport " +
+                        "WHERE fluxreport.referenceId IN (lower(:reportRefId), upper(:reportRefId), :reportRefId) " +
+                        "AND fluxreport.referenceSchemeId = :schemeRefId"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.LOAD_REPORTS,
+                query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
+                        "LEFT JOIN FETCH rpt.fishingActivities act " +
+                        "LEFT JOIN FETCH rpt.vesselTransportMeans vtm " +
+                        "LEFT OUTER JOIN FETCH vtm.vesselIdentifiers vtmids " +
+                        "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
+                        "JOIN FETCH act.fishingTrips fshtrp " +
+                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
+                        "WHERE rpt.status IN (:statuses) " +
+                        "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
+                        "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime OR flxrep.creationDatetime <= :endDate)))"
+        ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
-                query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
-                        "JOIN FETCH fareport.fishingActivities factivity " +
-                        "JOIN FETCH factivity.fishingTrips fishingtrip " +
-                        "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
-                        "JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE ftidentifier.tripId  = :tripId"),
+                query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
+                        "LEFT JOIN FETCH rpt.fishingActivities act " +
+                        "LEFT JOIN FETCH rpt.fluxReportDocument flxrep " +
+                        "JOIN FETCH act.fishingTrips fshtrp " +
+                        "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
+                        "WHERE fshtrpids.tripId = :tripId " +
+                        "AND ((:area IS NULL) OR intersects(act.geom, :area) = true)"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_IDS_LIST,
+                query = "SELECT fareport FROM FaReportDocumentEntity fareport " +
+                        "WHERE fareport.id IN (:ids)"
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_BY_ASSET_GUID_AND_DATE_PERIOD,
+                query = "SELECT DISTINCT faReport FROM FaReportDocumentEntity faReport " +
+                        "LEFT JOIN FETCH faReport.vesselTransportMeans vesselTransportMeans " +
+                        "WHERE vesselTransportMeans.guid = :assetGuid " +
+                        "AND EXISTS( " +
+                        "SELECT fishingActivity FROM FishingActivityEntity fishingActivity " +
+                        "WHERE fishingActivity.occurence BETWEEN :startDate and :endDate " +
+                        "AND fishingActivity.faReportDocument.id = faReport.id  " +
+                        ")"
 
-        @NamedQuery(name = FaReportDocumentEntity.FIND_LATEST_FA_DOCS_BY_TRIP_ID,
-                query = "SELECT DISTINCT fareport FROM FaReportDocumentEntity fareport " +
-                        "JOIN FETCH fareport.fishingActivities factivity " +
-                        "JOIN FETCH factivity.fishingTrips fishingtrip " +
-                        "JOIN FETCH fishingtrip.fishingTripIdentifiers ftidentifier " +
-                        "JOIN FETCH fareport.fluxReportDocument fluxreport " +
-                        "WHERE ftidentifier.tripId  = :tripId and fareport.status = 'new'")
+        )
 })
 @Entity
 @Table(name = "activity_fa_report_document")
+@Data
+@ToString(of = "id")
+@NoArgsConstructor
 public class FaReportDocumentEntity implements Serializable {
 
     public static final String FIND_BY_FA_ID_AND_SCHEME = "findByFaId";
+    public static final String FIND_BY_FA_IDS_LIST = "findByFaIds";
     public static final String FIND_FA_DOCS_BY_TRIP_ID = "findByTripId";
     public static final String FIND_LATEST_FA_DOCS_BY_TRIP_ID = "findLatestByTripId";
+    public static final String LOAD_REPORTS = "FaReportDocumentEntity.loadReports";
+    public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
+    public static final String FIND_BY_FLUX_REPORT_IDENTIFIER_REF_FA_ID_AND_SCHEME = "findByFluxReportIdentifierRefFaId";
+    public static final String FIND_BY_ASSET_GUID_AND_DATE_PERIOD = "findByAssetGuidAndDatePeriod";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_rep_doc_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_fa_report_document", sequenceName = "fa_rep_doc_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_fa_report_document")
     private int id;
-
-    @Type(type = "org.hibernate.spatial.GeometryType")
-    @Column(name = "geom")
-    private Geometry geom;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flux_fa_report_message_id")
-    private FluxFaReportMessageEntity fluxFaReportMessage;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "flux_report_document_id", nullable = false)
     private FluxReportDocumentEntity fluxReportDocument;
+
+    @Type(type = "org.hibernate.spatial.GeometryType")
+    @Column(name = "geom")
+    private Geometry geom;
 
     @Column(name = "type_code")
     private String typeCode;
@@ -106,6 +149,10 @@ public class FaReportDocumentEntity implements Serializable {
     @Column(name = "source")
     private String source;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "flux_fa_report_message_id")
+    private FluxFaReportMessageEntity fluxFaReportMessage;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<FaReportIdentifierEntity> faReportIdentifiers;
 
@@ -113,139 +160,22 @@ public class FaReportDocumentEntity implements Serializable {
     private Set<FishingActivityEntity> fishingActivities;
 
     /**
-     * This one to many relationship is artificially created. From XML we will always receive only One VesselTreansportMeans per FaReportDocument.
-     *  This is done to avoid cyclic dependency ( Vessel->FishingActivity->FaReportDocument->Vessel )
+     * From XML we will always receive only One VesselTreansportMeans per FaReportDocument.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "faReportDocument", cascade = CascadeType.ALL)
     private Set<VesselTransportMeansEntity> vesselTransportMeans;
 
-    public FaReportDocumentEntity() {
-        super();
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
-
-    public Set<VesselTransportMeansEntity> getVesselTransportMeans() {
-        return vesselTransportMeans;
-    }
-
-    public void setVesselTransportMeans(Set<VesselTransportMeansEntity> vesselTransportMeans) {
-        this.vesselTransportMeans = vesselTransportMeans;
-    }
-
-    public FluxReportDocumentEntity getFluxReportDocument() {
-        return this.fluxReportDocument;
-    }
-
-    public void setFluxReportDocument(
-            FluxReportDocumentEntity fluxReportDocument) {
-        this.fluxReportDocument = fluxReportDocument;
-    }
-
-    public String getTypeCode() {
-        return this.typeCode;
-    }
-
-    public void setTypeCode(String typeCode) {
-        this.typeCode = typeCode;
-    }
-
-    public String getTypeCodeListId() {
-        return this.typeCodeListId;
-    }
-
-    public void setTypeCodeListId(String typeCodeListId) {
-        this.typeCodeListId = typeCodeListId;
-    }
-
-    public Date getAcceptedDatetime() {
-        return this.acceptedDatetime;
-    }
-
-    public void setAcceptedDatetime(Date acceptedDatetime) {
-        this.acceptedDatetime = acceptedDatetime;
-    }
-
-    public String getFmcMarker() {
-        return this.fmcMarker;
-    }
-
-    public void setFmcMarker(String fmcMarker) {
-        this.fmcMarker = fmcMarker;
-    }
-
-    public String getFmcMarkerListId() {
-        return this.fmcMarkerListId;
-    }
-
-    public void setFmcMarkerListId(String fmcMarkerListId) {
-        this.fmcMarkerListId = fmcMarkerListId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public Set<FaReportIdentifierEntity> getFaReportIdentifiers() {
-        return this.faReportIdentifiers;
-    }
-
-    public void setFaReportIdentifiers(
-            Set<FaReportIdentifierEntity> faReportIdentifiers) {
-        this.faReportIdentifiers = faReportIdentifiers;
-    }
-
-    public Set<FishingActivityEntity> getFishingActivities() {
-        return this.fishingActivities;
-    }
-
-    public void setFishingActivities(
-            Set<FishingActivityEntity> fishingActivities) {
-        this.fishingActivities = fishingActivities;
-    }
-
-    public FluxFaReportMessageEntity getFluxFaReportMessage() {
-        return fluxFaReportMessage;
-    }
-
-    public void setFluxFaReportMessage(FluxFaReportMessageEntity fluxFaReportMessage) {
-        this.fluxFaReportMessage = fluxFaReportMessage;
-    }
-
-    public Geometry getGeom() {
-        return geom;
-    }
-
-    public void setGeom(Geometry geom) {
-        this.geom = geom;
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof FaReportDocumentEntity
+                && (
+                    (this.fluxReportDocument == null && ((FaReportDocumentEntity) other).fluxReportDocument == null)
+                    || (this.fluxReportDocument != null && ((FaReportDocumentEntity) other).fluxReportDocument != null && Objects.equals(this.fluxReportDocument.getFluxReportIdentifiers(), ((FaReportDocumentEntity) other).fluxReportDocument.getFluxReportIdentifiers()))
+                );
     }
 
     @Override
-    public String toString() {
-        return "FaReportDocumentEntity{" +
-                "id=" + id +
-                ", vesselTransportMeans=" + vesselTransportMeans +
-                ", fluxReportDocument=" + fluxReportDocument +
-                ", typeCode='" + typeCode + '\'' +
-                ", typeCodeListId='" + typeCodeListId + '\'' +
-                ", acceptedDatetime=" + acceptedDatetime +
-                ", fmcMarker='" + fmcMarker + '\'' +
-                ", fmcMarkerListId='" + fmcMarkerListId + '\'' +
-                '}';
+    public int hashCode() {
+        return fluxReportDocument == null || fluxReportDocument.getFluxReportIdentifiers() == null ? 0 : fluxReportDocument.getFluxReportIdentifiers().stream().mapToInt(Object::hashCode).sum();
     }
 }

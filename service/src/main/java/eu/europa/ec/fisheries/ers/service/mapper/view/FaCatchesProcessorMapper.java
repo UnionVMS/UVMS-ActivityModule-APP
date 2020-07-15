@@ -10,17 +10,8 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import java.util.*;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.DestinationLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDetailsDto;
@@ -35,15 +26,6 @@ import eu.europa.ec.fisheries.ers.service.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by kovian on 03/03/2017.
@@ -64,11 +46,11 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param faCatches
      * @return List<FaCatchGroupDto>
      */
-    public static List<FaCatchGroupDto> getCatchGroupsFromListEntity(Set<FaCatchEntity> faCatches) {
+    public static Set<FaCatchGroupDto> getCatchGroupsFromListEntity(Set<FaCatchEntity> faCatches) {
         if (CollectionUtils.isEmpty(faCatches)) {
-            return Collections.emptyList();
+            return new HashSet<>();
         }
-        Map<String, List<FaCatchEntity>> faCatchGroups = groupCatches(faCatches);
+        Map<String, Set<FaCatchEntity>> faCatchGroups = groupCatches(faCatches);
         return computeSumsAndMapToDtoGroups(faCatchGroups);
     }
 
@@ -78,8 +60,8 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param faCatches
      * @return
      */
-    private static Map<String, List<FaCatchEntity>> groupCatches(Set<FaCatchEntity> faCatches) {
-        Map<String, List<FaCatchEntity>> groups = new HashMap<>();
+    private static Map<String, Set<FaCatchEntity>> groupCatches(Set<FaCatchEntity> faCatches) {
+        Map<String, Set<FaCatchEntity>> groups = new HashMap<>();
         int group_nr = 0;
         while (CollectionUtils.isNotEmpty(faCatches)) {
             groups.put(String.valueOf(group_nr), extractOneGroup(faCatches));
@@ -94,8 +76,8 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param faCatchesSet Set<FaCatchEntity>
      * @return
      */
-    private static List<FaCatchEntity> extractOneGroup(Set<FaCatchEntity> faCatchesSet) {
-        List<FaCatchEntity> group = new ArrayList<>();
+    private static Set<FaCatchEntity> extractOneGroup(Set<FaCatchEntity> faCatchesSet) {
+        Set<FaCatchEntity> group = new HashSet<>();
         Iterator<FaCatchEntity> catchesIteratorInt = faCatchesSet.iterator();
         FaCatchEntity extCatch = catchesIteratorInt.next();
         group.add(extCatch);
@@ -115,9 +97,9 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param faCatchGroups
      * @return
      */
-    private static List<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, List<FaCatchEntity>> faCatchGroups) {
-        List<FaCatchGroupDto> faCatchGroupsDtoList = new ArrayList<>();
-        for (Map.Entry<String, List<FaCatchEntity>> group : faCatchGroups.entrySet()) {
+    private static Set<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, Set<FaCatchEntity>> faCatchGroups) {
+        Set<FaCatchGroupDto> faCatchGroupsDtoList = new HashSet<>();
+        for (Map.Entry<String, Set<FaCatchEntity>> group : faCatchGroups.entrySet()) {
             faCatchGroupsDtoList.add(mapFaCatchListToCatchGroupDto(group.getValue()));
         }
         return faCatchGroupsDtoList;
@@ -129,9 +111,9 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param groupCatchList
      * @return
      */
-    private static FaCatchGroupDto mapFaCatchListToCatchGroupDto(List<FaCatchEntity> groupCatchList) {
+    private static FaCatchGroupDto mapFaCatchListToCatchGroupDto(Set<FaCatchEntity> groupCatchList) {
         FaCatchGroupDto groupDto = new FaCatchGroupDto();
-        FaCatchEntity catchEntity = groupCatchList.get(0);
+        FaCatchEntity catchEntity = groupCatchList.iterator().next();
         // Set primary properties on groupDto
         groupDto.setType(catchEntity.getTypeCode());
         groupDto.setSpecies(catchEntity.getSpeciesCode());
@@ -149,7 +131,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param groupCatchList
      * @param groupDto
      */
-    private static void calculateTotalsAndFillSubgroups(List<FaCatchEntity> groupCatchList, FaCatchGroupDto groupDto) {
+    private static void calculateTotalsAndFillSubgroups(Set<FaCatchEntity> groupCatchList, FaCatchGroupDto groupDto) {
         Map<String, FaCatchGroupDetailsDto> groupingDetailsMap = groupDto.getGroupingDetails();
         FaCatchGroupDetailsDto lscGroupDetailsDto = new FaCatchGroupDetailsDto();
         FaCatchGroupDetailsDto bmsGroupDetailsDto = new FaCatchGroupDetailsDto();
@@ -179,7 +161,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
                     fillDetailsForSubGroup(bmsGroupDetailsDto, entity);
                     break;
                 default:
-                    log.error("While constructing Fa Catch Section of the view the FaCatchEntity with id : " + entity.getId() + " is neither LSC or BMS!");
+                    log.error("While constructing Fa Catch Section of the view the FaCatchEntity with id : " + entity.getId() + " is neither LSC nor BMS!");
             }
         }
         setWeightsForSubGroup(groupDto, lscGroupDetailsDto, bmsGroupDetailsDto, lscGroupTotalWeight, lscGroupTotalUnits, bmsGroupTotalWeight, bmsGroupTotalUnits);
@@ -218,7 +200,6 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             }
         }
     }
-
 
     private static void setWeightsForSubGroup(FaCatchGroupDto groupDto, FaCatchGroupDetailsDto lscGroupDetailsDto, FaCatchGroupDetailsDto bmsGroupDetailsDto, Double lscGroupTotalWeight, Double lscGroupTotalUnits, Double bmsGroupTotalWeight, Double bmsGroupTotalUnits) {
 

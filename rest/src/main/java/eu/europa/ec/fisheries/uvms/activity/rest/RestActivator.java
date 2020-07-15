@@ -27,13 +27,14 @@ import javax.ws.rs.core.Application;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.ConfigResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FACatchResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingActivityViewsResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.FishingTripResource;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.ConfigResource;
-import eu.europa.ec.fisheries.uvms.activity.rest.resources.TestResource;
+import eu.europa.ec.fisheries.uvms.activity.rest.resources.ReportDocumentResource;
 import eu.europa.ec.fisheries.uvms.activity.rest.resources.XMLResource;
+import eu.europa.ec.fisheries.uvms.commons.rest.filter.EncodingResponseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,11 +50,11 @@ public class RestActivator extends Application {
         set.add(FishingActivityResource.class);
         set.add(FishingTripResource.class);
         set.add(ConfigResource.class);
-        set.add(TestResource.class);
         set.add(FishingActivityViewsResource.class);
         set.add(FACatchResource.class);
         set.add(XMLResource.class);
-
+        set.add(ReportDocumentResource.class);
+        set.add(EncodingResponseFilter.class);
     }
 
     @Override

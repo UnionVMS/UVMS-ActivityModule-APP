@@ -13,6 +13,7 @@
         <property name="show_sql" value="false" />
         <property name="format_sql" value="false" />
         <property name="use_sql_comments" value="true" />
+        <property name="hibernate.ejb.naming_strategy" value="org.hibernate.cfg.DefaultComponentSafeNamingStrategy"/>
     </properties>
 
 </persistence-unit>

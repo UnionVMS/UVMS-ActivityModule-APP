@@ -45,10 +45,10 @@ public class GearProblemMapperTest {
         assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getValue(), fishingGearEntity.getGearProblem().getGearProblemRecovery().iterator().next().getRecoveryMeasureCode());
         assertEquals(gearProblem.getRecoveryMeasureCodes().get(0).getListID(), fishingGearEntity.getGearProblem().getGearProblemRecovery().iterator().next().getRecoveryMeasureCodeListId());
 
-        assertEquals(gearProblemEntity.getLocations().iterator().next().getGearProblem().getTypeCode(), "Code Type 1");
-        assertEquals(gearProblemEntity.getLocations().iterator().next().getGearProblem().getTypeCodeListId(), "fhty58-gh586t-5tjf8-t58rjewe");
-        gearProblemEntity.getLocations().iterator().next().getGearProblem().getLocations().iterator().next().onPrePersist();
-        assertNotNull(gearProblemEntity.getLocations().iterator().next().getGearProblem().getLocations().iterator().next().getGeom());
+        assertEquals(gearProblemEntity.getTypeCode(), "Code Type 1");
+        assertEquals(gearProblemEntity.getTypeCodeListId(), "fhty58-gh586t-5tjf8-t58rjewe");
+        gearProblemEntity.getLocations().iterator().next().onPrePersist();
+        assertNotNull(gearProblemEntity.getLocations().iterator().next().getGeom());
 
     }
 }

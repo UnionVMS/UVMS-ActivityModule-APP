@@ -64,21 +64,9 @@ public class VesselTransportMeansEntity implements Serializable {
 
     @Id
     @Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_trp_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_vessel_transport_means", sequenceName = "vsl_trp_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_vessel_transport_means")
     private int id;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "registration_event_id")
-    private RegistrationEventEntity registrationEvent;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fishing_activity_id")
-    private FishingActivityEntity fishingActivity;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fa_report_document_id")
-    private FaReportDocumentEntity faReportDocument;
 
     @Column(name = "role_code")
     private String roleCode;
@@ -95,6 +83,18 @@ public class VesselTransportMeansEntity implements Serializable {
     private String country;
 
     private String guid;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "registration_event_id")
+    private RegistrationEventEntity registrationEvent;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fishing_activity_id")
+    private FishingActivityEntity fishingActivity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fa_report_document_id")
+    private FaReportDocumentEntity faReportDocument;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "vesselTransportMeans", cascade = CascadeType.ALL)
     private Set<ContactPartyEntity> contactParty;

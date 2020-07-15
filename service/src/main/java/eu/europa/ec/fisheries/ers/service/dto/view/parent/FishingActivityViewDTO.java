@@ -11,44 +11,23 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.GearShotAndRetrieval;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
-
 import java.util.List;
 import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityHistoryDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearProblemDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.*;
+import lombok.Data;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.*;
 
 /**
  * This DTO will be returned to the requester for every request of activity views.
  * It will serialize only the properties that are configured to be present for the specific view Eg : @JsonView(FishingActivityView.Arrival.class).
  */
 @JsonInclude(Include.NON_NULL)
+@Data
 public class FishingActivityViewDTO {
 
     @JsonView(CommonView.class)
@@ -60,11 +39,11 @@ public class FishingActivityViewDTO {
     @JsonView({Arrival.class, Departure.class, JointFishingOperation.class, FishingOperation.class})
     private List<GearDto> gears;
 
-    @JsonView({FishingOperation.class, NotificationOfArrival.class, Arrival.class, Landing.class, Departure.class, AreaEntry.class, AreaExit.class, Transhipment.class, Relocation.class})
+    @JsonView({CommonView.class})
     private ReportDocumentDto reportDetails;
 
     @JsonView(CommonView.class)
-    private List<FaCatchGroupDto> catches;
+    private Set<FaCatchGroupDto> catches;
 
     @JsonView({FishingOperation.class, GearShotAndRetrieval.class})
     private List<GearShotRetrievalDto> gearShotRetrievalList;
@@ -88,111 +67,7 @@ public class FishingActivityViewDTO {
     private List<RelocationDto> relocations;
 
     @JsonView(CommonView.class)
-    private ActivityHistoryDto history;
-
-    public Set<FluxLocationDto> getLocations() {
-        return locations;
-    }
-
-    public void setLocations(Set<FluxLocationDto> locations) {
-        this.locations = locations;
-    }
-
-    public ActivityDetailsDto getActivityDetails() {
-        return activityDetails;
-    }
-
-    public void setActivityDetails(ActivityDetailsDto activityDetails) {
-        this.activityDetails = activityDetails;
-    }
-
-    public List<GearDto> getGears() {
-        return gears;
-    }
-
-    public void setGears(List<GearDto> gears) {
-        this.gears = gears;
-    }
-
-    public ReportDocumentDto getReportDetails() {
-        return reportDetails;
-    }
-
-    public void setReportDetails(ReportDocumentDto reportDetails) {
-        this.reportDetails = reportDetails;
-    }
-
-    public List<FaCatchGroupDto> getCatches() {
-        return catches;
-    }
-
-    public void setCatches(List<FaCatchGroupDto> catches) {
-        this.catches = catches;
-    }
-
-    public List<ProcessingProductsDto> getProcessingProducts() {
-        return processingProducts;
-    }
-
-    public void setProcessingProducts(List<ProcessingProductsDto> processingProducts) {
-        this.processingProducts = processingProducts;
-    }
-
-    public List<GearShotRetrievalDto> getGearShotRetrievalList() {
-        return gearShotRetrievalList;
-    }
-
-    public void setGearShotRetrievalList(List<GearShotRetrievalDto> gearShotRetrievalList) {
-        this.gearShotRetrievalList = gearShotRetrievalList;
-    }
-
-    public AreaDto getAreas() {
-        return areas;
-    }
-
-    public void setAreas(AreaDto areas) {
-        this.areas = areas;
-    }
-
-    public TripWidgetDto getTripDetails() {
-        return tripDetails;
-    }
-
-    public void setTripDetails(TripWidgetDto tripDetails) {
-        this.tripDetails = tripDetails;
-    }
-
-    public List<VesselDetailsDTO> getVesselDetails() {
-        return vesselDetails;
-    }
-
-    public void setVesselDetails(List<VesselDetailsDTO> vesselDetails) {
-        this.vesselDetails = vesselDetails;
-    }
-
-    public List<GearProblemDto> getGearProblems() {
-        return gearProblems;
-    }
-
-    public void setGearProblems(List<GearProblemDto> gearProblems) {
-        this.gearProblems = gearProblems;
-    }
-
-    public List<RelocationDto> getRelocations() {
-        return relocations;
-    }
-
-    public void setRelocations(List<RelocationDto> relocations) {
-        this.relocations = relocations;
-    }
-
-    public ActivityHistoryDto getHistory() {
-        return history;
-    }
-
-    public void setHistory(ActivityHistoryDto history) {
-        this.history = history;
-    }
+    private List<ActivityHistoryDtoElement> history;
 
     @Override
     public String toString() {

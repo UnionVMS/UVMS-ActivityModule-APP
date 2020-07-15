@@ -13,6 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
@@ -22,7 +29,9 @@ import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
+import eu.europa.ec.fisheries.ers.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.apache.commons.collections.CollectionUtils;
@@ -31,21 +40,20 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-//import static eu.europa.ec.fisheries.ers.service.search.FilterMap.populateFilterMappingsWithChangedDelimitedPeriodTable;
-
 /**
  * Created by sanera on 16/11/2016.
  */
 public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingTripIdSearchBuilder.class);
-    private static final String FISHING_TRIP_JOIN = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
-
+    private static final String FISHING_TRIP_SELECT = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId ";
+    private static final String FISHING_TRIP_ACTIVITY_SELECT_ASC = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId , min(a.calculatedStartTime) as timeout ";
+    private static final String FISHING_TRIP_ACTIVITY_SELECT_DESC = "SELECT DISTINCT ftripId.tripId , ftripId.tripSchemeId , max(a.calculatedStartTime) as timeout ";
+    private static final String PERIOD_END_SELECT = ", a";
+    private static final String PERIOD_START_SELECT = ", a";
+    private static final String FLAG_STATE_SELECT = ", a";
+    private static final String FISHING_TRIP_JOIN = " from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
+    private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ftripId) from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
 
     /**
      * For some usecases we need different database column mappings for same filters.
@@ -60,32 +68,79 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     @Override
     public StringBuilder createSQL(FishingActivityQuery query) throws ServiceException {
+        return createSQL(query,false);
+    }
 
+
+    public StringBuilder createSQL(FishingActivityQuery query,boolean isActivityTrip) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
-
         StringBuilder sql = new StringBuilder();
+        boolean isSorted = Optional.ofNullable(query.getSorting()).map(SortKey::getSortBy).isPresent();
 
+        prepareSelect(sql,isActivityTrip, isSorted ? query.getSorting().isReversed():false);
+        if(isSorted && !isActivityTrip) {
+            updateSQLQueryFilter(query,sql); // Add Order by clause for only requested Sort field
+        }
 
         sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
-
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         LOG.info("sql :" + sql);
 
+        if(isActivityTrip){
+            sql.append(" group by ftripId.tripId, ftripId.tripSchemeId ");
+        }
+
+        if(isSorted ) {
+            createSortPartForQuery(sql, query, isActivityTrip);
+        }
+        return sql;
+    }
+
+    private StringBuilder prepareSelect(StringBuilder sql, boolean isActivityTrip, boolean reverseOrder ){
+
+        if(!isActivityTrip){
+            sql.append(FISHING_TRIP_SELECT);
+            return sql;
+        }
+
+        if(reverseOrder){
+            sql.append(FISHING_TRIP_ACTIVITY_SELECT_DESC);
+        } else {
+            sql.append(FISHING_TRIP_ACTIVITY_SELECT_ASC);
+        }
+
+        return sql;
+    }
+
+
+    private void updateSQLQueryFilter(FishingActivityQuery query, StringBuilder sql){
+        if(SearchFilter.PERIOD_END_TRIP.equals(query.getSorting().getSortBy())) {
+           sql.append(PERIOD_END_SELECT);
+        }
+        if(SearchFilter.PERIOD_START.equals(query.getSorting().getSortBy())) {
+            sql.append(PERIOD_START_SELECT);
+        }
+        if(SearchFilter.FLAG_STATE.equals(query.getSorting().getSortBy())) {
+            sql.append(FLAG_STATE_SELECT);
+        }
+    }
+
+    public StringBuilder createCountSQL(FishingActivityQuery query) throws ServiceException {
+        LOG.debug("Start building SQL depending upon Filter Criterias");
+        StringBuilder sql = new StringBuilder();
+        sql.append(FISHING_TRIP_COUNT_JOIN); // Common Join for all filters
+        createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
+        createWherePartForQuery(sql, query);  // Add Where part associated with Filters
+        LOG.info("sql :" + sql);
         return sql;
     }
 
     // Build Where part of the query based on Filter criterias
     @Override
-    public StringBuilder createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
-        LOG.debug("Create Where part of Query");
-
-        sql.append(" where ");
+    public void createWherePartForQuery(StringBuilder sql, FishingActivityQuery query) {
         createWherePartForQueryForFilters(sql, query);
-
-        return sql;
     }
-
 
     /**
      * Process FishingTripEntities to identify Unique FishingTrips.
@@ -162,7 +217,6 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         return null;
     }
 
-
     protected void appendJoinFetchIfConditionDoesntExist(StringBuilder sql, String valueToFindAndApply) {
         if (sql.indexOf(valueToFindAndApply) == -1) { // Add missing join for required table
             sql.append(JOIN).append(valueToFindAndApply);
@@ -170,14 +224,11 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         }
     }
 
-
     protected  void appendJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
 
-
     protected void appendLeftJoinFetchString(StringBuilder sql, String joinString) {
         sql.append(LEFT).append(JOIN).append(joinString).append(StringUtils.SPACE);
     }
-
 }

@@ -44,6 +44,7 @@ public class ConfigResource extends UnionVMSResource {
 
     @EJB
     private USMService usmService;
+
     @EJB
     private ActivityConfigService preferenceConfigService;
 

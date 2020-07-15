@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,19 +35,15 @@ import lombok.ToString;
 @Table(name = "activity_gear_problem")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"locations","gearProblemRecovery","fishingGears"})
-@ToString(exclude = {"locations","gearProblemRecovery","fishingGears"})
+@EqualsAndHashCode(exclude = {"locations", "gearProblemRecovery", "fishingGears"})
+@ToString(exclude = {"locations", "gearProblemRecovery", "fishingGears"})
 public class GearProblemEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "gear_prob_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_gear_problem", sequenceName = "gear_prob_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_gear_problem")
     private int id;
-
-	@ManyToOne
-	@JoinColumn(name = "fishing_activity_id")
-	private FishingActivityEntity fishingActivity;
 
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
@@ -65,5 +62,10 @@ public class GearProblemEntity implements Serializable {
 
 	@OneToMany(mappedBy = "gearProblem", cascade = CascadeType.ALL)
 	private Set<FishingGearEntity> fishingGears;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fishing_activity_id")
+	private FishingActivityEntity fishingActivity;
+
 
 }

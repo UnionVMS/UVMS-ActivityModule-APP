@@ -8,8 +8,8 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
-package eu.europa.ec.fisheries.ers.fa.entities;
 
+package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -41,13 +41,9 @@ public class RegistrationEventEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-	@SequenceGenerator(name = "SEQ_GEN", sequenceName = "reg_event_seq", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+	@SequenceGenerator(name = "SEQ_GEN_activity_registration_event", sequenceName = "reg_event_seq", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_registration_event")
 	private int id;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "registration_location_id", nullable = false)
-	private RegistrationLocationEntity registrationLocation;
 
 	@Column(columnDefinition = "text")
 	private String description;
@@ -61,5 +57,9 @@ public class RegistrationEventEntity implements Serializable {
 
 	@OneToOne(mappedBy = "registrationEvent")
 	private VesselTransportMeansEntity vesselTransportMeanses;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "registration_location_id", nullable = false)
+	private RegistrationLocationEntity registrationLocation;
 
 }

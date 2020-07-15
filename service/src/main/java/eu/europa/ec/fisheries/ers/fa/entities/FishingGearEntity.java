@@ -14,6 +14,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -44,19 +46,19 @@ public class FishingGearEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_gear_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_fishing_gear", sequenceName = "fa_gear_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_fishing_gear")
     private int id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fishing_activity_id")
 	private FishingActivityEntity fishingActivity;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "gear_problem_id")
 	private GearProblemEntity gearProblem;
 
@@ -67,9 +69,19 @@ public class FishingGearEntity implements Serializable {
 	private String typeCodeListId;
 
 	@OneToMany(mappedBy = "fishingGear", cascade = CascadeType.ALL)
-	private Set<FishingGearRoleEntity> fishingGearRole;
+	private Set<FishingGearRoleEntity> fishingGearRole = new HashSet<>();
 
 	@OneToMany(mappedBy = "fishingGear", cascade = CascadeType.ALL)
-	private Set<GearCharacteristicEntity> gearCharacteristics;
+	private Set<GearCharacteristicEntity> gearCharacteristics =  new HashSet<>();
+
+	public void addGearCharacteristic(GearCharacteristicEntity characteristicEntity){
+		gearCharacteristics.add(characteristicEntity);
+		characteristicEntity.setFishingGear(this);
+	}
+
+    public void addFishingGearRole(FishingGearRoleEntity roleEntity){
+        fishingGearRole.add(roleEntity);
+        roleEntity.setFishingGear(this);
+    }
 
 }

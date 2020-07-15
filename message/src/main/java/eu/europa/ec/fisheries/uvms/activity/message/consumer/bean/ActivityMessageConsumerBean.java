@@ -10,14 +10,25 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
+import javax.ejb.ActivationConfigProperty;
+import javax.ejb.MessageDriven;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.TextMessage;
 
-import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportFromPosition;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
+import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -26,36 +37,25 @@ import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@MessageDriven(mappedName = MessageConstants.ACTIVITY_MESSAGE_IN_QUEUE, activationConfig = {
-        @ActivationConfigProperty(propertyName = "messagingType", propertyValue = MessageConstants.CONNECTION_TYPE),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = MessageConstants.COMPONENT_MESSAGE_IN_QUEUE_NAME)
+@MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
+        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
+        @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
+        @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_ACTIVITY_NAME),
+        @ActivationConfigProperty(propertyName = "maxMessagesPerSessions", propertyValue = "3"),
+        @ActivationConfigProperty(propertyName = "initialRedeliveryDelay", propertyValue = "120000"),
+        @ActivationConfigProperty(propertyName = "maximumRedeliveries", propertyValue = "3"),
+        @ActivationConfigProperty(propertyName = "maxSessions", propertyValue = "5")
 })
 @Slf4j
 public class ActivityMessageConsumerBean implements MessageListener {
 
-    static final Logger LOG = LoggerFactory.getLogger(ActivityMessageConsumerBean.class);
-
     @Inject
     @ReceiveFishingActivityRequestEvent
     private Event<EventMessage> receiveFishingActivityEvent;
-
-    @Inject
-    @MapToSubscriptionRequestEvent
-    private Event<EventMessage> mapToSubscriptionRequest;
 
     @Inject
     @GetFishingTripListEvent
@@ -74,58 +74,93 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> getFishingActivityForTrips;
 
     @Inject
+    @CreateAndSendFAQueryForVesselEvent
+    private Event<EventMessage> createAndSendFAQueryForVessel;
+
+    @Inject
+    @CreateAndSendFAQueryForTripEvent
+    private Event<EventMessage> createAndSendFAQueryForTrip;
+
+    @Inject
+    @CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent
+    private Event<EventMessage> createAndSendGetAttachmentsForGuidAndQueryPeriod;
+
+    @Inject
+    @ForwardMultipleFAReports
+    private Event<EventMessage> forwardMultipleFAReports;
+
+    @Inject
+    @ForwardFAReportWithLogbook
+    private Event<EventMessage> forwardFAReportWithLogbook;
+
+    @Inject
+    @ForwardFAReportFromPosition
+    private Event<EventMessage> forwardFAReportFromPosition;
+
+    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
-
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void onMessage(Message message) {
-
         TextMessage textMessage = null;
         try {
             textMessage = (TextMessage) message;
+            MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
             ActivityModuleRequest request;
             request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
-            LOG.debug("Message unmarshalled successfully in activity");
-            if (request==null) {
-                LOG.error("[ Request is null ]");
+            log.debug("Message unmarshalled successfully in activity");
+            if (request == null) {
+                log.error("[ Request is null ]");
                 return;
             }
             ActivityModuleMethod method = request.getMethod();
             if (method == null) {
-                LOG.error("[ Request method is null ]");
+                log.error("[ Request method is null ]");
                 return;
             }
             switch (method) {
-                case GET_FLUX_FA_REPORT :
-                case GET_FLUX_FA_QUERY  :
+                case GET_FLUX_FA_REPORT:
+                case GET_FLUX_FA_QUERY:
                     receiveFishingActivityEvent.fire(new EventMessage(textMessage, method));
                     break;
-                case MAP_TO_SUBSCRIPTION_REQUEST:
-                    mapToSubscriptionRequest.fire(new EventMessage(textMessage));
-                    break;
-                case GET_FISHING_TRIPS :
+                case GET_FISHING_TRIPS:
                     getFishingTripListEvent.fire(new EventMessage(textMessage));
                     break;
-                case GET_FA_CATCH_SUMMARY_REPORT :
+                case GET_FA_CATCH_SUMMARY_REPORT:
                     getFACatchSummaryReportEvent.fire(new EventMessage(textMessage));
                     break;
-                case GET_NON_UNIQUE_IDS :
+                case GET_NON_UNIQUE_IDS:
                     getNonUniqueIdsRequest.fire(new EventMessage(textMessage));
                     break;
                 case GET_FISHING_ACTIVITY_FOR_TRIPS:
                     getFishingActivityForTrips.fire(new EventMessage(textMessage));
                     break;
+                case CREATE_AND_SEND_FA_QUERY_FOR_VESSEL:
+                    createAndSendFAQueryForVessel.fire(new EventMessage(textMessage));
+                    break;
+                case CREATE_AND_SEND_FA_QUERY_FOR_TRIP:
+                    createAndSendFAQueryForTrip.fire(new EventMessage(textMessage));
+                    break;
+                case FIND_ATTACHMENTS_FOR_GUID_AND_QUERY_PERIOD:
+                    createAndSendGetAttachmentsForGuidAndQueryPeriod.fire(new EventMessage(textMessage));
+                    break;
+                case FORWARD_MULTIPLE_FA_REPORTS:
+                    forwardMultipleFAReports.fire(new EventMessage(textMessage));
+                    break;
+                case FORWARD_FA_REPORT_WITH_LOGBOOK:
+                    forwardFAReportWithLogbook.fire(new EventMessage(textMessage));
+                    break;
+                case FORWARD_FA_REPORT_FROM_POSITION:
+                    forwardFAReportFromPosition.fire(new EventMessage(textMessage));
+                    break;
                 default:
-                    LOG.error("[ Request method {} is not implemented ]", method.name());
+                    log.error("[ Request method {} is not implemented ]", method.name());
                     errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "[ Request method " + method.name() + "  is not implemented ]")));
             }
-
-        } catch ( ActivityModelMarshallException | ClassCastException e) {
-            LOG.error("[ Error when receiving message in activity: ] {}", e);
+        } catch (ActivityModelMarshallException | ClassCastException e) {
+            log.error("[ Error when receiving message in activity: ]", e);
             errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message")));
         }
     }
-
 }

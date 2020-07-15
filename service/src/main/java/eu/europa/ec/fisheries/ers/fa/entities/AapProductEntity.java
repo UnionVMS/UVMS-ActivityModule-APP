@@ -19,10 +19,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -34,22 +37,18 @@ public class AapProductEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "aap_product_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_aap_product", sequenceName = "aap_product_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_aap_product")
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "aap_process_id")
-	private AapProcessEntity aapProcess;
-	
 	@Column(name = "packaging_type_code")
 	private String packagingTypeCode;
 	
 	@Column(name = "packaging_type_code_list_id")
 	private String packagingTypeCodeListId;
 	
-	@Column(name = "packaging_unit_avarage_weight", precision = 17, scale = 17)
-	private Double packagingUnitAvarageWeight;
+	@Column(name = "packaging_unit_avarage_weight")
+	private Double packagingUnitAverageWeight;
 
 	@Column(name = "packaging_weight_unit_code")
 	private String packagingWeightUnitCode;
@@ -101,4 +100,28 @@ public class AapProductEntity implements Serializable {
 
 	@Column(name = "usage_code_list_id")
 	private String usageCodeListId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "aap_process_id")
+	private AapProcessEntity aapProcess;
+
+	@PrePersist
+	public void prePersist(){ // TODO test me
+		if (unitQuantity != null || unitQuantityCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(unitQuantityCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(unitQuantity);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedUnitQuantity =  result.doubleValue();
+			}
+		}
+        if (packagingUnitCountCode != null || packagingUnitCount != null){
+            UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(packagingUnitCountCode);
+            if (unitCodeEnum != null) {
+                BigDecimal quantity = new BigDecimal(packagingUnitCount);
+                BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+                calculatedPackagingUnitCount =  result.doubleValue();
+            }
+        }
+	}
 }

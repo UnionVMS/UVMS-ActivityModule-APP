@@ -12,6 +12,7 @@
  */
 package eu.europa.ec.fisheries.ers.service;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
@@ -48,18 +49,21 @@ public interface ActivityService {
      *
      * @param refReportId selected FA report Reference Id
      * @param refSchemeId selected FA scheme Reference Id
-     * @return List<FaReportCorrectionDTO> list of corrections made
      * @throws ServiceException Exception
      */
-    List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException;
+    List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) throws ServiceException;
 
     boolean checkAndEnrichIfVesselFiltersArePresent(FishingActivityQuery query) throws ServiceException;
 
-    FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException;
+    FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, Integer reportId, List<Dataset> datasets, ActivityViewEnum view, boolean withHistory) throws ServiceException;
 
     GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) throws ServiceException;
 
-    public int getPreviousFishingActivity(int fishingActivityId);
+    int getPreviousFishingActivity(int fishingActivityId);
 
-    public int getNextFishingActivity(int fishingActivityId);
+    int getNextFishingActivity(int fishingActivityId);
+
+    FaReportDocumentEntity findFaReportByFluxReportIdentifierRefIdAndRefScheme(String reportRefId, String schemeId);
+
+    List<FaReportDocumentEntity> findFaReportDocumentsByTripId(String tripId, Boolean consolidated);
 }

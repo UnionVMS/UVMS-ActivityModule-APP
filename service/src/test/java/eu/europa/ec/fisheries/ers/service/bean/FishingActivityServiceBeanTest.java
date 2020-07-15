@@ -1,18 +1,26 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.util.MapperUtil;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -26,18 +34,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-
-import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class FishingActivityServiceBeanTest {
 
@@ -133,30 +129,14 @@ public class FishingActivityServiceBeanTest {
         when(assetModule.getAssetListResponse(Mockito.any(AssetListQuery.class))).thenReturn(listAssetResponse);
 
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
-
         assertNotNull(vesselDetailsDTO);
-
     }
 
     @Test
     @SneakyThrows
     public void getFishingActivityReportAndRelatedDataForFishingTrip() throws ServiceException {
-
         when(fishingActivityDao.getFishingActivityListForFishingTrip("NOR-TRP-20160517234053706", null)).thenReturn(MapperUtil.getFishingActivityEntityList());
-        when(vesselIdentifiersDao.getLatestVesselIdByTrip(Mockito.anyString())).thenReturn(MapperUtil.getVesselIdentifiersList());
-
-     /*   List<ReportDTO> reportDTOList = new ArrayList<>();
-        Map<String, FishingActivityTypeDTO > summary = new HashMap<>();
-        MessageCountDTO messagesCount = new MessageCountDTO();
-        //Trigger
-        fishingTripService.getFishingActivityReportAndRelatedDataForFishingTrip("NOR-TRP-20160517234053706",reportDTOList,summary,messagesCount, null);
-
-        Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListForFishingTrip(Mockito.any(String.class),Mockito.any(Pagination.class));
-        //Verify
-
-        assertEquals(3, summary.size());
-        assertEquals(3, reportDTOList.size()); */
-
+        when(vesselIdentifiersDao.getLatestVesselIdByTrip(Mockito.anyString())).thenReturn("97fbdcf8-45ea-11e7-bec7-4c32759615eb");
     }
 
     @Test
@@ -172,13 +152,5 @@ public class FishingActivityServiceBeanTest {
 
         assertTrue(portDescriptionList.size() == 1);
         assertTrue(portDescriptionList.get(0).equals(portDescription));
-    }
-
-
-    private List<FaReportDocumentEntity> getMockedFishingActivityReportEntities() {
-        List<FaReportDocumentEntity> faReportDocumentEntities = new ArrayList<>();
-        FAReportDocument faReportDocument = MapperUtil.getFaReportDocument();
-        faReportDocumentEntities.add(FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), FaReportSourceEnum.MANUAL));
-        return faReportDocumentEntities;
     }
 }

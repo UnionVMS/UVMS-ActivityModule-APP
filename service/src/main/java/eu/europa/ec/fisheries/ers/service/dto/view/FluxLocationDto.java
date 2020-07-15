@@ -11,6 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,17 +26,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.AddressDetailsDTO;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.joda.time.DateTime;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
 
 @NoArgsConstructor
 @JsonInclude(NON_NULL)
@@ -43,6 +42,12 @@ public class FluxLocationDto {
 
     @JsonView(CommonView.class)
     private String geometry;
+
+    @JsonView(CommonView.class)
+    private String sovereignCountry;
+
+    @JsonView(CommonView.class)
+    private String jurisdictionCountry;
 
     @JsonIgnore
     private String fluxLocationIdentifier;
@@ -134,6 +139,22 @@ public class FluxLocationDto {
         this.portDescription = portDescription;
     }
 
+    public String getSovereignCountry() {
+        return sovereignCountry;
+    }
+
+    public void setSovereignCountry(String sovereignCountry) {
+        this.sovereignCountry = sovereignCountry;
+    }
+
+    public String getJurisdictionCountry() {
+        return jurisdictionCountry;
+    }
+
+    public void setJurisdictionCountry(String jurisdictionCountry) {
+        this.jurisdictionCountry = jurisdictionCountry;
+    }
+
     @JsonProperty("characteristics")
     public Map<String, String> getCharacteristicsMap() {
         HashMap<String, String> stringStringHashMap = null;
@@ -141,7 +162,6 @@ public class FluxLocationDto {
             stringStringHashMap = new HashMap<>();
             stringStringHashMap.put("valueCode", fluxCharacteristic.getValueCode());
             stringStringHashMap.put("valueIndicator", fluxCharacteristic.getValueIndicator());
-            stringStringHashMap.put("valueLanguageId", fluxCharacteristic.getValueLanguageId());
             stringStringHashMap.put("valueMeasureUnitCode", fluxCharacteristic.getValueMeasureUnitCode());
             stringStringHashMap.put("valueMeasure", String.valueOf(fluxCharacteristic.getValueMeasure()));
             stringStringHashMap.put("valueQuantityCode", fluxCharacteristic.getValueQuantityCode());

@@ -14,7 +14,7 @@ package eu.europa.ec.fisheries.ers.service.dto.view.parent;
 public class FishingActivityView {
 
     /**
-     * All the fields annotaed with @JsonView(FishingActivityView.CommonView.class) will be inherited by all the Views.
+     * All the fields annotated with @JsonView(FishingActivityView.CommonView.class) will be inherited by all the Views.
      */
     public interface CommonView {}
 

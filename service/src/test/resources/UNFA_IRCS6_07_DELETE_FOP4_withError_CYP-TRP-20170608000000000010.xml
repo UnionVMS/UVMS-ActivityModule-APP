@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Sample UN/CEFACT file. DF: 	urn:un:unece:uncefact:fisheries:FLUX:FA:EU:2-->
+<!--All data is fictuous. Any similarity with reality is based on pure coincidence.-->
+<rsm:FLUXFAReportMessage xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:20" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:20" xsi:schemaLocation="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3 xsd/FLUXFAReportMessage_3p1/FLUXFAReportMessage_3p1.xsd" xmlns:rsm="urn:un:unece:uncefact:data:standard:FLUXFAReportMessage:3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<rsm:FLUXReportDocument>
+		<ram:ID schemeID="UUID">AA307AD8-77E6-4C9A-805F-4F83116D1B81</ram:ID>
+		<ram:CreationDateTime>
+			<udt:DateTime>2017-06-11T04:03:00Z</udt:DateTime>
+		</ram:CreationDateTime>
+		<ram:PurposeCode listID="FLUX_GP_PURPOSE">9</ram:PurposeCode>
+		<ram:OwnerFLUXParty>
+			<ram:ID schemeID="FLUX_GP_PARTY">CYP</ram:ID>
+		</ram:OwnerFLUXParty>
+	</rsm:FLUXReportDocument>
+	<rsm:FAReportDocument>
+		<ram:AcceptanceDateTime>
+			<udt:DateTime>2017-06-11T04:01:00Z</udt:DateTime>
+		</ram:AcceptanceDateTime>
+		<ram:RelatedFLUXReportDocument>
+			<ram:ID schemeID="UUID">228FD4F2-F348-4742-A3CE-CE470E061E75</ram:ID>
+			<ram:ReferencedID schemeID="UUID">0E35A7AE-9B72-4A1E-9764-FCB399A30094</ram:ReferencedID>
+			<ram:CreationDateTime>
+				<udt:DateTime>2017-06-11T04:02:00Z</udt:DateTime>
+			</ram:CreationDateTime>
+			<ram:PurposeCode listID="FLUX_GP_PURPOSE">3</ram:PurposeCode>
+			<ram:OwnerFLUXParty>
+				<ram:ID schemeID="FLUX_GP_PARTY">CYP</ram:ID>
+			</ram:OwnerFLUXParty>
+		</ram:RelatedFLUXReportDocument>
+	</rsm:FAReportDocument>
+</rsm:FLUXFAReportMessage>

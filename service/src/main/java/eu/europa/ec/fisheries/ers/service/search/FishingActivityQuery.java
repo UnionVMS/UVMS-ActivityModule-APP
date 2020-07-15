@@ -16,12 +16,16 @@ import java.util.Map;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GroupCriteria;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * This class is used to define Filters to be applied on Fishing Activities
- * It also contains list of grouping Criterias to be applied
+ * It also contains list of grouping Criteria to be applied
  * Created by sanera on 24/06/2016.
  */
+@NoArgsConstructor
+@Data
 public class FishingActivityQuery {
 
     private PaginationDto pagination;
@@ -29,47 +33,7 @@ public class FishingActivityQuery {
     private Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues;
     private SortKey sorting;
     private List<GroupCriteria> groupByFields;
+    private Boolean showOnlyLatest;
+    private Boolean useStatusInsteadOfPurposeCode;
 
-    public void setPagination(PaginationDto pagination) {
-        this.pagination = pagination;
-    }
-    public Map<SearchFilter, String> getSearchCriteriaMap() {
-        return searchCriteriaMap;
-    }
-    public void setSearchCriteriaMap(Map<SearchFilter, String> searchCriteriaMap) {
-        this.searchCriteriaMap = searchCriteriaMap;
-    }
-    public PaginationDto getPagination() {
-        return pagination;
-    }
-    public SortKey getSorting() {
-        return sorting;
-    }
-    public void setSorting(SortKey sorting) {
-        this.sorting = sorting;
-    }
-    public Map<SearchFilter, List<String>> getSearchCriteriaMapMultipleValues() {
-        return searchCriteriaMapMultipleValues;
-    }
-    public void setSearchCriteriaMapMultipleValues(Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues) {
-        this.searchCriteriaMapMultipleValues = searchCriteriaMapMultipleValues;
-    }
-
-    public List<GroupCriteria> getGroupByFields() {
-        return groupByFields;
-    }
-
-    public void setGroupByFields(List<GroupCriteria> groupByFields) {
-        this.groupByFields = groupByFields;
-    }
-
-    @Override
-    public String toString() {
-        return "FishingActivityQuery{" +
-                "pagination=" + pagination +
-                ", searchCriteriaMap=" + searchCriteriaMap +
-                ", searchCriteriaMapMultipleValues=" + searchCriteriaMapMultipleValues +
-                ", sorting=" + sorting +
-                '}';
-    }
 }

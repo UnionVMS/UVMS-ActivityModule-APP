@@ -13,34 +13,30 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.*;
-import java.io.Serializable;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "activity_flux_report_identifier")
 @NamedQueries({
         @NamedQuery(name = FluxReportIdentifierEntity.FIND_MATCHING_IDENTIFIER,
                 query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
-                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
-                        //"INNER JOIN flRepDoc.fluxFaReportMessage faRepMsg " +
                         "WHERE fRepIdent.fluxReportIdentifierId = :id " +
                         "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId"),
-
         @NamedQuery(name = FluxReportIdentifierEntity.FIND_RELATED_MATCHING_IDENTIFIER,
                 query = "SELECT fRepIdent FROM FluxReportIdentifierEntity fRepIdent " +
-                        //"INNER JOIN fRepIdent.fluxReportDocument flRepDoc " +
-                        //"INNER JOIN flRepDoc.faReportDocument faRepDoc " +
                         "WHERE fRepIdent.fluxReportIdentifierId = :id " +
                         "AND fRepIdent.fluxReportIdentifierSchemeId = :schemeId")
-
 })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = {"fluxReportIdentifierId", "fluxReportIdentifierSchemeId"})
 public class FluxReportIdentifierEntity implements Serializable {
 
     public static final String FIND_MATCHING_IDENTIFIER = "findMatchingIdentifier";
@@ -48,8 +44,8 @@ public class FluxReportIdentifierEntity implements Serializable {
 
     @Id
     @Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_rep_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_flux_report_identifier", sequenceName = "flux_rep_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_flux_report_identifier")
     private int id;
 
     @ManyToOne

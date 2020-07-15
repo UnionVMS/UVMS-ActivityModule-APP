@@ -13,25 +13,32 @@
 
 package eu.europa.ec.fisheries.ers.service;
 
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
-import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CronologyTripDTO;
+import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ChronologyTripDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingActivityTypeDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.MessageCountDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.TripWidgetDto;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityReportGenerationResults;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.AttachmentResponseObject;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportFromPositionRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportWithLogbookRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardMultipleFAReportsRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriod;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by padhyad on 9/22/2016.
@@ -40,7 +47,7 @@ public interface FishingTripService {
 
     /**
      * <p>
-     * This API returns the list of cronology of selected fishing trip,
+     * This API returns the list of chronology of selected fishing trip,
      * Additionally it also return the current trip for the vessel.
      * <p>
      * <code>if (Count == 0)</code> Then return all the previous and next
@@ -50,7 +57,7 @@ public interface FishingTripService {
      * @param count  number of trip Id to view
      * @return list of fishing trips
      */
-    CronologyTripDTO getCronologyOfFishingTrip(String tripId, Integer count) throws ServiceException;
+    ChronologyTripDTO getChronologyOfFishingTrip(String tripId, Integer count) throws ServiceException;
 
 
     /**
@@ -94,7 +101,7 @@ public interface FishingTripService {
      * @param tripId
      * @return
      */
-    public ObjectNode getTripMapDetailsForTripId(String tripId);
+    ObjectNode getTripMapDetailsForTripId(String tripId);
 
     /**
      * This method will Return filtered FishingTrips which match with provided filter criterias
@@ -109,20 +116,32 @@ public interface FishingTripService {
 
 
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
-                                                                                                      Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
+                                                                                               Geometry multipolygon, boolean isOnlyTripSummary) throws ServiceException;
 
     TripWidgetDto getTripWidgetDto(FishingActivityEntity activityEntity, String tripId);
 
     /**
      * Returns list of FishingActivities for provided tripId
+     *
      * @param tripId
      * @return List<FishingActivityEntity> list of activities for the trip
      * @throws ServiceException
      */
     List<FishingActivityEntity> getAllFishingActivitiesForTrip(String tripId) throws ServiceException;
 
-
-     FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
+    FishingTripResponse filterFishingTrips(FishingActivityQuery query) throws ServiceException;
 
     CatchEvolutionDTO retrieveCatchEvolutionForFishingTrip(String fishingTripId) throws ServiceException;
+
+    String getOwnerFluxPartyFromTripId(String tripId);
+
+    void generateLogBookReport(String tripId, String consolidated, OutputStream destination) throws ServiceException;
+
+    List<AttachmentResponseObject> getAttachmentsForGuidAndPeriod(GetAttachmentsForGuidAndQueryPeriod query) throws ServiceException;
+
+    ActivityReportGenerationResults forwardMultipleFaReports(ForwardMultipleFAReportsRequest request) throws ServiceException;
+
+    ActivityReportGenerationResults forwardFaReportWithLogbook(ForwardFAReportWithLogbookRequest request) throws ServiceException;
+
+    ActivityReportGenerationResults forwardFAReportFromPosition(ForwardFAReportFromPositionRequest request) throws ServiceException;
 }

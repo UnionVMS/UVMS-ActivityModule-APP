@@ -75,7 +75,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                            @HeaderParam("scopeName") String scopeName,
                                            @HeaderParam("roleName") String roleName,
                                            ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.ARRIVAL);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.ARRIVAL);
     }
 
 
@@ -91,7 +91,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                            @HeaderParam("scopeName") String scopeName,
                                            @HeaderParam("roleName") String roleName,
                                            ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.LANDING);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.LANDING);
     }
 
     @POST
@@ -106,7 +106,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                         @HeaderParam("scopeName") String scopeName,
                                         @HeaderParam("roleName") String roleName,
                                         ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.DISCARD_AT_SEA);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.DISCARD_AT_SEA);
     }
 
     @POST
@@ -121,7 +121,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                              @HeaderParam("scopeName") String scopeName,
                                              @HeaderParam("roleName") String roleName,
                                              ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.DEPARTURE);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.DEPARTURE);
     }
 
     @POST
@@ -136,7 +136,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                                          @HeaderParam("scopeName") String scopeName,
                                                          @HeaderParam("roleName") String roleName,
                                                          ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.PRIOR_NOTIFICATION_OF_ARRIVAL);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.PRIOR_NOTIFICATION_OF_ARRIVAL);
     }
 
 
@@ -152,7 +152,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                              @HeaderParam("scopeName") String scopeName,
                                              @HeaderParam("roleName") String roleName,
                                              ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.AREA_ENTRY);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.AREA_ENTRY);
     }
 
 
@@ -168,7 +168,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
                                             ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.AREA_EXIT);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.AREA_EXIT);
     }
 
 
@@ -184,7 +184,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                                 @HeaderParam("scopeName") String scopeName,
                                                 @HeaderParam("roleName") String roleName,
                                                 ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.GEAR_SHOT_RETRIEVAL);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.GEAR_SHOT_RETRIEVAL);
     }
 
 
@@ -200,7 +200,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                         @HeaderParam("scopeName") String scopeName,
                                         @HeaderParam("roleName") String roleName,
                                         ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.TRANSSHIPMENT);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.TRANSSHIPMENT);
     }
 
     @POST
@@ -215,7 +215,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
                                             ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.FISHING_OPERATION);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.FISHING_OPERATION);
     }
 
 
@@ -231,7 +231,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                       @HeaderParam("scopeName") String scopeName,
                                       @HeaderParam("roleName") String roleName,
                                       ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.RELOCATION);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.RELOCATION);
     }
 
     @POST
@@ -246,7 +246,7 @@ public class FishingActivityViewsResource extends UnionVMSResource {
                                                  @HeaderParam("scopeName") String scopeName,
                                                  @HeaderParam("roleName") String roleName,
                                                  ActivityViewDto activityViewDto) throws ServiceException {
-        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), request, ActivityViewEnum.JOINT_FISHING_OPERATIONS);
+        return createActivityView(scopeName, roleName, activityViewDto.getActivityId(), activityViewDto.getTripId(), activityViewDto.getReportId(), activityViewDto.isWithHistory(), request, ActivityViewEnum.JOINT_FISHING_OPERATIONS);
     }
 
 
@@ -260,9 +260,9 @@ public class FishingActivityViewsResource extends UnionVMSResource {
      * @return View DTO
      * @throws ServiceException
      */
-    private Response createActivityView(String scopeName, String roleName, Integer activityId, String tripId, HttpServletRequest request, ActivityViewEnum view) throws ServiceException {
+    private Response createActivityView(String scopeName, String roleName, Integer activityId, String tripId, Integer reportId, boolean withHistory, HttpServletRequest request, ActivityViewEnum view) throws ServiceException {
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        return createSuccessResponse(activityService.getFishingActivityForView(activityId, tripId, datasets, view));
+        return createSuccessResponse(activityService.getFishingActivityForView(activityId, tripId, reportId, datasets, view, withHistory));
     }
 }

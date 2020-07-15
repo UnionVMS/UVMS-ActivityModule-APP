@@ -33,8 +33,8 @@ public class FishingGearRoleEntity implements Serializable {
 
     @Id
     @Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "gear_role_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_fishing_gear_role", sequenceName = "gear_role_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_fishing_gear_role")
     private int id;
 
     @ManyToOne

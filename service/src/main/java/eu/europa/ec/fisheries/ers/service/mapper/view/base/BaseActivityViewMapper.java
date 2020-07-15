@@ -10,57 +10,18 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view.base;
 
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_Q_CODE_C62;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GD;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GM;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_GN;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_HE;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_ME;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NI;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NL;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_NN;
-import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.GEAR_CHARAC_TYPE_CODE_QG;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
+import java.util.*;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ProcessingProductsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.RelocationDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.*;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
-import eu.europa.ec.fisheries.ers.service.mapper.AapProductMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.AreaDtoMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.BaseMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FaCatchMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.*;
 import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import static eu.europa.ec.fisheries.ers.service.mapper.view.base.ViewConstants.*;
 
 /**
  * Created by kovian on 14/02/2017.
@@ -70,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class BaseActivityViewMapper extends BaseMapper {
 
     public static AreaDto getAreas(FishingActivityEntity faEntity) {
-        AreaDto areaDto = AreaDtoMapper.INSTANCE.mapToAreaDto(faEntity);
+        AreaDto areaDto = new AreaDtoMapper().mapToAreaDto(faEntity);
         areaDto.setFluxLocations(mapFromFluxLocation(faEntity.getFluxLocations(), FluxLocationEnum.AREA));
         return areaDto;
     }
@@ -84,14 +45,6 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         areaDto.setFluxLocations(fluxLocationDtoTreeSet);
 
         return areaDto;
-    }
-
-    public Set<FluxLocationDto> getSortedLocations(FishingActivityEntity faEntity, Comparator<FluxLocationDto> comparator) {
-        Set<FluxLocationDto> fluxLocationDtos = faEntity.getLocations_();
-        TreeSet<FluxLocationDto> fluxLocationDtoTreeSet = new TreeSet<FluxLocationDto>(comparator);
-        fluxLocationDtoTreeSet.addAll(fluxLocationDtos);
-
-        return fluxLocationDtoTreeSet;
     }
 
     public List<RelocationDto> getRelocations(FishingActivityEntity fishingActivityEntity) {
@@ -189,7 +142,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         return populateActivityDetails(faEntity, activityDetails);
     }
 
-    protected ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity) {
+    public ReportDocumentDto getReportDocsFromEntity(FaReportDocumentEntity faRepDocEntity) {
         return FaReportDocumentMapper.INSTANCE.mapFaReportDocumentToReportDocumentDto(faRepDocEntity);
     }
 
@@ -243,7 +196,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
                 gearDto.setLengthWidth(quantityWithUnit);
                 break;
             case GEAR_CHARAC_TYPE_CODE_GN:
-                gearDto.setNumberOfGears(Integer.parseInt(quantityOnly));
+                gearDto.setNumberOfGears(StringUtils.isEmpty(quantityOnly) ? 0 : charac.getValueMeasure().intValue());
                 break;
             case GEAR_CHARAC_TYPE_CODE_HE:
                 gearDto.setHeight(quantityWithUnit);
@@ -276,7 +229,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
         }
     }
 
-    protected List<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity) {
+    protected Set<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity) {
         return FaCatchesProcessorMapper.getCatchGroupsFromListEntity(faEntity.getFaCatchs());
     }
 

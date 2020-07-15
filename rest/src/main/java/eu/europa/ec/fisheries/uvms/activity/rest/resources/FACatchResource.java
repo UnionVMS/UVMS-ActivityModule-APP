@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import javax.ejb.EJB;
@@ -37,9 +38,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Created by sanera on 17/02/2017.
- */
 @Path("/catch")
 @Slf4j
 @Stateless
@@ -69,13 +67,10 @@ public class FACatchResource extends UnionVMSResource {
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
-
         FACatchSummaryReportResponse faCatchSummaryReportResponse = reportService.getFACatchSummaryReportResponse(fishingActivityQuery);
         log.info("Successfully processed");
         return createSuccessResponse(faCatchSummaryReportResponse);
-
     }
-
 
     @GET
     @Path("/details/{fishingTripId}")
@@ -87,14 +82,9 @@ public class FACatchResource extends UnionVMSResource {
                                             @HeaderParam("scopeName") String scopeName,
                                             @HeaderParam("roleName") String roleName,
                                              @PathParam("fishingTripId") String tripId) throws ServiceException {
-
         log.info("getFACatchSummaryDetails: " + tripId);
-
         return createSuccessResponse( reportService.getCatchDetailsScreen(tripId));
-
     }
-
-
 }
 
 

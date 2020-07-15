@@ -8,68 +8,34 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProcess;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.AAPProduct;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-/**
- * Created by padhyad on 6/14/2016.
- */
-@Mapper(uses = {AapProductMapper.class})
-public abstract class AapProcessMapper extends BaseMapper {
+@Mapper(uses = {AapProcessCodeMapper.class, AapProductMapper.class})
+public interface AapProcessMapper {
 
-    public static final AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
+    AapProcessMapper INSTANCE = Mappers.getMapper(AapProcessMapper.class);
 
     @Mappings({
-            @Mapping(target = "conversionFactor", source = "aapProcess.conversionFactorNumeric.value"),
-            @Mapping(target = "aapProducts", expression = "java(getAapProductEntities(aapProcess.getResultAAPProducts(), aapProcessEntity))"),
-            @Mapping(target = "aapProcessCode", expression = "java(getAapProcessCodes(aapProcess.getTypeCodes(), aapProcessEntity))")
+            @Mapping(target = "conversionFactor", source = "conversionFactorNumeric.value"),
+            @Mapping(target = "aapProcessCode", ignore = true),
+            @Mapping(target = "aapProducts", ignore = true),
     })
-    public abstract AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
+    AapProcessEntity mapToAapProcessEntity(AAPProcess aapProcess);
 
+    @InheritInverseConfiguration
     @Mappings({
-            @Mapping(target = "typeCode", source = "value"),
-            @Mapping(target = "typeCodeListId", source = "listID")
+            @Mapping(source = "aapProducts", target = "resultAAPProducts"),
+            @Mapping(source = "aapProcessCode", target = "typeCodes"),
     })
-    public abstract AapProcessCodeEntity mapToAapProcessCodeEntity(CodeType codeType);
+    AAPProcess mapToAapProcess(AapProcessEntity aapProcess);
 
-    protected Set<AapProcessCodeEntity> getAapProcessCodes(List<CodeType> codeTypes, AapProcessEntity aapProcessEntity) {
-        if (codeTypes == null || codeTypes.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<AapProcessCodeEntity> aapProcessCodeEntities = new HashSet<>();
-        for (CodeType codeType : codeTypes) {
-            AapProcessCodeEntity entity = AapProcessMapper.INSTANCE.mapToAapProcessCodeEntity(codeType);
-            entity.setAapProcess(aapProcessEntity);
-            aapProcessCodeEntities.add(entity);
-        }
-        return aapProcessCodeEntities;
-    }
-
-    protected Set<AapProductEntity> getAapProductEntities(List<AAPProduct> aapProducts, AapProcessEntity aapProcessEntity) {
-        if (aapProducts == null || aapProducts.isEmpty()) {
-            return Collections.emptySet();
-        }
-        Set<AapProductEntity> aapProductEntities = new HashSet<>();
-        for (AAPProduct aapProduct : aapProducts) {
-            AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
-            aapProductEntity.setAapProcess(aapProcessEntity);
-            aapProductEntities.add(aapProductEntity);
-        }
-        return aapProductEntities;
-    }
 }

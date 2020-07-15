@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Data;
@@ -41,21 +42,31 @@ public class AapProcessEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "aap_process_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_aap_process", sequenceName = "aap_process_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_aap_process")
     private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fa_catch_id")
-	private FaCatchEntity faCatch;
-	
 	@Column(name = "conversion_factor")
 	private Double conversionFactor;
 	
 	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<AapProductEntity> aapProducts;
+	private Set<AapProductEntity> aapProducts = new HashSet<>();
 
 	@OneToMany(mappedBy = "aapProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<AapProcessCodeEntity> aapProcessCode;
+	private Set<AapProcessCodeEntity> aapProcessCode = new HashSet<>();
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fa_catch_id")
+	private FaCatchEntity faCatch;
+
+	public void addAapProducts(AapProductEntity aapProductEntity){
+		aapProducts.add(aapProductEntity);
+		aapProductEntity.setAapProcess(this);
+	}
+
+	public void addProcessCode(AapProcessCodeEntity aapProcessCodeEntity){
+		aapProcessCode.add(aapProcessCodeEntity);
+		aapProcessCodeEntity.setAapProcess(this);
+	}
 
 }

@@ -11,72 +11,37 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
  */
 package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.Queue;
-import javax.jms.Session;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.europa.ec.fisheries.uvms.activity.message.constants.MessageConstants;
-import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
-import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
+import lombok.extern.slf4j.Slf4j;
 
 @Stateless
-public class ConfigMessageConsumerBean implements ConfigMessageConsumer {
+@Slf4j
+public class ConfigMessageConsumerBean extends AbstractConsumer {
 
-    final static Logger LOG = LoggerFactory.getLogger(ConfigMessageConsumerBean.class);
-
-    private final static long TIMEOUT = 30000;
-
-    private ConnectionFactory connectionFactory;
-
-    private Queue responseActivityQueue;
+    private Queue activityQueue;
 
     @PostConstruct
-    private void init() {
-    	connectionFactory = JMSUtils.lookupConnectionFactory();
-    	responseActivityQueue = JMSUtils.lookupQueue(MessageConstants.ACTIVITY_MESSAGE_QUEUE);
-    }
-
-    public <T> T getMessage(String correlationId, Class type) throws ConfigMessageException {
-    	if (correlationId == null || correlationId.isEmpty()) {
-    		throw new ConfigMessageException("No CorrelationID provided!");
-    	}
-    	
-    	Connection connection=null;
-    	try {
-    		            
-            connection = connectionFactory.createConnection();
-            final Session session = JMSUtils.connectToQueue(connection);
-
-            T response = (T) session.createConsumer(responseActivityQueue, "JMSCorrelationID='" + correlationId + "'").receive(TIMEOUT);
-            
-            if (response == null) {
-                throw new ConfigMessageException("[ Timeout reached or message null in MobileTerminalMessageConsumer. ]");
-            }
-
-            return response;
-        } catch (Exception e) {
-            LOG.error("[ Error when consuming message. ] {}", e.getMessage());
-            throw new ConfigMessageException("Error when retrieving message: " + e.getMessage());
-        } finally {
-        	JMSUtils.disconnectQueue(connection);
-        }
+    public void init() {
+        activityQueue = JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY);
     }
 
     @Override
-    public <T> T getConfigMessage(String correlationId, Class type) throws ConfigMessageException {
+    public String getDestinationName() {
+        return MessageConstants.QUEUE_ACTIVITY;
+    }
+    
+    public <T> T getConfigMessage(String correlationId, Class type) throws MessageException {
         try {
             return getMessage(correlationId, type);
-        }
-        catch (ConfigMessageException e) {
-            LOG.error("[ Error when getting config message. ] {}", e.getMessage());
-            throw new ConfigMessageException(e.getMessage());
+        } catch (MessageException e) {
+            log.error("[ Error when getting config message. ] {}", e.getMessage());
+            throw e;
         }
     }
 

@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.uvms.activity.rest.resources;
 
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
@@ -26,7 +27,6 @@ import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
 import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -34,31 +34,25 @@ import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.InputStream;
+import javax.ws.rs.core.StreamingOutput;
 import java.util.List;
 
-/**
- * Created by padhyad on 7/6/2016.
- */
 @Path("/fa")
 @Slf4j
 @Stateless
 public class FishingActivityResource extends UnionVMSResource {
-
-    @EJB
-    private FluxMessageService fluxResponseMessageService;
 
     @EJB
     private ActivityService activityService;
@@ -66,38 +60,33 @@ public class FishingActivityResource extends UnionVMSResource {
     @EJB
     private FishingTripService fishingTripService;
 
-
     @EJB
     private USMService usmService;
 
     @GET
     @Produces(value = {MediaType.APPLICATION_JSON})
-    @Path("/save")
-    public Response saveFaReportDocument() throws ServiceException {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("fa_flux_message_cedric_data.xml");
-        JAXBContext jaxbContext;
-        FLUXFAReportMessage fluxfaReportMessage;
-        try {
-            jaxbContext = JAXBContext.newInstance(FLUXFAReportMessage.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            fluxfaReportMessage = (FLUXFAReportMessage) jaxbUnmarshaller.unmarshal(is);
-        } catch (JAXBException e) {
-            log.error("Error occured during Unmorshalling of the FLUXFAReportMessage", e);
-           throw new ServiceException(e.getMessage());
-        }
-        fluxResponseMessageService.saveFishingActivityReportDocuments(fluxfaReportMessage, FaReportSourceEnum.FLUX);
-        return createSuccessResponse();
-    }
-
-
-    @GET
-    @Produces(value = {MediaType.APPLICATION_JSON})
     @Path("/commChannel")
     public Response getCommunicationChannel() throws ServiceException {
-
         return createSuccessResponse(FaReportSourceEnum.values());
     }
 
+    @GET
+    @Path("/report/logbook")
+    @Produces("application/pdf")
+    @Interceptors(ActivityExceptionInterceptor.class)
+    public Response logbookReport(@QueryParam("tripId") String tripId, @DefaultValue("Y") @QueryParam("consolidated") String consolidated) {
+        StreamingOutput stream = output -> {
+            try {
+                fishingTripService.generateLogBookReport(tripId, consolidated, output);
+            } catch (ServiceException e) {
+                throw new ServerErrorException(Response.Status.INTERNAL_SERVER_ERROR, e);
+            }
+        };
+        return Response.ok(stream)
+                .type("application/pdf")
+                .header("Content-Disposition", "filename="+tripId+".pdf")
+                .build();
+    }
 
     @POST
     @Path("/list")
@@ -109,14 +98,12 @@ public class FishingActivityResource extends UnionVMSResource {
                                                @HeaderParam("scopeName") String scopeName,
                                                @HeaderParam("roleName") String roleName,
                                                FishingActivityQuery fishingActivityQuery) throws ServiceException {
-
-        log.info("Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
+        log.info("[INFO] Query Received to search Fishing Activity Reports. " + fishingActivityQuery);
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
         String username = request.getRemoteUser();
         List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        log.info("Successful retrieved");
         FilterFishingActivityReportResultDTO resultDTO = activityService.getFishingActivityListByQuery(fishingActivityQuery, datasets);
         return createSuccessPaginatedResponse(resultDTO.getResultList(), resultDTO.getTotalCountOfRecords());
     }
@@ -136,9 +123,6 @@ public class FishingActivityResource extends UnionVMSResource {
         if (fishingActivityQuery == null) {
             return createErrorResponse("Query to find list is null.");
         }
-        String username = request.getRemoteUser();
-        List<Dataset> datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY, username, USMSpatial.APPLICATION_NAME, roleName, scopeName);
-        log.info("Successful retrieved");
         FishingTripResponse fishingTripIdsForFilter = fishingTripService.filterFishingTrips(fishingActivityQuery);
         return createSuccessResponse(fishingTripIdsForFilter);
     }
@@ -153,9 +137,8 @@ public class FishingActivityResource extends UnionVMSResource {
                                       @PathParam("referenceId") String referenceId,
                                       @PathParam("schemeId") String schemeId) throws ServiceException {
 
-        return createSuccessResponse(activityService.getFaReportCorrections(referenceId, schemeId));
+        return createSuccessResponse(activityService.getFaReportHistory(referenceId, schemeId));
     }
-
 
     @GET
     @Path("/previous/{activityId}")

@@ -15,6 +15,7 @@ package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,18 +36,18 @@ public class SizeDistributionClassCodeEntity implements Serializable {
 
     @Id
     @Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "dist_code_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_size_distribution_classcode", sequenceName = "dist_code_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_size_distribution_classcode")
     private int id;
-
-    @ManyToOne
-    @JoinColumn(name = "size_distribution_id")
-    private SizeDistributionEntity sizeDistribution;
 
     @Column(name = "class_code", nullable = false)
     private String classCode;
 
     @Column(name = "class_code_list_id", nullable = false)
     private String classCodeListId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "size_distribution_id")
+    private SizeDistributionEntity sizeDistribution;
 
 }

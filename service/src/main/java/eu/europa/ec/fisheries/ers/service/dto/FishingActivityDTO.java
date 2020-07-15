@@ -13,17 +13,20 @@
 
 package eu.europa.ec.fisheries.ers.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.FluxLocationDetailsDTO;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
 @JsonInclude(Include.NON_NULL)
+@Data
 public class FishingActivityDTO {
 
     @JsonProperty("uniqueReportIdList")
@@ -34,6 +37,12 @@ public class FishingActivityDTO {
 
     @JsonProperty("faReportID")
     private int faReportID;
+
+    @JsonIgnore
+    private int cancelingReportID;
+
+    @JsonIgnore
+    private int deletingReportID;
 
     @JsonProperty("faUniqueReportID")
     private String faUniqueReportID;
@@ -60,14 +69,6 @@ public class FishingActivityDTO {
     @JsonProperty("reason")
     private String reason;
 
-    public String getPurposeCode() {
-        return purposeCode;
-    }
-
-    public void setPurposeCode(String purposeCode) {
-        this.purposeCode = purposeCode;
-    }
-
     @JsonProperty("purposeCode")
     private String purposeCode;
 
@@ -83,141 +84,4 @@ public class FishingActivityDTO {
     @JsonProperty("delimitedPeriod")
     private List<DelimitedPeriodDTO> delimitedPeriod;
 
-    @JsonProperty("activityType")
-    public String getActivityType() {
-        return activityType;
-    }
-
-    @JsonProperty("activityType")
-    public void setActivityType(String activityType) {
-        this.activityType = activityType;
-    }
-
-    @JsonProperty("occurence")
-    public Date getOccurence() {
-        return occurence;
-    }
-
-    @JsonProperty("occurence")
-    public void setOccurence(Date occurence) {
-        this.occurence = occurence;
-    }
-
-    @JsonProperty("reason")
-    public String getReason() {
-        return reason;
-    }
-
-    @JsonProperty("reason")
-    public void setReason(String reason) {
-        this.reason = reason;
-    }
-
-    @JsonProperty("fluxLocations")
-    public List<FluxLocationDetailsDTO> getFluxLocations() {
-        return fluxLocations;
-    }
-
-    @JsonProperty("fluxLocations")
-    public void setFluxLocations(List<FluxLocationDetailsDTO> fluxLocations) {
-        this.fluxLocations = fluxLocations;
-    }
-
-    @JsonProperty("fishingGears")
-    public List<FishingGearDTO> getFishingGears() {
-        return fishingGears;
-    }
-
-    @JsonProperty("fishingGears")
-    public void setFishingGears(List<FishingGearDTO> fishingGears) {
-        this.fishingGears = fishingGears;
-    }
-
-    @JsonProperty("fluxCharacteristics")
-    public List<FluxCharacteristicsDto> getFluxCharacteristics() {
-        return fluxCharacteristics;
-    }
-
-    @JsonProperty("fluxCharacteristics")
-    public void setFluxCharacteristics(List<FluxCharacteristicsDto> fluxCharacteristics) {
-        this.fluxCharacteristics = fluxCharacteristics;
-    }
-
-    @JsonProperty("delimitedPeriod")
-    public List<DelimitedPeriodDTO> getDelimitedPeriod() {
-        return delimitedPeriod;
-    }
-
-    @JsonProperty("delimitedPeriod")
-    public void setDelimitedPeriod(List<DelimitedPeriodDTO> delimitedPeriod) {
-        this.delimitedPeriod = delimitedPeriod;
-    }
-
-    @JsonProperty("uniqueReportIdList")
-    public List<FluxReportIdentifierDTO> getUniqueFAReportId() {
-        return uniqueFAReportId;
-    }
-
-    @JsonProperty("uniqueReportIdList")
-    public void setUniqueFAReportId(List<FluxReportIdentifierDTO> uniqueFAReportId) {
-        this.uniqueFAReportId = uniqueFAReportId;
-    }
-
-    @JsonProperty("faReportID")
-    public int getFaReportID() {
-        return faReportID;
-    }
-
-    @JsonProperty("faReportID")
-    public void setFaReportID(int faReportID) {
-        this.faReportID = faReportID;
-    }
-
-    public int getFishingActivityId() {
-        return fishingActivityId;
-    }
-
-    public void setFishingActivityId(int fishingActivityId) {
-        this.fishingActivityId = fishingActivityId;
-    }
-
-    public String getFaUniqueReportID() {
-        return faUniqueReportID;
-    }
-
-    public void setFaUniqueReportID(String faUniqueReportID) {
-        this.faUniqueReportID = faUniqueReportID;
-    }
-
-    public String getFaUniqueReportSchemeID() {
-        return faUniqueReportSchemeID;
-    }
-
-    public void setFaUniqueReportSchemeID(String faUniqueReportSchemeID) {
-        this.faUniqueReportSchemeID = faUniqueReportSchemeID;
-    }
-
-    public String getFaReferenceID() {
-        return faReferenceID;
-    }
-
-    public void setFaReferenceID(String faReferenceID) {
-        this.faReferenceID = faReferenceID;
-    }
-
-    public String getFaReferenceSchemeID() {
-        return faReferenceSchemeID;
-    }
-
-    public void setFaReferenceSchemeID(String faReferenceSchemeID) {
-        this.faReferenceSchemeID = faReferenceSchemeID;
-    }
-
-    public String getGeometry() {
-        return geometry;
-    }
-
-    public void setGeometry(String geometry) {
-        this.geometry = geometry;
-    }
 }

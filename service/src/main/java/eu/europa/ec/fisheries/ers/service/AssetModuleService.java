@@ -14,12 +14,15 @@
 package eu.europa.ec.fisheries.ers.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.types.BatchAssetListResponseElement;
+import eu.europa.ec.fisheries.wsdl.asset.types.VesselIdentifiersHolder;
 
 public interface AssetModuleService {
 
@@ -35,4 +38,10 @@ public interface AssetModuleService {
     List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearchName) throws ServiceException;
 
     List<Asset> getAssetListResponse(AssetListQuery assetListQuery) throws ServiceException;
+
+    List<BatchAssetListResponseElement> getAssetListResponseBatch(List<AssetListQuery> assetListQuery) throws ServiceException;
+
+    String getAssetHistoryGuid(String assetGuid, Date occurrenceDate) throws ServiceException;
+
+    VesselIdentifiersHolder getAssetVesselIdentifiersByAssetHistoryGuid(String assetHistoryGuid) throws ServiceException;
 }

@@ -10,6 +10,8 @@ import java.util.Map;
  */
 public interface MdrModuleService {
 
+    void loadCache();
+
     /**
      * API to call MDR Module by JMS and get the VesselIdentifier type code
      *
@@ -17,7 +19,7 @@ public interface MdrModuleService {
      * @return list of vesselidentifiertype codes
      * @throws ServiceException
      */
+    Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults, String... returnColumns) throws ServiceException;
 
-
-    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> columns, Integer nrOfResults, String... returnColumns) throws ServiceException;
+    Map<String, String> getPortDescriptionFromMdr(String acronym, String filter) throws ServiceException;
 }

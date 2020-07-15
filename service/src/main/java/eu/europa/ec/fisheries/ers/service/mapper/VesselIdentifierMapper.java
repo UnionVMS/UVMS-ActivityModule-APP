@@ -12,10 +12,8 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import java.util.Set;
 
-import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.IdentifierDto;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import org.mapstruct.InheritInverseConfiguration;
@@ -27,9 +25,6 @@ import org.mapstruct.ValueMapping;
 import org.mapstruct.ValueMappings;
 import org.mapstruct.factory.Mappers;
 
-/**
- * TODO create test
- */
 @Mapper(uses = BaseMapper.class)
 public interface VesselIdentifierMapper {
 
@@ -59,6 +54,8 @@ public interface VesselIdentifierMapper {
             @ValueMapping(target = MappingConstants.NULL, source = "MAX_LENGTH"),
             @ValueMapping(target = MappingConstants.NULL, source = "MIN_POWER"),
             @ValueMapping(target = MappingConstants.NULL, source = "MAX_POWER"),
+            @ValueMapping(target = MappingConstants.NULL, source = "HIST_GUID"),
+            @ValueMapping(target = MappingConstants.NULL, source = "DATE")
     })
     VesselIdentifierSchemeIdEnum map(ConfigSearchField searchField);
 

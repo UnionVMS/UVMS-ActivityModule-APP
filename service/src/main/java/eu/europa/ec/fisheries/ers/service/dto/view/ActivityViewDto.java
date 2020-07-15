@@ -13,25 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
+import lombok.Data;
+
+@Data
 public class ActivityViewDto {
 
     private String tripId;
-
     private Integer activityId;
-
-    public String getTripId() {
-        return tripId;
-    }
-
-    public void setTripId(String tripId) {
-        this.tripId = tripId;
-    }
-
-    public Integer getActivityId() {
-        return activityId;
-    }
-
-    public void setActivityId(Integer activityId) {
-        this.activityId = activityId;
-    }
+    private Integer reportId;
+    private boolean withHistory;
 }

@@ -10,21 +10,15 @@
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
-import static eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID;
-
-import java.util.List;
-
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
-import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
-import eu.europa.ec.fisheries.uvms.commons.service.dao.QueryParameter;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import static eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity.FIND_TRIP_VESSEL_BY_TRIP_ID;
 
 /**
  * TODO create test
  */
-public class VesselIdentifierDao extends AbstractDAO<VesselIdentifierEntity> {
+public class VesselIdentifierDao{
 
     private static final String TRIP_ID = "tripId";
     private EntityManager em;
@@ -33,14 +27,13 @@ public class VesselIdentifierDao extends AbstractDAO<VesselIdentifierEntity> {
         this.em = em;
     }
 
-    @Override
     public EntityManager getEntityManager() {
         return em;
     }
 
-    public List<VesselIdentifierEntity> getLatestVesselIdByTrip(String tripId) throws ServiceException {
-        return findEntityByNamedQuery(VesselIdentifierEntity.class,
-                FIND_LATEST_VESSEL_BY_TRIP_ID, QueryParameter.with(TRIP_ID, tripId).parameters(), 1);
+    public String getLatestVesselIdByTrip(String tripId) {
+        TypedQuery<String> typedQuery = getEntityManager().createNamedQuery(FIND_TRIP_VESSEL_BY_TRIP_ID, String.class);
+        typedQuery.setParameter(TRIP_ID, tripId);
+        return typedQuery.getResultList().stream().findFirst().orElse(null);
     }
-
 }

@@ -9,19 +9,15 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>1.0.10-SNAPSHOT</version>
+        <version>${uvms.activity.module.version}</version>
     </parent>
     
     <dependencies>
 
 		<dependency>
-			<groupId>eu.europa.ec.fisheries.uvms</groupId>
-			<artifactId>uvms-config</artifactId>
-		</dependency>
-		<dependency>
 		    <groupId>eu.europa.ec.fisheries.uvms.audit</groupId>
     		<artifactId>audit-model</artifactId>
-    		<version>3.0.5</version>		
+    		<version>${audit.model.version}</version>
 		</dependency>
 
         <dependency>
@@ -90,5 +86,4 @@
             </plugin>
         </plugins>
     </build>
-    
 </project>

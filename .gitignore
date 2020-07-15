@@ -7,3 +7,10 @@ logging.properties
 /.idea
 rest/src/main/webapp/apidocs/
 .DS_Store
+.flattened-pom.xml
+.project
+.settings/
+.classpath
+
+
+pom.xml.versionsBackup

@@ -8,6 +8,7 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.CascadeType;
@@ -20,38 +21,32 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
+
+import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_flux_characteristic")
+@Data
+@ToString(of = "id")
+@EqualsAndHashCode(of = "id")
 public class FluxCharacteristicEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flux_char_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_flux_characteristic", sequenceName = "flux_char_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_flux_characteristic")
     private int id;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fa_catch_id")
-	private FaCatchEntity faCatch;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "fishing_activity_id")
-	private FishingActivityEntity fishingActivity;
-
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "specified_flux_location_id")
-	private FluxLocationEntity fluxLocation;
-
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "specified_flap_document_id")
-	private FlapDocumentEntity flapDocument;
 
 	@Column(name = "type_code", nullable = false)
 	private String typeCode;
@@ -99,165 +94,44 @@ public class FluxCharacteristicEntity implements Serializable {
 	@Column(name = "description_language_id")
 	private String descriptionLanguageId;
 
-	public FluxCharacteristicEntity() {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fa_catch_id")
+    private FaCatchEntity faCatch;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fishing_activity_id")
+    private FishingActivityEntity fishingActivity;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "specified_flux_location_id")
+    private FluxLocationEntity fluxLocation;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "specified_flap_document_id")
+    private FlapDocumentEntity flapDocument;
+
+    public FluxCharacteristicEntity() {
 		super();
 	}
 
-	public int getId() {
-		return this.id;
+	@PrePersist
+	public void prePersist(){
+		if (valueQuantity != null || valueQuantityCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueQuantityCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(valueQuantity);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedValueQuantity =  result.doubleValue();
+			}
+		}
+		if (valueMeasure != null || valueMeasureUnitCode != null){
+			UnitCodeEnum unitCodeEnum = UnitCodeEnum.getUnitCode(valueMeasureUnitCode);
+			if (unitCodeEnum != null) {
+				BigDecimal quantity = new BigDecimal(valueMeasure);
+				BigDecimal result = quantity.multiply(new BigDecimal(unitCodeEnum.getConversionFactor()));
+				calculatedValueMeasure =  result.doubleValue();
+			}
+		}
 	}
 
-	public FaCatchEntity getFaCatch() {
-		return this.faCatch;
-	}
-
-	public void setFaCatch(FaCatchEntity faCatch) {
-		this.faCatch = faCatch;
-	}
-
-	public FishingActivityEntity getFishingActivity() {
-		return this.fishingActivity;
-	}
-
-	public void setFishingActivity(
-			FishingActivityEntity fishingActivity) {
-		this.fishingActivity = fishingActivity;
-	}
-
-	public FluxLocationEntity getFluxLocation() {
-		return this.fluxLocation;
-	}
-
-	public void setFluxLocation(
-			FluxLocationEntity fluxLocation) {
-		this.fluxLocation = fluxLocation;
-	}
-
-	public String getTypeCode() {
-		return this.typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-	public String getTypeCodeListId() {
-		return this.typeCodeListId;
-	}
-
-	public void setTypeCodeListId(String typeCodeListId) {
-		this.typeCodeListId = typeCodeListId;
-	}
-
-	public Double getValueMeasure() {
-		return this.valueMeasure;
-	}
-
-	public void setValueMeasure(Double valueMeasure) {
-		this.valueMeasure = valueMeasure;
-	}
-
-	public Date getValueDateTime() {
-		return this.valueDateTime;
-	}
-
-	public void setValueDateTime(Date valueDateTime) {
-		this.valueDateTime = valueDateTime;
-	}
-
-	public String getValueIndicator() {
-		return this.valueIndicator;
-	}
-
-	public void setValueIndicator(String valueIndicator) {
-		this.valueIndicator = valueIndicator;
-	}
-
-	public String getValueCode() {
-		return this.valueCode;
-	}
-
-	public void setValueCode(String valueCode) {
-		this.valueCode = valueCode;
-	}
-
-	public String getValueText() {
-		return this.valueText;
-	}
-
-	public void setValueText(String valueText) {
-		this.valueText = valueText;
-	}
-
-	public Double getValueQuantity() {
-		return this.valueQuantity;
-	}
-
-	public void setValueQuantity(Double valueQuantity) {
-		this.valueQuantity = valueQuantity;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getValueLanguageId() {
-		return valueLanguageId;
-	}
-
-	public void setValueLanguageId(String valueLanguageId) {
-		this.valueLanguageId = valueLanguageId;
-	}
-
-	public String getDescriptionLanguageId() {
-		return descriptionLanguageId;
-	}
-
-	public void setDescriptionLanguageId(String descriptionLanguageId) {
-		this.descriptionLanguageId = descriptionLanguageId;
-	}
-
-	public String getValueMeasureUnitCode() {
-		return valueMeasureUnitCode;
-	}
-
-	public void setValueMeasureUnitCode(String valueMeasureUnitCode) {
-		this.valueMeasureUnitCode = valueMeasureUnitCode;
-	}
-
-	public Double getCalculatedValueMeasure() {
-		return calculatedValueMeasure;
-	}
-
-	public void setCalculatedValueMeasure(Double calculatedValueMeasure) {
-		this.calculatedValueMeasure = calculatedValueMeasure;
-	}
-
-	public String getValueQuantityCode() {
-		return valueQuantityCode;
-	}
-
-	public void setValueQuantityCode(String valueQuantityCode) {
-		this.valueQuantityCode = valueQuantityCode;
-	}
-
-	public Double getCalculatedValueQuantity() {
-		return calculatedValueQuantity;
-	}
-
-	public void setCalculatedValueQuantity(Double calculatedValueQuantity) {
-		this.calculatedValueQuantity = calculatedValueQuantity;
-	}
-
-	public FlapDocumentEntity getFlapDocument() {
-		return flapDocument;
-	}
-
-	public void setFlapDocument(FlapDocumentEntity flapDocument) {
-		this.flapDocument = flapDocument;
-	}
 }

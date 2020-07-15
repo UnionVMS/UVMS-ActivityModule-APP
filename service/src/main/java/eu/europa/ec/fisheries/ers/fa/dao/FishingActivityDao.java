@@ -11,29 +11,103 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingActivitySearchBuilder;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.Hibernate;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import java.util.Date;
-import java.util.List;
 
 @Slf4j
 public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FishingActivityDao.class);
+
+    /**
+     * Compare {@link FishingActivityEntity} objects by the explicit weight of their {@link FishingActivityEntity#getTypeCode()} property.
+     */
+    private static final Comparator<FishingActivityEntity> BY_ACTIVITY_TYPE = new Comparator<FishingActivityEntity>() {
+        @Override
+        public int compare(FishingActivityEntity o1, FishingActivityEntity o2) {
+            return Integer.compare(activityTypeWeight(o1), activityTypeWeight(o2));
+        }
+
+        /**
+         * Extract the type code of a potentially {@code null} activity and calculate its weight.
+         * Null code yields a large weight, so goes at the end, if in ascending order.
+         * <p>
+         * We implement this with a {@code switch} statement so as to guard from any changes of the default ordinal.
+         * @param activity
+         * @return
+         */
+        private int activityTypeWeight(FishingActivityEntity activity) {
+            return Optional.ofNullable(activity)
+                    .map(FishingActivityEntity::getTypeCode)
+                    .map(codeAsString -> EnumUtils.getEnum(FishingActivityTypeEnum.class, codeAsString))
+                    .map(code -> {
+                        switch (code) {
+                            case DEPARTURE:
+                                return 1;
+                            case ARRIVAL:
+                                return 2;
+                            case AREA_ENTRY:
+                                return 3;
+                            case AREA_EXIT:
+                                return 4;
+                            case FISHING_OPERATION:
+                                return 5;
+                            case LANDING:
+                                return 6;
+                            case TRANSHIPMENT:
+                                return 7;
+                            case RELOCATION:
+                                return 8;
+                            case GEAR_SHOT:
+                                return 9;
+                            case GEAR_RETRIEVAL:
+                                return 10;
+                            case START_FISHING:
+                                return 11;
+                            case JOINED_FISHING_OPERATION:
+                                return 12;
+                            case START_ACTIVITY:
+                                return 13;
+                            case DISCARD:
+                                return 14;
+                        }
+                        throw new IllegalArgumentException();
+                    })
+                    .orElse(100);
+        }
+    };
+
+    private static final Comparator<FishingActivityEntity> BY_ACCEPTED_DATE_TIME = new Comparator<FishingActivityEntity>() {
+        @Override
+        public int compare(FishingActivityEntity o1, FishingActivityEntity o2) {
+            return o1.getFaReportDocument().getAcceptedDatetime().compareTo(o2.getFaReportDocument().getAcceptedDatetime());
+        }
+    };
 
     private EntityManager em;
 
@@ -54,7 +128,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public int getPreviousFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
         int previousActivityId = 0;
         if (activityTypeCode == null || activityCalculatedStartTime == null) {
-            LOG.error("activityTypeCode OR  activityCalculatedStartTime is null.");
+            LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
             return previousActivityId;
         }
 
@@ -84,10 +158,10 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         try {
             result = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            LOG.error("No next FishingActivity present for : " + fishingActivityId);
+            LOG.warn("No next FishingActivity present for : " + fishingActivityId);
         }
 
-        LOG.info("Previous Fishing Activity : " + result);
+        LOG.debug("Previous Fishing Activity : " + result);
         if (result != null) {
             previousActivityId = (int) result;
         }
@@ -109,7 +183,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public int getNextFishingActivityId(int fishingActivityId, String activityTypeCode, Date activityCalculatedStartTime) {
         int nextFishingActivity = 0;
         if (activityTypeCode == null || activityCalculatedStartTime == null) {
-            LOG.error("activityTypeCode OR  activityCalculatedStartTime is null.");
+            LOG.warn("activityTypeCode OR  activityCalculatedStartTime is null.");
             return nextFishingActivity;
         }
         String query = "SELECT a.id from FishingActivityEntity a " +
@@ -138,7 +212,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         try {
             result = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            LOG.error("No next FishingActivity present for : " + fishingActivityId);
+            LOG.warn("No next FishingActivity present for : " + fishingActivityId);
         }
 
         LOG.info("Next Fishing Activity : " + result);
@@ -159,29 +233,26 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
     public List<FishingActivityEntity> getFishingActivityListForFishingTrip(String fishingTripId, Geometry multipolgon) throws ServiceException {
         if (fishingTripId == null || fishingTripId.length() == 0)
             throw new ServiceException("fishing Trip Id is null or empty. ");
-
         String queryName = FishingActivityEntity.ACTIVITY_FOR_FISHING_TRIP;
         if (multipolgon == null)
             queryName = FishingActivityEntity.FIND_FA_DOCS_BY_TRIP_ID_WITHOUT_GEOM;
-
-        Query query = getEntityManager().createNamedQuery(queryName);
-
+        TypedQuery<FishingActivityEntity> query = getEntityManager().createNamedQuery(queryName, FishingActivityEntity.class);
         query.setParameter("fishingTripId", fishingTripId);
-
         if (multipolgon != null)
             query.setParameter("area", multipolgon);
-
-        return query.getResultList();
+        List<FishingActivityEntity> results = query.getResultList();
+        results.sort(BY_ACCEPTED_DATE_TIME.thenComparing(BY_ACTIVITY_TYPE));
+        return results;
     }
 
     public Integer getCountForFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
         FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
         LOG.info("Get Total Count for Fishing Activities When filter criteria is present");
-        StringBuilder sqlToGetActivityListCount = search.createSQL(query);
-
-        Query countQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityListCount, query, search);
-
-        return countQuery.getResultList().size();
+        StringBuilder sqlToGetActivityListCount = search.createCountingSql(query);
+        String replace = sqlToGetActivityListCount.toString().replace("JOIN FETCH", "JOIN");
+        Query countQuery = getTypedQueryForFishingActivityFilter(new StringBuilder(replace), query, search);
+        Long nrOfFa = (Long) countQuery.getResultList().get(0);
+        return nrOfFa.intValue();
     }
 
     /**
@@ -189,7 +260,6 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      */
     private Query getTypedQueryForFishingActivityFilter(StringBuilder sql, FishingActivityQuery query, FishingActivitySearchBuilder search) throws ServiceException {
         LOG.debug("Set Typed Parameters to Query");
-
         Query typedQuery = em.createQuery(sql.toString());
         return search.fillInValuesForTypedQuery(query, typedQuery);
 
@@ -200,31 +270,38 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
      Provide paginated data if user has asked for it
      */
     public List<FishingActivityEntity> getFishingActivityListByQuery(FishingActivityQuery query) throws ServiceException {
+
+        if(query.getUseStatusInsteadOfPurposeCode() != null && query.getUseStatusInsteadOfPurposeCode()){
+            adaptForStatusInsteadOfPurpose(query);
+        }
+
         LOG.info("Get Fishing Activity Report list by Query.");
         FishingActivitySearchBuilder search = new FishingActivitySearchBuilder();
-
         // Create Query dynamically based on filter and Sort criteria
         StringBuilder sqlToGetActivityList = search.createSQL(query);
-
         // Apply real values to Query built
         Query listQuery = getTypedQueryForFishingActivityFilter(sqlToGetActivityList, query, search);
-
-        // Agreed with frontend.
-        // Page size : Number of record to be retrieved in one page
-        // offSet : The position from where the result should be picked. Starts with 0
-
+        // Agreed with frontend : Page size : Number of record to be retrieved in one page; offSet : The position from where the result should be picked. Starts with 0
         PaginationDto pagination = query.getPagination();
         if (pagination != null) {
             LOG.debug("Pagination information getting applied to Query is: Offset :" + pagination.getOffset() + " PageSize:" + pagination.getPageSize());
-
             listQuery.setFirstResult(pagination.getOffset());
             listQuery.setMaxResults(pagination.getPageSize());
         }
+        return listQuery.getResultList();
+    }
 
-        List resultList = listQuery.getResultList();
-        Hibernate.initialize(resultList);
-
-        return resultList;
+    private void adaptForStatusInsteadOfPurpose(FishingActivityQuery query) {
+        Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
+        if(MapUtils.isNotEmpty(searchCriteriaMapMultipleValues)){
+            List<String> purposes = searchCriteriaMapMultipleValues.get(SearchFilter.PURPOSE);
+            List<String> statuses = new ArrayList<>();
+            for (String purpose : purposes) {
+                statuses.add(FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(purpose)).name());
+            }
+            searchCriteriaMapMultipleValues.remove(SearchFilter.PURPOSE);
+            searchCriteriaMapMultipleValues.put(SearchFilter.FA_STATUS, statuses);
+        }
     }
 
     /**
@@ -296,4 +373,5 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         }
         return sb.toString();
     }
+
 }

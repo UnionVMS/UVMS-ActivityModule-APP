@@ -31,15 +31,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NamedQueries({
-		@NamedQuery(name = VesselIdentifierEntity.FIND_LATEST_VESSEL_BY_TRIP_ID,
-				query = "SELECT vi from FishingTripIdentifierEntity fti " +
+		@NamedQuery(name = VesselIdentifierEntity.FIND_TRIP_VESSEL_BY_TRIP_ID,
+				query = "SELECT DISTINCT vt.guid from FishingTripIdentifierEntity fti " +
 						"INNER JOIN fti.fishingTrip ft " +
 						"INNER JOIN ft.fishingActivity fa " +
 						"INNER JOIN fa.faReportDocument frd " +
 						"INNER JOIN frd.vesselTransportMeans vt " +
-						"INNER JOIN vt.vesselIdentifiers vi " +
 						"WHERE fti.tripId = :tripId " +
-						"ORDER BY frd.acceptedDatetime DESC")
+						"AND vt.guid <> NULL "+
+						//rows having fishing_activity_id are vessels different than the current trip's one
+						"AND vt.fishingActivity IS NULL")
 })
 @Entity
 @Table(name = "activity_vessel_identifier")
@@ -47,14 +48,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+//@EqualsAndHashCode(of = {"vesselIdentifierId", "vesselIdentifierSchemeId"})
 public class VesselIdentifierEntity implements Serializable {
 
-	public static final String FIND_LATEST_VESSEL_BY_TRIP_ID = "findLatestVesselByTripId";
+	public static final String FIND_TRIP_VESSEL_BY_TRIP_ID = "findTripVesselByTripId";
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "vsl_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_vessel_identifier", sequenceName = "vsl_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_vessel_identifier")
     private int id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

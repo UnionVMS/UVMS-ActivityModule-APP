@@ -19,25 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.junit.Rule;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingActivityDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
@@ -58,10 +39,25 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTrip
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.persistence.EntityManager;
 import lombok.SneakyThrows;
+import org.apache.commons.collections.CollectionUtils;
+import org.junit.Rule;
+import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 
 public class ActivityServiceBeanTest {
@@ -101,14 +97,18 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void testGetFaReportCorrections() throws ServiceException {
+    public void testGetFaReportCorrections() {
 
         //Mock
-        FaReportDocumentEntity faReportDocumentEntity = MapperUtil.getFaReportDocumentEntity();
+        final FaReportDocumentEntity faReportDocumentEntity = MapperUtil.getFaReportDocumentEntity();
+        List<FaReportDocumentEntity> faRepsArraResp = new ArrayList<FaReportDocumentEntity>(){{
+            add(faReportDocumentEntity);
+        }};
         Mockito.doReturn(faReportDocumentEntity).when(faReportDocumentDao).findFaReportByIdAndScheme(Mockito.any(String.class), Mockito.any(String.class));
+        Mockito.doReturn(faRepsArraResp).when(faReportDocumentDao).getHistoryOfFaReport(Mockito.any(FaReportDocumentEntity.class), Mockito.any(ArrayList.class));
 
         //Trigger
-        List<FaReportCorrectionDTO> faReportCorrectionDTOList = activityService.getFaReportCorrections("TEST ID", "SCHEME ID");
+        List<FaReportCorrectionDTO> faReportCorrectionDTOList = activityService.getFaReportHistory("TEST ID", "SCHEME ID");
 
         //Verify
         Mockito.verify(faReportDocumentDao, Mockito.times(1)).findFaReportByIdAndScheme("TEST ID", "SCHEME ID");
@@ -128,20 +128,15 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void getFishingActivityListByQuery() throws ServiceException {
-
+    public void getFishingActivityListByQuery() {
         FishingActivityQuery query = new FishingActivityQuery();
-
         Map<SearchFilter,String> searchCriteriaMap = new HashMap<>();
-
         searchCriteriaMap.put(SearchFilter.OWNER, "OWNER1");
         List<AreaIdentifierType> areaIdentifierTypes =new ArrayList<>();
-
         Map<SearchFilter,List<String>> searchCriteriaMapMultipleValue = new HashMap<>();
         List<String> purposeCodeList= new ArrayList<>();
         purposeCodeList.add("9");
         searchCriteriaMapMultipleValue.put(SearchFilter.PURPOSE,purposeCodeList);
-
         PaginationDto pagination =new PaginationDto();
         pagination.setPageSize(4);
         pagination.setOffset(1);
@@ -150,12 +145,9 @@ public class ActivityServiceBeanTest {
         query.setSearchCriteriaMapMultipleValues(searchCriteriaMapMultipleValue);
 
         when(spatialModule.getFilteredAreaGeom(areaIdentifierTypes)).thenReturn("('MULTIPOINT (10 40, 40 30, 20 20, 30 10)')");
-
         when(fishingActivityDao.getFishingActivityListByQuery(query)).thenReturn(MapperUtil.getFishingActivityEntityList());
-
         //Trigger
         FilterFishingActivityReportResultDTO filterFishingActivityReportResultDTO= activityService.getFishingActivityListByQuery(query, null);
-
         Mockito.verify(fishingActivityDao, Mockito.times(1)).getFishingActivityListByQuery(Mockito.any(FishingActivityQuery.class));
         //Verify
         assertNotNull(filterFishingActivityReportResultDTO);
@@ -165,7 +157,7 @@ public class ActivityServiceBeanTest {
 
     @Test
     @SneakyThrows
-    public void getFishingActivityListByQuery_emptyResultSet() throws ServiceException {
+    public void getFishingActivityListByQuery_emptyResultSet() {
 
         FishingActivityQuery query = new FishingActivityQuery();
 

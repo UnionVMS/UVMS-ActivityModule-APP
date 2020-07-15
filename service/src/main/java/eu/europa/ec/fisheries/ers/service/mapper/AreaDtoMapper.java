@@ -8,34 +8,34 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselPositionEventEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
-import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.AreaDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.PositionDto;
 import org.apache.commons.collections.CollectionUtils;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
 
-/**
- * Created by sanera on 21/03/2017.
- */
-@Mapper(imports = FluxLocationEnum.class)
-public abstract class AreaDtoMapper extends BaseMapper {
-    public static final AreaDtoMapper INSTANCE = Mappers.getMapper(AreaDtoMapper.class);
+public class AreaDtoMapper extends BaseMapper {
 
-    @Mappings({
-            @Mapping(target = "transmission", expression = "java(getTransmission(faEntity))"),
-            @Mapping(target = "crossing", expression = "java(extractPositionDtoFromFishingActivity(faEntity))"),
-            @Mapping(target = "startActivity", expression = "java(getStartActivity(faEntity))"),
-            @Mapping(target = "startFishing", expression = "java(getStartFishing(faEntity))"),
-    })
-    public abstract AreaDto mapToAreaDto(FishingActivityEntity faEntity);
+    public AreaDto mapToAreaDto(FishingActivityEntity faEntity) {
+        if ( faEntity == null ) {
+            return null;
+        }
+
+        AreaDto areaDto = new AreaDto();
+
+        areaDto.setFluxLocations( BaseMapper.mapFromFluxLocation( faEntity.getFluxLocations() ) );
+
+        areaDto.setStartFishing( getStartFishing(faEntity) );
+        areaDto.setTransmission( getTransmission(faEntity) );
+        areaDto.setCrossing( extractPositionDtoFromFishingActivity(faEntity) );
+        areaDto.setStartActivity( getStartActivity(faEntity) );
+
+        return areaDto;
+    }
 
     protected PositionDto getTransmission(FishingActivityEntity faEntity) {
         if (faEntity == null) {

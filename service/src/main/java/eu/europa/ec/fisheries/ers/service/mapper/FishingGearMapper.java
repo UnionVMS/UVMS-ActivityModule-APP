@@ -11,9 +11,13 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import java.util.List;
+import java.util.Set;
+
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.service.dto.FishingGearDTO;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -21,7 +25,7 @@ import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingGear;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.CodeType;
 
-@Mapper(imports = BaseMapper.class, uses = {GearCharacteristicsMapper.class})
+@Mapper(uses = {GearCharacteristicsMapper.class})
 public interface FishingGearMapper {
 
     FishingGearMapper INSTANCE = Mappers.getMapper(FishingGearMapper.class);
@@ -29,10 +33,19 @@ public interface FishingGearMapper {
     @Mappings({
             @Mapping(target = "typeCode", source = "typeCode.value"),
             @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
-            @Mapping(target = "fishingGearRole", expression = "java(BaseMapper.mapToFishingGears(fishingGear.getRoleCodes(), fishingGearEntity))"),
-            @Mapping(target = "gearCharacteristics", expression = "java(BaseMapper.getGearCharacteristicEntities(fishingGear.getApplicableGearCharacteristics(), fishingGearEntity))"),
+            @Mapping(target = "fishingGearRole", ignore = true),
+            @Mapping(target = "gearCharacteristics", ignore = true),
     })
     FishingGearEntity mapToFishingGearEntity(FishingGear fishingGear);
+
+    @InheritInverseConfiguration
+    @Mappings({
+            @Mapping(target = "roleCodes", source = "fishingGearRole"),
+            @Mapping(target = "applicableGearCharacteristics", source = "gearCharacteristics"),
+    })
+    FishingGear mapToFishingGear(FishingGearEntity fishingGearEntity);
+
+    List<FishingGear> mapToFishingGearList(Set<FishingGearEntity> fishingGearEntitySet);
 
     @Mappings({
             @Mapping(source = "typeCode",target = "gearTypeCode"),
@@ -44,5 +57,8 @@ public interface FishingGearMapper {
             @Mapping(target = "roleCodeListId", source = "listID")
     })
     FishingGearRoleEntity mapToFishingGearRoleEntity(CodeType codeType);
+
+    @InheritInverseConfiguration
+    CodeType mapToFishingGearRole(FishingGearRoleEntity codeType);
 
 }

@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Data;
@@ -33,15 +34,15 @@ import lombok.ToString;
 @Entity
 @Table(name = "activity_fishing_trip")
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"delimitedPeriods","fishingTripIdentifiers"})
-@ToString(exclude = {"delimitedPeriods","fishingTripIdentifiers"})
+@EqualsAndHashCode(exclude = {"delimitedPeriods", "fishingTripIdentifiers"})
+@ToString(exclude = {"delimitedPeriods", "fishingTripIdentifiers"})
 @Data
 public class FishingTripEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "fa_trip_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_fishing_trip", sequenceName = "fa_trip_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_fishing_trip")
     private int id;
 
 	@ManyToOne
@@ -58,10 +59,29 @@ public class FishingTripEntity implements Serializable {
 	@Column(name = "type_code_list_id")
 	private String typeCodeListId;
 
-	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL)
-	private Set<DelimitedPeriodEntity> delimitedPeriods;
+	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<DelimitedPeriodEntity> delimitedPeriods = new HashSet<>();
 
-	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL)
-	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers;
+	@OneToMany(mappedBy = "fishingTrip", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<FishingTripIdentifierEntity> fishingTripIdentifiers = new HashSet<>();
 
+    public void addFishingTripIdentifiers(FishingTripIdentifierEntity identifierEntity) {
+        fishingTripIdentifiers.add(identifierEntity);
+        identifierEntity.setFishingTrip(this);
+    }
+
+    public void addDelimitedPeriods(DelimitedPeriodEntity periodEntity) {
+        delimitedPeriods.add(periodEntity);
+        periodEntity.setFishingTrip(this);
+    }
+
+    public void removeDelimitedPeriods(DelimitedPeriodEntity area) {
+        delimitedPeriods.remove(area);
+        area.setFishingTrip(null);
+    }
+
+    public void removeFishingTripIdentifiers(FishingTripIdentifierEntity identifierEntity) {
+        fishingTripIdentifiers.remove(identifierEntity);
+        identifierEntity.setFishingTrip(null);
+    }
 }

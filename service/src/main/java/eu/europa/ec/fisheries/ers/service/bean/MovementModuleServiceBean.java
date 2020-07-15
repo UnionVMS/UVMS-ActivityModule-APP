@@ -23,13 +23,11 @@ import eu.europa.ec.fisheries.schema.movement.search.v1.RangeCriteria;
 import eu.europa.ec.fisheries.schema.movement.search.v1.RangeKeyType;
 import eu.europa.ec.fisheries.schema.movement.search.v1.SearchKey;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.MovementProducerBean;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.ModelMapperException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementDuplicateException;
-import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementFaultException;
+import eu.europa.ec.fisheries.uvms.movement.model.exception.MovementModelException;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.movement.model.mapper.MovementModuleResponseMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +62,6 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<MovementType> getMovement(List<String> vesselIds, Date startDate, Date endDate) throws ServiceException {
-
         try {
             MovementQuery movementQuery = new MovementQuery();
             addListCriteria(vesselIds, movementQuery);
@@ -74,7 +71,7 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
             String request = MovementModuleRequestMapper.mapToGetMovementMapByQueryRequest(movementQuery);
             String moduleMessage = movementProducer.sendModuleMessage(request, activityConsumer.getDestination());
             TextMessage response = activityConsumer.getMessage(moduleMessage, TextMessage.class);
-            if (response != null && !isUserFault(response)) {
+            if (response != null && isNotUserFault(response)) {
                 List<MovementMapResponseType> mapResponseTypes = MovementModuleResponseMapper.mapToMovementMapResponse(response);
                 List<MovementType> movements = new ArrayList<>();
                 for (MovementMapResponseType movementMap : mapResponseTypes) {
@@ -84,10 +81,10 @@ public class MovementModuleServiceBean extends ModuleService implements Movement
             } else {
                 throw new ServiceException("FAILED TO GET DATA FROM MOVEMENT");
             }
-        } catch (MovementDuplicateException | MovementFaultException | ServiceException | MessageException | JMSException | ModelMapperException e) {
-            log.error("Exception in communication with movements", e);
+        } catch (MovementModelException | ServiceException | MessageException | JMSException e) {
+            log.error("Exception in communication with movements! Enrichment failed!");
             throw new ServiceException(e.getMessage(), e);
-        }
+        } 
     }
 
     private void addRangeCriteria(Date startDate, Date endDate, MovementQuery movementQuery) {

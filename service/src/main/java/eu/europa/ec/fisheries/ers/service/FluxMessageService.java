@@ -10,13 +10,14 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
-/**
- * Created by padhyad on 5/13/2016.
- */
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+
 public interface FluxMessageService {
 
     /**
@@ -29,5 +30,9 @@ public interface FluxMessageService {
      * @param faReportSourceEnum
      * @throws ServiceException
      */
-    void saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException;
+    @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
+    FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException;
+
+    @TransactionAttribute(value = TransactionAttributeType.REQUIRES_NEW)
+    FluxFaReportMessageEntity saveFishingActivityReportDocuments(FluxFaReportMessageEntity messageEntity) throws ServiceException;
 }

@@ -33,7 +33,7 @@ public class DelimitedPeriodDetailsDTO {
     @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
     private Date endDate;
 
-    @JsonProperty("duration")
+    @JsonProperty("value")
     private Double duration;
 
     public DelimitedPeriodDetailsDTO() {
@@ -65,12 +65,12 @@ public class DelimitedPeriodDetailsDTO {
         this.endDate = endDate;
     }
 
-    @JsonProperty("duration")
+    @JsonProperty("value")
     public Double getDuration() {
         return duration;
     }
 
-    @JsonProperty("duration")
+    @JsonProperty("value")
     public void setDuration(Double duration) {
         this.duration = duration;
     }

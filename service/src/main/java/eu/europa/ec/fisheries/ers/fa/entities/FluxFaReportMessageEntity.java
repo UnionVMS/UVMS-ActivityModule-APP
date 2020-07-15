@@ -33,14 +33,14 @@ import lombok.ToString;
 @Table(name = "activity_flux_fa_report_message")
 @Data
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = "faReportDocuments")
+@EqualsAndHashCode(of = "fluxReportDocument")
 @ToString(exclude = "faReportDocuments")
 public class FluxFaReportMessageEntity implements Serializable {
 
     @Id
     @Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "rep_msg_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_flux_fa_report_message", sequenceName = "rep_msg_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_flux_fa_report_message")
     private int id;
 
     @OneToOne(mappedBy = "fluxFaReportMessage", cascade = CascadeType.ALL)

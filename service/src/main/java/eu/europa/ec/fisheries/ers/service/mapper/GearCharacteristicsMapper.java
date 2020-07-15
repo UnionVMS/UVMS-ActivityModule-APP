@@ -33,38 +33,39 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingGearRoleEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.GearDto;
+import eu.europa.ec.fisheries.ers.service.util.CustomBigDecimal;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.GearCharacteristic;
 
-@Mapper
-public abstract class GearCharacteristicsMapper extends BaseMapper {
+@Mapper(imports = BaseMapper.class, uses = CustomBigDecimal.class)
+public abstract class GearCharacteristicsMapper {
 
     public static final GearCharacteristicsMapper INSTANCE = Mappers.getMapper(GearCharacteristicsMapper.class);
 
     @Mappings({
-            @Mapping(target = "typeCode", source = "gearCharacteristic.typeCode.value"),
-            @Mapping(target = "typeCodeListId", source = "gearCharacteristic.typeCode.listID"),
-            @Mapping(target = "description", expression = "java(getTextFromList(gearCharacteristic.getDescriptions()))"),
-            @Mapping(target = "descLanguageId", expression = "java(getLanguageIdFromList(gearCharacteristic.getDescriptions()))"),
-            @Mapping(target = "valueMeasure", source = "gearCharacteristic.valueMeasure.value"),
-            @Mapping(target = "valueMeasureUnitCode", source = "gearCharacteristic.valueMeasure.unitCode"),
-            @Mapping(target = "calculatedValueMeasure", expression = "java(getCalculatedMeasure(gearCharacteristic.getValueMeasure()))"),
-            @Mapping(target = "valueDateTime", source = "gearCharacteristic.valueDateTime.dateTime"),
-            @Mapping(target = "valueIndicator", source = "gearCharacteristic.valueIndicator.indicatorString.value"),
-            @Mapping(target = "valueCode", source = "gearCharacteristic.valueCode.value"),
-            @Mapping(target = "valueText", source = "gearCharacteristic.value.value"),
-            @Mapping(target = "valueQuantity", source = "gearCharacteristic.valueQuantity.value"),
-            @Mapping(target = "valueQuantityCode", source = "gearCharacteristic.valueQuantity.unitCode"),
-            @Mapping(target = "calculatedValueQuantity", expression = "java(getCalculatedQuantity(gearCharacteristic.getValueQuantity()))"),
-            @Mapping(target = "fishingGear", expression = "java(fishingGearEntity)")
+            @Mapping(target = "typeCode", source = "typeCode.value"),
+            @Mapping(target = "typeCodeListId", source = "typeCode.listID"),
+            @Mapping(target = "description", expression = "java(BaseMapper.getTextFromList(gearCharacteristic.getDescriptions()))"),
+            @Mapping(target = "descLanguageId", expression = "java(BaseMapper.getLanguageIdFromList(gearCharacteristic.getDescriptions()))"),
+            @Mapping(target = "valueMeasure", source = "valueMeasure.value"),
+            @Mapping(target = "valueMeasureUnitCode", source = "valueMeasure.unitCode"),
+            @Mapping(target = "valueDateTime", source = "valueDateTime.dateTime"),
+            @Mapping(target = "valueIndicator", source = "valueIndicator.indicatorString.value"),
+            @Mapping(target = "valueCode", source = "valueCode.value"),
+            @Mapping(target = "valueText", source = "value.value"),
+            @Mapping(target = "valueQuantity", source = "valueQuantity.value"),
+            @Mapping(target = "valueQuantityCode", source = "valueQuantity.unitCode"),
     })
-    public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic, FishingGearEntity fishingGearEntity, @MappingTarget GearCharacteristicEntity gearCharacteristicEntity);
+    public abstract GearCharacteristicEntity mapToGearCharacteristicEntity(GearCharacteristic gearCharacteristic);
+
+    @InheritInverseConfiguration
+    public abstract GearCharacteristic mapToGearCharacteristic(GearCharacteristicEntity gearCharacteristic);
 
     public GearDto mapGearDtoToFishingGearEntity(FishingGearEntity fishingGearEntity) {
         GearDto gearDto = null;

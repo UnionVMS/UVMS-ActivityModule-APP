@@ -1,3 +1,4 @@
+
 /*
 Developed by the European Commission - Directorate General for Maritime Affairs and Fisheries @ European Union, 2015-2016.
 
@@ -8,58 +9,64 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
 package eu.europa.ec.fisheries.ers.service.mapper;
+
+import eu.europa.ec.fisheries.ers.fa.entities.*;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
+import org.apache.commons.collections.CollectionUtils;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.VesselTransportMeans;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Mappings;
-import org.mapstruct.factory.Mappers;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+public class FluxFaReportMessageMapper {
 
-/**
- * Created by kovian on 18/01/2017.
- */
-@Mapper(uses = {FaReportDocumentMapper.class, FluxReportDocumentMapper.class})
-public abstract class FluxFaReportMessageMapper extends BaseMapper {
+    public FluxFaReportMessageEntity mapToFluxFaReportMessage(FluxFaReportMessageMappingContext ctx, FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage) {
+        if (fluxfaReportMessage == null && faReportSourceEnum == null) {
+            return null;
+        }
+        if (fluxfaReportMessage != null) {
+            FLUXReportDocument fluxReportDocument = fluxfaReportMessage.getFLUXReportDocument();
+            if(fluxReportDocument == null) {
+                return null;
+            }
+            FluxReportDocumentEntity fluxReportDocumentEntity = mapFluxReportDocumentEntity(fluxReportDocument);
+            fluxReportDocumentEntity.setFluxFaReportMessage(fluxFaReportMessage);
+            fluxFaReportMessage.setFluxReportDocument(fluxReportDocumentEntity);
+            fluxFaReportMessage.setFaReportDocuments(mapFaReportDocuments(ctx, fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage) );
+        }
+        return fluxFaReportMessage;
+    }
 
-    public static final FluxFaReportMessageMapper INSTANCE = Mappers.getMapper(FluxFaReportMessageMapper.class);
+    private FluxReportDocumentEntity mapFluxReportDocumentEntity(FLUXReportDocument fluxReportDocument) {
+        FluxReportDocumentEntity fluxReportDocumentEntity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
+        fluxReportDocumentEntity.getFluxReportIdentifiers().forEach(id -> id.setFluxReportDocument(fluxReportDocumentEntity));
+        return fluxReportDocumentEntity;
+    }
 
-    @Mappings({
-            @Mapping(target = "faReportDocuments", expression = "java(getFaReportDocuments(fluxfaReportMessage.getFAReportDocuments(), faReportSourceEnum, fluxFaReportMessage))"),
-            @Mapping(target = "fluxReportDocument", expression = "java(getFluxReportDocument(fluxfaReportMessage.getFLUXReportDocument(), fluxFaReportMessage))")
-    })
-    public abstract FluxFaReportMessageEntity mapToFluxFaReportMessage(FLUXFAReportMessage fluxfaReportMessage, FaReportSourceEnum faReportSourceEnum, @MappingTarget FluxFaReportMessageEntity fluxFaReportMessage);
-
-    protected Set<FaReportDocumentEntity>  getFaReportDocuments(List<FAReportDocument> faReportDocuments,
-                                                                FaReportSourceEnum faReportSourceEnum,
-                                                                FluxFaReportMessageEntity fluxFaReportMessage){
+    private Set<FaReportDocumentEntity> mapFaReportDocuments(FluxFaReportMessageMappingContext ctx, List<FAReportDocument> faReportDocuments, FaReportSourceEnum faReportSourceEnum, FluxFaReportMessageEntity fluxFaReportMessage){
         Set<FaReportDocumentEntity> faReportDocumentEntities = new HashSet<>();
         for (FAReportDocument faReportDocument : faReportDocuments) {
-            FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, new FaReportDocumentEntity(), faReportSourceEnum);
+            FaReportDocumentEntity entity = FaReportDocumentMapper.INSTANCE.mapToFAReportDocumentEntity(faReportDocument, faReportSourceEnum);
+            VesselTransportMeans specifiedVesselTransportMeans = faReportDocument.getSpecifiedVesselTransportMeans();
+            Set<VesselTransportMeansEntity> vesselTransportMeansEntities = FaReportDocumentMapper.mapVesselTransportMeansEntity(specifiedVesselTransportMeans, entity);
+            Set<FishingActivityEntity> fishingActivityEntities = new HashSet<>();
+            if (CollectionUtils.isNotEmpty(vesselTransportMeansEntities)){
+                VesselTransportMeansEntity vessTraspMeans = vesselTransportMeansEntities.iterator().next();
+                fishingActivityEntities = FaReportDocumentMapper.mapFishingActivityEntities(ctx, faReportDocument.getSpecifiedFishingActivities(), entity, vessTraspMeans);
+                vessTraspMeans.setFaReportDocument(entity);
+            }
+            entity.setFishingActivities(fishingActivityEntities);
             entity.setFluxFaReportMessage(fluxFaReportMessage);
+            entity.setVesselTransportMeans(vesselTransportMeansEntities);
             faReportDocumentEntities.add(entity);
         }
         return faReportDocumentEntities;
-    }
-
-    protected FluxReportDocumentEntity getFluxReportDocument(FLUXReportDocument fluxReportDocument, FluxFaReportMessageEntity fluxFaReportMessage){
-        if(fluxReportDocument == null){
-            return null;
-        }
-        FluxReportDocumentEntity entity = FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocumentEntity(fluxReportDocument);
-        entity.setFluxFaReportMessage(fluxFaReportMessage);
-        return entity;
     }
 
 }

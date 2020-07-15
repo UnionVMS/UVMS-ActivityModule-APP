@@ -13,43 +13,27 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "activity_flap_document")
 @Data
 @NoArgsConstructor
+@ToString(of = {"flapDocumentId", "flapDocumentSchemeId", "flapTypeCode", "flapTypeCodeListId"})
+@EqualsAndHashCode(of = {"flapDocumentId", "flapDocumentSchemeId", "flapTypeCode", "flapTypeCodeListId"})
 public class FlapDocumentEntity implements Serializable {
 
     @Id
     @Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "flap_doc_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_flap_document", sequenceName = "flap_doc_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_flap_document")
     private int id;
-
-    @ManyToOne
-    @JoinColumn(name = "fishing_activity_id")
-    private FishingActivityEntity fishingActivity;
-
-    @ManyToOne
-    @JoinColumn(name = "vessel_transport_means_id")
-    private VesselTransportMeansEntity vesselTransportMeans;
-
-    @OneToOne(mappedBy = "flapDocument")
-    private FluxCharacteristicEntity fluxCharacteristic;
 
     @Column(name = "flap_document_id")
     private String flapDocumentId;
@@ -62,5 +46,16 @@ public class FlapDocumentEntity implements Serializable {
 
     @Column(name = "flap_type_code_list_id")
     private String flapTypeCodeListId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fishing_activity_id")
+    private FishingActivityEntity fishingActivity;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "vessel_transport_means_id")
+    private VesselTransportMeansEntity vesselTransportMeans;
+
+    @OneToOne(mappedBy = "flapDocument")
+    private FluxCharacteristicEntity fluxCharacteristic;
 
 }

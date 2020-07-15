@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView;
@@ -24,6 +25,10 @@ public class TripOverviewDto {
 
     @JsonView(FishingActivityView.CommonView.class)
     private List<TripIdDto> tripId;
+
+    @JsonView(FishingActivityView.CommonView.class)
+    @JsonProperty(value = "tripTypeCode")
+    private String typeCode;
 
     @JsonView(FishingActivityView.CommonView.class)
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -67,5 +72,13 @@ public class TripOverviewDto {
 
     public void setLandingTime(Date landingTime) {
         this.landingTime = landingTime;
+    }
+
+    public String getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
     }
 }

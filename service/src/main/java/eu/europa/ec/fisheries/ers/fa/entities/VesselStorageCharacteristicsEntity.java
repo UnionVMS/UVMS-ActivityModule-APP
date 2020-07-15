@@ -40,8 +40,8 @@ public class VesselStorageCharacteristicsEntity implements Serializable {
 
 	@Id
 	@Column(unique = true, nullable = false)
-    @SequenceGenerator(name = "SEQ_GEN", sequenceName = "str_char_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN")
+    @SequenceGenerator(name = "SEQ_GEN_activity_vessel_storage_characteristics", sequenceName = "str_char_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_GEN_activity_vessel_storage_characteristics")
     private int id;
 
 	@Column(name = "vessel_id")

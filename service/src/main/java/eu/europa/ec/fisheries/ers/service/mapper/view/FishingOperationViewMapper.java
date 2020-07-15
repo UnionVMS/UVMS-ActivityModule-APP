@@ -26,6 +26,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselStorageCharacteristicsMap
 import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import org.apache.commons.collections.CollectionUtils;
+import org.mapstruct.factory.Mappers;
 
 public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
@@ -38,8 +39,8 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
         detailsDto.setOccurrence(faEntity.getOccurence());
         detailsDto.setVesselActivity(faEntity.getVesselActivityCode());
 
-        if (faEntity.getOperationQuantity() != null) {
-            detailsDto.setNrOfOperation(faEntity.getOperationQuantity().intValue());
+        if (faEntity.getOperationsQuantity() != null && faEntity.getOperationsQuantity().getValue() != null) {
+            detailsDto.setNrOfOperation(faEntity.getOperationsQuantity().getValue().intValue());
         }
 
         detailsDto.setFisheryType(faEntity.getFisheryTypeCode());
@@ -56,13 +57,13 @@ public class FishingOperationViewMapper extends BaseActivityViewMapper {
 
         viewDTO.setReportDetails(this.getReportDocsFromEntity(faEntity.getFaReportDocument()));
 
-        viewDTO.setCatches(this.mapCatchesToGroupDto(faEntity));
+        viewDTO.setCatches(mapCatchesToGroupDto(faEntity));
 
         viewDTO.setProcessingProducts(this.getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
 
         viewDTO.setGearProblems(GearShotRetrievalTileMapper.INSTANCE.mapGearProblemsToGearsDto(faEntity.getGearProblems()));
 
-        viewDTO.setGearShotRetrievalList(GearShotRetrievalTileMapperImpl.INSTANCE.mapFromRelatedFishingActivities(faEntity));
+        viewDTO.setGearShotRetrievalList(Mappers.getMapper(GearShotRetrievalTileMapper.class).INSTANCE.mapFromRelatedFishingActivities(faEntity));
 
         Set<FluxLocationDto> fluxLocationDtos = mapFromFluxLocation(faEntity.getFluxLocations());
 

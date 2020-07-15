@@ -37,8 +37,8 @@ public class FishingTripSummaryViewDTO {
     @JsonProperty("messagesCount")
     private MessageCountDTO messagesCount;
 
-    @JsonProperty("cronology")
-    private List<CronologyDTO> cronology;
+    @JsonProperty("chronology")
+    private List<ChronologyDTO> chronology;
 
     @JsonProperty("currentTripId")
     private String currentTripId;
@@ -73,14 +73,14 @@ public class FishingTripSummaryViewDTO {
         this.messagesCount = messagesCount;
     }
 
-    @JsonProperty("cronology")
-    public List<CronologyDTO> getCronology() {
-        return cronology;
+    @JsonProperty("chronology")
+    public List<ChronologyDTO> getChronology() {
+        return chronology;
     }
 
-    @JsonProperty("cronology")
-    public void setCronology(List<CronologyDTO> cronology) {
-        this.cronology = cronology;
+    @JsonProperty("chronology")
+    public void setChronology(List<ChronologyDTO> chronology) {
+        this.chronology = chronology;
     }
 
     @JsonProperty("currentTripId")

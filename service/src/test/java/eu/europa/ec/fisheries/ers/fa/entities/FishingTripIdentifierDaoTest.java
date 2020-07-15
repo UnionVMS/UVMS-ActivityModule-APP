@@ -14,16 +14,16 @@
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static junit.framework.TestCase.assertNotNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * Created by sanera on 06/09/2016.
@@ -37,39 +37,23 @@ public class FishingTripIdentifierDaoTest extends BaseErsFaDaoTest {
         super.prepare();
     }
 
-    @Test
-    @SneakyThrows
-    public void testGetCurrentTrip() throws Exception {
-        dbSetupTracker.skipNextLaunch();
-        FishingTripIdentifierEntity fishingTrip = dao.getCurrentTrip("CFR123", "CFR");
-        assertNotNull(fishingTrip);
-        assertEquals(fishingTrip.getTripId(), "NOR-TRP-20160517234053706");
-        assertEquals(fishingTrip.getTripSchemeId(), "EU_TRIP_ID");
-    }
 
     @Test
     @SneakyThrows
-    public void testGetPreviousTrips() throws Exception {
+    public void testGetPreviousTrips() {
         dbSetupTracker.skipNextLaunch();
-        List<FishingTripIdentifierEntity> previousTrips = dao.getPreviousTrips("CFR123", "CFR", "NOR-TRP-20160517234053705", 5);
+        List<ChronologyData> previousTrips = dao.getPreviousTrips("AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG", DateUtils.stringToDate("2020-03-06 00:00:00 +0000"), 5).collect(Collectors.toList());
         assertNotNull(previousTrips);
         assertNotEquals(0, previousTrips.size());
     }
 
     @Test
     @SneakyThrows
-    public void testGetNextTrips() throws Exception {
+    public void testGetNextTrips() {
         dbSetupTracker.skipNextLaunch();
-        List<FishingTripIdentifierEntity> nextTrips = dao.getNextTrips("EXT_MARK123", "EXT_MARK", "NOR-TRP-20160517234053705", 5);
+        List<ChronologyData> nextTrips = dao.getNextTrips("AAAAAAAA-BBBB-CCCC-DDDD-EEEEFFFFGGGG", DateUtils.stringToDate("2020-03-06 00:00:00 +0000"), 5).collect(Collectors.toList());
         assertNotNull(nextTrips);
         assertNotEquals(0, nextTrips.size());
     }
 
-    @Test
-    @SneakyThrows
-    public void testGetCurrentTripNullReturn() throws Exception {
-        dbSetupTracker.skipNextLaunch();
-        FishingTripIdentifierEntity fishingTrip = dao.getCurrentTrip("SOME-NON-EXISTENT-VAL", "SOME-NON-EXISTENT-VAL");
-        assertNull(fishingTrip);
-    }
 }

@@ -10,6 +10,17 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import com.google.common.base.Stopwatch;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
@@ -18,34 +29,31 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.AssetModuleService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
-import eu.europa.ec.fisheries.ers.service.MdrModuleService;
-import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
-import eu.europa.ec.fisheries.ers.service.dto.view.ActivityHistoryDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ActivityHistoryDtoElement;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.dto.view.ReportDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FaReportDocumentMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.FishingTripIdWithGeometryMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityDepartureViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaIdsListWithTripIdMap;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityWithIdentifiers;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -53,20 +61,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.*;
 
 
 /**
@@ -77,6 +72,8 @@ import java.util.Set;
 @Transactional
 @Slf4j
 public class ActivityServiceBean extends BaseActivityBean implements ActivityService {
+
+    public static final String CODE_COLUMN = "code";
 
     private FaReportDocumentDao faReportDocumentDao;
 
@@ -105,41 +102,24 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * {@inheritDoc}
      */
     @Override
-    public List<FaReportCorrectionDTO> getFaReportCorrections(String refReportId, String refSchemeId) throws ServiceException {
-        List<FaReportDocumentEntity> faReportDocumentEntities = getReferencedFaReportDocuments(refReportId, refSchemeId);
-        List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(faReportDocumentEntities);
+    public List<FaReportCorrectionDTO> getFaReportHistory(String refReportId, String refSchemeId) {
+        FaReportDocumentEntity faReport = faReportDocumentDao.findFaReportByIdAndScheme(refReportId, refSchemeId);
+        List<FaReportDocumentEntity> historyOfFaReport = faReportDocumentDao.getHistoryOfFaReport(faReport, new ArrayList<FaReportDocumentEntity>());
+        List<FaReportCorrectionDTO> faReportCorrectionDTOs = FaReportDocumentMapper.INSTANCE.mapToFaReportCorrectionDtoList(historyOfFaReport);
         log.info("Sort collection by date before sending");
         Collections.sort(faReportCorrectionDTOs);
         return faReportCorrectionDTOs;
     }
 
-    private List<FaReportDocumentEntity> getReferencedFaReportDocuments(String refReportId, String refSchemeId) throws ServiceException {
-        if (refReportId == null || refSchemeId == null) {
-            return Collections.emptyList();
-        }
-        log.info("Find reference fishing activity report for : " + refReportId + " scheme Id : " + refReportId);
-        List<FaReportDocumentEntity> allFaReportDocuments = new ArrayList<>();
-        FaReportDocumentEntity faReportDocumentEntity = faReportDocumentDao.findFaReportByIdAndScheme(refReportId, refSchemeId);
-        if (faReportDocumentEntity != null) {
-            allFaReportDocuments.add(faReportDocumentEntity);
-            allFaReportDocuments.addAll(getReferencedFaReportDocuments(faReportDocumentEntity.getFluxReportDocument().getReferenceId(),
-                    faReportDocumentEntity.getFluxReportDocument().getReferenceSchemeId()));
-        }
-        return allFaReportDocuments;
-    }
-
     @Override
     public FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
-
         List<FishingActivityEntity> activityList;
-        log.debug("FishingActivityQuery received : {}", query);
-
+        log.debug("[INFO] FishingActivityQuery received : {}", query);
         // Get the VesselTransportMeans guids from Assets if one of the Vessel related filters (VESSEL, VESSEL_GROUP) has been issued.
         // Returning true means that the query didn't produce results.
         if (checkAndEnrichIfVesselFiltersArePresent(query)) {
             return createResultDTO(null, 0);
         }
-
         // Check if any filters are present. If not, We need to return all fishing activity data
         String areaWkt = getRestrictedAreaGeom(datasets);
         log.debug("Geometry for the user received from USM : " + areaWkt);
@@ -153,10 +133,8 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
         separateSingleVsMultipleFilters(query);
         activityList = fishingActivityDao.getFishingActivityListByQuery(query);
-
         int totalCountOfRecords = getRecordsCountForFilterFishingActivityReports(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
-
         return createResultDTO(activityList, totalCountOfRecords);
     }
 
@@ -178,13 +156,11 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         Map<SearchFilter, String> searchCriteriaMap = query.getSearchCriteriaMap();
         Map<SearchFilter, List<String>> searchCriteriaMapMultipleValues = query.getSearchCriteriaMapMultipleValues();
         List<String> guidsFromAssets;
-
-        if(searchCriteriaMap ==null)
+        if (searchCriteriaMap == null)
             return false;
-
-        String vesselSearchStr      = searchCriteriaMap.get(SearchFilter.VESSEL);
+        String vesselSearchStr = searchCriteriaMap.get(SearchFilter.VESSEL);
         String vesselGroupSearchStr = searchCriteriaMap.get(SearchFilter.VESSEL_GROUP);
-        if(StringUtils.isNotEmpty(vesselSearchStr) || StringUtils.isNotEmpty(vesselGroupSearchStr)){
+        if (StringUtils.isNotEmpty(vesselSearchStr) || StringUtils.isNotEmpty(vesselGroupSearchStr)) {
             guidsFromAssets = assetsServiceBean.getAssetGuids(vesselSearchStr, vesselGroupSearchStr);
             if (CollectionUtils.isEmpty(guidsFromAssets)) {
                 return true;
@@ -208,26 +184,34 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * @throws ServiceException
      */
     @Override
-    public FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, List<Dataset> datasets, ActivityViewEnum view) throws ServiceException {
+    public FishingActivityViewDTO getFishingActivityForView(Integer activityId, String tripId, Integer reportId, List<Dataset> datasets, ActivityViewEnum view, boolean withHistory) throws ServiceException {
         Geometry geom = getRestrictedAreaGeometry(datasets);
-        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(activityId, geom);
-
-        if (activityEntity == null)
+        FishingActivityEntity activityEntityFound = fishingActivityDao.getFishingActivityById(activityId, geom);
+        if (activityEntityFound == null){
             throw new ServiceException("Could not find FishingActivityEntity for the given id:" + activityId);
-
-        log.debug("FishingActivityEntity fetched from database with id:" + activityEntity.getId());
-        FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntity);
-        fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntity, tripId));
+        }
+        log.debug("FishingActivityEntity fetched from database with id:" + activityEntityFound.getId());
+        FishingActivityViewDTO fishingActivityViewDTO = ActivityViewMapperFactory.getMapperForView(view).mapFaEntityToFaDto(activityEntityFound);
+        if (reportId != null && (activityEntityFound.getFaReportDocument().getId() !=  reportId)) { // Means we're fetching a correcter/deleter report - which is not directly related to the activity -!
+            FaReportDocumentEntity corrOrDeletionReport = faReportDocumentDao.findEntityById(FaReportDocumentEntity.class, reportId);
+            ReportDocumentDto repDocDTO = ActivityDepartureViewMapper.INSTANCE.getReportDocsFromEntity(corrOrDeletionReport);
+            fishingActivityViewDTO.setReportDetails(repDocDTO);
+        }
+        fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntityFound, tripId));
         log.debug("fishingActivityView generated after mapping is :" + fishingActivityViewDTO);
         addPortDescriptions(fishingActivityViewDTO, "LOCATION");
-        fishingActivityViewDTO.setTripDetails(fishingTripServiceBean.getTripWidgetDto(activityEntity,tripId));
-        fishingActivityViewDTO.setHistory(getActivityHistoryDto(activityEntity));
-        log.debug("fishingActivityView generated after mapping is :"+fishingActivityViewDTO);
+        if(withHistory){
+            Stopwatch stopwatch = Stopwatch.createStarted();
+            fishingActivityViewDTO.setHistory(getActivityHistory(activityEntityFound));
+            stopwatch.stop();
+            log.info("It took [ {} ] seconds to get the history.", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        }
+        log.debug("fishingActivityView generated after mapping is :" + fishingActivityViewDTO);
         return fishingActivityViewDTO;
     }
 
     @Override
-    public GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) throws ServiceException {
+    public GetFishingActivitiesForTripResponse getFaAndTripIdsFromTripIds(List<FishingActivityForTripIds> faAndTripIds) {
         GetFishingActivitiesForTripResponse response = new GetFishingActivitiesForTripResponse();
         List<FaIdsListWithTripIdMap> responseList = new ArrayList<>();
         response.setFaWithIdentifiers(responseList);
@@ -285,14 +269,11 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         Map<SearchFilter, List<String>> searchMapWithMultipleValues = query.getSearchCriteriaMapMultipleValues();
         if (searchMapWithMultipleValues == null || searchMapWithMultipleValues.size() == 0 || searchMapWithMultipleValues.get(SearchFilter.PURPOSE) == null)
             throw new ServiceException("No purpose code provided for the Fishing activity filters! At least one needed!");
-
         Map<SearchFilter, String> searchMap = query.getSearchCriteriaMap();
         if (searchMap == null)
             return;
-
         validateInputFilters(searchMapWithMultipleValues);
         Set<SearchFilter> filtersWhichSupportMultipleValues = FilterMap.getFiltersWhichSupportMultipleValues();
-
         Iterator<Map.Entry<SearchFilter, String>> searchMapIterator = searchMap.entrySet().iterator();
         while (searchMapIterator.hasNext()) {
             Map.Entry<SearchFilter, String> e = searchMapIterator.next();
@@ -308,16 +289,13 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
                 searchMapIterator.remove();
             }
         }
-
         query.setSearchCriteriaMapMultipleValues(searchMapWithMultipleValues);
         query.setSearchCriteriaMap(searchMap);
     }
 
     private void validateInputFilters(Map<SearchFilter, List<String>> searchMapWithMultipleValues) throws ServiceException {
         if (MapUtils.isNotEmpty(searchMapWithMultipleValues)) {
-            Iterator<Map.Entry<SearchFilter, List<String>>> searchMapIterator = searchMapWithMultipleValues.entrySet().iterator();
-            while (searchMapIterator.hasNext()) {
-                Map.Entry<SearchFilter, List<String>> e = searchMapIterator.next();
+            for (Map.Entry<SearchFilter, List<String>> e : searchMapWithMultipleValues.entrySet()) {
                 SearchFilter key = e.getKey();
                 List<String> values = e.getValue();
                 if (values.contains(null) || values.contains("")) {
@@ -331,7 +309,6 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
      * Query to calculate total number of result set
      */
     private Integer getRecordsCountForFilterFishingActivityReports(FishingActivityQuery query) throws ServiceException {
-        log.info(" Get total pages count");
         return fishingActivityDao.getCountForFishingActivityListByQuery(query);
     }
 
@@ -346,16 +323,86 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
         for (FishingActivityEntity entity : activityList) {
-            activityReportDTOList.add(FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity));
+            FishingActivityReportDTO fishingActivityReportDTO = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity);
+            // Switch the report ids if this activity was canceled or deleted (needed from FE to display correctly)
+            if(fishingActivityReportDTO.getCancelingReportID() != 0){
+                fishingActivityReportDTO.setFaReportID(fishingActivityReportDTO.getCancelingReportID());
+            } else if(fishingActivityReportDTO.getDeletingReportID() != 0){
+                fishingActivityReportDTO.setFaReportID(fishingActivityReportDTO.getDeletingReportID());
+            }
+            // If it is a correction then we need to switch back the purpose code to the one of the original report.
+            String correctionPurposeCode = FaReportStatusType.UPDATED.getPurposeCode().toString();
+            if(correctionPurposeCode.equals(entity.getFaReportDocument().getFluxReportDocument().getPurposeCode())){
+                fishingActivityReportDTO.setPurposeCode(correctionPurposeCode);
+            }
+
+            // In case of a deleted or cancelled correction
+            FaReportStatusType status = FaReportStatusType.valueOf(entity.getFaReportDocument().getStatus());
+            if(FaReportStatusType.CANCELED.equals(status) || FaReportStatusType.DELETED.equals(status)){
+                fishingActivityReportDTO.setPurposeCode(status.getPurposeCode().toString());
+            }
+
+            activityReportDTOList.add(fishingActivityReportDTO);
         }
+        enrichActivityReportsFromAssetClass(activityReportDTOList);
         return activityReportDTOList;
+    }
+
+    private void enrichActivityReportsFromAssetClass(final List<FishingActivityReportDTO> activityReportDTOS){
+        FishingTripIdWithGeometryMapper mapper = new FishingTripIdWithGeometryMapper();
+
+        Set<String> cfrSet = activityReportDTOS.stream()
+                .map(s -> s.getVesselIdTypes().get(CFR.name()))
+                .filter(s -> s != null)
+                .collect(Collectors.toSet());
+        Set<Asset> assets = mapper.retrieveVesselIdentifiersFromAssetModule(cfrSet,assetsServiceBean);
+
+        activityReportDTOS.forEach( t-> {
+            String cfr  = t.getVesselIdTypes().get(CFR.name());
+            if(cfr == null ){
+                return;
+            }
+
+            Map<String,String> vesselIdentifierEntry = t.getVesselIdTypes();
+            Set<VesselIdentifierSchemeIdEnum> presentIdentifierEnums =
+                    vesselIdentifierEntry.keySet().stream().map(VesselIdentifierSchemeIdEnum::valueOf).collect(Collectors.toSet());
+
+            Stream.of(VesselIdentifierSchemeIdEnum.values())
+                .filter(l -> !presentIdentifierEnums.contains(l))
+                .forEach(l -> {
+                    assets.stream().filter(a -> cfr.equals(a.getCfr())).findFirst().ifPresent( asset -> {
+                        switch(l){
+                            case UVI:
+                                addVesselTypes(t,asset.getUvi(),UVI);
+                                break;
+                            case GFCM:
+                                addVesselTypes(t,asset.getGfcm(),GFCM);
+                                break;
+                            case EXT_MARK:
+                                addVesselTypes(t,asset.getExternalMarking(),EXT_MARK);
+                                break;
+                            case IRCS:
+                                addVesselTypes(t,asset.getIrcs(),IRCS);
+                                break;
+                            case ICCAT:
+                                addVesselTypes(t,asset.getIccat(),ICCAT);
+                                break;
+                        }
+                    });
+                });
+        });
+    }
+
+    private void addVesselTypes(FishingActivityReportDTO fishingActivityReport,String identifier,VesselIdentifierSchemeIdEnum schemeIdEnum) {
+        if(identifier !=null) {
+            fishingActivityReport.getVesselIdTypes().put(schemeIdEnum.name(), identifier);
+        }
     }
 
     private Geometry getRestrictedAreaGeometry(List<Dataset> datasets) throws ServiceException {
         if (datasets == null || datasets.isEmpty()) {
             return null;
         }
-
         try {
             List<AreaIdentifierType> areaIdentifierTypes = UsmUtils.convertDataSetToAreaId(datasets);
             String areaWkt = spatialModule.getFilteredAreaGeom(areaIdentifierTypes);
@@ -382,20 +429,14 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         if (fishingActivityViewDTO == null || StringUtils.isBlank(fluxLocationIdSchemeId)) {
             return;
         }
-
         final String ACRONYM = "LOCATION";
-        String filter = null;
-        final List<String> columnsList = new ArrayList<String>(Arrays.asList("code"));
-        Integer nrOfResults = 1;
-
         if (CollectionUtils.isNotEmpty(fishingActivityViewDTO.getLocations())) {
             for (FluxLocationDto fluxLocationDto : fishingActivityViewDTO.getLocations()) {
                 if (fluxLocationIdSchemeId.equals(fluxLocationDto.getFluxLocationIdentifierSchemeId())) {
                     try {
-                        filter = fluxLocationDto.getFluxLocationIdentifier();
-                        List<String> codeDescriptions = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "description").get("description");
-                        String codeDescription = codeDescriptions.get(0);
-                        fluxLocationDto.setPortDescription(codeDescription);
+                        String filter = fluxLocationDto.getFluxLocationIdentifier();
+                        Map<String,String> codeDescription = mdrModuleService.getPortDescriptionFromMdr(ACRONYM,filter);
+                        fluxLocationDto.setPortDescription(codeDescription.get(filter));
                     } catch (ServiceException e) {
                         log.error("Error while trying to set port description on FluxLocationDto.", e);
                     } catch (IndexOutOfBoundsException iobe) {
@@ -408,39 +449,74 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     }
 
     /**
-     * Find out previous and next fishing Activity for the activityEntity passed to the method
-     * @param activityEntity
-     * @return ActivityHistoryDto
+     *  Return the full history of this activity.
+     *
+     * @param fishingActivity
+     * @return
      */
-    public ActivityHistoryDto getActivityHistoryDto(FishingActivityEntity activityEntity){
-        ActivityHistoryDto activityHistoryDto = new ActivityHistoryDto();
-        int fishingActivityId = activityEntity.getId();
-        String fishingActivityType= activityEntity.getTypeCode();
-        Date fishingActivityTime= activityEntity.getCalculatedStartTime();
-         if(fishingActivityType ==null || fishingActivityTime ==null){
-             log.error("fishingActivityType or fishingActivityTime ");
-             return activityHistoryDto;
-         }
-        log.info(" Activity for which history to be found:"+fishingActivityId +" fishingActivityType:"+fishingActivityType +" fishingActivityTime:"+DateUtils.parseUTCDateToString(fishingActivityTime));
-
-        activityHistoryDto.setPreviousId(fishingActivityDao.getPreviousFishingActivityId(fishingActivityId,fishingActivityType,fishingActivityTime));
-        activityHistoryDto.setNextId(fishingActivityDao.getNextFishingActivityId(fishingActivityId,fishingActivityType,fishingActivityTime));
-
-        return activityHistoryDto;
+    private List<ActivityHistoryDtoElement> getActivityHistory(FishingActivityEntity fishingActivity) {
+        if (fishingActivity == null || fishingActivity.getFaReportDocument() == null) {
+            log.error("fishingActivity or fishingActivityTime ");
+            return new ArrayList<>();
+        }
+        return mapFromReportsToActivityHistory(faReportDocumentDao.getHistoryOfFaReport(fishingActivity.getFaReportDocument(), new ArrayList<>()), fishingActivity.getTypeCode());
     }
 
-    public int getPreviousFishingActivity(int fishingActivityId){
-        log.info(" Retrieve fishing activity from db:"+fishingActivityId);
-        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId,null);
-        log.info(" activityEntity received from db Id:"+activityEntity.getId()+ " typeCode: "+activityEntity.getTypeCode()+" Date:"+ DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
-        return fishingActivityDao.getPreviousFishingActivityId(activityEntity.getId(),activityEntity.getTypeCode(),activityEntity.getCalculatedStartTime());
+    private List<ActivityHistoryDtoElement> mapFromReportsToActivityHistory(List<FaReportDocumentEntity> fullHistoryReportsList, String activityType) {
+        List<ActivityHistoryDtoElement> dtoElements = new ArrayList<>();
+        if(CollectionUtils.isEmpty(fullHistoryReportsList)){
+            return dtoElements;
+        }
+        for (FaReportDocumentEntity faRep : fullHistoryReportsList) {
+            Integer purposeCode = Integer.valueOf(faRep.getFluxReportDocument().getPurposeCode());
+            Set<FishingActivityEntity> fishingActivities = faRep.getFishingActivities();
+            List<Integer> acticityIds = new ArrayList<>();
+            if(CollectionUtils.isNotEmpty(fishingActivities)){ // In case of deletion or cancellation report this list is empty..
+                for (FishingActivityEntity fishingActivity : fishingActivities) {
+                    if(StringUtils.equals(fishingActivity.getTypeCode(), activityType)){
+                        acticityIds.add(fishingActivity.getId());
+                    }
+                }
+            } else if(purposeCode == 1 || purposeCode == 3){ // in deletion/cancellation cases we need to populate the activityIds from the report this one deleted
+                String referenceId = faRep.getFluxReportDocument().getReferenceId();
+                for (FaReportDocumentEntity faFromHistory : fullHistoryReportsList) {
+                    if(referenceId.equalsIgnoreCase(faFromHistory.getFluxReportDocument().getFluxReportIdentifiers().iterator().next().getFluxReportIdentifierId())){
+                        for (FishingActivityEntity fishingActivity : faFromHistory.getFishingActivities()) {
+                            acticityIds.add(fishingActivity.getId());
+                        }
+                    }
+                }
+
+            }
+            dtoElements.add(new ActivityHistoryDtoElement(faRep.getId(), faRep.getAcceptedDatetime(), purposeCode, acticityIds));
+        }
+        Collections.sort(dtoElements);
+        return dtoElements;
+    }
+
+    public int getPreviousFishingActivity(int fishingActivityId) {
+        log.info(" Retrieve fishing activity from db:" + fishingActivityId);
+        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
+        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return fishingActivityDao.getPreviousFishingActivityId(activityEntity.getId(), activityEntity.getTypeCode(), activityEntity.getCalculatedStartTime());
     }
 
 
-    public int getNextFishingActivity(int fishingActivityId){
-        log.info(" Retrieve fishing activity from db:"+fishingActivityId);
-        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId,null);
-        log.info(" activityEntity received from db Id:"+activityEntity.getId()+ " typeCode: "+activityEntity.getTypeCode()+" Date:"+ DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
-        return fishingActivityDao.getNextFishingActivityId(activityEntity.getId(),activityEntity.getTypeCode(),activityEntity.getCalculatedStartTime());
+    public int getNextFishingActivity(int fishingActivityId) {
+        log.info(" Retrieve fishing activity from db:" + fishingActivityId);
+        FishingActivityEntity activityEntity = fishingActivityDao.getFishingActivityById(fishingActivityId, null);
+        log.info(" activityEntity received from db Id:" + activityEntity.getId() + " typeCode: " + activityEntity.getTypeCode() + " Date:" + DateUtils.parseUTCDateToString(activityEntity.getCalculatedStartTime()));
+        return fishingActivityDao.getNextFishingActivityId(activityEntity.getId(), activityEntity.getTypeCode(), activityEntity.getCalculatedStartTime());
+    }
+
+    @Override
+    public FaReportDocumentEntity findFaReportByFluxReportIdentifierRefIdAndRefScheme(String reportRefId, String schemeId) {
+        return faReportDocumentDao.findFaReportByFluxReportIdentifierRefIdAndRefScheme(reportRefId, schemeId);
+    }
+
+    @Override
+    public List<FaReportDocumentEntity> findFaReportDocumentsByTripId(String tripId, Boolean consolidated) {
+        String consolidatedString = consolidated ? "Y" : "N";
+        return faReportDocumentDao.loadReports(tripId, consolidatedString);
     }
 }

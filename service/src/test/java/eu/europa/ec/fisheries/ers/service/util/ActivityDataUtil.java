@@ -26,15 +26,12 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxPartyIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.RegistrationEventEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.RegistrationLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionClassCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,28 +70,6 @@ public class ActivityDataUtil {
         return fluxReportDocumentEntity;
     }
 
-    public static RegistrationLocationEntity getRegistrationLocationEntity(String description, String regionCode, String regionCodeListId, String name, String typeCode, String typeCodeListId, String locationCountryId, String locationCountrySchemeId) {
-        RegistrationLocationEntity registrationLocationEntity = new RegistrationLocationEntity();
-        registrationLocationEntity.setDescription(description);
-        registrationLocationEntity.setRegionCode(regionCode);
-        registrationLocationEntity.setRegionCodeListId(regionCodeListId);
-        registrationLocationEntity.setName(name);
-        registrationLocationEntity.setTypeCode(typeCode);
-        registrationLocationEntity.setTypeCodeListId(typeCodeListId);
-        registrationLocationEntity.setLocationCountryId(locationCountryId);
-        registrationLocationEntity.setLocationCountrySchemeId(locationCountrySchemeId);
-        return registrationLocationEntity;
-    }
-
-    public static RegistrationEventEntity getRegistrationEventEntity(String description, Date OccurrenceDatetime, RegistrationLocationEntity registrationLocation) {
-        RegistrationEventEntity registrationEventEntity = new RegistrationEventEntity();
-        registrationEventEntity.setDescription(description);
-        registrationEventEntity.setOccurrenceDatetime(OccurrenceDatetime);
-        registrationEventEntity.setRegistrationLocation(registrationLocation);
-        return registrationEventEntity;
-    }
-
-
     public static VesselTransportMeansEntity getVesselTransportMeansEntity(String roleCode, String roleCodeListId, String name, RegistrationEventEntity registrationEventEntity) {
         VesselTransportMeansEntity vesselTransportMeansEntity = new VesselTransportMeansEntity();
         vesselTransportMeansEntity.setRoleCode(roleCode);
@@ -104,14 +79,14 @@ public class ActivityDataUtil {
         return vesselTransportMeansEntity;
     }
 
-    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Date acceptedDatetime, FluxReportDocumentEntity fluxReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, String status) {
+    public static FaReportDocumentEntity getFaReportDocumentEntity(String typeCode, String typeCodeListId, Date acceptedDatetime, FluxReportDocumentEntity fluxReportDocumentEntity, VesselTransportMeansEntity vesselTransportMeansEntity, FaReportStatusType status) {
         FaReportDocumentEntity faReportDocumentEntity = new FaReportDocumentEntity();
         faReportDocumentEntity.setTypeCode(typeCode);
         faReportDocumentEntity.setTypeCodeListId(typeCodeListId);
         faReportDocumentEntity.setAcceptedDatetime(acceptedDatetime);
         faReportDocumentEntity.setFluxReportDocument(fluxReportDocumentEntity);
         faReportDocumentEntity.setVesselTransportMeans(new HashSet<>(Arrays.asList(vesselTransportMeansEntity)));
-        faReportDocumentEntity.setStatus(status);
+        faReportDocumentEntity.setStatus(status.name());
         return faReportDocumentEntity;
     }
 
@@ -134,7 +109,7 @@ public class ActivityDataUtil {
         SizeDistributionClassCodeEntity entity = new SizeDistributionClassCodeEntity();
         entity.setClassCode(classCode);
         entity.setClassCodeListId(classCodeListId);
-        sizeDistributionEntity.setSizeDistributionClassCode(new HashSet<>(Arrays.asList(entity)));
+        sizeDistributionEntity.setSizeDistributionClassCodeEntities(new HashSet<>(Arrays.asList(entity)));
 
         sizeDistributionEntity.setCategoryCode(categoryCode);
         sizeDistributionEntity.setCategoryCodeListId(categoryCodeListId);
@@ -208,18 +183,6 @@ public class ActivityDataUtil {
         return rolesList;
     }
 
-    public static ListAssetResponse getListAssetResponse() {
-        ListAssetResponse listResponse = new ListAssetResponse();
-        Asset asset = new Asset();
-        asset.setCfr("UPDATED_CFR");
-        asset.setImo("UPDATED_IMO");
-        asset.setIrcs("UPDATED_IRCS");
-        listResponse.setCurrentPage(1);
-        listResponse.setTotalNumberOfPages(1);
-        listResponse.getAsset().add(asset);
-        return listResponse;
-    }
-
     public static Set<VesselIdentifierEntity> getVesselIdentifiers(VesselTransportMeansEntity vesselTransportMeansEntity1, String ident_, String scheme_) {
         Set<VesselIdentifierEntity> identifiers = new HashSet<>();
         VesselIdentifierEntity identifier = new VesselIdentifierEntity();
@@ -230,10 +193,6 @@ public class ActivityDataUtil {
         return identifiers;
     }
 
-    public static List<Object[]> getFaCatches() {
-        return faCatches;
-    }
-
     public static List<FaCatchEntity> getFaCatchesEntities() {
         List<FaCatchEntity> faCatchEntities = new ArrayList<>();
         FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
@@ -241,7 +200,7 @@ public class ActivityDataUtil {
         VesselTransportMeansEntity vesselTransportMeansEntity1= ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
         vesselTransportMeansEntity1.setVesselIdentifiers(ActivityDataUtil.getVesselIdentifiers(vesselTransportMeansEntity1, "IDENT_1", "CFR"));
         FaReportDocumentEntity faReportDocumentEntity1=  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
-                vesselTransportMeansEntity1, "new");
+                vesselTransportMeansEntity1, FaReportStatusType.NEW);
         FishingActivityEntity fishingActivityEntity1 = ActivityDataUtil.getFishingActivityEntity("DEPARTURE", "FLUX_FA_TYPE", DateUtils.parseToUTCDate("2014-05-27 07:47:31", "yyyy-MM-dd HH:mm:ss"), "FISHING", "FIS", faReportDocumentEntity1, null);
         SizeDistributionEntity sizeDistributionEntity = ActivityDataUtil.getSizeDistributionEntity("LSC", "FISH_SIZE_CLASS", "BFT", "FA_BFT_SIZE_CATEGORY");
 

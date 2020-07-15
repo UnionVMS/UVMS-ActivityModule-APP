@@ -8,7 +8,17 @@ without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 details. You should have received a copy of the GNU General Public License along with the IFDM Suite. If not, see <http://www.gnu.org/licenses/>.
 
  */
+
 package eu.europa.ec.fisheries.ers.service.bean;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 import eu.europa.ec.fisheries.ers.fa.dao.FaCatchDao;
 import eu.europa.ec.fisheries.ers.fa.dao.proxy.FaCatchSummaryCustomProxy;
@@ -28,18 +38,6 @@ import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Created by sanera on 17/01/2017.
- */
 @Stateless
 @Local(FaCatchReportService.class)
 @Transactional
@@ -51,8 +49,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
     @PostConstruct
     public void init() {
         initEntityManager();
-        faCatchDao = new FaCatchDao(getEntityManager());
-
+        faCatchDao = new FaCatchDao(em);
     }
 
     /**
@@ -159,7 +156,7 @@ public class FaCatchReportServiceBean extends BaseActivityBean implements FaCatc
         FACatchSummaryHelper faCatchSummaryHelper = FACatchSummaryHelperFactory.getFACatchSummaryHelper(FACatchSummaryHelperFactory.STANDARD);
 
         // Create response object for JMS
-        FACatchSummaryReportResponse faCatchSummaryReportResponse =new FACatchSummaryReportResponse();
+        FACatchSummaryReportResponse faCatchSummaryReportResponse = new FACatchSummaryReportResponse();
         faCatchSummaryReportResponse.setSummaryRecords(faCatchSummaryHelper.buildFACatchSummaryRecordList(faCatchSummaryDTO.getRecordDTOs()));
         faCatchSummaryReportResponse.setTotal(FACatchSummaryMapper.INSTANCE.mapToSummaryTable(faCatchSummaryDTO.getTotal()));
 
