@@ -77,11 +77,12 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     private String localNodeName;
 
     @PostConstruct
-    public void init() {
+    public void init() throws RuntimeException {
         try {
             localNodeName = parameterService.getParamValueById(FLUX_LOCAL_NATION_CODE);
         } catch (ConfigServiceException e) {
-            e.printStackTrace();
+            log.error("[ERROR] Could no set localNodeName in ActivityRulesModuleServiceBean!");
+            throw new RuntimeException("ConfigServiceException thrown: ", e);
         }
     }
 
