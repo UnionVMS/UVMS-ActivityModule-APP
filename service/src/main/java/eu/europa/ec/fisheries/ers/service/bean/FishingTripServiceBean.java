@@ -1243,14 +1243,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     private List<String> extractTripIds(ForwardFAReportFromPositionRequest request, String assetGuid) {
-        // THIS IS VERY EXPENSIVE, IMPLEMENT IN DB!!!
-        return faReportDocumentDao.findReportsByAssetGuidAndDatePeriod(assetGuid, request.getStartDate().toGregorianCalendar().getTime(), request.getEndDate().toGregorianCalendar().getTime()).stream()
-                .flatMap(faReport -> faReport.getFishingActivities().stream())
-                .flatMap(activity -> activity.getFishingTrips().stream())
-                .flatMap(trip -> trip.getFishingTripIdentifiers().stream())
-                .map(FishingTripIdentifierEntity::getTripId)
-                .distinct()
-                .collect(Collectors.toList());
+        return fishingTripIdentifierDao.getTripIdsReportedForAssetAndDatePeriod(assetGuid, request.getStartDate().toGregorianCalendar().getTime(), request.getEndDate().toGregorianCalendar().getTime());
     }
 
     private String getAssetGuidFromAssetModule(String assetHistGuid) throws ServiceException {
