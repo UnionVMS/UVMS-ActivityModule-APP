@@ -22,6 +22,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEv
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.FindMovementGuidsByReportIdsAndAssetGuid;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportFromPosition;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
@@ -98,6 +99,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> forwardFAReportFromPosition;
 
     @Inject
+    @FindMovementGuidsByReportIdsAndAssetGuid
+    private Event<EventMessage> findMovementGuidsByReportIdsAndAssetGuid;
+
+    @Inject
     @ActivityMessageErrorEvent
     private Event<EventMessage> errorEvent;
 
@@ -153,6 +158,9 @@ public class ActivityMessageConsumerBean implements MessageListener {
                     break;
                 case FORWARD_FA_REPORT_FROM_POSITION:
                     forwardFAReportFromPosition.fire(new EventMessage(textMessage));
+                    break;
+                case FIND_MOVEMENT_GUIDS_BY_REPORT_IDS_AND_ASSET_GUID:
+                    findMovementGuidsByReportIdsAndAssetGuid.fire(new EventMessage(textMessage));
                     break;
                 default:
                     log.error("[ Request method {} is not implemented ]", method.name());

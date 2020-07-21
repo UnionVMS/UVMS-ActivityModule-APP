@@ -33,6 +33,7 @@ import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEv
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.FindMovementGuidsByReportIdsAndAssetGuid;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportFromPosition;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
@@ -53,6 +54,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryFo
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FindMovementGuidsByReportIdsAndAssetGuidRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FindMovementGuidsByReportIdsAndAssetGuidResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportFromPositionRequest;
@@ -110,6 +113,9 @@ public class ActivityEventServiceBean implements EventService {
 
     @Inject
     private ActivityResponseQueueProducerBean activityResponseQueueProducerBean;
+
+    @Inject
+    private FishingActivityService  fishingActivityService;
 
     @Override
     public void receiveFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
@@ -265,6 +271,19 @@ public class ActivityEventServiceBean implements EventService {
             ActivityReportGenerationResults response = fishingTripService.forwardFAReportFromPosition(request);
             ActivityReportGenerationResultsRequest requestToSubscription = makeActivityReportGenerationResultsRequest(response);
             activityResponseQueueProducerBean.sendResponseMessageToSender(message.getJmsMessage(), JAXBMarshaller.marshallJaxBObjectToString(requestToSubscription));
+        } catch (ActivityModelMarshallException | MessageException | ServiceException e) {
+            sendError(message, e);
+        }
+    }
+
+    @Override
+    public void findMovementGuidsByIdentifierIdsAssetGuid(@Observes @FindMovementGuidsByReportIdsAndAssetGuid EventMessage message) {
+        try{
+            FindMovementGuidsByReportIdsAndAssetGuidRequest request = JAXBMarshaller.unmarshallTextMessage(message.getJmsMessage(), FindMovementGuidsByReportIdsAndAssetGuidRequest.class);
+            List<String> movementGuidList = fishingActivityService.findMovementGuidsByIdentifierIdsAndAssetGuid(request.getReportIds(),request.getAssetGuid());
+            FindMovementGuidsByReportIdsAndAssetGuidResponse response = new FindMovementGuidsByReportIdsAndAssetGuidResponse();
+            response.setMovementGuids(movementGuidList);
+            producer.sendResponseMessageToSender(message.getJmsMessage(), JAXBMarshaller.marshallJaxBObjectToString(response));
         } catch (ActivityModelMarshallException | MessageException | ServiceException e) {
             sendError(message, e);
         }

@@ -200,6 +200,12 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
         return query.getResultList();
     }
 
+    public List<FaReportDocumentEntity> findFaReportDocumentsByIdentifierIds(List<String> reportIds) {
+        Query query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_FA_REPORT_DOCUMENTS_BY_IDENTIFIER_IDS, FaReportDocumentEntity.class);
+        query.setParameter("reportIds", reportIds);
+        return query.getResultList();
+    }
+
     public List<FaReportDocumentEntity> loadCanceledAndDeletedReports(List<FaReportDocumentEntity> reports) {
         List<Integer> idsOfCancelledDeletedReports = new ArrayList<>();
         for (FaReportDocumentEntity report : reports) {

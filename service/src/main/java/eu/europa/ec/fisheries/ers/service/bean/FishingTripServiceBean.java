@@ -1288,6 +1288,14 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
     }
 
+    @Override
+    public List<FaReportDocumentEntity> findFaReportDocumentsByIdentifierIds(List<String> reportIds) throws ServiceException{
+        if (reportIds == null || reportIds.isEmpty()) {
+            throw new ServiceException("ReportId list was empty");
+        }
+        return faReportDocumentDao.findFaReportDocumentsByIdentifierIds(reportIds);
+    }
+
     private ActivityReportGenerationResults forwardFAReportsForLogbook(List<String> tripIds, ForwardFAReportBaseRequest request) throws ServiceException {
         try {
             Map<String, List<FaReportDocumentEntity>> tripIdToReportsMap = findReportsPerTrip(tripIds, request.isConsolidated());

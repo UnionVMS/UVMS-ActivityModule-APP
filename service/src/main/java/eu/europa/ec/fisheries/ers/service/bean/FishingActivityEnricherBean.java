@@ -6,25 +6,22 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.google.common.collect.ImmutableMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.linearref.LengthIndexedLine;
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
@@ -33,10 +30,10 @@ import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.MovementModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
+import eu.europa.ec.fisheries.ers.service.dto.DateRangeDto;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.enrichment.MovementLocationData;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMappingContext;
 import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
@@ -59,8 +56,6 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
 
     private static final String PREVIOUS = "PREVIOUS";
     private static final String NEXT = "NEXT";
-    private static final String START_DATE = "START_DATE";
-    private static final String END_DATE = "END_DATE";
 
     @EJB
     private MovementModuleService movementService;
@@ -72,16 +67,13 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
     private PropertiesBean properties;
 
     @EJB
-    private FishingTripService fishingTripService;
-
-    @EJB
     private MdrModuleService mdrModuleServiceBean;
 
     @EJB
     private SpatialModuleService spatialModuleService;
 
-    @EJB
-    private FaMessageSaverBean faMessageSaverBean;
+    @Inject
+    private FishingActivityService fishingActivityService;
 
     private DatabaseDialect dialect;
 
@@ -130,7 +122,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         if (CollectionUtils.isNotEmpty(fishingActivityEntities)) {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
                 List<Geometry> multiPointForFa = new ArrayList<>();
-                Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
+                Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : fishingActivityService.getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
                 MovementLocationData interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
                 ctx.put(fishingActivity, interpolatedPoint.getAreas());
                 for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
@@ -176,9 +168,9 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             return Collections.emptyList();
         }
         Set<VesselIdentifierEntity> vesselIdentifiers = faReportDocumentEntity.getVesselTransportMeans().iterator().next().getVesselIdentifiers();
-        Map<String, Date> dateMap = findStartAndEndDate(faReportDocumentEntity);
-        List<String> assetHistGuids = findAssetHistGuids(ctx, dateMap.get(START_DATE), nextRepVessGuids);
-        return getAllMovementsForDateRange(vesselIdentifiers, dateMap.get(START_DATE), dateMap.get(END_DATE), assetHistGuids);
+        DateRangeDto range = fishingActivityService.findStartAndEndDate(faReportDocumentEntity);
+        List<String> assetHistGuids = findAssetHistGuids(ctx, range.getStartDate(), nextRepVessGuids);
+        return getAllMovementsForDateRange(vesselIdentifiers, range.getStartDate(), range.getEndDate(), assetHistGuids);
     }
 
     private List<String> findAssetHistGuids(FluxFaReportMessageMappingContext ctx, Date occurrenceDate, List<String> nextRepVessGuids) throws ServiceException {
@@ -196,8 +188,8 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
     /**
      * Find geometry for fluxLocation code in MDR
      *
-     * @param fluxLocationIdentifier
-     * @return
+     * @param fluxLocationIdentifier The location identifier
+     * @return The geometry
      */
     private Geometry getGeometryFromMdr(String fluxLocationIdentifier) throws ServiceException {
         log.debug("[INFO] Get Geometry from MDR for : " + fluxLocationIdentifier);
@@ -284,7 +276,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
 
         MovementLocationData movementLocationData = new MovementLocationData();
         Geometry point;
-        Long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getPositionTime().getTime();
+        long durationAB = nextMovement.getPositionTime().getTime() - previousMovement.getPositionTime().getTime();
         long durationAC = acceptedDate.getTime() - previousMovement.getPositionTime().getTime();
         long durationBC = nextMovement.getPositionTime().getTime() - acceptedDate.getTime();
         try {
@@ -319,26 +311,11 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         return movementLocationData;
     }
 
-    private Map<String, Date> findStartAndEndDate(FaReportDocumentEntity faReportDocumentEntity) {
-        TreeSet<Date> dates = new TreeSet<>();
-        for (FishingActivityEntity fishingActivity : faReportDocumentEntity.getFishingActivities()) {
-            if (fishingActivity.getOccurence() != null) {
-                dates.add(fishingActivity.getOccurence());
-            } else if (CollectionUtils.isNotEmpty(fishingActivity.getDelimitedPeriods())) {
-                Date firstDate = getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
-                if (firstDate != null) {
-                    dates.add(firstDate);
-                }
-            }
-        }
-        return ImmutableMap.<String, Date>builder().put(START_DATE, dates.first()).put(END_DATE, dates.last()).build();
-    }
-
     /**
      * Get Geometry information from spatial for FLUXLocation code
      *
-     * @param fluxLocationIdentifier
-     * @return
+     * @param fluxLocationIdentifier The location identifier
+     * @return The geometry
      */
     private Geometry getGeometryFromSpatial(String fluxLocationIdentifier) throws ServiceException {
         log.debug("Get Geometry from Spatial for:" + fluxLocationIdentifier);
@@ -364,20 +341,6 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             throw new ServiceException(e.getMessage(), e);
         }
         return geometry;
-    }
-
-
-
-    private Date getFirstDateFromDelimitedPeriods(Collection<DelimitedPeriodEntity> delimitedPeriods) {
-        TreeSet<Date> set = new TreeSet<>();
-        for (DelimitedPeriodEntity delimitedPeriodEntity : delimitedPeriods) {
-            if (delimitedPeriodEntity.getStartDate() != null)
-                set.add(delimitedPeriodEntity.getStartDate());
-        }
-        if (CollectionUtils.isEmpty(set)) {
-            return null;
-        }
-        return set.first();
     }
 
     // TODO : urgent need to avoid those loops!!! Need so send one request to assets instead of looping!!
@@ -420,7 +383,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
     /**
      * This method enriches the VesselTransportMeansEntity we got from FLUX with the related GUIDs.
      *
-     * @param
+     * @param vesselTransport The vessel transport
      */
     private List<String> enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) {
         try {
@@ -434,5 +397,4 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         }
         return null;
     }
-
 }

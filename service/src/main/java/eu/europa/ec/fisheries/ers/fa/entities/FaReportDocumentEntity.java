@@ -95,6 +95,15 @@ import org.hibernate.annotations.Type;
                         "AND fishingActivity.faReportDocument.id = faReport.id  " +
                         ")"
 
+        ),
+        @NamedQuery(name = FaReportDocumentEntity.FIND_FA_REPORT_DOCUMENTS_BY_IDENTIFIER_IDS,
+                query = "SELECT faReport " +
+                        "FROM FaReportDocumentEntity faReport " +
+                        "LEFT JOIN faReport.fishingActivities fishingActivity " +
+                        "LEFT JOIN faReport.fluxReportDocument reportDocument " +
+                        "LEFT JOIN reportDocument.fluxReportIdentifiers identifiers " +
+                        "WHERE concat(identifiers.fluxReportIdentifierSchemeId,':',identifiers.fluxReportIdentifierId) IN :reportIds " +
+                        "ORDER BY faReport.id DESC "
         )
 })
 @Entity
@@ -112,6 +121,7 @@ public class FaReportDocumentEntity implements Serializable {
     public static final String FIND_BY_REF_FA_ID_AND_SCHEME = "findByRefFaId";
     public static final String FIND_BY_FLUX_REPORT_IDENTIFIER_REF_FA_ID_AND_SCHEME = "findByFluxReportIdentifierRefFaId";
     public static final String FIND_BY_ASSET_GUID_AND_DATE_PERIOD = "findByAssetGuidAndDatePeriod";
+    public static final String FIND_FA_REPORT_DOCUMENTS_BY_IDENTIFIER_IDS = "findFaReportDocumentsByIdentifierIds";
 
     @Id
     @Column(name = "id", unique = true, nullable = false)
