@@ -89,7 +89,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
                                 return 10;
                             case START_FISHING:
                                 return 11;
-                            case JOINED_FISHING_OPERATION:
+                            case JOINT_FISHING_OPERATION:
                                 return 12;
                             case START_ACTIVITY:
                                 return 13;

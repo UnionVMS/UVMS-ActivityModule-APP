@@ -125,7 +125,7 @@ public class FACatchSearchBuilder extends SearchQueryBuilder {
         sql.append(" and (" +
                 "(a.typeCode ='").append(FishingActivityTypeEnum.FISHING_OPERATION.toString()).append("' and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD)
                 .append("','").append(FaCatchTypeEnum.KEPT_IN_NET).append("','").append(FaCatchTypeEnum.BY_CATCH).append("'))  OR (a.typeCode ='").append(FishingActivityTypeEnum.RELOCATION.toString())
-                .append("' and a.relatedFishingActivity.typeCode='").append(FishingActivityTypeEnum.JOINED_FISHING_OPERATION.toString()).append("' and a.vesselTransportGuid = a.relatedFishingActivity.vesselTransportGuid  ")
+                .append("' and a.relatedFishingActivity.typeCode='").append(FishingActivityTypeEnum.JOINT_FISHING_OPERATION.toString()).append("' and a.vesselTransportGuid = a.relatedFishingActivity.vesselTransportGuid  ")
                 .append(" and faCatch.typeCode IN('").append(FaCatchTypeEnum.ONBOARD).append("','").append(FaCatchTypeEnum.TAKEN_ONBOARD)
                 .append("','").append(FaCatchTypeEnum.ALLOCATED_TO_QUOTA).append("')))");
     }
