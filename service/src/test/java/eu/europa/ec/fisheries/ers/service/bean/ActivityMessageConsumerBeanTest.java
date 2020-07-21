@@ -94,6 +94,9 @@ public class ActivityMessageConsumerBeanTest {
     @Mock @SuppressWarnings("unused")
     private Event<EventMessage> forwardFAReportFromPosition;
 
+    @Mock @SuppressWarnings("unused")
+    private Event<EventMessage> findMovementGuidsByReportIdsAndAssetGuid;
+
     @Mock
     Event<EventMessage> errorEvent;
 
