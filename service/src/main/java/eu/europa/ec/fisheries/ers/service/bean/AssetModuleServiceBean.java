@@ -60,7 +60,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             TextMessage response = activityConsumer.getMessage(correlationID, TextMessage.class);
             assetList = AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationID);
         } catch (AssetModelMapperException | MessageException e) {
-            log.error("Error while trying to get Asset List..");
             throw new ServiceException(e.getMessage(), e.getCause());
         }
         return assetList;
@@ -75,7 +74,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             TextMessage response = activityConsumer.getMessage(correlationID, TextMessage.class);
             assetList = AssetModuleResponseMapper.mapToBatchAssetListFromResponse(response, correlationID);
         } catch (AssetModelMapperException | MessageException e) {
-            log.error("Error while trying to get Asset List..");
             throw new ServiceException(e.getMessage(), e.getCause());
         }
         return assetList;
@@ -90,7 +88,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
         try {
             request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselIdentifiers));
         } catch (AssetModelMapperException e) {
-            log.error("Error while mapping vesselIdentifiers to create AssetListQuery!");
             throw new ServiceException(e.getMessage(), e.getCause());
         }
         return getGuidsFromAssets(request);
@@ -107,7 +104,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             try {
                 request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselSearchStr));
             } catch (AssetModelMapperException e) {
-                log.error("Error while trying to map the request for assets Module.");
                 throw new ServiceException(e.getMessage(), e.getCause());
             }
             guidsFromVesselSearchStr = getGuidsFromAssets(request);
@@ -119,7 +115,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             try {
                 request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetGroupQuery(vesselGroupSearch));
             } catch (AssetModelMapperException e) {
-                log.error("Error while trying to map the request for assets Module.");
                 throw new ServiceException(e.getMessage(), e.getCause());
             }
             guidsFromVesselGroup = getGuidsFromAssets(request);
@@ -144,7 +139,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
                 throw new ServiceException("FAILED TO GET DATA FROM ASSET");
             }
         } catch (ServiceException | MessageException | AssetModelMapperException e) {
-            log.error("Exception in communication with assets");
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -236,7 +230,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             TextMessage response = activityConsumer.getMessage(correlationID, TextMessage.class);
             assetHistGuid = AssetModuleResponseMapper.unmarshalFindAssetHistGuidByAssetGuidAndOccurrenceDateResponse(response);
         } catch (AssetModelMapperException | MessageException e) {
-            log.error("Error while trying to get Asset List..");
             throw new ServiceException(e.getMessage(), e.getCause());
         }
         return assetHistGuid;
@@ -252,7 +245,7 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             FindVesselIdsByAssetHistGuidResponse response = JAXBMarshaller.unmarshallTextMessage(message, FindVesselIdsByAssetHistGuidResponse.class);
             vesselIdentifiersHolder = response.getIdentifiers();
         } catch (AssetModelMapperException | MessageException e) {
-            e.printStackTrace();
+            log.warn("Could not retrieve asset vessel identifiers",e);
         }
         return vesselIdentifiersHolder;
     }

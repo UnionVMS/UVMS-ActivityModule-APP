@@ -39,12 +39,8 @@ public class ConfigMessageProducerBean extends AbstractProducer {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public String sendConfigMessage(String text) throws MessageException {
-        try {
             return sendModuleMessage(text, activityQueue);
-        } catch (MessageException e) {
-            LOG.error("[ Error when sending config message. ] {}");
-            throw e;
-        }
+
     }
 
     @Override

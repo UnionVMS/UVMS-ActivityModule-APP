@@ -86,13 +86,12 @@ public class ActivitySubscriptionServiceBean {
             String request = ActivityModuleRequestMapper.mapToForwardReportToSubscriptionRequest(faReports);
             subscriptionDataProducerBean.sendModuleMessageWithProps(request, null,  Collections.singletonMap(MessageConstants.JMS_SUBSCRIPTION_SOURCE_PROPERTY, configHelper.getModuleName()));
         } catch (ActivityModelMarshallException | MessageException e) {
-            e.printStackTrace();
+            log.warn("Error when forwarding report to subscription request",e);
         }
     }
 
     private void sendError(EventMessage message, Exception e) {
-        log.error("[ Error in activity module. ] ", e);
-        errorEvent.fire(new EventMessage(message.getJmsMessage(), ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Exception in activity [ " + e.getMessage())));
+        errorEvent.fire(new EventMessage(message.getJmsMessage(), ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Exception in activity module [ " + e.getMessage())));
     }
 
 }

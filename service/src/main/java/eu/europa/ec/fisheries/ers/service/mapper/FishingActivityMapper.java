@@ -612,7 +612,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
                 try {
                     fluxLocationSchemeId = FluxLocationSchemeId.valueOf(id.getSchemeID());
                 } catch (IllegalArgumentException e) {
-                    log.warn("Unknown schemeId for FluxLocation." + id.getSchemeID());
+                    log.warn("Unknown schemeId for FluxLocation." + id.getSchemeID(),e);
                 }
                 if (fluxLocationSchemeId != null) {
                     switch (fluxLocationSchemeId) {

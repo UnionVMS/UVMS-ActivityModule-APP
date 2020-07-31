@@ -56,7 +56,7 @@ public class FishingActivityServiceImpl implements FishingActivityService {
                     })
                     .collect(Collectors.toList());
         } catch (RuntimeServiceException e) {
-            throw (ServiceException) e.getCause();
+            throw new ServiceException(e.getMessage(),e);
         }
     }
 

@@ -81,8 +81,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
         try {
             localNodeName = parameterService.getParamValueById(FLUX_LOCAL_NATION_CODE);
         } catch (ConfigServiceException e) {
-            log.error("[ERROR] Could no set localNodeName in ActivityRulesModuleServiceBean!");
-            throw new RuntimeException("ConfigServiceException thrown: ", e);
+            throw new RuntimeException("Could no set localNodeName in ActivityRulesModuleServiceBean ", e);
         }
     }
 
@@ -125,8 +124,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 throw new ActivityModuleException("The FaQuery that was build with the following parameters [" + tripId + "," + sendTo + ",consolidated : " + consolidated + "] doesn't match to any subscription!");
             }
         } catch (MessageException | RulesModelMapperException | ActivityModelMarshallException e) {
-            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)!", e);
-            throw new ActivityModuleException("JAXBException or MessageException!", e);
+            throw new ActivityModuleException("Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules", e);
         }
     }
 
@@ -137,8 +135,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             sendFAQueryToRules(faQuery, request.getDataflow(), request.getReceiver());
             return faQuery.getID().getValue();
         } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
-            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules(...)!", e);
-            throw new ActivityModuleException("JAXBException or MessageException!", e);
+            throw new ActivityModuleException(" Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules", e);
         }
     }
 
@@ -149,8 +146,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             sendFAQueryToRules(faQuery, request.getDataflow(), request.getReceiver());
             return faQuery.getID().getValue();
         } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
-            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules(...)!", e);
-            throw new ActivityModuleException("JAXBException or MessageException!", e);
+            throw new ActivityModuleException("Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules", e);
         }
     }
 
@@ -158,7 +154,6 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
         SubscriptionPermissionResponse subscriptionPermissionResponse = permissionChecker.checkPermissionForFaQuery(faQuery);
         if (SubscriptionPermissionAnswer.YES.equals(subscriptionPermissionResponse.getSubscriptionCheck())) {
             if(StringUtils.isEmpty(dataFlow)) {
-                log.error("[ERROR] Subscription is missing the dataFlow parameter! Cannot send FaQuery! ");
                 throw new ActivityModuleException("Subscription is missing the dataFlow parameter! Cannot send FaQuery!");
             }
             String logId = faQuery.getID().getValue();
@@ -188,7 +183,6 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 }
                 // TODO : END Mocking
                 if (StringUtils.isEmpty(dataFlow)) {
-                    log.error("[ERROR] Subscription is missing the dataFlow parameter! Cannot send FaQuery! ");
                     throw new ActivityModuleException("Subscription is missing the dataFlow parameter! Cannot send FaQuery!");
                 }
                 String logId = null;
@@ -208,8 +202,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 throw new ActivityModuleException("Error while trying to prepare the transmission of FaReportMessage!");
             }
         } catch (MessageException | RulesModelMapperException | ActivityModelMarshallException e) {
-            log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules(...)!", e);
-            throw new ActivityModuleException("JAXBException or MessageException!", e);
+            throw new ActivityModuleException("Error while trying to ActivityRulesModuleService.composeAndSendTripUpdateFaQueryToRules", e);
         }
     }
 

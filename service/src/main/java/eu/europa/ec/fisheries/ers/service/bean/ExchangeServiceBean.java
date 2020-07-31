@@ -39,7 +39,7 @@ public class ExchangeServiceBean {
            log.debug("Message to exchange to update status : {}", statusMsg);
            exchangeProducerBean.sendModuleMessage(statusMsg, eventQueueConsumerBean.getDestination());
         } catch (ExchangeModelMarshallException | MessageException e) {
-            log.error("Could not update message status to technical business error with exchangeLogGuid {}", exchangeLogGuid, e);
+            log.error("Could not update message status to technical business error with exchangeLogGuid "+exchangeLogGuid, e);
         }
     }
 }

@@ -158,7 +158,7 @@ public class FaQueryFactory {
             final XMLGregorianCalendar currentDate = DateUtils.getCurrentDate();
             faq.setSubmittedDateTime(new DateTimeType(currentDate, null));
         } catch (DatatypeConfigurationException e) {
-            throw new IllegalStateException(e);
+            throw new IllegalStateException(e.getMessage(),e);
         }
         return faq;
     }

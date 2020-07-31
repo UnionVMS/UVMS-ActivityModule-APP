@@ -308,6 +308,6 @@ public class ActivityEventServiceBean implements EventService {
 
     private void sendError(EventMessage message, Exception e) {
         log.error("[ Error in activity module. ] ", e);
-        errorEvent.fire(new EventMessage(message.getJmsMessage(), ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Exception in activity [ " + e.getMessage())));
+        errorEvent.fire(new EventMessage(message.getJmsMessage(), ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Exception in activity module [ " + e.getMessage())));
     }
 }

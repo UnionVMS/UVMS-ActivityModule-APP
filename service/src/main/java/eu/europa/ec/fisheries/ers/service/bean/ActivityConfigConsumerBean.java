@@ -38,10 +38,8 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractConsumer;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigMessageException;
 import eu.europa.ec.fisheries.uvms.config.message.ConfigMessageConsumer;
-import lombok.extern.slf4j.Slf4j;
 
 @Stateless
-@Slf4j
 public class ActivityConfigConsumerBean extends AbstractConsumer implements ConfigMessageConsumer {
 
     @Override
@@ -50,8 +48,7 @@ public class ActivityConfigConsumerBean extends AbstractConsumer implements Conf
         try {
             return getMessage(correlationId, type);
         } catch (MessageException e) {
-            log.error("[ERROR] Error when getting config message..");
-            throw new ConfigMessageException("[ Error when getting config message. ]");
+            throw new ConfigMessageException("Error when getting config message.",e);
         }
     }
 

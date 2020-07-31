@@ -89,7 +89,6 @@ public class FaReportSaverBean {
         try {
             fluxFAReportMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAReportMessage.class);
         } catch (ActivityModelMarshallException e) {
-            log.error("[ERROR] Error while trying to unmarshall FLUXFAReportMessage! Cannot continue, message will be lost!");
             exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
             return;
         }
@@ -104,7 +103,7 @@ public class FaReportSaverBean {
                 log.warn("[WARN] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
             }
         } catch (Exception e){
-            log.error("[ERROR] Error while trying to Enrich faReportDocuments, the saving will continue!");
+            log.error("[ERROR] Error while trying to Enrich faReportDocuments, the saving will continue!",e);
         }
         try {
             if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
@@ -125,7 +124,7 @@ public class FaReportSaverBean {
         try {
             getNonUniqueIdsRequest = ActivityModuleRequestMapper.mapToGetNonUniqueIdRequestObject(collectAllIdsFromMessage(repMsg));
         } catch (ActivityModelMarshallException e) {
-            log.error("[ERROR] Error while trying to get the unique ids from FaReportDocumentIdentifiers table...");
+            log.error("[ERROR] Error while trying to get the unique ids from FaReportDocumentIdentifiers table...",e);
         }
         GetNonUniqueIdsResponse matchingIdsResponse = matchingIdsService.getMatchingIdsResponse(getNonUniqueIdsRequest != null ? getNonUniqueIdsRequest.getActivityUniquinessLists() : null);
         List<ActivityUniquinessList> activityUniquinessLists = matchingIdsResponse.getActivityUniquinessLists();

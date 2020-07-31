@@ -87,7 +87,7 @@ public class MDRCache {
                 log.info("No need to load MDR Cache..");
             }
         } catch (MdrLoadingException e) {
-            log.error("Exception while trying to loadAllMdrCodeLists...");
+            log.error("Exception while trying to loadAllMdrCodeLists...",e);
         }
     }
 
@@ -104,7 +104,7 @@ public class MDRCache {
             try {
                 cache.put(type, mdrCodeListByAcronymType(type));
             } catch (MdrLoadingException e) {
-                log.error(e.getMessage());
+                log.error(e.getMessage(),e);
             }
         }
         log.info("{} lists cached", cache.size());
@@ -121,7 +121,7 @@ public class MDRCache {
                 try {
                     cache.put(acronymType, mdrCodeListByAcronymType(acronymType));
                 } catch (MdrLoadingException e) {
-                    log.error("Error when trying to refresh codelist {}", acronymType);
+                    log.error("Error when trying to refresh codelist "+acronymType, e);
                     return null;
                 }
                 result = cache.get(acronymType);
@@ -174,8 +174,7 @@ public class MDRCache {
                 cacheDateChanged = true;
             }
         } catch (MessageException e) {
-            log.error(" Couldn't populate MDR Refresh date.. MDR Module is deployed?", e);
-            throw new MdrLoadingException(e.getMessage());
+            throw new MdrLoadingException(e.getMessage(),e);
         }
         return cacheDateChanged;
     }

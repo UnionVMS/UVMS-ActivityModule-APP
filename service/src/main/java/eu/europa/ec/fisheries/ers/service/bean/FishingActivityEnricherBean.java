@@ -96,7 +96,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
                 updateGeometry(ctx, faReportDocument, nextRepVessGuids);
                 log.info("[END] Finished updating geometry with movements module..");
             } catch (Exception e) {
-                log.error("[ERROR ENRICHMENT-FAILED] Could not update Geometry OR enrich Activities for faReportDocument (asset/movement modules):" + faReportDocument.getId());
+                log.error("[ERROR ENRICHMENT-FAILED] Could not update Geometry OR enrich Activities for faReportDocument (asset/movement modules):" + faReportDocument.getId(),e);
             }
         }
         log.info("[END-ENRICHING] Enrichment finished..");
@@ -337,7 +337,6 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             }
             log.debug(" Geometry received from Spatial for:" + fluxLocationIdentifier + "  :" + geometryWkt);
         } catch (ParseException e) {
-            log.error("Exception while trying to get geometry from spatial");
             throw new ServiceException(e.getMessage(), e);
         }
         return geometry;
@@ -393,7 +392,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             }
             return guids;
         } catch (ServiceException e) {
-            log.error("[ERROR] Error while trying to get guids from Assets Module!");
+            log.error("[ERROR] Error while trying to get guids from Assets Module!",e);
         }
         return null;
     }

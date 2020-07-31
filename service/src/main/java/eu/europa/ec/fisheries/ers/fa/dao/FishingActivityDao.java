@@ -158,7 +158,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         try {
             result = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            LOG.warn("No next FishingActivity present for : " + fishingActivityId);
+            LOG.warn("No next FishingActivity present for : " + fishingActivityId,e);
         }
 
         LOG.debug("Previous Fishing Activity : " + result);
@@ -212,7 +212,7 @@ public class FishingActivityDao extends AbstractDAO<FishingActivityEntity> {
         try {
             result = typedQuery.getSingleResult();
         } catch (NoResultException e) {
-            LOG.warn("No next FishingActivity present for : " + fishingActivityId);
+            LOG.warn("No next FishingActivity present for : " + fishingActivityId,e);
         }
 
         LOG.info("Next Fishing Activity : " + result);

@@ -61,7 +61,6 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
                 throw new ServiceException("FAILED TO GET DATA FROM SPATIAL");
             }
         } catch (ServiceException | MessageException | SpatialModelMapperException e) {
-            log.error("Exception in communication with spatial while retrieving filtered area!");
             throw new ServiceException(e.getMessage(), e);
         }
     }
@@ -80,7 +79,6 @@ public class SpatialModuleServiceBean extends ModuleService implements SpatialMo
                 throw new ServiceException("FAILED TO GET GEOMETRY FROM SPATIAL");
             }
         } catch (ServiceException | MessageException | SpatialModelMapperException e) {
-            log.error("Exception in communication with spatial while retrieving GEOMETRY!");
             throw new ServiceException(e.getMessage(), e);
         }
     }

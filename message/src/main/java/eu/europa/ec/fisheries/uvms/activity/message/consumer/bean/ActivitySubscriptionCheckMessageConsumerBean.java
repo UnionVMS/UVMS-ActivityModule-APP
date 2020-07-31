@@ -69,7 +69,7 @@ public class ActivitySubscriptionCheckMessageConsumerBean implements MessageList
             }
 
         } catch (ActivityModelMarshallException | ClassCastException e) {
-            log.error("[ Error when receiving message in activity: ] {}", e);
+            log.error("[ Error when receiving message in activity: ]", e);
             errorEvent.fire(new EventMessage(textMessage, ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Error when receiving message")));
         }
     }

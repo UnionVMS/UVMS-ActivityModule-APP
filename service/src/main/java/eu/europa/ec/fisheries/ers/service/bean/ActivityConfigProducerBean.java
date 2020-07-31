@@ -40,7 +40,7 @@ public class ActivityConfigProducerBean extends AbstractProducer implements Conf
         try {
             return sendModuleMessage(textMsg, activityINQueue);
         } catch (MessageException e) {
-            log.error("[ERROR] Error while trying to send message to Config! Check ActivityConfigProducerBeanImpl..");
+            log.error("Error while trying to send message to Config! Check ActivityConfigProducerBeanImpl.."+e.getMessage(),e);
         }
         return StringUtils.EMPTY;
     }

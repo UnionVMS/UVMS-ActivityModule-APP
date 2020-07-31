@@ -73,7 +73,7 @@ public class FAQueryServiceBean implements FaQueryService {
         try {
             localNodeName = parameterService.getParamValueById(FLUX_LOCAL_NATION_CODE);
         } catch (ConfigServiceException e) {
-            e.printStackTrace();
+            log.warn("Could not retrieve value for param FLUX_LOCAL_NATION_CODE",e);
         }
     }
 

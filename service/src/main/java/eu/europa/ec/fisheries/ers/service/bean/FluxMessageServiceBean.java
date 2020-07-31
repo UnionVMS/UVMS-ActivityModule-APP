@@ -168,7 +168,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                     try {
                         persistentFaDoc = faReportDocumentDao.findEntityById(FaReportDocumentEntity.class, justSavedReport.getId());
                     } catch (ServiceException e) {
-                        log.error("Error while trying to get FaRepDoc from db.");
+                        log.error("Error while trying to get FaRepDoc from db.",e);
                         continue;
                     }
                     persistentFaDoc.setStatus(faReportStatusEnumFromDb.name());

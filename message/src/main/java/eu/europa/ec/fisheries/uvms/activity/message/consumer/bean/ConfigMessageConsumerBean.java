@@ -35,14 +35,10 @@ public class ConfigMessageConsumerBean extends AbstractConsumer {
     public String getDestinationName() {
         return MessageConstants.QUEUE_ACTIVITY;
     }
-    
+
     public <T> T getConfigMessage(String correlationId, Class type) throws MessageException {
-        try {
             return getMessage(correlationId, type);
-        } catch (MessageException e) {
-            log.error("[ Error when getting config message. ] {}", e.getMessage());
-            throw e;
-        }
+
     }
 
 }
