@@ -99,7 +99,6 @@ import org.hibernate.annotations.Type;
         @NamedQuery(name = FaReportDocumentEntity.FIND_FA_REPORT_DOCUMENTS_BY_IDENTIFIER_IDS,
                 query = "SELECT faReport " +
                         "FROM FaReportDocumentEntity faReport " +
-                        "LEFT JOIN faReport.fishingActivities fishingActivity " +
                         "LEFT JOIN faReport.fluxReportDocument reportDocument " +
                         "LEFT JOIN reportDocument.fluxReportIdentifiers identifiers " +
                         "WHERE concat(identifiers.fluxReportIdentifierSchemeId,':',identifiers.fluxReportIdentifierId) IN :reportIds " +
