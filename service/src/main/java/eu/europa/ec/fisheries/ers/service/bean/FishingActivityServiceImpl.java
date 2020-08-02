@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -50,10 +51,16 @@ public class FishingActivityServiceImpl implements FishingActivityService {
     public List<String> findMovementGuidsByIdentifierIdsAndAssetGuid(List<String> reportIds, String assetGuid) throws ServiceException {
         try {
             return fishingTripService.findFaReportDocumentsByIdentifierIds(reportIds).stream()
-                    .flatMap(report -> {
-                        DateRangeDto range = findStartAndEndDate(report);
-                        return getAllMovementGuidsForDateRange(range.getStartDate(), range.getEndDate(), Collections.singletonList(assetGuid));
-                    })
+                    .map(report -> Optional.of(report)
+                        	.map(this::findStartAndEndDate)
+							.flatMap(range -> getAllMovementGuidsForDateRange(range.getStartDate(), range.getEndDate(), Collections.singletonList(assetGuid))
+									.sorted(byDateClosestTo(range))
+									.map(MovementBaseType::getGuid)
+									.findFirst()
+							)
+							.orElse(null)
+                    )
+					.filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (RuntimeServiceException e) {
             throw (ServiceException) e.getCause();
@@ -89,15 +96,37 @@ public class FishingActivityServiceImpl implements FishingActivityService {
                 .orElse(null);
     }
 
-    private Stream<String> getAllMovementGuidsForDateRange(Date startDate, Date endDate, List<String> assetGuidList) {
+    private Stream<MovementType> getAllMovementGuidsForDateRange(Date startDate, Date endDate, List<String> assetGuidList) {
         try {
             List<MovementType> result = movementModuleService.getMovement(assetGuidList, startDate, endDate);
             if(result == null || result.isEmpty()) {
                 return Stream.empty();
             }
-            return result.stream().map(MovementBaseType::getGuid);
+            return result.stream();
         } catch (ServiceException e) {
-            throw new RuntimeServiceException("error calling movementModuleService", e);
+            throw new RuntimeServiceException("error calling movementModuleService.getMovement", e);
         }
     }
+
+	/**
+	 * The comparator returns the date closest to the start date of the given range;
+	 * in case of equality, it prefers the date before the start date.
+	 */
+	private Comparator<MovementType> byDateClosestTo(DateRangeDto range) {
+		return Comparator.comparing(MovementType::getPositionTime, (a, b) -> {
+			long time1 = Math.abs(a.getTime() - range.getStartDate().getTime());
+			long time2 = Math.abs(b.getTime() - range.getStartDate().getTime());
+			if (time1 == time2) {
+				if (a.before(range.getStartDate()) && b.after(range.getStartDate())) {
+					return -1;
+				} else if (a.after(range.getStartDate()) && b.before(range.getStartDate())) {
+					return 1;
+				} else {
+					return 0;
+				}
+			} else {
+				return Long.compare(time1, time2);
+			}
+		});
+	}
 }
