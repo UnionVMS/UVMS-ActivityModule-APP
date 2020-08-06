@@ -114,6 +114,7 @@ public class FaQueryFactory {
 
     private static Optional<FAQueryParameter> chooseVesselIdentifier(List<VesselIdentifierType> vesselIdentifiers) {
         return vesselIdentifiers.stream()
+                .filter(vesselIdentifier -> !vesselIdentifier.getValue().isEmpty())
                 .max(Comparator.comparing(VesselIdentifierType::getKey, Comparator.comparing(VESSELID_PRIORITIES::get, Comparator.nullsFirst(Comparator.naturalOrder()))))
                 .map(id -> new FAQueryParameter(createCodeType(VESSELID, FA_QUERY_PARAMETER), null, null, createIDType(id.getValue(), id.getKey().name())));
     }
