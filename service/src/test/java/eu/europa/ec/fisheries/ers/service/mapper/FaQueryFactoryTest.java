@@ -134,8 +134,37 @@ public class FaQueryFactoryTest {
         Assert.assertFalse(query.getSimpleFAQueryParameters().stream().anyMatch(p -> p.getTypeCode().getValue().equals(FaQueryFactory.VESSELID)));
         Assert.assertEquals(1, query.getSimpleFAQueryParameters().size());
     }
+    
+    @Test
+    public void testVesselIdentifierPriorityEmptyCfr() throws DatatypeConfigurationException {
+        List<VesselIdentifierType> identifiers = new ArrayList<>();
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.GFCM, "GFCM"));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, ""));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.IRCS, "IRCS12"));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.UVI, "UVI1212"));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.EXT_MARK, "EXT_MARK1212"));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, "ICCAT12"));
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
+                DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
+        Assert.assertEquals("IRCS12", query.getSimpleFAQueryParameters().get(0).getValueID().getValue());
+        Assert.assertEquals("IRCS", query.getSimpleFAQueryParameters().get(0).getValueID().getSchemeID());
+        Assert.assertEquals(2, query.getSimpleFAQueryParameters().size());
+    }
 
-
-
-
+    @Test
+    public void testVesselIdentifierPriorityEmptyCfrAndEmptyIRCS() throws DatatypeConfigurationException {
+        List<VesselIdentifierType> identifiers = new ArrayList<>();
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.GFCM, "GFCM"));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, ""));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.IRCS, ""));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.UVI, "UVI1212"));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.EXT_MARK, "EXT_MARK1212"));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, "ICCAT12"));
+        FAQuery query = FaQueryFactory.createFaQueryWithVesselId("submitter", identifiers, true,
+                DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T10:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T10:00:00"));
+        Assert.assertEquals("UVI1212", query.getSimpleFAQueryParameters().get(0).getValueID().getValue());
+        Assert.assertEquals("UVI", query.getSimpleFAQueryParameters().get(0).getValueID().getSchemeID());
+        Assert.assertEquals(2, query.getSimpleFAQueryParameters().size());
+    }
+    
 }
