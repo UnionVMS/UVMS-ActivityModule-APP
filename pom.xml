@@ -46,7 +46,7 @@
 
         <uvms.pom.version>3.2</uvms.pom.version>
         <uvms.commons.version>4.1.7</uvms.commons.version>
-        <usm4uvms.version>4.1.0</usm4uvms.version>
+        <usm4uvms.version>4.1.1</usm4uvms.version>
         <uvms.maven.version>3.2</uvms.maven.version>
 
         <config.model.version>4.3.5</config.model.version>
