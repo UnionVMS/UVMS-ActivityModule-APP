@@ -20,7 +20,12 @@ import java.util.Date;
 public class TripInfoLogBookModel {
 
     private String tripId;
-    private Date firstActivityDateForTrip;
-    private Date lastActivityDateForTrip;
-    private String duration;
+    private String vesselName;
+    private String country;
+    private String identifier;//cfr
+    private String extMark;
+    private String ircs;
+    private String imo;
+    private String destination;
+    private String other;
 }

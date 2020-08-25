@@ -41,19 +41,7 @@ public class FishingActivityServiceBeanTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    EntityManager em;
-
-    @Mock
     FishingActivityDao fishingActivityDao;
-
-    @Mock
-    FaReportDocumentDao faReportDocumentDao;
-
-    @Mock
-    FishingTripDao fishingTripDao;
-
-    @Mock
-    FishingTripIdentifierDao fishingTripIdentifierDao;
 
     @Mock
     VesselIdentifierDao vesselIdentifiersDao;
@@ -62,16 +50,7 @@ public class FishingActivityServiceBeanTest {
     VesselTransportMeansDao vesselTransportMeansDao;
 
     @InjectMocks
-    ActivityServiceBean activityService;
-
-    @InjectMocks
     FishingTripServiceBean fishingTripService;
-
-    @Mock
-    AssetProducerBean assetProducer;
-
-    @Mock
-    ActivityConsumerBean activityConsumer;
 
     @Mock
     AssetModuleServiceBean assetModule;
@@ -79,16 +58,14 @@ public class FishingActivityServiceBeanTest {
     @Mock
     MdrModuleServiceBean mdrModuleServiceBean;
 
-    @Mock
-    JAXBMarshaller marshaller;
 
     @Test
     @SneakyThrows
     public void testGetVesselDetailsForFishingTrip() throws ServiceException {
         Map<String, List<String>> returnMap = new HashMap<>();
-        returnMap.put("code", new ArrayList<String>());
+        returnMap.put("code", new ArrayList<>());
         when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(new VesselTransportMeansEntity());
-        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<String>(), 9999999, "code")).thenReturn(returnMap);
+        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "code")).thenReturn(returnMap);
         //Trigger
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
@@ -102,9 +79,9 @@ public class FishingActivityServiceBeanTest {
     @SneakyThrows
     public void testGetVesselDetailsAndContactPartiesForFishingTrip() {
         Map<String, List<String>> returnMap = new HashMap<>();
-        returnMap.put("code", new ArrayList<String>());
+        returnMap.put("code", new ArrayList<>());
         when(vesselTransportMeansDao.findLatestVesselByTripId("NOR-TRP-20160517234053706")).thenReturn(new VesselTransportMeansEntity());
-        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<String>(), 9999999, "code")).thenReturn(returnMap);
+        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE",  "code")).thenReturn(returnMap);
 
         VesselDetailsDTO vesselDetailsDTO = fishingTripService.getVesselDetailsForFishingTrip("NOR-TRP-20160517234053706");
 
@@ -115,9 +92,9 @@ public class FishingActivityServiceBeanTest {
     @SneakyThrows
     public void testEnrichVesselDetailsAndContactPartiesForFishingTrip() {
         Map<String, List<String>> returnMap = new HashMap<>();
-        returnMap.put("code", new ArrayList<String>());
+        returnMap.put("code", new ArrayList<>());
         when(vesselTransportMeansDao.findLatestVesselByTripId(Mockito.anyString())).thenReturn(new VesselTransportMeansEntity());
-        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE", "*", new ArrayList<String>(), 9999999, "code")).thenReturn(returnMap);
+        when(mdrModuleServiceBean.getAcronymFromMdr("FLUX_VESSEL_ID_TYPE",  "code")).thenReturn(returnMap);
         List<Asset> listAssetResponse = new ArrayList<>();
         Asset asset = new Asset();
         asset.setCfr("UPDATED_CFR");
@@ -145,10 +122,9 @@ public class FishingActivityServiceBeanTest {
         String portDescription = "PORT VICTORIA";
         Map<String, List<String>> returnMap = new HashMap<>();
         returnMap.put("description", new ArrayList<String>(Arrays.asList(portDescription)));
-        when(mdrModuleServiceBean.getAcronymFromMdr("LOCATION", "SCPOV", new ArrayList<String>(Arrays.asList("code")), 1, "description")).thenReturn(returnMap);
+        when(mdrModuleServiceBean.getAcronymFromMdr("LOCATION",  "description")).thenReturn(returnMap);
 
-        List<String> portDescriptionList = mdrModuleServiceBean.getAcronymFromMdr("LOCATION", "SCPOV",
-                new ArrayList<String>(Arrays.asList("code")), 1, "description").get("description");
+        List<String> portDescriptionList = mdrModuleServiceBean.getAcronymFromMdr("LOCATION",  "description").get("description");
 
         assertTrue(portDescriptionList.size() == 1);
         assertTrue(portDescriptionList.get(0).equals(portDescription));

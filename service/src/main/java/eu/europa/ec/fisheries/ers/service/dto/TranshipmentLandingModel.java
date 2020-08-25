@@ -21,14 +21,17 @@ import java.util.Date;
 @Data
 public class TranshipmentLandingModel {
 
-    private String identifier;
-    private Date calculatedStartTime;
-    private BigDecimal longitude;
-    private BigDecimal latitude;
-    private String fluxLocationIdentifierSchemeId;
-    private String gears;
+    private String faoArea;
+    private String gfcmArea;
+    private String statRect;
+    private String eez;
+    private String species;
     private String presentation;
-    private Double calculatedUnitQuantity;
-    private String weight;
+    private double weightLSC;
+    private double nbLSC;
+    private double weightBMS;
+    private double nbBMS;
+    private double weightTotal;
+    private double nbTotal;
 
 }

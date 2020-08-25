@@ -19,14 +19,23 @@ import java.util.Date;
 @Data
 public class FACatchModel {
 
-    private String identifier;
-    private Date calculatedStartTime;
-    private BigDecimal longitude;
-    private BigDecimal latitude;
-    private String fluxLocationIdentifierSchemeId;
-    private String gears;
-    private String speciesCode;
-    private Double calculatedUnitQuantity;
-    private String weight;
+    private String date;
+    private double fop;
+    private String gear;
+    private String gearSet;
+    private String gearHaul;
+    private long totalMin;
+    private double depth;
+    private String faoArea;
+    private String gfcmArea;
+    private String statRect;
+    private String eez;
+    private String position;//lat and long
+    private String activityType;
+    private String species;
+    private double weightLSC;
+    private double nbLSC;
+    private double weightBMS;
+    private double nbBMS;
 
 }

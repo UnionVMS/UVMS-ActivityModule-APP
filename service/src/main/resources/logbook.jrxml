@@ -1,0 +1,1037 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.13.0.final using JasperReports Library version 6.13.0-46ada4d1be8f3c5985fd0b6146f3ed44caed6f05  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sample_report" pageWidth="842" pageHeight="595" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="093c6111-9c93-4f0d-a749-9f82a7e3efc3">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+    <style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <subDataset name="HeaderDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
+        <parameter name="HeaderParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="generationDate" class="java.util.Date"/>
+        <field name="tripId" class="java.lang.String"/>
+    </subDataset>
+    <subDataset name="CatchDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
+        <parameter name="CatchParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="date" class="java.lang.String"/>
+        <field name="fop" class="java.lang.Double"/>
+        <field name="gear" class="java.lang.String"/>
+        <field name="gearSet" class="java.lang.String"/>
+        <field name="gearHaul" class="java.lang.String"/>
+        <field name="totalMin" class="java.lang.Long"/>
+        <field name="depth" class="java.lang.Double"/>
+        <field name="faoArea" class="java.lang.String"/>
+        <field name="gfcmArea" class="java.lang.String"/>
+        <field name="statRect" class="java.lang.String"/>
+        <field name="eez" class="java.lang.String"/>
+        <field name="position" class="java.lang.String"/>
+        <field name="activityType" class="java.lang.String"/>
+        <field name="species" class="java.lang.String"/>
+        <field name="weightLSC" class="java.lang.Double"/>
+        <field name="nbLSC" class="java.lang.Double"/>
+        <field name="weightBMS" class="java.lang.Double"/>
+        <field name="nbBMS" class="java.lang.Double"/>
+    </subDataset>
+    <subDataset name="TranshipmentLandingDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
+        <parameter name="TranshipmentLandingParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="faoArea" class="java.lang.String"/>
+        <field name="gfcmArea" class="java.lang.String"/>
+        <field name="statRect" class="java.lang.String"/>
+        <field name="eez" class="java.lang.String"/>
+        <field name="species" class="java.lang.String"/>
+        <field name="presentation" class="java.lang.String"/>
+        <field name="weightLSC" class="java.lang.Double"/>
+        <field name="nbLSC" class="java.lang.Double"/>
+        <field name="weightBMS" class="java.lang.Double"/>
+        <field name="nbBMS" class="java.lang.Double"/>
+        <field name="weightTotal" class="java.lang.Double"/>
+        <field name="nbTotal" class="java.lang.Double"/>
+    </subDataset>
+    <subDataset name="VesselDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
+        <parameter name="VesselParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="id" class="java.lang.Integer"/>
+        <field name="vesselName" class="java.lang.String"/>
+        <field name="country" class="java.lang.String"/>
+        <field name="cfr" class="java.lang.String"/>
+        <field name="other" class="java.lang.String"/>
+        <field name="extMark" class="java.lang.String"/>
+        <field name="ircs" class="java.lang.String"/>
+        <field name="imo" class="java.lang.String"/>
+        <field name="role" class="java.lang.String"/>
+    </subDataset>
+    <subDataset name="MasterDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
+        <parameter name="MasterParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="id" class="java.lang.String"/>
+        <field name="address" class="java.lang.String"/>
+        <field name="mastersName" class="java.lang.String"/>
+    </subDataset>
+    <subDataset name="GearDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
+        <parameter name="GearParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="gearCode" class="java.lang.String"/>
+        <field name="meshSize" class="java.lang.String"/>
+        <field name="dimensions" class="java.lang.String"/>
+        <field name="rowNo" class="java.lang.Integer"/>
+    </subDataset>
+    <subDataset name="PortDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
+        <parameter name="PortParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="date" class="java.util.Date"/>
+        <field name="port" class="java.lang.String"/>
+        <field name="activityType" class="java.lang.String"/>
+    </subDataset>
+    <subDataset name="TripDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
+        <parameter name="TripParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="vesselName" class="java.lang.String"/>
+        <field name="country" class="java.lang.String"/>
+        <field name="identifier" class="java.lang.String"/>
+        <field name="extMark" class="java.lang.String"/>
+        <field name="ircs" class="java.lang.String"/>
+        <field name="imo" class="java.lang.String"/>
+        <field name="destination" class="java.lang.String"/>
+        <field name="other" class="java.lang.String"/>
+    </subDataset>
+    <parameter name="CatchParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="PortParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="VesselParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="TranshipmentLandingParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="MasterParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="TripParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="GearParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="HeaderParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <background>
+        <band height="213" splitType="Stretch"/>
+    </background>
+    <pageHeader>
+        <band height="59" splitType="Stretch"/>
+    </pageHeader>
+    <detail>
+        <band height="424" splitType="Stretch">
+            <frame>
+                <reportElement x="-10" y="2" width="833" height="24" uuid="3e83cbe7-f7e0-4aac-bf77-04c351451aac">
+                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                </reportElement>
+                <staticText>
+                    <reportElement x="40" y="-1" width="81" height="24" uuid="f605f16c-7ea2-4b21-9557-b5ee581cd961"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Vessel Name]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="121" y="1" width="30" height="21" uuid="481316e9-b4d0-44c7-8278-73578bf9bcb7"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Flag]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="264" y="1" width="75" height="21" uuid="da6ecb61-c891-4230-8171-192e25681912"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[CFR]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="197" y="1" width="65" height="21" uuid="4c1570b7-9fdf-4688-80ab-6eefce7a2a14"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Ext Marking]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="155" y="0" width="30" height="22" uuid="19645c20-ab6f-4206-8e4f-51467e5ea224"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[IRCS]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="13" y="0" width="27" height="21" uuid="e9ba8b3e-f0bb-4c50-94dc-721c6fc74e3d"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Role]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="343" y="-1" width="42" height="22" uuid="8c616fb9-7d89-424c-928a-9620707c5bce"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[IMO]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="-10" y="-2" width="843" height="1" uuid="0e5330eb-7172-42eb-98ae-d0ed6d823946">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                </line>
+                <staticText>
+                    <reportElement x="447" y="0" width="46" height="25" uuid="c9fe1944-a296-4a1b-b3ce-6a3e098042bf">
+                        <property name="com.jaspersoft.studio.unit.x" value="px"/>
+                    </reportElement>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Other]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="-8" y="0" width="23" height="22" uuid="129cefd8-c53f-4a7b-bd09-3a45dd7059f0"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Id]]></text>
+                </staticText>
+            </frame>
+            <componentElement>
+                <reportElement x="-18" y="-19" width="400" height="19" uuid="3a8deaef-3976-44f9-83f4-4753dbb62794"/>
+                <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+                    <datasetRun subDataset="HeaderDataSet" uuid="3a676aa6-f038-4c1a-8e76-fd057f9c35ae">
+                        <dataSourceExpression><![CDATA[$P{HeaderParam}]]></dataSourceExpression>
+                    </datasetRun>
+                    <jr:listContents height="19" width="400">
+                        <textField>
+                            <reportElement x="278" y="0" width="92" height="19" uuid="479ca673-d78f-4f42-9e2b-b201e6d9c546"/>
+                            <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{generationDate}]]></textFieldExpression>
+                        </textField>
+                        <textField>
+                            <reportElement x="34" y="0" width="166" height="19" uuid="06771919-7b21-4b67-ab21-5bd1401e86c5"/>
+                            <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{tripId}]]></textFieldExpression>
+                        </textField>
+                    </jr:listContents>
+                </jr:list>
+            </componentElement>
+            <frame>
+                <reportElement x="-20" y="1" width="825" height="60" uuid="515eb66a-5171-4f83-b1f3-dcdbf5cea9a9">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <componentElement>
+                    <reportElement x="561" y="4" width="264" height="14" uuid="a1e6ca01-0e87-4b5e-9849-ee9e25b7d692">
+                        <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+                    </reportElement>
+                    <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+                        <datasetRun subDataset="PortDataSet" uuid="a3b6932d-6c98-48b0-854b-170c897e9b70">
+                            <dataSourceExpression><![CDATA[$P{PortParam}]]></dataSourceExpression>
+                        </datasetRun>
+                        <jr:listContents height="14" width="264">
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="7" y="0" width="83" height="14" uuid="48c1eb80-76e4-4a83-993c-310908e584a2"/>
+                                <textFieldExpression><![CDATA[($F{activityType} == null)? "N/A":$F{activityType}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="90" y="0" width="97" height="14" uuid="5361e51e-01b4-405a-ab1a-8e8087b2a464"/>
+                                <textFieldExpression><![CDATA[($F{port} == null)? "N/A":$F{port}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="187" y="0" width="77" height="14" uuid="5361e51e-01b4-405a-ab1a-8e8087b2a464"/>
+                                <textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+                            </textField>
+                        </jr:listContents>
+                    </jr:list>
+                </componentElement>
+                <componentElement>
+                    <reportElement x="0" y="25" width="559" height="18" uuid="79c35e6a-531a-4e01-8f84-c3118a42d0f5">
+                        <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+                    </reportElement>
+                    <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Horizontal">
+                        <datasetRun subDataset="VesselDataSet" uuid="5abbf652-6a77-49d3-9eb2-bb7c5d07ee31">
+                            <dataSourceExpression><![CDATA[$P{VesselParam}]]></dataSourceExpression>
+                        </datasetRun>
+                        <jr:listContents height="18" width="559">
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="5" y="0" width="15" height="18" uuid="f83fc426-a8bb-4b7f-afd3-2bae65d85484"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="49" y="0" width="86" height="18" uuid="f83fc426-a8bb-4b7f-afd3-2bae65d85484"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{vesselName}== null)? "N/A":$F{vesselName}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="135" y="0" width="25" height="18" uuid="37e8f36c-4722-4655-b833-e5baa9690e49"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{country}== null)? "N/A":$F{country}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="279" y="0" width="68" height="18" uuid="67a37b93-fc98-4e4f-8fff-5a74d79cebb7"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{cfr}== null)? "N/A":$F{cfr}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="205" y="0" width="70" height="18" uuid="5cd7cc96-20ca-4608-9b6e-023207e745b3"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{extMark} == null)? "N/A" : $F{extMark}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="167" y="0" width="38" height="18" uuid="5cd7cc96-20ca-4608-9b6e-023207e745b3"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{ircs} == null)? "N/A" : $F{ircs}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="347" y="0" width="50" height="18" uuid="5cd7cc96-20ca-4608-9b6e-023207e745b3"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{imo} == null)? "N/A" : $F{imo}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="397" y="0" width="162" height="18" uuid="5cd7cc96-20ca-4608-9b6e-023207e745b3"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{other} == null)? "N/A" : $F{other}]]></textFieldExpression>
+                            </textField>
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="19" y="0" width="30" height="18" uuid="5cd7cc96-20ca-4608-9b6e-023207e745b3"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{role} == null)? "N/A" : $F{role}]]></textFieldExpression>
+                            </textField>
+                        </jr:listContents>
+                    </jr:list>
+                </componentElement>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="559" y="0" width="1" height="60" uuid="015e7bcd-eff5-455c-99b2-5628a78a33cc"/>
+                </line>
+                <line>
+                    <reportElement x="0" y="25" width="559" height="1" uuid="ddedc429-f275-4cc2-8b73-28a91cdef8d2"/>
+                </line>
+                <staticText>
+                    <reportElement x="3" y="-20" width="37" height="19" uuid="63b655c7-93d3-4c03-9e55-3a6257c4575c"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[TripId:]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="215" y="-20" width="70" height="19" uuid="ff79e75e-ac69-4286-a4fa-3b6e134f740d"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Generated on:]]></text>
+                </staticText>
+            </frame>
+            <frame>
+                <reportElement positionType="Float" x="-20" y="61" width="842" height="93" uuid="501f160d-e4fd-44ea-ba85-952b3bc34163">
+                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    <property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+                    <property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+                </reportElement>
+                <staticText>
+                    <reportElement x="26" y="0" width="40" height="33" uuid="0b50a678-38a8-4327-93ff-5c92a37b7a3a"/>
+                    <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                    <text><![CDATA[Receiver]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="0" y="0" width="842" height="1" uuid="82e25078-5ba6-440d-baae-64c6dd60f2a6">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <line>
+                    <reportElement x="70" y="1" width="1" height="32" uuid="cd8f39b5-2f06-4aa1-b8ec-b6bb0c68a4ca"/>
+                </line>
+                <line>
+                    <reportElement x="559" y="1" width="1" height="32" uuid="24adbbde-5993-446b-8551-7a3812cef71f">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <componentElement>
+                    <reportElement x="66" y="2" width="773" height="30" uuid="397dd6a2-e288-499b-a3f4-b24aa1348834">
+                        <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+                    </reportElement>
+                    <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+                        <datasetRun subDataset="TripDataSet" uuid="0fafeb71-7a42-4a21-858b-39cbfb72bdf3">
+                            <dataSourceExpression><![CDATA[$P{TripParam}]]></dataSourceExpression>
+                        </datasetRun>
+                        <jr:listContents height="30" width="773">
+                            <textField>
+                                <reportElement x="0" y="0" width="80" height="30" uuid="88d34356-18aa-4191-a2ef-407ae60b64f2"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{vesselName}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="80" y="0" width="28" height="30" uuid="fbafacee-ddb5-45dd-9bfa-14b6f05bf007"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{country} == null)? "N/A" : $F{country}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="220" y="0" width="72" height="30" uuid="849f5241-a41e-428c-9afe-9a1352ca4e49"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{identifier} == null)? "N/A" : $F{identifier}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="159" y="0" width="58" height="30" uuid="8b899c25-702a-4921-af61-4314128e75f7"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{extMark} == null)? "N/A" : $F{extMark}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="109" y="0" width="48" height="30" uuid="89beb484-d9b1-4e34-b0ce-e87a3c1afb80"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{ircs} == null)? "N/A" : $F{ircs}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="292" y="0" width="42" height="30" uuid="9ebb9075-caba-4a40-bfb0-e7d6059a5aa0"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{imo} == null)? "N/A" : $F{imo}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="580" y="0" width="189" height="30" uuid="9ebb9075-caba-4a40-bfb0-e7d6059a5aa0"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{destination} == null)? "N/A" : $F{destination}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="340" y="0" width="150" height="30" uuid="9ebb9075-caba-4a40-bfb0-e7d6059a5aa0"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{other} == null)? "N/A" : $F{other}]]></textFieldExpression>
+                            </textField>
+                        </jr:listContents>
+                    </jr:list>
+                </componentElement>
+                <staticText>
+                    <reportElement x="572" y="2" width="71" height="30" uuid="ef0cb57c-0f76-488c-8231-b74cad46fa80"/>
+                    <text><![CDATA[Port & country of destination]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="643" y="1" width="1" height="31" uuid="796c5b22-0610-44fb-b52e-f26726cd1c7c"/>
+                </line>
+                <staticText>
+                    <reportElement x="0" y="1" width="20" height="30" uuid="112e957f-ddd5-4fa1-ad9a-8b7613f8bb53"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[R]]></text>
+                </staticText>
+                <frame>
+                    <reportElement x="0" y="33" width="841" height="27" uuid="098c36d9-817d-43bf-890e-0371875671d4"/>
+                    <staticText>
+                        <reportElement positionType="Float" x="41" y="3" width="90" height="21" uuid="6aa9fd66-059b-43c3-9f90-154228ff70ac"/>
+                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                        <text><![CDATA[Name of master(s)]]></text>
+                    </staticText>
+                    <staticText>
+                        <reportElement positionType="Float" x="165" y="2" width="87" height="22" uuid="dc979c2a-7bf1-4c57-b4fe-737d700286b5"/>
+                        <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                        <text><![CDATA[Address(es)]]></text>
+                    </staticText>
+                    <line>
+                        <reportElement positionType="Float" x="0" y="0" width="841" height="1" uuid="811fedab-6581-4999-9dd3-dd093880b391"/>
+                    </line>
+                    <line>
+                        <reportElement positionType="Float" x="0" y="26" width="840" height="1" uuid="3210dc8e-53b6-4cdb-89ba-2e7d5db0d133"/>
+                    </line>
+                    <staticText>
+                        <reportElement x="591" y="1" width="39" height="24" uuid="3ac53583-d174-456e-9525-a35516604b55"/>
+                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                        <text><![CDATA[Gear]]></text>
+                    </staticText>
+                    <staticText>
+                        <reportElement x="641" y="2" width="80" height="23" uuid="67b32de0-800d-4400-a48a-688ec2bfd816"/>
+                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                        <text><![CDATA[Mesh Size]]></text>
+                    </staticText>
+                    <staticText>
+                        <reportElement x="722" y="1" width="100" height="24" uuid="bf68a788-2110-4881-bc42-68b41cb6106a"/>
+                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                        <text><![CDATA[Dimensions]]></text>
+                    </staticText>
+                    <staticText>
+                        <reportElement positionType="Float" x="0" y="2" width="27" height="22" uuid="ae3e0ef5-8200-4cd9-ad50-547545d67a04"/>
+                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                        <text><![CDATA[Id]]></text>
+                    </staticText>
+                </frame>
+                <frame>
+                    <reportElement x="0" y="29" width="842" height="64" uuid="04103e2c-6171-4573-a4d1-5397119bdbaa"/>
+                    <componentElement>
+                        <reportElement x="1" y="33" width="367" height="20" uuid="2bc4d9ec-ab35-4f94-91c7-7b6705fcce98">
+                            <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+                        </reportElement>
+                        <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Horizontal">
+                            <datasetRun subDataset="MasterDataSet" uuid="e064f28f-595f-4afa-a14c-c5e42f519d95">
+                                <dataSourceExpression><![CDATA[$P{MasterParam}]]></dataSourceExpression>
+                            </datasetRun>
+                            <jr:listContents height="20" width="367">
+                                <textField isBlankWhenNull="true">
+                                    <reportElement x="160" y="0" width="177" height="20" uuid="c80044d5-786d-4ae9-82da-5f2509ba0888"/>
+                                    <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                                    <textFieldExpression><![CDATA[($F{address} == null)? "N/A":$F{address}]]></textFieldExpression>
+                                </textField>
+                                <textField isBlankWhenNull="true">
+                                    <reportElement x="40" y="0" width="120" height="20" uuid="c3ebc5d2-2559-496d-a936-83d3d03d8256"/>
+                                    <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                                    <textFieldExpression><![CDATA[($F{mastersName} == null)? "N/A" : $F{mastersName}]]></textFieldExpression>
+                                </textField>
+                                <textField isBlankWhenNull="true">
+                                    <reportElement x="7" y="0" width="30" height="20" uuid="c3ebc5d2-2559-496d-a936-83d3d03d8256"/>
+                                    <textElement textAlignment="Left" verticalAlignment="Middle"/>
+                                    <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+                                </textField>
+                            </jr:listContents>
+                        </jr:list>
+                    </componentElement>
+                    <componentElement>
+                        <reportElement x="570" y="33" width="259" height="30" uuid="200bca13-cece-4fc8-abd9-53796f4020d0"/>
+                        <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+                            <datasetRun subDataset="GearDataSet" uuid="d4a4805f-184f-4a02-8cd8-007711a39e4e">
+                                <dataSourceExpression><![CDATA[$P{GearParam}]]></dataSourceExpression>
+                            </datasetRun>
+                            <jr:listContents height="18" width="259">
+                                <textField isBlankWhenNull="true">
+                                    <reportElement x="0" y="0" width="20" height="15" uuid="263d83fc-ea79-4f2a-b972-7c6ce3d41264"/>
+                                    <textFieldExpression><![CDATA[($F{rowNo} == 0)? "" : $F{rowNo}]]></textFieldExpression>
+                                </textField>
+                                <textField isBlankWhenNull="true">
+                                    <reportElement x="30" y="0" width="28" height="15" uuid="263d83fc-ea79-4f2a-b972-7c6ce3d41264"/>
+                                    <textFieldExpression><![CDATA[$F{gearCode}]]></textFieldExpression>
+                                </textField>
+                                <textField isBlankWhenNull="true">
+                                    <reportElement x="60" y="0" width="100" height="15" uuid="bedf9d0b-11e9-4c0c-9005-daa70464230f"/>
+                                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                    <textFieldExpression><![CDATA[$F{meshSize}]]></textFieldExpression>
+                                </textField>
+                                <textField isBlankWhenNull="true">
+                                    <reportElement x="163" y="0" width="96" height="15" uuid="96b5e158-261f-4592-b90a-986aaf03327a"/>
+                                    <textFieldExpression><![CDATA[$F{dimensions}]]></textFieldExpression>
+                                </textField>
+                            </jr:listContents>
+                        </jr:list>
+                    </componentElement>
+                    <line>
+                        <reportElement positionType="Float" stretchType="ContainerHeight" x="559" y="2" width="1" height="60" uuid="114da354-7ec6-4e20-ab5c-0847e1f1d33b">
+                            <property name="com.jaspersoft.studio.unit.y" value="px"/>
+                            <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                        </reportElement>
+                    </line>
+                    <line>
+                        <reportElement positionType="Float" x="0" y="63" width="842" height="1" uuid="29290220-7e87-4cc8-802a-c30ea7d2c514">
+                            <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                        </reportElement>
+                    </line>
+                </frame>
+            </frame>
+            <frame>
+                <reportElement positionType="Float" x="-21" y="170" width="842" height="101" uuid="62dd060c-f2aa-4793-a49a-0934bffe9f3e">
+                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                </reportElement>
+                <line>
+                    <reportElement x="0" y="1" width="840" height="1" uuid="20339848-bdcc-4581-860b-f2377ea429f6">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                </line>
+                <staticText>
+                    <reportElement positionType="Float" x="128" y="2" width="100" height="30" uuid="3a889859-67ba-4e2f-a624-e050b2f534e9"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Fishing Time]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="714" y="3" width="100" height="13" uuid="ac2b82fc-33ac-4b4f-a4cd-bf0d3eab40d2">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Catches]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="0" y="32" width="840" height="1" uuid="96e9044a-52e2-43d3-b668-bb7270d258fa">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                </line>
+                <line>
+                    <reportElement x="1" y="60" width="841" height="1" uuid="7e86210a-31f5-4c2f-92b1-b8e9b57cfa79">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                </line>
+                <staticText>
+                    <reportElement positionType="Float" x="1" y="33" width="40" height="26" uuid="e37a358a-0dd3-408b-8247-ee5972ed8e2d"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Date]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="54" y="32" width="31" height="27" uuid="f549ba9b-54f6-49df-a4d9-31e907f429f9"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[FOP]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="92" y="33" width="34" height="26" uuid="ae86baa0-38fd-487e-9bbe-5c75c5f72fe4"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Gear]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="127" y="33" width="41" height="26" uuid="09d51613-90a9-4675-ac00-dc67ffc4846c"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Set]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="200" y="33" width="53" height="26" uuid="9551f534-659f-4f36-b380-4655c05922b3"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Total Time(min)]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="255" y="33" width="44" height="25" uuid="963c9173-2c0b-4d30-bd2c-0fb9e5a81d3b"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Depth]]></text>
+                </staticText>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="90" y="2" width="1" height="98" uuid="ea685c3e-b0b7-4052-bb19-9c659166f121">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="252" y="2" width="1" height="98" uuid="1cf51ac5-2b84-4e36-a182-47d0f1fde566">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <staticText>
+                    <reportElement positionType="Float" x="307" y="34" width="35" height="25" uuid="39f7e1ba-e728-4ff2-987f-f2c7b9548c34"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[FAO]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="345" y="32" width="37" height="28" uuid="dae2f3ff-089e-45c7-a915-1396f9c8e9e9"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[GFCM]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="381" y="33" width="46" height="27" uuid="bcd76586-3c2e-4095-a409-ef7100f2f09a"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Stat Rect]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="431" y="33" width="23" height="27" uuid="7fee2416-141b-4421-a112-9edc5288cfdb"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[EEZ]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="490" y="33" width="34" height="27" uuid="bf8e6183-f9eb-41d3-9c25-52b806928bcd"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Lat/Lon]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="573" y="31" width="57" height="30" uuid="82c62924-7a53-416a-91ca-948723e0d86b"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Type]]></text>
+                </staticText>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="646" y="2" width="1" height="98" uuid="184ebf42-ec7a-4ab7-8415-a9d5a387ae17"/>
+                </line>
+                <staticText>
+                    <reportElement positionType="Float" x="698" y="34" width="36" height="24" uuid="609aa0cf-1dbb-4639-8dee-75ba2ecac9a4"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Weight]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="736" y="32" width="26" height="26" uuid="4de6791a-8198-4d5b-8435-3a6465a3d55c"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Nb]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="766" y="34" width="42" height="24" uuid="3c0f0c77-94ef-42e2-9045-1a561be34ab8"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Weight]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="809" y="32" width="26" height="26" uuid="72f633a9-5f6c-4515-a291-3854988e7b35"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Nb]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="690" y="15" width="151" height="1" uuid="904e048c-ae37-4ba4-b201-70f938235b77">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                </line>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="690" y="2" width="1" height="98" uuid="bba02f5b-afb0-47fe-94bd-96e43e3479a4">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <line>
+                    <reportElement positionType="Float" x="0" y="99" width="841" height="1" uuid="f1251343-8997-40e2-9122-18d2434f0a14">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                </line>
+                <staticText>
+                    <reportElement x="167" y="33" width="35" height="26" uuid="ebd1f379-2f20-4077-917f-000854fcf65e"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Haul]]></text>
+                </staticText>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="303" y="1" width="1" height="98" uuid="229b5f7b-99d1-4d03-916a-60b6be21a0cd">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="556" y="0" width="1" height="101" uuid="bb9b873c-d476-4c53-ac36-9338aa653623">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <componentElement>
+                    <reportElement x="3" y="64" width="837" height="30" uuid="95d5a5b2-6e8d-48ab-90f2-71835d9e0df3">
+                        <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+                    </reportElement>
+                    <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+                        <datasetRun subDataset="CatchDataSet" uuid="9a1d049a-2f22-407b-af98-dc11fac97678">
+                            <dataSourceExpression><![CDATA[$P{CatchParam}]]></dataSourceExpression>
+                        </datasetRun>
+                        <jr:listContents height="30" width="837">
+                            <textField isBlankWhenNull="true">
+                                <reportElement x="0" y="0" width="53" height="30" uuid="49883b6f-9e48-44d2-aaee-c3025aab2475"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="56" y="0" width="30" height="30" uuid="bce54037-52d3-437e-a61c-d8a338887f14"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{fop} == null)? "N/A" : $F{fop}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="97" y="0" width="30" height="30" uuid="ad5e396b-bae6-42b1-bd96-e8bb5eed4802"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{gear} == null)? "N/A" : $F{gear}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="130" y="0" width="32" height="30" uuid="f06ee6f9-98d7-4113-b8db-6665a869c76d"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{gearSet} == null)? "N/A" : $F{gearSet}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="166" y="0" width="39" height="30" uuid="255e9b95-e429-470d-81dd-9cd183a8e8c6"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{gearHaul} == null)? "N/A" : $F{gearHaul}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="205" y="0" width="47" height="30" uuid="78c2bef6-49f7-4c33-8b4f-cd048613e17e"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{totalMin} == null)? "N/A" : $F{totalMin}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="252" y="0" width="47" height="30" uuid="f4d10e38-d66e-4a02-aacb-e8cf74fc29e2"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{depth} == null)? "N/A" : $F{depth}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="306" y="0" width="41" height="30" uuid="bc79a313-a612-4967-81f0-81fd2d5793e5"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{faoArea} == null)? "N/A" : $F{faoArea}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="348" y="0" width="34" height="30" uuid="3182392c-f2ee-4609-b092-f05df54f391c"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{gfcmArea} == null)? "N/A" : $F{gfcmArea}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="386" y="0" width="35" height="30" uuid="9070d2e1-2f29-41cf-96ac-b6e72316a98a"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{statRect} == null)? "N/A" : $F{statRect}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="425" y="0" width="30" height="30" uuid="e76edb7f-e46c-4af2-8e1a-a48606d0b6de"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{eez} == null)? "N/A" : $F{eez}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="455" y="0" width="100" height="30" uuid="fd5a34c3-488f-4b91-8d3b-4d62a988ced3"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{position} == null)? "N/A" : $F{position}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="555" y="0" width="90" height="30" uuid="4aa484d9-b554-4f0b-91e4-c5c1d635cc63"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{activityType} == null)? "N/A" : $F{activityType}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="651" y="0" width="30" height="30" uuid="4aa484d9-b554-4f0b-91e4-c5c1d635cc63"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{species} == null)? "N/A" : $F{species}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="690" y="0" width="40" height="30" uuid="2921a9c2-f985-4068-a417-552aa53e6bdb"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{weightLSC} == null)? "N/A" : $F{weightLSC}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="730" y="0" width="33" height="30" uuid="bdbcfb76-bf13-4d7b-8179-2c040e483924"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{nbLSC} == null)? "N/A" : $F{nbLSC}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="763" y="0" width="43" height="30" uuid="704b6b08-5887-4cc0-a588-ba2801596335"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{weightBMS} == null)? "N/A" : $F{weightBMS}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement x="806" y="0" width="31" height="30" uuid="3d5db636-bd59-49fe-aaff-e261e18f952c"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[($F{nbBMS} == null)? "N/A" : $F{nbBMS}]]></textFieldExpression>
+                            </textField>
+                        </jr:listContents>
+                    </jr:list>
+                </componentElement>
+                <staticText>
+                    <reportElement x="713" y="16" width="37" height="16" uuid="e2cdb934-3a51-47f0-94df-71a8e84ed4f7">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[LSC]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="779" y="15" width="50" height="17" uuid="2c433e35-42fd-4162-8a86-0b7dbb84c83f">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[BMS]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="378" y="1" width="100" height="30" uuid="eaca497c-3459-4000-bdfa-55dbd4c44592"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Location]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="646" y="31" width="43" height="27" uuid="595bb09a-b400-4424-9935-516e76497235"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Species]]></text>
+                </staticText>
+            </frame>
+            <frame>
+                <reportElement positionType="Float" x="-20" y="289" width="842" height="132" uuid="85e4c91a-3100-428a-b435-8813ec87ec2b"/>
+                <line>
+                    <reportElement x="147" y="23" width="574" height="1" uuid="e3b3b8f9-4261-49f2-952b-68652df4c7b1"/>
+                </line>
+                <staticText>
+                    <reportElement positionType="Float" x="254" y="0" width="308" height="20" uuid="6ec9cdbb-4e21-44cb-b36e-a52f8f82da9b"/>
+                    <text><![CDATA[[Landing | Transhipment | Transfer] declaration in kilograms or units]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="207" y="26" width="100" height="30" uuid="efb1a24a-2661-4556-bba6-6f86228ff870"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Location]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="147" y="57" width="51" height="25" uuid="db326479-3b08-438d-ac2d-f1c6315b6a4b"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[FAO]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="198" y="58" width="54" height="24" uuid="4fb3c82a-7886-4120-95e9-172eee8dbf1d"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[GFCM]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="250" y="58" width="46" height="24" uuid="77257692-4eb5-4cc1-a430-623319ab9545"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Stat Rect]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="297" y="58" width="52" height="24" uuid="ab17a17c-0e6f-45e1-99a0-f5b307673848"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[EEZ]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="354" y="56" width="49" height="27" uuid="0434af8e-9e8f-470f-8edc-7ba26dcc9fbc"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Species]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="457" y="57" width="52" height="24" uuid="80436370-fa78-48a7-98dc-0dfef6fcb23f"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Weight(kg)]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="471" y="41" width="37" height="16" uuid="75001a42-f9ba-4e6e-a7ca-6ecb1bedc9b5">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[LSC]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="506" y="57" width="26" height="26" uuid="d583dbbd-0832-4cf3-8833-497d48f46d9c"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Nb]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="536" y="58" width="52" height="24" uuid="a5bf90f4-243a-422a-9604-af27f36732fb"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Weight(kg)]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="594" y="57" width="26" height="26" uuid="a99c2f9a-e999-44ec-8962-9eccc4b3d84e"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Nb]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement x="553" y="40" width="50" height="17" uuid="64e3e827-a6e7-4ec5-b4d7-e1ea055eab00">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[BMS]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="147" y="56" width="574" height="1" uuid="0af24988-901d-413e-8027-36f7a31983e5">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                </line>
+                <staticText>
+                    <reportElement x="406" y="57" width="49" height="26" uuid="6c9f6080-a1d4-432f-aad5-b8bc7e7a2a0a"/>
+                    <text><![CDATA[Presentation]]></text>
+                </staticText>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="354" y="23" width="1" height="87" uuid="ab449a92-e5df-4996-b727-ab98b213b7fe"/>
+                </line>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="456" y="24" width="1" height="85" uuid="8c22b218-b5d5-4ff0-91a1-27fc13175819"/>
+                </line>
+                <line>
+                    <reportElement x="457" y="42" width="264" height="1" uuid="a1e241c4-2f82-44fa-8176-1ca1ce5bae84"/>
+                </line>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="532" y="42" width="1" height="68" uuid="fecbd03a-ae38-4f22-9f0b-50db7ef2f101"/>
+                </line>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="621" y="43" width="1" height="68" uuid="b4f9250e-4fd1-421b-937e-644b64ef9913"/>
+                </line>
+                <staticText>
+                    <reportElement x="622" y="40" width="100" height="15" uuid="927910b8-0049-4490-aa87-362163a0e0df"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Total]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="631" y="57" width="52" height="24" uuid="cfb0dbd2-9c13-4f92-b9f3-61349cce219e"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Weight(kg)]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement positionType="Float" x="689" y="56" width="26" height="26" uuid="0e5ca412-0709-4790-9b02-c6a22c9a1092"/>
+                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                    <text><![CDATA[Nb]]></text>
+                </staticText>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="721" y="40" width="1" height="69" uuid="87218eb0-3d3e-4829-80bd-0ae1a445091b"/>
+                </line>
+                <line>
+                    <reportElement x="147" y="81" width="574" height="2" uuid="a45d1717-18df-4c3d-adef-8bce9dd0c6b7"/>
+                </line>
+                <line>
+                    <reportElement positionType="Float" x="147" y="110" width="574" height="1" uuid="e1b136ce-5baa-4809-a36d-ac1b1a03808f">
+                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
+                    </reportElement>
+                </line>
+                <staticText>
+                    <reportElement positionType="Float" x="356" y="112" width="95" height="16" uuid="eac8892c-66ac-4607-be7a-2738eea4314d"/>
+                    <textElement textAlignment="Right"/>
+                    <text><![CDATA[Overall total:]]></text>
+                </staticText>
+                <line>
+                    <reportElement x="721" y="24" width="1" height="16" uuid="421c47a4-a1a2-45a3-9d3f-050ad6773e21">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <componentElement>
+                    <reportElement x="150" y="85" width="571" height="21" uuid="146d72cf-4207-40b0-bde2-30beab2a77cd"/>
+                    <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
+                        <datasetRun subDataset="TranshipmentLandingDataSet" uuid="b79e0cb1-147e-4752-89a9-1b1561e6f798">
+                            <dataSourceExpression><![CDATA[$P{TranshipmentLandingParam}]]></dataSourceExpression>
+                        </datasetRun>
+                        <jr:listContents height="21" width="571">
+                            <textField>
+                                <reportElement positionType="Float" x="5" y="0" width="40" height="21" uuid="57e5337a-2237-4e20-89e0-1c5200043b5b"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{faoArea}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="56" y="0" width="33" height="21" uuid="f88d756c-93af-4ed7-8080-e56bafbda38a"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{gfcmArea}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="100" y="0" width="36" height="21" uuid="92b16e5e-d725-4b1a-9d1e-6468a3270c72"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{statRect}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="149" y="0" width="47" height="21" uuid="15312f61-346b-4957-9b6d-31376b303835"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{eez}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="211" y="0" width="35" height="21" uuid="d65c690e-6e91-4990-8497-fa9a1d2da207"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{species}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="250" y="0" width="32" height="21" uuid="7fc9feac-4677-40e5-9ba2-b24aec5138e0"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{presentation}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="310" y="0" width="30" height="21" uuid="c787f520-c95f-461c-9d94-771b93f3c165"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{weightLSC}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="340" y="0" width="36" height="21" uuid="2f95cb4e-9f47-4ff2-adc8-8b7fba1ef55e"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{nbLSC}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="376" y="0" width="47" height="21" uuid="c0e14a27-13a4-488b-9505-d5311dff5a11"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{weightBMS}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="423" y="0" width="47" height="21" uuid="533f084e-ee04-4b71-9b8f-98aa0fc975eb"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{nbBMS}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="470" y="0" width="47" height="21" uuid="c7907291-6acc-44d9-87b4-0b3c66b9a7d7"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{weightTotal}]]></textFieldExpression>
+                            </textField>
+                            <textField>
+                                <reportElement positionType="Float" x="517" y="0" width="47" height="21" uuid="3ed1d586-52b9-49ed-a4dc-309d9b43a5d3"/>
+                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                <textFieldExpression><![CDATA[$F{nbTotal}]]></textFieldExpression>
+                            </textField>
+                        </jr:listContents>
+                    </jr:list>
+                </componentElement>
+                <line>
+                    <reportElement stretchType="ContainerHeight" x="147" y="24" width="1" height="86" uuid="6f6f29f4-5c2c-4b82-a158-1ba9acb4eb6a">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <line>
+                    <reportElement positionType="Float" x="456" y="111" width="1" height="17" uuid="2182e4b2-fe72-4f24-a62c-30b1656d69b2">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+                <line>
+                    <reportElement positionType="Float" x="355" y="128" width="101" height="1" uuid="f9c0570d-b99f-45f7-ba2a-527f42af720c"/>
+                </line>
+                <line>
+                    <reportElement positionType="Float" x="354" y="111" width="1" height="17" uuid="ad969a91-fb95-4b2a-86f4-470c63e0b7d6">
+                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
+                    </reportElement>
+                </line>
+            </frame>
+        </band>
+    </detail>
+</jasperReport>

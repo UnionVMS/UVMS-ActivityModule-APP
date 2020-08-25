@@ -434,10 +434,5 @@ public class FishingTripServiceBeanTest {
 
     }
 
-    @Test
-    public void calculateTime() {
-        FishingTripServiceBean serviceBean = new FishingTripServiceBean();
-        String duration = serviceBean.calculateDuration(3720000l);
-        assertEquals("1h 2m",duration);
-    }
+
 }

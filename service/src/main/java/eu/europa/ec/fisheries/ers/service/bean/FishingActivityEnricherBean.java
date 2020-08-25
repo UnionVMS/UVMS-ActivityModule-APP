@@ -198,7 +198,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         }
         final List<String> columnsList = new ArrayList<>(Collections.singletonList("code"));
         try {
-            Map<String, List<String>> portValuesFromMdr = mdrModuleServiceBean.getAcronymFromMdr("LOCATION", fluxLocationIdentifier, columnsList, 1, "latitude", "longitude");
+            Map<String, List<String>> portValuesFromMdr = mdrModuleServiceBean.getAcronymFromMdr("LOCATION", "latitude", "longitude");
             List<String> latitudeValues = portValuesFromMdr.get("latitude");
             List<String> longitudeValues = portValuesFromMdr.get("longitude");
             Double latitude = null;

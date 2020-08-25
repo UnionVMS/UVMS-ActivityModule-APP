@@ -310,7 +310,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
 
 
 
-    public static Date findFirstActivityDateForTrip(List<FishingActivityEntity> fishingActivities){
+    private static Date findFirstActivityDateForTrip(List<FishingActivityEntity> fishingActivities){
 
         FishingActivityEntity fishingActivityEntity = getFirstDepartureForTrip(fishingActivities);
         if(fishingActivityEntity != null){
@@ -319,13 +319,13 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
 
         fishingActivityEntity = fishingActivities.stream()
                 .filter(f -> f.getCalculatedStartTime() != null)
-                .min(Comparator.comparing(f -> f.getCalculatedStartTime()))
+                .min(Comparator.comparing(FishingActivityEntity::getCalculatedStartTime))
                 .orElse(null);
 
         return fishingActivityEntity == null ? null:fishingActivityEntity.getCalculatedStartTime();
     }
 
-    public static Date findLastActivityDateForTrip(List<FishingActivityEntity> fishingActivities){
+    private static Date findLastActivityDateForTrip(List<FishingActivityEntity> fishingActivities){
         FishingActivityEntity fishingActivityEntity = getLastArrivalForTrip(fishingActivities);
 
         if(fishingActivityEntity != null){
@@ -334,7 +334,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
 
         fishingActivityEntity = fishingActivities.stream()
                 .filter(f -> f.getCalculatedStartTime() != null)
-                .max(Comparator.comparing(f -> f.getCalculatedStartTime()))
+                .max(Comparator.comparing(FishingActivityEntity::getCalculatedStartTime))
                 .orElse(null);
 
         return fishingActivityEntity == null ? null: fishingActivityEntity.getCalculatedStartTime();
@@ -353,7 +353,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
 
     public static List<FishingActivityEntity> getTranshipmentsForTrip(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
-            return null;
+            return new ArrayList<>();
         }
         return fishingActivities.stream()
                 .filter(fa -> FishingActivityTypeEnum.TRANSHIPMENT.toString().equals(fa.getTypeCode()))
@@ -363,7 +363,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
 
     public static List<FishingActivityEntity> getLandingsForTrip(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
-            return null;
+            return new ArrayList<>();
         }
         return fishingActivities.stream()
                 .filter(fa -> FishingActivityTypeEnum.LANDING.toString().equals(fa.getTypeCode()))
@@ -371,7 +371,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
                 .collect(Collectors.toList());
     }
 
-    public static FishingActivityEntity getLastArrivalForTrip(List<FishingActivityEntity> fishingActivities) {
+    private static FishingActivityEntity getLastArrivalForTrip(List<FishingActivityEntity> fishingActivities) {
         if (CollectionUtils.isEmpty(fishingActivities)) {
             return null;
         }

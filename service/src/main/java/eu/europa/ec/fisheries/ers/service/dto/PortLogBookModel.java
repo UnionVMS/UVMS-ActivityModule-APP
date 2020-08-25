@@ -20,7 +20,8 @@ import lombok.Data;
 public class PortLogBookModel {
 
 	private Date date;
-	private String coordinates;
+	private String port;//this can either be name if found or else coordinates
 	private String activityType;
+	private int id;
 
 }
