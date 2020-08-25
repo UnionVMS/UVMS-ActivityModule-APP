@@ -38,7 +38,7 @@ public class MdrModuleServiceBean extends ModuleService implements MdrModuleServ
     public static final String DESCRIPTION_COLUMN = "description";
 
     @Override
-    public Map<String, List<String>> getAcronymFromMdr(String acronym, String filter, List<String> filterColumns, Integer nrOfResults, String... returnColumns) throws ServiceException {
+    public Map<String, List<String>> getAcronymFromMdr(String acronym, String... returnColumns) throws ServiceException {
         loadCache();
         Map<String, List<String>> columnNameValuesMap = prepareColumnNameValuesMap(returnColumns);
         List<ObjectRepresentation> codeList = mdrcache.getEntry(MDRAcronymType.fromValue(acronym));

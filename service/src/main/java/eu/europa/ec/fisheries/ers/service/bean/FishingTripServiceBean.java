@@ -27,12 +27,8 @@ import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -50,7 +46,6 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.ParseException;
 import eu.europa.ec.fisheries.ers.fa.dao.ActivityConfigurationDao;
@@ -61,17 +56,13 @@ import eu.europa.ec.fisheries.ers.fa.dao.FishingTripDao;
 import eu.europa.ec.fisheries.ers.fa.dao.FishingTripIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselIdentifierDao;
 import eu.europa.ec.fisheries.ers.fa.dao.VesselTransportMeansDao;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.ActivityConfiguration;
 import eu.europa.ec.fisheries.ers.fa.entities.ChronologyData;
 import eu.europa.ec.fisheries.ers.fa.entities.ContactPartyEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
@@ -81,16 +72,11 @@ import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.JasperReportService;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.AssetIdentifierDto;
-import eu.europa.ec.fisheries.ers.service.dto.FACatchModel;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
-import eu.europa.ec.fisheries.ers.service.dto.LogbookModel;
-import eu.europa.ec.fisheries.ers.service.dto.PortLogBookModel;
-import eu.europa.ec.fisheries.ers.service.dto.TranshipmentLandingModel;
-import eu.europa.ec.fisheries.ers.service.dto.TripInfoLogBookModel;
-import eu.europa.ec.fisheries.ers.service.dto.VesselIdentifierLogBookModel;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
@@ -151,16 +137,6 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.asset.types.VesselIdentifiersHolder;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -197,6 +173,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     @EJB
     private ActivityRulesModuleService activityRulesModuleService;
+
+    @EJB
+    private JasperReportService jasperReportServiceBean;
 
     private FaReportDocumentDao faReportDocumentDao;
     private FishingActivityDao fishingActivityDao;
@@ -353,13 +332,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     //To process MDR code list and compare with  database:vesselTransportMeansDao and then enrich with asset module
     private void getMdrCodesEnrichWithAssetsModuleDataIfNeeded(VesselDetailsDTO vesselDetailsDTO) {
         final String ACRONYM = "FLUX_VESSEL_ID_TYPE";
-        final String filter = "*";
-        final List<String> columnsList = new ArrayList<>();
-        Integer nrOfResults = 9999999;
         if (vesselDetailsDTO != null) {
             List<String> codeList;
             try {
-                codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, filter, columnsList, nrOfResults, "code").get("code");
+                codeList = mdrModuleService.getAcronymFromMdr(ACRONYM, "code").get("code");
                 Set<AssetIdentifierDto> vesselIdentifiers = vesselDetailsDTO.getVesselIdentifiers();
 
                 List<AssetListCriteriaPair> assetListCriteriaPairs = BaseMapper.mapMdrCodeListToAssetListCriteriaPairList(vesselIdentifiers, codeList);
@@ -565,22 +541,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     @Override
     public void generateLogBookReport(String tripId, String consolidated, OutputStream destination) throws ServiceException {
         List<FaReportDocumentEntity> faReportDocumentEntities = faReportDocumentDao.loadReports(tripId, consolidated);
-        generateLogBookReport(tripId, faReportDocumentEntities, destination);
+        jasperReportServiceBean.generateLogBookReport(tripId, faReportDocumentEntities, destination);
     }
 
-    private void generateLogBookReport(String tripId, List<FaReportDocumentEntity> faReportDocumentEntities, OutputStream destination) throws ServiceException {
-        LogbookModel logbookModel = getJasperReportData(faReportDocumentEntities, tripId);
 
-        try {
-            InputStream input = getClass().getClassLoader().getResourceAsStream("sample_report.jrxml");
-            JasperDesign jasperDesign = JRXmlLoader.load(input);
-            JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,  prepareParams(logbookModel), new JREmptyDataSource());
-            JasperExportManager.exportReportToPdfStream(jasperPrint, destination);
-        } catch (JRException e) {
-            throw new ServiceException(e.getMessage(), e);
-        }
-    }
     @Override
     public List<AttachmentResponseObject> getAttachmentsForGuidAndPeriod(GetAttachmentsForGuidAndQueryPeriod query) throws ServiceException {
         if(query.getGuid() == null) {
@@ -603,7 +567,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if(query.isPdf()) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try (OutputStream os = Base64.getEncoder().wrap(outputStream)) {
-                generateLogBookReport(tripId, faReportDocumentEntities, os);
+                jasperReportServiceBean.generateLogBookReport(tripId, faReportDocumentEntities, os);
             } catch (IOException e) {
                 throw new ServiceException("IO error while generating PDF", e);
             }
@@ -629,260 +593,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         return responseList;
-    }
-
-    private Map<String,Object> prepareParams(LogbookModel logbookModel){
-        JRBeanCollectionDataSource  portsCollection = new JRBeanCollectionDataSource(logbookModel.getPorts());
-        JRBeanCollectionDataSource vesselCollection = new JRBeanCollectionDataSource(logbookModel.getVesselIdentifier());
-        JRBeanCollectionDataSource tripCollection = new JRBeanCollectionDataSource(logbookModel.getTripInfo());
-        JRBeanCollectionDataSource catchCollection = new JRBeanCollectionDataSource(logbookModel.getCatches());
-        JRBeanCollectionDataSource transhipmentLandingCollection = new JRBeanCollectionDataSource(logbookModel.getTranshipmentLandings());
-        Map<String,Object> params = new HashMap<>();
-        params.put("PortParam",portsCollection);
-        params.put("VesselParam", vesselCollection);
-        params.put("TripParam", tripCollection);
-        params.put("CatchParam", catchCollection);
-        params.put("TranshipmentLandingParam", transhipmentLandingCollection);
-        return params;
-    }
-
-    private LogbookModel getJasperReportData(List<FaReportDocumentEntity> faReportDocumentEntities,String tripId){
-        LogbookModel logbookModel = new LogbookModel();
-
-        List<FishingActivityEntity> activities = new ArrayList<>();
-        Map<String,VesselIdentifierLogBookModel> vesselIdentifierLogBookModelList = new HashMap<>();
-        List<FACatchModel> catchModel = new ArrayList<>();
-        List<TranshipmentLandingModel> transhipmentLandings = new ArrayList<>();
-
-        faReportDocumentEntities.stream().forEach( t -> t.getFishingActivities().forEach(fa -> {
-
-                    activities.add(fa);
-                    String identifier = getIdentifierByOrder(fa);
-
-                    if("TRANSHIPMENT".equals(fa.getTypeCode()) || "LANDING".equals(fa.getTypeCode())) {
-                        transhipmentLandings.addAll(createTranshipmentLanding(fa, identifier));
-                    } else {
-                        catchModel.addAll(createCatch(fa, identifier));
-                    }
-
-                    if (vesselIdentifierLogBookModelList.get(identifier) == null) {
-
-                        VesselIdentifierLogBookModel dto = new VesselIdentifierLogBookModel();
-
-                        dto.setIdentifier(identifier);
-                        dto.setCountry(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getCountry());
-                        dto.setName(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getName());
-                        dto.setExtMark(getIdentifier(fa,"EXT_MARK"));
-                        dto.setIrcs(getIdentifier(fa,"IRCS"));
-                        String address = fa.getVesselTransportMeans() == null || fa.getVesselTransportMeans().isEmpty()?
-                                null : fa.getVesselTransportMeans().iterator().next().getContactParty() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().isEmpty()?
-                                null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses().isEmpty()?
-                                null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses().iterator().next().getStreetName();
-
-                        dto.setAddress(address);
-                        vesselIdentifierLogBookModelList.put(identifier, dto);
-                    }
-        }));
-
-        List<TripInfoLogBookModel> tripInfoList = calculateTripInfo(activities,tripId);
-        logbookModel.setPorts(retrievePortLogBookModel(activities));
-        logbookModel.setVesselIdentifier( new ArrayList(vesselIdentifierLogBookModelList.values()));
-        logbookModel.setTripInfo(tripInfoList);
-        logbookModel.setCatches(catchModel);
-        logbookModel.setTranshipmentLandings(transhipmentLandings);
-        return logbookModel;
-    }
-
-    private String getIdentifier(FishingActivityEntity fishingActivityEntity, String identifierType){
-        Set<VesselIdentifierEntity> identifierEntitySet = new HashSet<>();
-        fishingActivityEntity.getFaReportDocument().getVesselTransportMeans().forEach( z-> identifierEntitySet.addAll(z.getVesselIdentifiers()));
-
-        for(VesselIdentifierEntity vesselIdentifier:identifierEntitySet){
-            if(identifierType.equals(vesselIdentifier.getVesselIdentifierSchemeId())){
-                return vesselIdentifier.getVesselIdentifierId();
-            }
-        }
-
-        return null;
-    }
-
-    private List<TranshipmentLandingModel> createTranshipmentLanding(FishingActivityEntity fa,String identifier){
-
-        if(fa.getFaCatchs() == null || fa.getFaCatchs().isEmpty()){
-            return new ArrayList<>();
-        }
-
-        List<TranshipmentLandingModel> modelList = new ArrayList<>();
-
-        Date catchDate = fa.getCalculatedStartTime();
-        fa.getFaCatchs().stream().forEach( katch -> katch.getFluxLocations().stream().forEach(location ->{
-            TranshipmentLandingModel model = new TranshipmentLandingModel();
-            model.setCalculatedStartTime(catchDate);
-            model.setIdentifier(identifier);
-            model.setCalculatedUnitQuantity(katch.getCalculatedUnitQuantity());
-            model.setPresentation(getPresentation(katch));
-            model.setWeight(getProductWeight(katch));
-            model.setGears(katch.getGearTypeCode());
-            model.setFluxLocationIdentifierSchemeId(location.getFluxLocationIdentifierSchemeId());
-            if(location.getLatitude() != null) {
-                model.setLatitude(BigDecimal.valueOf(location.getLatitude()).setScale(6, RoundingMode.DOWN));
-            }
-            if(location.getLongitude() != null) {
-                model.setLongitude(BigDecimal.valueOf(location.getLongitude()).setScale(6, RoundingMode.DOWN));
-            }
-            modelList.add(model);
-        }));
-        return modelList;
-    }
-    //temp code until we implement the updates specs
-    private String getPresentation(FaCatchEntity catchEntity){
-        for(AapProcessEntity process:catchEntity.getAapProcesses()){
-            for(AapProcessCodeEntity processCode:process.getAapProcessCode()){
-                if("FISH_PRESENTATION".equals(processCode.getTypeCodeListId())){
-                    return processCode.getTypeCode();
-                }
-            }
-        }
-
-        return null;
-    }
-
-    //temp code until we implement the updates specs
-    private String getProductWeight(FaCatchEntity catchEntity){
-        double sum = catchEntity.getAapProcesses().stream().map(t -> t.getAapProducts().stream().mapToDouble(r -> r.getWeightMeasure())).mapToDouble(z -> z.sum()).sum();
-
-        return String.valueOf(sum)+catchEntity.getAapProcesses().iterator().next().getAapProducts().iterator().next().getWeightMeasureUnitCode();
-    }
-
-    private List<FACatchModel> createCatch(FishingActivityEntity fa,String identifier){
-
-        if(fa.getFaCatchs() == null || fa.getFaCatchs().isEmpty()){
-            return new ArrayList<>();
-        }
-
-        List<FACatchModel> modelList = new ArrayList<>();
-
-        Date catchDate = fa.getCalculatedStartTime();
-        fa.getFaCatchs().stream().forEach( katch -> katch.getFluxLocations().stream().forEach(location ->{
-            FACatchModel model = new FACatchModel();
-            model.setCalculatedStartTime(catchDate);
-            model.setIdentifier(identifier);
-            model.setCalculatedUnitQuantity(katch.getCalculatedUnitQuantity());
-            model.setSpeciesCode(katch.getSpeciesCode());
-            model.setWeight(katch.getWeightMeasure() + katch.getWeightMeasureUnitCode());
-            model.setGears(katch.getGearTypeCode());
-            model.setFluxLocationIdentifierSchemeId(location.getFluxLocationIdentifierSchemeId());
-            if(location.getLatitude() != null) {
-                model.setLatitude(BigDecimal.valueOf(location.getLatitude()).setScale(6, RoundingMode.DOWN));
-            }
-            if(location.getLongitude() != null) {
-                model.setLongitude(BigDecimal.valueOf(location.getLongitude()).setScale(6, RoundingMode.DOWN));
-            }
-            modelList.add(model);
-        }));
-        return modelList;
-    }
-
-    private List<TripInfoLogBookModel> calculateTripInfo(List<FishingActivityEntity> faList,String tripId){
-        List<TripInfoLogBookModel> tripInfoList = new ArrayList<>();
-        TripInfoLogBookModel tripInfoLogBookModel = new TripInfoLogBookModel();
-
-        Double totalTripDuration = FishingTripIdWithGeometryMapper.getTotalTripDuration(faList);
-        Date firstActivityDateForTrip = FishingTripIdWithGeometryMapper.findFirstActivityDateForTrip(faList);
-        Date lastActivityDateForTrip = FishingTripIdWithGeometryMapper.findLastActivityDateForTrip(faList);
-        String duration = calculateDuration(totalTripDuration.longValue());
-        tripInfoLogBookModel.setFirstActivityDateForTrip(firstActivityDateForTrip);
-        tripInfoLogBookModel.setLastActivityDateForTrip(lastActivityDateForTrip);
-        tripInfoLogBookModel.setDuration(duration);
-        tripInfoLogBookModel.setTripId(tripId);
-
-        tripInfoList.add(tripInfoLogBookModel);
-        return tripInfoList;
-    }
-
-    private String getIdentifierByOrder(FishingActivityEntity fishingActivityEntity){
-        Set<VesselIdentifierEntity> identifierEntitySet = new HashSet<>();
-        fishingActivityEntity.getFaReportDocument().getVesselTransportMeans().forEach( z-> identifierEntitySet.addAll(z.getVesselIdentifiers()));
-
-        String cfr, gfcm, iccat;
-        cfr = gfcm = iccat = null;
-
-        for(VesselIdentifierEntity vesselIdentifier:identifierEntitySet){
-            if("CFR".equals(vesselIdentifier.getVesselIdentifierSchemeId())){
-                cfr = vesselIdentifier.getVesselIdentifierId();
-            }
-            if("GFCM".equals(vesselIdentifier.getVesselIdentifierSchemeId())){
-                gfcm = vesselIdentifier.getVesselIdentifierId();
-            }
-            if("ICCAT".equals(vesselIdentifier.getVesselIdentifierSchemeId())){
-                iccat = vesselIdentifier.getVesselIdentifierId();
-            }
-        }
-        //first return cfr value if found, then gfcm or iccat
-        return cfr == null ? gfcm == null ? "ICCAT:"+iccat : "GFCM:"+gfcm : cfr;
-    }
-
-
-    private List<PortLogBookModel> retrievePortLogBookModel(List<FishingActivityEntity> activities){
-        List<PortLogBookModel> logBookModelList = new ArrayList<>();
-
-        FishingActivityEntity firstDepartureForTrip = FishingTripIdWithGeometryMapper.getFirstDepartureForTrip(activities);
-        fillPortLogBookModel(firstDepartureForTrip,logBookModelList);
-        FishingActivityEntity lastArrivalForTrip = FishingTripIdWithGeometryMapper.getLastArrivalForTrip(activities);
-        fillPortLogBookModel(lastArrivalForTrip,logBookModelList);
-        List<FishingActivityEntity> transhipmentsForTrip = FishingTripIdWithGeometryMapper.getTranshipmentsForTrip(activities);
-        transhipmentsForTrip.forEach( f-> fillPortLogBookModel(f,logBookModelList));
-        List<FishingActivityEntity> landingsForTrip = FishingTripIdWithGeometryMapper.getLandingsForTrip(activities);
-        landingsForTrip.forEach(f ->fillPortLogBookModel(f,logBookModelList));
-        return logBookModelList;
-    }
-
-    private List<PortLogBookModel> fillPortLogBookModel(FishingActivityEntity fa, List<PortLogBookModel> logBookModelList){
-
-        if(fa == null){
-            return logBookModelList;
-        }
-
-        PortLogBookModel portLogBookModel = new PortLogBookModel();
-        portLogBookModel.setActivityType(fa.getTypeCode());
-        Coordinate coordinates = fa.getGeom() == null ? null : fa.getGeom().getCoordinates()[0];
-        portLogBookModel.setCoordinates(getCoordinates(coordinates));
-        portLogBookModel.setDate(fa.getCalculatedStartTime());
-        logBookModelList.add(portLogBookModel);
-        return logBookModelList;
-    }
-
-    private String getCoordinates(Coordinate coordinate){
-        if(coordinate == null){
-            return null;
-        }
-        DecimalFormat df = new DecimalFormat("###.######");
-        df.setRoundingMode(RoundingMode.DOWN);
-        return String.valueOf(df.format(coordinate.x))+","+String.valueOf(df.format(coordinate.y));
-    }
-
-    public String calculateDuration(Long millis) {
-
-        if(millis == 0){
-            return "";
-        }
-
-        long seconds = millis / 1000;
-        long min = seconds % 3600 / 60;
-        long hours = seconds % 86400 / 3600;
-        long days = seconds / 86400;
-        StringBuilder sb  = new StringBuilder();
-        if(days != 0) {
-            sb.append(days);
-            sb.append("d ");
-        }
-        if(hours != 0) {
-            sb.append(hours);
-            sb.append("h ");
-        }
-        sb.append(min);
-        sb.append("m");
-        return sb.toString();
     }
 
     /**
@@ -1428,7 +1138,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             for (Map.Entry<String,List<FaReportDocumentEntity>> entry : tripIdToReportsMap.entrySet() ) {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 try (OutputStream os = Base64.getEncoder().wrap(outputStream)) {
-                    generateLogBookReport(entry.getKey(), entry.getValue(), os);
+                    jasperReportServiceBean.generateLogBookReport(entry.getKey(), entry.getValue(), os);
                 } catch (IOException e) {
                     throw new ServiceException("IO error while generating PDF " + makeMessageForErrorReporting(request), e);
                 }

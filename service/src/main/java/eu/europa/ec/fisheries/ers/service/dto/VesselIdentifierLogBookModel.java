@@ -4,12 +4,14 @@ import lombok.Data;
 
 @Data
 public class VesselIdentifierLogBookModel {
-	
-	private String name;
+
+	private int id;
+	private String vesselName;
 	private String country;
-	private String identifier;//cfr,gfcm,iccat
-	private Double dimensions;
-	private String address;
+	private String cfr;
 	private String extMark;
 	private String ircs;
+	private String imo;
+	private String role;
+	private String other;//gfcm,iccat
 }
