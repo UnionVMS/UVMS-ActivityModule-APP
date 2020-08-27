@@ -106,12 +106,12 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     }
 
     /**
-     * Checks if one of the VESSEL filters is issued.
-     * If true then queries the ASSETS module for guids related to these filters.
+     * Checks if the VESSEL filter is issued.
+     * If true then queries the ASSETS module for guids related to this filter.
      * If assets answers with some guids then puts those guids in searchCriteriaMapMultipleValues of
      * FishingActivityQuery and returns false.
      * <p>
-     * In every other case it returns true, which means that the filters were present but,
+     * In every other case it returns true, which means that the filter were present but,
      * there were no matches in ASSET module.
      *
      * @param query
@@ -126,14 +126,14 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         }
 
         String vesselSearchStr = searchCriteriaMap.get(SearchFilter.VESSEL);
-        String vesselGroupSearchStr = searchCriteriaMap.get(SearchFilter.VESSEL_GROUP);
-        if (StringUtils.isNotEmpty(vesselSearchStr) || StringUtils.isNotEmpty(vesselGroupSearchStr)) {
-            List<String> guidsFromAssets = assetsServiceBean.getAssetGuids(vesselSearchStr, vesselGroupSearchStr);
+        // Support for SearchFilter.VESSEL_GROUP has been removed, since the query towards Asset for it
+        // has changed considerably (now needs defining AssetFilter). Add when there is a need.
+        if (StringUtils.isNotEmpty(vesselSearchStr)) {
+            List<String> guidsFromAssets = assetsServiceBean.getAssetGuids(vesselSearchStr);
             if (CollectionUtils.isEmpty(guidsFromAssets)) {
                 return true;
             }
             searchCriteriaMap.remove(SearchFilter.VESSEL);
-            searchCriteriaMap.remove(SearchFilter.VESSEL_GROUP);
             if (searchCriteriaMapMultipleValues == null) {
                 searchCriteriaMapMultipleValues = new EnumMap<>(SearchFilter.class);
             }

@@ -53,7 +53,7 @@
 				<db.outputFile>postgres/changelog/generatedChangelog.xml</db.outputFile>
 				<driver.groupId>org.postgresql</driver.groupId>
 				<driver.artifactId>postgresql</driver.artifactId>
-				<driver.version>42.2.13</driver.version>
+				<driver.version>42.2.16</driver.version>
 			</properties>
 			<dependencies>
 				<dependency>
@@ -78,7 +78,7 @@
 					<plugin>
 						<groupId>org.liquibase</groupId>
 						<artifactId>liquibase-maven-plugin</artifactId>
-						<version>3.9.0</version>
+						<version>3.10.1</version>
 						<configuration>
 							<url>${db.docker.url}</url>
 							<migrationSqlOutputFile>${project.build.directory}/full-update.sql</migrationSqlOutputFile>
@@ -97,7 +97,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>3.1.0</version>
+						<version>3.2.0</version>
 						<executions>
 							<execution>
 								<id>attach-artifacts</id>
@@ -130,7 +130,7 @@
 				<plugin>
 					<groupId>org.liquibase</groupId>
 					<artifactId>liquibase-maven-plugin</artifactId>
-					<version>3.9.0</version>
+					<version>3.10.1</version>
 					<configuration>
 						<promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
 						<changeLogFile>${db.changeLogFile}</changeLogFile>

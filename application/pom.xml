@@ -16,6 +16,7 @@
         <docker.dev.start.phase>test-compile</docker.dev.start.phase>
         <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
         <docker.liquibase.phase>test-compile</docker.liquibase.phase>
+        <jaxb-impl.version>2.3.3</jaxb-impl.version>
     </properties>
 
     <dependencies>
@@ -130,12 +131,6 @@
 
         <!-- THIRD-PARTY DEPENDENCIES -->
         <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>0.6.4</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
@@ -167,6 +162,12 @@
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-geojson</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb-impl.version}</version>
         </dependency>
 
         <!-- TEST DEPENDENCIES -->
