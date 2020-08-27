@@ -16,5 +16,6 @@ package eu.europa.ec.fisheries.uvms.activity.fa.utils;
 public enum LocationEnum {
 
     AREA,
-    LOCATION
+    LOCATION,
+    POSITION
 }
