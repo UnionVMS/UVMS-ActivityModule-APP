@@ -65,6 +65,32 @@
 		</profile>
 
 		<profile>
+			<id>postgres-25432</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<db.driver>org.postgresql.Driver</db.driver>
+				<db.url>jdbc:postgresql://localhost:25432/db71u</db.url>
+				<db.user>activity</db.user>
+				<db.passwd>activity</db.passwd>
+				<db.defaultSchema>activity</db.defaultSchema>
+				<db.changeLogFile>postgres/changelog/db-changelog-master.xml</db.changeLogFile>
+				<db.outputFile>postgres/changelog/generatedChangelog.xml</db.outputFile>
+				<driver.groupId>org.postgresql</driver.groupId>
+				<driver.artifactId>postgresql</driver.artifactId>
+				<driver.version>42.2.13</driver.version>
+			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>${driver.groupId}</groupId>
+					<artifactId>${driver.artifactId}</artifactId>
+					<version>${driver.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<profile>
 			<id>export</id>
 			<properties>
 				<db.diffTypes>data</db.diffTypes>
