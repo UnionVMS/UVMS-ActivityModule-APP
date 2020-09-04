@@ -55,7 +55,7 @@
         <uvms.config.version>4.1.2</uvms.config.version>
         <mdr.model.version>1.0.5</mdr.model.version>
         <mdrSwe.client.version>1.0.18</mdrSwe.client.version>
-        <asset.version>6.7.19</asset.version>
+        <asset.version>6.7.20</asset.version>
 
         <!-- Third-party dependency versions -->
         <mapstruct.version>1.3.1.Final</mapstruct.version>
@@ -69,7 +69,7 @@
 
         <!-- Test dependency versions -->
         <uvms.test.version>0.0.4</uvms.test.version>
-        <activemq.artemis.version>2.14.0</activemq.artemis.version>
+        <activemq.artemis.version>2.15.0</activemq.artemis.version>
         <arquillian.jacoco.version>1.1.0</arquillian.jacoco.version>
 
         <!-- Test filter -->
