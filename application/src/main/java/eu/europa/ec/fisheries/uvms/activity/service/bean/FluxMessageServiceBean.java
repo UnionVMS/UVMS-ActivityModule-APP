@@ -57,21 +57,36 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     @Override
-    public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException {
+    public FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) {
         log.info("[START] Going to save [{}] FaReportDocuments.", faReportMessage.getFAReportDocuments().size());
+
         FluxFaReportMessageEntity messageEntity = fluxFaReportMessageMapper.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);
+
+        persistAndUpdateFishingActivityReport(messageEntity);
+
+        return messageEntity;
+    }
+
+    @Override
+    public void saveFishingActivityReportDocuments(FluxFaReportMessageEntity messageEntity) {
+        log.info("[START] Going to save [{}] FaReportDocuments.", messageEntity.getFaReportDocuments().size());
+        persistAndUpdateFishingActivityReport(messageEntity);
+    }
+
+    private void persistAndUpdateFishingActivityReport(FluxFaReportMessageEntity messageEntity) {
         entityManager.persist(messageEntity);
-        final Set<FaReportDocumentEntity> faReportDocuments = messageEntity.getFaReportDocuments();
-        for (FaReportDocumentEntity faReportDocument : faReportDocuments) {
+
+        for (FaReportDocumentEntity faReportDocument : messageEntity.getFaReportDocuments()) {
             updateGeometry(faReportDocument);
             enrichFishingActivityWithGuiID(faReportDocument);
         }
         log.debug("Saved partial FluxFaReportMessage before further processing");
+
         updateFaReportCorrectionsOrCancellations(messageEntity.getFaReportDocuments());
         log.debug("Updating FaReport Corrections is complete.");
+
         updateFishingTripStartAndEndDate(messageEntity.getFaReportDocuments());
         log.info("[END] FluxFaReportMessage Saved successfully.");
-        return messageEntity;
     }
 
     /**

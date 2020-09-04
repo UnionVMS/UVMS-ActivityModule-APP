@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Stateless
 public class EfrToFluxMapper {
@@ -133,7 +134,7 @@ public class EfrToFluxMapper {
         // result.setFmcMarkerListId("FLUX_FA_FMC");
 
         // Table 5 in spec
-        result.setFluxReportDocument_Id("TODO");
+        result.setFluxReportDocument_Id(UUID.randomUUID().toString()); // Vi har inte ID:n på delar av fiskerapporten i EFR så behöver generera ett här (används som PK i databasen)
         result.setFluxReportDocument_IdSchemeId("UUID");
         // result.setFluxReportDocument_ReferencedFaReportDocumentId(); kan nog skippa
         // result.setFluxReportDocument_ReferencedFaReportDocumentSchemeId(); kan nog skippa
