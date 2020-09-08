@@ -5,7 +5,7 @@
     <parent>
         <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
         <artifactId>activity</artifactId>
-        <version>1.2.10-SWE-SNAPSHOT</version>
+        <version>1.2.10-SWE</version>
     </parent>
 
     <artifactId>activity-application</artifactId>
