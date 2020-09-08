@@ -40,6 +40,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityModuleRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.context.MappedDiagnosticContext;
+import eu.europa.ec.fisheries.uvms.commons.message.context.PropagateFluxEnvelopeData;
 import lombok.extern.slf4j.Slf4j;
 
 @MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
@@ -107,6 +108,7 @@ public class ActivityMessageConsumerBean implements MessageListener {
     private Event<EventMessage> errorEvent;
 
     @Override
+    @PropagateFluxEnvelopeData
     public void onMessage(Message message) {
         TextMessage textMessage = null;
         try {
