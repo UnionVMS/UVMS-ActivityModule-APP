@@ -11,7 +11,7 @@
 
     <groupId>eu.europa.ec.fisheries.uvms.activity</groupId>
     <artifactId>activity</artifactId>
-    <version>1.2.9-SWE-SNAPSHOT</version>
+    <version>1.2.12-SWE-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>Swedish version of UnionVms activity module for handling fishing activities.</description>
 
@@ -30,7 +30,7 @@
         <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log</application.logfile.boot>
 
         <!-- Docker configuration -->
-        <docker.dev.version>3.44.6-EFR-SNAPSHOT</docker.dev.version>
+        <docker.dev.version>3.45.1-EFR</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>activity</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>
@@ -51,7 +51,7 @@
 
         <config.model.version>4.3.5</config.model.version>
         <spatialSwe.model.version>2.0.8-UVMS</spatialSwe.model.version>
-        <exchange.model.version>5.3.3-UVMS-SNAPSHOT</exchange.model.version>
+        <exchange.model.version>5.3.3-UVMS</exchange.model.version>
         <uvms.config.version>4.1.2</uvms.config.version>
         <mdr.model.version>1.0.5</mdr.model.version>
         <mdrSwe.client.version>1.0.18</mdrSwe.client.version>
@@ -351,23 +351,6 @@
     </scm>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <!-- This id must match the -Prelease-profile id value or else sources will be "uploaded" twice, which causes Nexus to fail -->
-                            <id>attach-sources</id>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
