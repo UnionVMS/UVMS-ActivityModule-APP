@@ -33,6 +33,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.Area;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FluxReportIdentifier;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ReportToSubscription;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.uvms.commons.geometry.model.StringWrapper;
 import org.apache.commons.lang3.tuple.Pair;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 
@@ -45,7 +47,7 @@ public class SubscriptionReportForwarderImpl implements SubscriptionReportForwar
     /**
      * Injection constructor.
      *
-     * @param activitySubscriptionServiceBean
+     * @param activitySubscriptionServiceBean The bean that handles according events
      */
     @Inject
     public SubscriptionReportForwarderImpl(ActivitySubscriptionServiceBean activitySubscriptionServiceBean) {
@@ -66,12 +68,12 @@ public class SubscriptionReportForwarderImpl implements SubscriptionReportForwar
         for(FaReportDocumentEntity faReportDocumentEntity: messageEntity.getFaReportDocuments()) {
             List<FluxReportIdentifier> fluxFaReportMessageIds = new ArrayList<>();
             List<FishingActivity> fishingActivities = new ArrayList<>();
-            List<String> faReportTypes = new ArrayList<>();
             List<ActivityAreas> activityAreas = new ArrayList<>();
             List<String> assetHistoryGuids = new ArrayList<>();
             for(FluxReportIdentifierEntity fluxReportIdentifier: faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers()) {
                 fluxFaReportMessageIds.add(new FluxReportIdentifier(fluxReportIdentifier.getFluxReportIdentifierId(), fluxReportIdentifier.getFluxReportIdentifierSchemeId()));
             }
+            List<String> activitiesGeometries = new ArrayList<>();
             for(FishingActivityEntity fishingActivityEntity: faReportDocumentEntity.getFishingActivities()) {
                 FishingActivity fishingActivity = ctx.getFishingActivity(fishingActivityEntity);
                 fishingActivities.add(fishingActivity);
@@ -88,8 +90,12 @@ public class SubscriptionReportForwarderImpl implements SubscriptionReportForwar
                         Optional.ofNullable(ctx.getAssetHistoryGuid(Pair.of(vesselTransportMeansEntity.getGuid(), activityDate))).ifPresent(assetHistoryGuids::add);
                     }
                 }
+                StringWrapper stringWrapper = GeometryMapper.INSTANCE.geometryToWkt(fishingActivityEntity.getGeom());
+                activitiesGeometries.add(stringWrapper.getValue());
             }
-            faReports.add(new ReportToSubscription(fluxFaReportMessageIds, fishingActivities, faReportDocumentEntity.getTypeCode(), activityAreas, assetHistoryGuids));
+            
+            faReports.add(new ReportToSubscription(fluxFaReportMessageIds, fishingActivities, faReportDocumentEntity.getTypeCode(), activityAreas, assetHistoryGuids,
+                    activitiesGeometries));
         }
         activitySubscriptionServiceBean.sendForwardReportToSubscriptionRequest(faReports);
     }
