@@ -61,7 +61,7 @@ public class EfrToFluxMapper {
         FishingTripEntity fishingTripEntity = createFishingTripForMessage(efrFishingReport);
 
         // Chapter 7.1.1 in spec
-        result.setFluxReportDocument_Id(efrFishingReport.getFishingReportId().toString());
+        result.setFluxReportDocument_Id(UUID.randomUUID().toString()); // ID for this FLUX message
         result.setFluxReportDocument_IdSchemeId("UUID");
         // result.setFluxReportDocument_ReferencedFaQueryMessageId(); kan nog skippa (min 0 enligt spec)
         // result.setFluxReportDocument_ReferencedFaQueryMessageSchemeId(); kan nog skippa (min 0 enligt spec)
@@ -105,7 +105,7 @@ public class EfrToFluxMapper {
     // Chapter 7.1.15.9 in spec
     private FishingTripEntity createFishingTripForMessage(FishingReport efrFishingReport) {
         FishingTripKey fishingTripKey = new FishingTripKey();
-        fishingTripKey.setTripId(efrFishingReport.getFishingReportId().toString()); // TODO I guess?
+        fishingTripKey.setTripId(efrFishingReport.getFishingReportId().toString());
         fishingTripKey.setTripSchemeId("UUID");
 
         FishingTripEntity result = new FishingTripEntity();
