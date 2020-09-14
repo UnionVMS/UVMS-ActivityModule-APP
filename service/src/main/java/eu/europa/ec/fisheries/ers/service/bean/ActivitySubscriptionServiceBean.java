@@ -1,12 +1,28 @@
 package eu.europa.ec.fisheries.ers.service.bean;
 
 
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import javax.xml.bind.JAXBException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityEventQueueConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.ReportingProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionDataProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.SubscriptionProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
@@ -32,19 +48,6 @@ import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.jms.JMSException;
-import javax.jms.TextMessage;
-import javax.xml.bind.JAXBException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
 @LocalBean
 @Stateless
 @Slf4j
@@ -66,6 +69,9 @@ public class ActivitySubscriptionServiceBean {
 
     @EJB
     private ActivityConsumerBean activityConsumerBean;
+
+    @EJB
+    private ReportingProducerBean reportingProducerBean;
 
     @EJB
     private ConfigHelper configHelper;
@@ -102,6 +108,18 @@ public class ActivitySubscriptionServiceBean {
         try {
             String request = ActivityModuleRequestMapper.mapToForwardReportToSubscriptionRequest(faReports);
             subscriptionDataProducerBean.sendModuleMessageWithProps(request, null,  Collections.singletonMap(MessageConstants.JMS_SUBSCRIPTION_SOURCE_PROPERTY, configHelper.getModuleName()));
+        } catch (ActivityModelMarshallException | MessageException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendForwardReportToReportingRequest(List<ReportToSubscription> faReports) {
+        try {
+            String request = ActivityModuleRequestMapper.mapToForwardReportToSubscriptionRequest(faReports);
+            Map<String, String> params = new HashMap<>();
+            params.put("mainTopic", "reporting");
+            params.put("subTopic", "activity");
+            reportingProducerBean.sendMessageToSpecificQueueSameTx(request, reportingProducerBean.getDestination(), null,  params);
         } catch (ActivityModelMarshallException | MessageException e) {
             e.printStackTrace();
         }
