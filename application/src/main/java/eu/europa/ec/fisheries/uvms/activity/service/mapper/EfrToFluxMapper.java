@@ -14,14 +14,14 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.LocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.ArrivalLocation;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.CatchGearSettings;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.CatchSpecies;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingCatch;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingReport;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.PriorNotificationEstimatedCatch;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.UserSpecifiedLocation;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
+import se.havochvatten.efr.efropenapi.model.ArrivalLocation;
+import se.havochvatten.efr.efropenapi.model.CatchGearSettings;
+import se.havochvatten.efr.efropenapi.model.CatchSpecies;
+import se.havochvatten.efr.efropenapi.model.FishingCatch;
+import se.havochvatten.efr.efropenapi.model.FishingReport;
+import se.havochvatten.efr.efropenapi.model.PriorNotificationEstimatedCatch;
+import se.havochvatten.efr.efropenapi.model.UserSpecifiedLocation;
 
 import javax.ejb.Stateless;
 import java.math.BigDecimal;
@@ -37,6 +37,7 @@ import java.util.UUID;
 public class EfrToFluxMapper {
 
     private static final String PURPOSE_ORIGINAL = "9"; // From MDR list MDR_FLUX_GP_Purpose
+    private static final BigDecimal ZERO_BIG_DECIMAL = new BigDecimal(0);
 
     // TODO have one document for all fishing activities instead of each one in separate documents?
 
@@ -495,10 +496,10 @@ public class EfrToFluxMapper {
             fluxCatch.setUnitQuantityCode("C62");
             // fluxCatch.setCalculatedUnitQuantity(); TODO set this as well?
 
-            Double lscWeightInKg = efrCatch.getWeightInKilos();
+            BigDecimal lscWeightInKg = efrCatch.getWeightInKilos();
             if (lscWeightInKg != null) {
                 // Spec says to round to two decimals
-                double roundedLscWeight = new BigDecimal(lscWeightInKg).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                double roundedLscWeight = lscWeightInKg.setScale(2, RoundingMode.HALF_UP).doubleValue();
                 fluxCatch.setWeightMeasure(roundedLscWeight);
                 fluxCatch.setWeightMeasureUnitCode("KGM");
                 //fluxCatch.setCalculatedWeightMeasure(); TODO set this as well?
@@ -722,19 +723,19 @@ public class EfrToFluxMapper {
         switch (fishSizeClass) {
             case "BMS":
                 return (species.getBmsQuantity() != null && species.getBmsQuantity() > 0) ||
-                       (species.getBmsWeightInKg() != null && species.getBmsWeightInKg() > 0.0);
+                       (species.getBmsWeightInKg() != null && species.getBmsWeightInKg().compareTo(ZERO_BIG_DECIMAL) > 0);
             case "DIM":
                 return (species.getDimQuantity() != null && species.getDimQuantity() > 0) ||
-                       (species.getDimWeightInKg() != null && species.getDimWeightInKg() > 0.0);
+                       (species.getDimWeightInKg() != null && species.getDimWeightInKg().compareTo(ZERO_BIG_DECIMAL) > 0);
             case "DIS":
                 return (species.getDisQuantity() != null && species.getDisQuantity() > 0) ||
-                       (species.getDisWeightInKg() != null && species.getDisWeightInKg() > 0.0);
+                       (species.getDisWeightInKg() != null && species.getDisWeightInKg().compareTo(ZERO_BIG_DECIMAL) > 0);
             case "LSC":
                 return (species.getLscQuantity() != null && species.getLscQuantity() > 0) ||
-                       (species.getLscWeightInKg() != null && species.getLscWeightInKg() > 0.0);
+                       (species.getLscWeightInKg() != null && species.getLscWeightInKg().compareTo(ZERO_BIG_DECIMAL) > 0);
             case "ROV":
                 return (species.getRovQuantity() != null && species.getRovQuantity() > 0) ||
-                       (species.getRovWeightInKg() != null && species.getRovWeightInKg() > 0.0);
+                       (species.getRovWeightInKg() != null && species.getRovWeightInKg().compareTo(ZERO_BIG_DECIMAL) > 0);
             default:
                 return false;
         }
@@ -770,7 +771,7 @@ public class EfrToFluxMapper {
     }
 
     private static void setCatchWeightInKg(FaCatchEntity fluxCatch, CatchSpecies species, String fishSizeClass) {
-        Double efrWeight;
+        BigDecimal efrWeight;
 
         switch (fishSizeClass) {
             case "BMS":
@@ -793,7 +794,7 @@ public class EfrToFluxMapper {
         }
 
         if (efrWeight != null) {
-            double roundedWeight = BigDecimal.valueOf(efrWeight)
+            double roundedWeight = efrWeight
                     .setScale(2, RoundingMode.HALF_UP)
                     .doubleValue();
             fluxCatch.setWeightMeasure(roundedWeight);
