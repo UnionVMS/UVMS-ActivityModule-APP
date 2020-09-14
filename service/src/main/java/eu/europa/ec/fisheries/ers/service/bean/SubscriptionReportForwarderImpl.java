@@ -87,6 +87,7 @@ public class SubscriptionReportForwarderImpl implements SubscriptionReportForwar
                     activitiesGeometries));
         }
         activitySubscriptionServiceBean.sendForwardReportToSubscriptionRequest(faReports);
+        activitySubscriptionServiceBean.sendForwardReportToReportingRequest(faReports);
     }
 
     @Override
