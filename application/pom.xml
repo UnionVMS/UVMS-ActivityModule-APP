@@ -129,6 +129,12 @@
             <artifactId>config-model</artifactId>
         </dependency>
 
+        <!-- EFR dependencies -->
+        <dependency>
+            <groupId>se.havochvatten.efr</groupId>
+            <artifactId>efr-api-model-only</artifactId>
+        </dependency>
+
         <!-- THIRD-PARTY DEPENDENCIES -->
         <dependency>
             <groupId>org.projectlombok</groupId>

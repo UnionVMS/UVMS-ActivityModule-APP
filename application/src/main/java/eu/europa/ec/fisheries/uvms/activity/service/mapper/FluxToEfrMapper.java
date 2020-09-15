@@ -10,21 +10,21 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.ArrivalLocation;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.CatchGearSettings;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.CatchSpecies;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingCatch;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingReport;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.PriorNotificationDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.PriorNotificationEstimatedCatch;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.UserSpecifiedLocation;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ModelMapperException;
+import se.havochvatten.efr.efropenapi.model.ArrivalLocation;
+import se.havochvatten.efr.efropenapi.model.CatchGearSettings;
+import se.havochvatten.efr.efropenapi.model.CatchSpecies;
+import se.havochvatten.efr.efropenapi.model.FishingCatch;
+import se.havochvatten.efr.efropenapi.model.FishingReport;
+import se.havochvatten.efr.efropenapi.model.PriorNotification;
+import se.havochvatten.efr.efropenapi.model.PriorNotificationEstimatedCatch;
+import se.havochvatten.efr.efropenapi.model.UserSpecifiedLocation;
 
 import javax.ejb.Stateless;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -120,7 +120,7 @@ public class FluxToEfrMapper {
         return departureFishingActivity != null ? departureFishingActivity.getSpeciesTargetCode() : null;
     }
 
-    private PriorNotificationDto createPriorNotification(FluxFaReportMessageEntity fluxMessage) throws ModelMapperException {
+    private PriorNotification createPriorNotification(FluxFaReportMessageEntity fluxMessage) throws ModelMapperException {
         // find prior notification of arrival fishing activity
         // TODO note this could be an actual arrival, not just prior notification.
         // As of writing we don't create an actual arrival fishing activity, but
@@ -132,7 +132,7 @@ public class FluxToEfrMapper {
             throw new ModelMapperException("Found no prior notification fishing activity");
         }
 
-        PriorNotificationDto result = new PriorNotificationDto();
+        PriorNotification result = new PriorNotification();
         // TODO result.timestamps?
 
         result.setEstimatedLandingTime(priorNotificationActivity.getOccurence());
@@ -166,13 +166,13 @@ public class FluxToEfrMapper {
         return result;
     }
 
-    private Collection<PriorNotificationEstimatedCatch> createPriorNotificationCatches(FishingActivityEntity priorNotificationActivity) {
+    private List<PriorNotificationEstimatedCatch> createPriorNotificationCatches(FishingActivityEntity priorNotificationActivity) {
         Set<FaCatchEntity> fluxCatches = priorNotificationActivity.getFaCatchs();
         if (fluxCatches == null || fluxCatches.isEmpty()) {
-            return new HashSet<>();
+            return new ArrayList<>(0);
         }
 
-        Collection<PriorNotificationEstimatedCatch> result = new ArrayList<>();
+        List<PriorNotificationEstimatedCatch> result = new ArrayList<>();
         for (FaCatchEntity fluxCatch : fluxCatches) {
             if (fluxCatch.getSpeciesCode() == null) {
                 continue;
@@ -181,7 +181,7 @@ public class FluxToEfrMapper {
             PriorNotificationEstimatedCatch efrCatch = new PriorNotificationEstimatedCatch();
             efrCatch.setCode(fluxCatch.getSpeciesCode());
             efrCatch.setQuantity(fluxCatch.getUnitQuantity() != null ? fluxCatch.getUnitQuantity().intValue() : null);
-            efrCatch.setWeightInKilos(fluxCatch.getWeightMeasure());
+            efrCatch.setWeightInKilos(fluxCatch.getWeightMeasure() != null ? new BigDecimal(fluxCatch.getWeightMeasure()) : null);
 
             result.add(efrCatch);
         }
@@ -312,12 +312,12 @@ public class FluxToEfrMapper {
 
     private void addToCatchSpeciesWeights(FaCatchEntity fluxCatch, CatchSpecies efrCatchSpecies) {
         Integer fluxQuantity = fluxCatch.getUnitQuantity() != null ? fluxCatch.getUnitQuantity().intValue() : null;
-        Double fluxWeight = fluxCatch.getWeightMeasure();
+        BigDecimal fluxWeight = fluxCatch.getWeightMeasure() != null ? new BigDecimal(fluxCatch.getWeightMeasure()) : null;
         String classCode = fluxCatch.getSizeDistributionClassCode();
         // TODO assert that weight unit is "KGM"?
 
         Integer oldQuantity = null;
-        Double oldWeight = null;
+        BigDecimal oldWeight = null;
 
         switch (classCode) {
             case "BMS":
@@ -345,13 +345,17 @@ public class FluxToEfrMapper {
         }
 
         Integer newQuantity = oldQuantity;
-        Double newWeight = oldWeight;
+        BigDecimal newWeight = oldWeight;
 
         if (fluxQuantity != null) {
             newQuantity = fluxQuantity + (oldQuantity != null ? oldQuantity : 0);
         }
         if (fluxWeight != null) {
-            newWeight = fluxWeight + (oldWeight != null ? oldWeight : 0.0);
+            if (oldWeight != null) {
+                newWeight = fluxWeight.add(oldWeight);
+            } else {
+                newWeight = fluxWeight;
+            }
         }
 
         switch (classCode) {

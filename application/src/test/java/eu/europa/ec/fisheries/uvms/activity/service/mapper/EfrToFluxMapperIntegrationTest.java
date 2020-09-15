@@ -2,21 +2,22 @@ package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.TransactionalTests;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.ArrivalLocation;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.CatchGearSettings;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.CatchSpecies;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingCatch;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingReport;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.PriorNotificationDto;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.PriorNotificationEstimatedCatch;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.UserSpecifiedLocation;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ModelMapperException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import se.havochvatten.efr.efropenapi.model.ArrivalLocation;
+import se.havochvatten.efr.efropenapi.model.CatchGearSettings;
+import se.havochvatten.efr.efropenapi.model.CatchSpecies;
+import se.havochvatten.efr.efropenapi.model.FishingCatch;
+import se.havochvatten.efr.efropenapi.model.FishingReport;
+import se.havochvatten.efr.efropenapi.model.PriorNotification;
+import se.havochvatten.efr.efropenapi.model.PriorNotificationEstimatedCatch;
+import se.havochvatten.efr.efropenapi.model.UserSpecifiedLocation;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -72,8 +73,8 @@ public class EfrToFluxMapperIntegrationTest extends TransactionalTests {
 
     @Test
     public void priorNotification_estimatedLandingTime() {
-        PriorNotificationDto originalPriorNotification = originalDefault.getPriorNotification();
-        PriorNotificationDto mappedPriorNotification = mappedDefault.getPriorNotification();
+        PriorNotification originalPriorNotification = originalDefault.getPriorNotification();
+        PriorNotification mappedPriorNotification = mappedDefault.getPriorNotification();
 
         assertEquals(originalPriorNotification.getEstimatedLandingTime(), mappedPriorNotification.getEstimatedLandingTime());
     }
@@ -279,10 +280,10 @@ public class EfrToFluxMapperIntegrationTest extends TransactionalTests {
         CatchSpecies cath2Species2 = new CatchSpecies();
         cath2Species2.setCode("ROV");
         cath2Species2.setVariant("DEFAULT");
-        cath2Species2.setRovWeightInKg(10.12);
+        cath2Species2.setRovWeightInKg(new BigDecimal(10.12));
         catch2species.add(cath2Species2);
 
-        PriorNotificationDto priorNotification = new PriorNotificationDto();
+        PriorNotification priorNotification = new PriorNotification();
         priorNotification.setEstimatedLandingTime(Instant.now());
         ArrayList<PriorNotificationEstimatedCatch> estimatedCatches = new ArrayList<>();
         priorNotification.setEstimatedCatches(estimatedCatches);
@@ -294,7 +295,7 @@ public class EfrToFluxMapperIntegrationTest extends TransactionalTests {
 
         PriorNotificationEstimatedCatch estimatedCatch1 = new PriorNotificationEstimatedCatch();
         estimatedCatch1.setCode("ASF");
-        estimatedCatch1.setWeightInKilos(11.11);
+        estimatedCatch1.setWeightInKilos(new BigDecimal(11.11));
         estimatedCatches.add(estimatedCatch1);
 
         ArrivalLocation arrivalLocation = new ArrivalLocation();
@@ -318,7 +319,7 @@ public class EfrToFluxMapperIntegrationTest extends TransactionalTests {
         result.setServerCreatedAt(xMinutesAgo(60));
         result.setServerUpdatedAt(xMinutesAgo(55));
 
-        PriorNotificationDto priorNotification = new PriorNotificationDto();
+        PriorNotification priorNotification = new PriorNotification();
         priorNotification.setEstimatedLandingTime(Instant.now());
 
         ArrivalLocation arrivalLocation = new ArrivalLocation();
