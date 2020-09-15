@@ -27,5 +27,12 @@ public interface FluxMessageService {
      * @param faReportSourceEnum
      * @throws ServiceException
      */
-    FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum) throws ServiceException;
+    FluxFaReportMessageEntity saveFishingActivityReportDocuments(FLUXFAReportMessage faReportMessage, FaReportSourceEnum faReportSourceEnum);
+
+    /**
+     * Does the same work as it's namesake but takes an Entity directly instead of mapping to one before persisting.
+     *
+     * @param faReportMessage
+     */
+    void saveFishingActivityReportDocuments(FluxFaReportMessageEntity faReportMessage);
 }

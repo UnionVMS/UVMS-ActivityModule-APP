@@ -14,7 +14,6 @@ package eu.europa.ec.fisheries.uvms.activity.message.consumer.bean;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
@@ -37,7 +36,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
-import java.util.UUID;
 
 @MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
         @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
@@ -62,9 +60,6 @@ public class ActivityMessageConsumerBean implements MessageListener {
     @EJB
     private FluxReportMessageSaver fluxReportMessageSaver;
 
-    @EJB
-    private ExchangeProducerBean exchangeProducerBean;
-
     @Override
     public void onMessage(Message message) {
         log.debug("Received message");
@@ -77,8 +72,6 @@ public class ActivityMessageConsumerBean implements MessageListener {
                 log.trace("Received EFR message: {}", textMessage);
                 String shouldBeReportClass = textMessage.getText();
                 efrMessageSaver.saveEfrReport(shouldBeReportClass);
-                final UUID shouldBeFromIncomingMessageUuid = UUID.randomUUID();
-                exchangeProducerBean.sendEfrReportSavedAckToExchange(shouldBeFromIncomingMessageUuid);
             } else {
                 MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
                 ActivityModuleRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
