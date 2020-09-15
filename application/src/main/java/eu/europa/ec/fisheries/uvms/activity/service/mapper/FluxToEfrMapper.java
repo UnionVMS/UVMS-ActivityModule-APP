@@ -4,6 +4,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.GearCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
@@ -40,7 +41,8 @@ public class FluxToEfrMapper {
         FishingReport result = new FishingReport();
 
         try {
-            result.setFishingReportId(UUID.fromString(fluxMessage.getFluxReportDocument_Id()));
+            String fishingTripId = getFishingTripId(fluxMessage);
+            result.setFishingReportId(UUID.fromString(fishingTripId));
         } catch (IllegalArgumentException e) {
             // TODO log that the report document ID was not a UUID
             return null;
@@ -54,6 +56,35 @@ public class FluxToEfrMapper {
         result.setFishingCatches(createFishingCatches(fluxMessage));
 
         return result;
+    }
+
+    private String getFishingTripId(FluxFaReportMessageEntity fluxMessage) throws ModelMapperException {
+        Set<String> tripIds = new HashSet<>();
+
+        // Find every fishing trip ID in all activities in all documents
+        for (FaReportDocumentEntity faReportDocument : Utils.safeIterable(fluxMessage.getFaReportDocuments())) {
+            for (FishingActivityEntity fishingActivity : Utils.safeIterable(faReportDocument.getFishingActivities())) {
+                FishingTripEntity fishingTrip = fishingActivity.getFishingTrip();
+                if (fishingTrip != null) {
+                    if (fishingTrip.getFishingTripKey() != null) {
+                        tripIds.add(fishingTrip.getFishingTripKey().getTripId());
+                    }
+                }
+            }
+        }
+
+        // remove any null values
+        tripIds.remove(null);
+
+        if (tripIds.size() > 1) {
+            throw new ModelMapperException("More than one fishing trip ID found in FLUX message");
+        }
+
+        if (tripIds.isEmpty()) {
+            return null;
+        }
+
+        return tripIds.iterator().next();
     }
 
     private String getShipCfr(FluxFaReportMessageEntity fluxMessage) throws ModelMapperException {
