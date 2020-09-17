@@ -120,7 +120,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 // FR : system parameter
                 // username : Mock to FLUX
                 rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFaQueryMessageRequest(faqReqStr, "FLUX", logId,
-                        dataFlow, "BEL"), activityConsumerBean.getDestination());
+                        dataFlow, "BEL",null), activityConsumerBean.getDestination());
             } else {
                 throw new ActivityModuleException("The FaQuery that was build with the following parameters [" + tripId + "," + sendTo + ",consolidated : " + consolidated + "] doesn't match to any subscription!");
             }
@@ -165,7 +165,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             FLUXFAQueryMessage fluxfaQueryMessage = new FLUXFAQueryMessage(faQuery);
             final String faqReqStr = JAXBMarshaller.marshallJaxBObjectToString(fluxfaQueryMessage);
             rulesProducerBean.sendModuleMessage(RulesModuleRequestMapper.createSendFaQueryMessageRequest(faqReqStr, "FLUX", logId,
-                    dataFlow, receiver), activityConsumerBean.getDestination());
+                    dataFlow, receiver, receiver), activityConsumerBean.getDestination());
         } else {
             throw new ActivityModuleException("The FaQuery that was built doesn't match to any subscription!");
         }
