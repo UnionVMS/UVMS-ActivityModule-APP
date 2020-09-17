@@ -123,12 +123,15 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             for (FishingActivityEntity fishingActivity : fishingActivityEntities) {
                 List<Geometry> multiPointForFa = new ArrayList<>();
                 Date activityDate = fishingActivity.getOccurence() != null ? fishingActivity.getOccurence() : fishingActivityService.getFirstDateFromDelimitedPeriods(fishingActivity.getDelimitedPeriods());
-                MovementLocationData interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
-                ctx.put(fishingActivity, interpolatedPoint.getAreas());
+                MovementLocationData interpolatedPoint = null;
+                if(movementExists(movements)){
+                    interpolatedPoint = interpolatePointFromMovements(movements, activityDate);
+                    ctx.put(fishingActivity, interpolatedPoint.getAreas());
+                }
                 for (FluxLocationEntity fluxLocation : fishingActivity.getFluxLocations()) {
                     Geometry point = null;
                     String fluxLocationStr = fluxLocation.getTypeCode();
-                    if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name())) {
+                    if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.AREA.name()) && movementExists(movements)) {
                         point = interpolatedPoint.getGeometry();
                         fluxLocation.setGeom(point);
                     } else if (fluxLocationStr.equalsIgnoreCase(FluxLocationEnum.LOCATION.name())) {
@@ -148,6 +151,10 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             }
         }
         return multiPointForFaReport;
+    }
+
+    private boolean movementExists( List<MovementType> movements){
+       return movements != null && !movements.isEmpty();
     }
 
     private Geometry getGeometryForLocation(FluxLocationEntity fluxLocation) throws ServiceException {
