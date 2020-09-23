@@ -10,7 +10,7 @@
 
 package eu.europa.ec.fisheries.uvms.activity.message.producer;
 
-import eu.europa.ec.fisheries.schema.exchange.module.v1.EfrReportSaved;
+import eu.europa.ec.fisheries.schema.exchange.module.v1.EfrActivitySaved;
 import eu.europa.ec.fisheries.schema.exchange.module.v1.ExchangeModuleMethod;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractProducer;
@@ -36,15 +36,15 @@ public class ExchangeProducerBean extends AbstractProducer {
         return destination;
     }
 
-    public void sendEfrReportSavedAckToExchange(UUID ackResponseMessageId) throws JMSException {
+    public void sendEfrActivitySavedAckToExchange(UUID ackResponseMessageId) throws JMSException {
         if (ackResponseMessageId == null) {
             return;
         }
-        EfrReportSaved efrReportSaved = new EfrReportSaved();
-        efrReportSaved.setMethod(ExchangeModuleMethod.EFR_REPORT_SAVED);
-        efrReportSaved.setRefGuid(ackResponseMessageId.toString());
+        EfrActivitySaved efrActivitySaved = new EfrActivitySaved();
+        efrActivitySaved.setMethod(ExchangeModuleMethod.EFR_ACTIVITY_SAVED);
+        efrActivitySaved.setRefGuid(ackResponseMessageId.toString());
 
-        String xml = JAXBMarshaller.marshallJaxBObjectToString(efrReportSaved);
-        sendMessageToSpecificQueueWithFunction(xml, getDestination(), null, efrReportSaved.getMethod().toString(), null);
+        String xml = JAXBMarshaller.marshallJaxBObjectToString(efrActivitySaved);
+        sendMessageToSpecificQueueWithFunction(xml, getDestination(), null, efrActivitySaved.getMethod().toString(), null);
     }
 }

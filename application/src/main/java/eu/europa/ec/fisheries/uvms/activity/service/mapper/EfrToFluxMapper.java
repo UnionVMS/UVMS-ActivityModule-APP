@@ -14,6 +14,8 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.LocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.UnitCodeEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.efr.activities.BaseEfrActivity;
+import eu.europa.ec.fisheries.uvms.activity.model.efr.activities.PriorNotificationEfrActivity;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.ArrivalLocation;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.CatchGearSettings;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.CatchSpecies;
@@ -56,26 +58,10 @@ public class EfrToFluxMapper {
      * @return
      */
     public FluxFaReportMessageEntity efrFishingReportToFluxMessageEntity(FishingReport efrFishingReport) {
-        FluxFaReportMessageEntity result = new FluxFaReportMessageEntity();
+
+        FluxFaReportMessageEntity result = createBasicFluxFaReportMessage();
 
         FishingTripEntity fishingTripEntity = createFishingTripForMessage(efrFishingReport);
-
-        // Chapter 7.1.1 in spec
-        result.setFluxReportDocument_Id(UUID.randomUUID().toString()); // ID for this FLUX message
-        result.setFluxReportDocument_IdSchemeId("UUID");
-        // result.setFluxReportDocument_ReferencedFaQueryMessageId(); kan nog skippa (min 0 enligt spec)
-        // result.setFluxReportDocument_ReferencedFaQueryMessageSchemeId(); kan nog skippa (min 0 enligt spec)
-        result.setFluxReportDocument_CreationDatetime(Instant.now()); // TODO eller ta efrFishingReport.getServerCreatedAt()?
-        result.setFluxReportDocument_PurposeCode(PURPOSE_ORIGINAL);
-        result.setFluxReportDocument_PurposeCodeListId("FLUX_GP_PURPOSE");
-        // result.setFluxReportDocument_Purpose(); kan nog skippa (min 0 enligt spec) om vi inte har något bra att säga
-
-        // Antar att det här är owner i FLUXReportDocument
-        // Table 3 in spec
-        result.setFluxParty_identifier("SWE");
-        result.setFluxParty_schemeId("FLUX_GP_PARTY");
-        // result.setFluxParty_name();  kan nog skippa (min 0 enligt spec)
-        // result.setFluxParty_nameLanguageId();  kan nog skippa (min 0 enligt spec)
 
         Set<FaReportDocumentEntity> documents = new HashSet<>();
         documents.add(createDepartureDocument(result, fishingTripEntity, efrFishingReport));
@@ -102,6 +88,42 @@ public class EfrToFluxMapper {
         return result;
     }
 
+    public FluxFaReportMessageEntity map(PriorNotificationEfrActivity activity) {
+        FluxFaReportMessageEntity result = createBasicFluxFaReportMessage();
+
+        FishingTripEntity fishingTripEntity = createFishingTripForMessage(activity.getFishingReportId());
+
+        Set<FaReportDocumentEntity> documents = new HashSet<>();
+        documents.add(createPriorNotificationOfArrivalDocument(result, fishingTripEntity, activity));
+
+        result.setFaReportDocuments(documents);
+
+        return result;
+    }
+
+    private FluxFaReportMessageEntity createBasicFluxFaReportMessage() {
+        FluxFaReportMessageEntity result = new FluxFaReportMessageEntity();
+
+        // Chapter 7.1.1 in spec
+        result.setFluxReportDocument_Id(UUID.randomUUID().toString()); // ID for this FLUX message
+        result.setFluxReportDocument_IdSchemeId("UUID");
+        // result.setFluxReportDocument_ReferencedFaQueryMessageId(); kan nog skippa (min 0 enligt spec)
+        // result.setFluxReportDocument_ReferencedFaQueryMessageSchemeId(); kan nog skippa (min 0 enligt spec)
+        result.setFluxReportDocument_CreationDatetime(Instant.now()); // TODO eller ta efrFishingReport.getServerCreatedAt()?
+        result.setFluxReportDocument_PurposeCode(PURPOSE_ORIGINAL);
+        result.setFluxReportDocument_PurposeCodeListId("FLUX_GP_PURPOSE");
+        // result.setFluxReportDocument_Purpose(); kan nog skippa (min 0 enligt spec) om vi inte har något bra att säga
+
+        // Antar att det här är owner i FLUXReportDocument
+        // Table 3 in spec
+        result.setFluxParty_identifier("SWE");
+        result.setFluxParty_schemeId("FLUX_GP_PARTY");
+        // result.setFluxParty_name();  kan nog skippa (min 0 enligt spec)
+        // result.setFluxParty_nameLanguageId();  kan nog skippa (min 0 enligt spec)
+
+        return result;
+    }
+
     // Chapter 7.1.15.9 in spec
     private FishingTripEntity createFishingTripForMessage(FishingReport efrFishingReport) {
         FishingTripKey fishingTripKey = new FishingTripKey();
@@ -117,6 +139,24 @@ public class EfrToFluxMapper {
         //result.setCalculatedTripStartDate(); // TODO we should add this to the EFR fishing report DTO
         result.setCalculatedTripEndDate(efrFishingReport.getPriorNotification() != null ?
                 efrFishingReport.getPriorNotification().getEstimatedLandingTime() : null);
+
+        // catches and fishing activities can be set on a FishingTripEntity but why would we?
+
+        return result;
+    }
+
+    private FishingTripEntity createFishingTripForMessage(UUID fishingReportId) {
+        FishingTripKey fishingTripKey = new FishingTripKey();
+        fishingTripKey.setTripId(fishingReportId.toString());
+        fishingTripKey.setTripSchemeId("UUID");
+
+        FishingTripEntity result = new FishingTripEntity();
+        result.setFishingTripKey(fishingTripKey);
+
+        //result.setTypeCode("???"); We can probably skip this. Has only one valid value in the MDR and that is for joint fishing operations
+        //result.setTypeCodeListId("FISHING_TRIP_TYPE");
+
+        //result.setCalculatedTripStartDate(); // TODO we should add this to the EFR fishing report DTO
 
         // catches and fishing activities can be set on a FishingTripEntity but why would we?
 
@@ -141,7 +181,7 @@ public class EfrToFluxMapper {
         result.setFluxReportDocument_CreationDatetime(Instant.now());  // TODO eller något från efrFishingReport? "The UTC date time of the creation of this FLUXFAReportDocument"
         result.setFluxReportDocument_PurposeCode(PURPOSE_ORIGINAL);
         result.setFluxReportDocument_PurposeCodeListId("FLUX_GP_PURPOSE");
-        // result.setFluxReportDocument_Purpose(); kan nog skippa (min 0 enligt spec) TODO eller skriva något om att det är en färdigställd lax-resa?
+        // result.setFluxReportDocument_Purpose(); kan nog skippa (min 0 enligt spec)
         result.setFluxFaReportMessage(message);
 
         // Table 6 in spec
@@ -152,6 +192,39 @@ public class EfrToFluxMapper {
         // result.setFluxParty_nameLanguageId();  kan nog skippa (min 0 enligt spec)
 
         result.setVesselTransportMeans(createVesselTransportMeans(efrFishingReport));
+
+        return result;
+    }
+
+    // Chapter 7.1.2 in spec
+    private FaReportDocumentEntity createBasicDocument(FluxFaReportMessageEntity message, BaseEfrActivity efrActivity) {
+        FaReportDocumentEntity result = new FaReportDocumentEntity();
+        // result.setTypeCode(); kan nog skippa (min 0 enligt spec)
+        // result.setTypeCodeListId("FLUX_FA_REPORT_TYPE");
+        // result.setRelatedFaReportIdentifiers(); Skippar alla related reports
+        result.setAcceptedDatetime(Instant.now()); // TODO eller något från efrFishingReport?
+        // result.setFmcMarker(); kan nog skippa (min 0 enligt spec)
+        // result.setFmcMarkerListId("FLUX_FA_FMC");
+
+        // Table 5 in spec
+        result.setFluxReportDocument_Id(efrActivity.getActivityMessageId().toString());
+        result.setFluxReportDocument_IdSchemeId("UUID");
+        // result.setFluxReportDocument_ReferencedFaReportDocumentId(); kan nog skippa
+        // result.setFluxReportDocument_ReferencedFaReportDocumentSchemeId(); kan nog skippa
+        result.setFluxReportDocument_CreationDatetime(Instant.now());  // TODO eller något från efrFishingReport? "The UTC date time of the creation of this FLUXFAReportDocument"
+        result.setFluxReportDocument_PurposeCode(PURPOSE_ORIGINAL);
+        result.setFluxReportDocument_PurposeCodeListId("FLUX_GP_PURPOSE");
+        // result.setFluxReportDocument_Purpose(); kan nog skippa (min 0 enligt spec)
+        result.setFluxFaReportMessage(message);
+
+        // Table 6 in spec
+        // Antar att det här är owner i FLUXReportDocument
+        result.setFluxParty_identifier("SWE");
+        result.setFluxParty_schemeId("FLUX_GP_PARTY");
+        // result.setFluxParty_name();  kan nog skippa (min 0 enligt spec)
+        // result.setFluxParty_nameLanguageId();  kan nog skippa (min 0 enligt spec)
+
+        result.setVesselTransportMeans(createVesselTransportMeans());
 
         return result;
     }
@@ -168,10 +241,31 @@ public class EfrToFluxMapper {
 
     private Set<VesselTransportMeansEntity> createVesselTransportMeans(FishingReport efrFishingReport) {
         VesselTransportMeansEntity vessel = new VesselTransportMeansEntity();
-        vessel.setRoleCode("TODO depends on fishing activity"); // Behövs? "Mandatory for the vessels, other than the reporting vessel, participating to the fishing activity."
+        vessel.setRoleCode("TODO depends on fishing activity"); // TODO Behövs? "Mandatory for the vessels, other than the reporting vessel, participating to the fishing activity."
         vessel.setRoleCodeListId("FA_VESSEL_ROLE");
         VesselIdentifierEntity vesselIdentifier = new VesselIdentifierEntity();
         vesselIdentifier.setVesselIdentifierId(efrFishingReport.getShipCfr());
+        vesselIdentifier.setVesselIdentifierSchemeId("CFR");
+        vesselIdentifier.setVesselTransportMeans(vessel);
+        // TODO should we pass more identifiers from backend?
+        vessel.setVesselIdentifiers(Set.of(vesselIdentifier));
+        // vessel.setName(); Skippa antagligen, är min 0 i specen och finns inte i DTOn
+        vessel.setCountry("TODO sverige"); // TODO om inte hårdkoda till sverige, hur veta vilket land?
+        vessel.setCountrySchemeId("TERRITORY");
+
+        // TODO varifrån ska vi få detta?
+        //ContactPartyEntity contactParty = new ContactPartyEntity();
+        //vessel.setContactParty(Set.of(contactParty));
+
+        return Set.of(vessel);
+    }
+
+    private Set<VesselTransportMeansEntity> createVesselTransportMeans() {
+        VesselTransportMeansEntity vessel = new VesselTransportMeansEntity();
+        vessel.setRoleCode("TODO depends on fishing activity"); // TODO Behövs? "Mandatory for the vessels, other than the reporting vessel, participating to the fishing activity."
+        vessel.setRoleCodeListId("FA_VESSEL_ROLE");
+        VesselIdentifierEntity vesselIdentifier = new VesselIdentifierEntity();
+        vesselIdentifier.setVesselIdentifierId("TODO"); // TODO add ship CFR to BaseEfrActivity?
         vesselIdentifier.setVesselIdentifierSchemeId("CFR");
         vesselIdentifier.setVesselTransportMeans(vessel);
         // TODO should we pass more identifiers from backend?
@@ -478,6 +572,34 @@ public class EfrToFluxMapper {
         return result;
     }
 
+    // Chapter 7.1.10 in spec
+    private FaReportDocumentEntity createPriorNotificationOfArrivalDocument(FluxFaReportMessageEntity message, FishingTripEntity fishingTripEntity, PriorNotificationEfrActivity efrActivity) {
+        FaReportDocumentEntity result = createBasicDocument(message, efrActivity);
+
+        FishingActivityEntity fishingActivity = createBasicFishingActivity(fishingTripEntity, result);
+
+        fishingActivity.setTypeCode("ARRIVAL"); // According to spec, this type code is the same for arrival and prior notification of arrival
+        fishingActivity.setTypeCodeListid("FLUX_FA_TYPE");
+        fishingActivity.setOccurence(efrActivity.getEstimatedLandingTime());
+        fishingActivity.setReasonCode("LAN"); // LAN = Landing
+        fishingActivity.setReasonCodeListId("FA_REASON_ARRIVAL");
+
+        LocationEntity landingLocation = createLandingLocation(efrActivity);
+        if (landingLocation != null) {
+            fishingActivity.setLocations(Set.of(landingLocation));
+
+            fishingActivity.setLatitude(latLongDmsToDd(efrActivity.getUserSpecifiedLocationLatitude()));
+            fishingActivity.setLongitude(latLongDmsToDd(efrActivity.getUserSpecifiedLocationLongitude()));
+        }
+        // TODO else what? min 1 in spec
+
+        fishingActivity.setFaCatchs(getCatchesForPriorNotificationOfArrival(efrActivity));
+
+        result.setFishingActivities(Set.of(fishingActivity));
+
+        return result;
+    }
+
     private Set<FaCatchEntity> getCatchesForPriorNotificationOfArrival(FishingReport efrFishingReport) {
         if (efrFishingReport.getPriorNotification() == null || efrFishingReport.getPriorNotification().getEstimatedCatches() == null) {
             return null;
@@ -508,6 +630,51 @@ public class EfrToFluxMapper {
 
             // chapter 7.1.15.17 in spec
             // TODO keep? We set these in landing but should we also have them for prior notification?
+            fluxCatch.setSizeDistributionClassCode("LSC"); // spec says "Use value "LSC" for legally sized fish. Use value "BMS" for fish below minimum conservation reference size"
+            fluxCatch.setSizeDistributionClassCodeListId("FISH_SIZE_CLASS");
+            //fluxCatch.setSizeDistributionCategoryCode("TODO spec "says A code specifying the size distribution of the AAP product"; // TODO?
+            //fluxCatch.setSizeDistributionCategoryCodeListId("FA_BFT_SIZE_CATEGORY");
+
+            // Skip locations, data not available
+            // skip related fishing trip
+            // skip gear, data not available
+            // skip AAP, data not available
+
+            result.add(fluxCatch);
+        }
+
+        return result;
+    }
+
+    private Set<FaCatchEntity> getCatchesForPriorNotificationOfArrival(PriorNotificationEfrActivity efrActivity) {
+        if (efrActivity.getEstimatedCatches() == null) {
+            return null;
+        }
+
+        Set<eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity> result = new HashSet<>();
+        for (eu.europa.ec.fisheries.uvms.activity.model.efr.activities.PriorNotificationEstimatedCatch efrCatch : efrActivity.getEstimatedCatches()) {
+            eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity fluxCatch = new eu.europa.ec.fisheries.uvms.activity.fa.entities.FaCatchEntity();
+            fluxCatch.setTypeCode("ONBOARD");
+            fluxCatch.setTypeCodeListId("FA_CATCH_TYPE");
+            fluxCatch.setSpeciesCode(efrCatch.getCode()); // TODO double check that this is in fact in FAO format
+            fluxCatch.setSpeciesCodeListid("FAO_SPECIES");
+
+            fluxCatch.setUnitQuantity(efrCatch.getQuantity() != null ? efrCatch.getQuantity().doubleValue() : null);
+            fluxCatch.setUnitQuantityCode("C62");
+            // fluxCatch.setCalculatedUnitQuantity(); TODO set this as well?
+
+            Double lscWeightInKg = efrCatch.getWeightInKilos();
+            if (lscWeightInKg != null) {
+                // Spec says to round to two decimals
+                double roundedLscWeight = new BigDecimal(lscWeightInKg).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                fluxCatch.setWeightMeasure(roundedLscWeight);
+                fluxCatch.setWeightMeasureUnitCode("KGM");
+                //fluxCatch.setCalculatedWeightMeasure(); TODO set this as well?
+                //fluxCatch.setWeighingMeansCode("The code specifying the means of weighing for this FA catch. "); TODO set?
+                //fluxCatch.setWeighingMeansCodeListId("WEIGHT_MEANS");
+            }
+
+            // chapter 7.1.15.17 in spec
             fluxCatch.setSizeDistributionClassCode("LSC"); // spec says "Use value "LSC" for legally sized fish. Use value "BMS" for fish below minimum conservation reference size"
             fluxCatch.setSizeDistributionClassCodeListId("FISH_SIZE_CLASS");
             //fluxCatch.setSizeDistributionCategoryCode("TODO spec "says A code specifying the size distribution of the AAP product"; // TODO?
@@ -615,6 +782,39 @@ public class EfrToFluxMapper {
         } else {
             // for some reason, arrival location without either port or user specified location
             return null;
+        }
+
+        return result;
+    }
+
+    private LocationEntity createLandingLocation(PriorNotificationEfrActivity efrActivity) {
+        LocationEntity result = new LocationEntity();
+        result.setTypeCodeListId("FLUX_LOCATION_TYPE");
+
+        // Skip "Country": Min 0 in specification
+        // Skip "Identification": Min 0 in specification
+        // Skip "Regional Fisheries Management Organisation": Min 0 in specification
+        // Skip "Physical Structured Address": Min 0 in specification and cannot be set on model
+        // Skip "Applicable FLUX Characteristic": Min 0 in specification and cannot be set on model
+
+        if (efrActivity.getPortCode() != null) {
+            result.setTypeCode(LocationEnum.LOCATION);
+            result.setFluxLocationIdentifier(efrActivity.getPortCode()); // TODO correct?
+            result.setFluxLocationIdentifierSchemeId("LOCATION");
+        } else if (efrActivity.getUserSpecifiedLocationLatitude() != null &&
+                  efrActivity.getUserSpecifiedLocationLongitude() != null) {
+            result.setTypeCode(LocationEnum.POSITION);
+
+            if (efrActivity.getUserSpecifiedLocationName() != null) {
+                result.setName(efrActivity.getUserSpecifiedLocationName());
+                result.setNameLanguageId("SWE");
+            }
+
+            // Lat and long set in the parent fishing activity
+
+        } else {
+            // for some reason, arrival location without either port or user specified location
+            result = null;
         }
 
         return result;

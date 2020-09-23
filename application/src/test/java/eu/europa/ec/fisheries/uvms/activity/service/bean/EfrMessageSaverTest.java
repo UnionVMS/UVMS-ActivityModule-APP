@@ -2,6 +2,7 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.model.efr.activities.PriorNotificationEfrActivity;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingReport;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.EfrToFluxMapper;
@@ -39,6 +40,7 @@ public class EfrMessageSaverTest {
     @Before
     public void setUp() {
         when(efrToFluxMapper.efrFishingReportToFluxMessageEntity(any(FishingReport.class))).thenReturn(new FluxFaReportMessageEntity());
+        when(efrToFluxMapper.map(any(PriorNotificationEfrActivity.class))).thenReturn(new FluxFaReportMessageEntity());
     }
 
     @Test
@@ -54,6 +56,23 @@ public class EfrMessageSaverTest {
         // Then
         verify(efrToFluxMapper, times(1)).efrFishingReportToFluxMessageEntity(any(FishingReport.class));
         verify(fluxMessageService, times(1)).saveFishingActivityReportDocuments(any(FluxFaReportMessageEntity.class));
-        verify(exchangeProducerBean, times(1)).sendEfrReportSavedAckToExchange(efrFishingReport.getFishingReportId());
+        verify(exchangeProducerBean, times(1)).sendEfrActivitySavedAckToExchange(efrFishingReport.getFishingReportId());
+    }
+
+    @Test
+    public void handlePriorNotificationEfrActivity_success() throws JMSException {
+        // Given
+        PriorNotificationEfrActivity efrActivity = new PriorNotificationEfrActivity();
+        efrActivity.setActivityMessageId(UUID.randomUUID());
+        efrActivity.setFishingReportId(UUID.randomUUID());
+        String efrActivityAsString = JsonbBuilder.create().toJson(efrActivity);
+
+        // When
+        efrMessageSaver.handleEfrActivity(efrActivityAsString);
+
+        // Then
+        verify(efrToFluxMapper, times(1)).map(any(PriorNotificationEfrActivity.class));
+        verify(fluxMessageService, times(1)).saveFishingActivityReportDocuments(any(FluxFaReportMessageEntity.class));
+        verify(exchangeProducerBean, times(1)).sendEfrActivitySavedAckToExchange(efrActivity.getActivityMessageId());
     }
 }

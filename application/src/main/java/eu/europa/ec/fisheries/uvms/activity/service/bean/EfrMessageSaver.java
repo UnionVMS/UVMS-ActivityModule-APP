@@ -12,6 +12,8 @@ package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBean;
+import eu.europa.ec.fisheries.uvms.activity.model.efr.activities.BaseEfrActivity;
+import eu.europa.ec.fisheries.uvms.activity.model.efr.activities.PriorNotificationEfrActivity;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingReport;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.EfrToFluxMapper;
@@ -39,6 +41,39 @@ public class EfrMessageSaver {
     @Inject
     private ExchangeProducerBean exchangeProducerBean;
 
+    public void handleEfrActivity(String shouldBeEfrActivity) {
+        log.info("handleEfrActivity - Raw string: {}", shouldBeEfrActivity);
+
+        try (Jsonb jsonb = JsonbBuilder.create()) {
+            BaseEfrActivity baseActivity = jsonb.fromJson(shouldBeEfrActivity, BaseEfrActivity.class);
+
+            log.debug("handleEfrActivity - Activity type: {}", baseActivity.getActivityType());
+
+            FluxFaReportMessageEntity fluxMessage;
+
+            switch(baseActivity.getActivityType()) {
+                case PRIOR_NOTIFICATION:
+                    PriorNotificationEfrActivity priorNotificationActivity = jsonb.fromJson(shouldBeEfrActivity, PriorNotificationEfrActivity.class);
+                    fluxMessage = efrToFluxMapper.map(priorNotificationActivity);
+                    break;
+                // TODO expand with more types of activity
+                default:
+                    log.error("Unknown type for EFR activity message: {}", baseActivity.getActivityType());
+                    return;
+            }
+
+            fluxMessageService.saveFishingActivityReportDocuments(fluxMessage);
+            exchangeProducerBean.sendEfrActivitySavedAckToExchange(baseActivity.getActivityMessageId());
+
+        } catch (JMSException e) {
+            log.error("Error when trying to send ACK message indicating that an EFR fishing report was successfully saved.", e);
+        } catch (JsonbException e) {
+            log.error("Failed to convert incoming message to FishingReport", e);
+        } catch (Exception e) {
+            log.error("Error when trying to save EFR fishing report.", e);
+        }
+    }
+
     public void saveEfrReport(String shouldBeReportClass) {
         log.info("saveEfrReport - shouldBeReportClass: {}", shouldBeReportClass);
 
@@ -49,7 +84,7 @@ public class EfrMessageSaver {
 
             fluxMessageService.saveFishingActivityReportDocuments(reportInFluxFormat);
 
-            exchangeProducerBean.sendEfrReportSavedAckToExchange(efrReport.getFishingReportId());
+            exchangeProducerBean.sendEfrActivitySavedAckToExchange(efrReport.getFishingReportId());
         } catch (JMSException e) {
             log.error("Error when trying to send ACK message indicating that an EFR fishing report was successfully saved.", e);
         } catch (JsonbException e) {
