@@ -21,7 +21,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
@@ -31,6 +33,7 @@ import eu.europa.ec.fisheries.schema.movement.v1.MovementMetaDataAreaType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FluxReportIdentifier;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ReportToSubscription;
+import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.exchange.model.mapper.JAXBMarshaller;
 import lombok.SneakyThrows;
 import org.junit.Assert;
@@ -63,6 +66,8 @@ public class SubscriptionReportForwarderImplTest {
         FluxFaReportMessageEntity fluxFaReportMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(ctx, fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
         putAreasToCtx(ctx, Arrays.asList(createMovementDataType("id00", "areaType00", "name00"), createMovementDataType("id01", "areaType01", "name01"), createMovementDataType("id02", "areaType02", "name02")),
                         Arrays.asList(createMovementDataType("id10", "areaType10", "name10"), createMovementDataType("id11", "areaType11", "name11")));
+
+        addFakeGeometries(fluxFaReportMessageEntity);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         ArgumentCaptor<List<ReportToSubscription>> faReportCaptor = ArgumentCaptor.forClass((Class)List.class);
@@ -106,6 +111,19 @@ public class SubscriptionReportForwarderImplTest {
         Assert.assertEquals("id10", activityAreas2.get(0).getAreas().get(0).getRemoteId());
     }
 
+    private void addFakeGeometries(FluxFaReportMessageEntity fluxFaReportMessageEntity) {
+        fluxFaReportMessageEntity.getFaReportDocuments().stream()
+                .map(FaReportDocumentEntity::getFishingActivities)
+                .flatMap(Set::stream)
+                .forEach(activity -> {
+                    try {
+                        activity.setGeom(GeometryUtils.toGeographic(55.7174, 15.2738, GeometryUtils.DEFAULT_EPSG_SRID));
+                    } catch(Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+    }
+
     @Test
     @SneakyThrows
     public void testForwardReportToSubscriptionActivitiesWithAreasForOneActivity() {
@@ -113,6 +131,8 @@ public class SubscriptionReportForwarderImplTest {
         FLUXFAReportMessage fluxfaReportMessage = getFluxFaReportMessage("FLUXFAReportMessage.xml");
         FluxFaReportMessageEntity fluxFaReportMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(ctx, fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
         putAreasToCtx(ctx, Arrays.asList(createMovementDataType("id00", "areaType00", "name00"), createMovementDataType("id01", "areaType01", "name01"), createMovementDataType("id02", "areaType02", "name02")));
+
+        addFakeGeometries(fluxFaReportMessageEntity);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         ArgumentCaptor<List<ReportToSubscription>> faReportCaptor = ArgumentCaptor.forClass((Class)List.class);
@@ -162,6 +182,8 @@ public class SubscriptionReportForwarderImplTest {
         FLUXFAReportMessage fluxfaReportMessage = getFluxFaReportMessage("FLUXFAReportMessage.xml");
         FluxFaReportMessageEntity fluxFaReportMessageEntity = new FluxFaReportMessageMapper().mapToFluxFaReportMessage(ctx, fluxfaReportMessage, FaReportSourceEnum.FLUX, new FluxFaReportMessageEntity());
         putAreasToCtx(ctx);
+
+        addFakeGeometries(fluxFaReportMessageEntity);
 
         @SuppressWarnings({"unchecked", "rawtypes"})
         ArgumentCaptor<List<ReportToSubscription>> faReportCaptor = ArgumentCaptor.forClass((Class)List.class);
