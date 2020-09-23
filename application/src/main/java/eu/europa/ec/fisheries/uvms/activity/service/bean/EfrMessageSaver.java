@@ -15,7 +15,6 @@ import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBea
 import eu.europa.ec.fisheries.uvms.activity.model.efr.activities.BaseEfrActivity;
 import eu.europa.ec.fisheries.uvms.activity.model.efr.activities.PriorNotificationEfrActivity;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingReport;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.EfrToFluxMapper;
 import lombok.extern.slf4j.Slf4j;
 
@@ -73,26 +72,4 @@ public class EfrMessageSaver {
             log.error("Error when trying to save EFR fishing report.", e);
         }
     }
-
-    public void saveEfrReport(String shouldBeReportClass) {
-        log.info("saveEfrReport - shouldBeReportClass: {}", shouldBeReportClass);
-
-        try (Jsonb jsonb = JsonbBuilder.create()) {
-            FishingReport efrReport = jsonb.fromJson(shouldBeReportClass, FishingReport.class);
-
-            FluxFaReportMessageEntity reportInFluxFormat = efrToFluxMapper.efrFishingReportToFluxMessageEntity(efrReport);
-
-            fluxMessageService.saveFishingActivityReportDocuments(reportInFluxFormat);
-
-            exchangeProducerBean.sendEfrActivitySavedAckToExchange(efrReport.getFishingReportId());
-        } catch (JMSException e) {
-            log.error("Error when trying to send ACK message indicating that an EFR fishing report was successfully saved.", e);
-        } catch (JsonbException e) {
-            log.error("Failed to convert incoming message to FishingReport", e);
-        } catch (Exception e) {
-            log.error("Error when trying to save EFR fishing report.", e);
-        }
-    }
 }
-
-

@@ -4,7 +4,6 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntit
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ExchangeProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.efr.activities.PriorNotificationEfrActivity;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
-import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingReport;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.EfrToFluxMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,24 +38,7 @@ public class EfrMessageSaverTest {
 
     @Before
     public void setUp() {
-        when(efrToFluxMapper.efrFishingReportToFluxMessageEntity(any(FishingReport.class))).thenReturn(new FluxFaReportMessageEntity());
         when(efrToFluxMapper.map(any(PriorNotificationEfrActivity.class))).thenReturn(new FluxFaReportMessageEntity());
-    }
-
-    @Test
-    public void saveEfrFishingReport_success() throws JMSException {
-        // Given
-        FishingReport efrFishingReport = new FishingReport();
-        efrFishingReport.setFishingReportId(UUID.randomUUID());
-        String efrFishingReportAsString = JsonbBuilder.create().toJson(efrFishingReport);
-
-        // When
-        efrMessageSaver.saveEfrReport(efrFishingReportAsString);
-
-        // Then
-        verify(efrToFluxMapper, times(1)).efrFishingReportToFluxMessageEntity(any(FishingReport.class));
-        verify(fluxMessageService, times(1)).saveFishingActivityReportDocuments(any(FluxFaReportMessageEntity.class));
-        verify(exchangeProducerBean, times(1)).sendEfrActivitySavedAckToExchange(efrFishingReport.getFishingReportId());
     }
 
     @Test

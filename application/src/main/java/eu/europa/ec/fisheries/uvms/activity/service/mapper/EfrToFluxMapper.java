@@ -56,7 +56,10 @@ public class EfrToFluxMapper {
      *
      * @param efrFishingReport
      * @return
+     * @deprecated No longer used, but is kept until we are finished implementing the mappings of fishing
+     * activities from EFR backend (so as to not lose work done on mapping different kinds of activities to FLUX)
      */
+    @Deprecated
     public FluxFaReportMessageEntity efrFishingReportToFluxMessageEntity(FishingReport efrFishingReport) {
 
         FluxFaReportMessageEntity result = createBasicFluxFaReportMessage();
