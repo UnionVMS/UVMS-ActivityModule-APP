@@ -10,9 +10,35 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper.view;
 
-import java.util.*;
-import eu.europa.ec.fisheries.ers.fa.entities.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.AapStockEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FaCatchEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxCharacteristicEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.SizeDistributionEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationSchemeId;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.DestinationLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.facatch.FaCatchGroupDto;
@@ -22,10 +48,14 @@ import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import eu.europa.ec.fisheries.ers.service.mdrcache.MDRAcronymType;
+import eu.europa.ec.fisheries.ers.service.mdrcache.MDRCache;
 import eu.europa.ec.fisheries.ers.service.util.Utils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import un.unece.uncefact.data.standard.mdr.communication.ColumnDataType;
+import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 
 /**
  * Created by kovian on 03/03/2017.
@@ -180,14 +210,19 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
 
     private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
         Double totalWeight = null;
-        Double convFc = 1d;
+        Double convFc = null;  
         Double weightSum = 0.0;
+        Integer catchId = 0;
         if (CollectionUtils.isNotEmpty(aapProcesses)) {
             for (AapProcessEntity aapProc : aapProcesses) {
-                Double actConvFac = aapProc.getConversionFactor();
-                convFc = (convFc == 1 && actConvFac != null) ? actConvFac : convFc;
+                catchId = aapProc.getFaCatch().getId();
+                convFc = extractConversionFactor(aapProc);
                 weightSum = addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }
+        }
+        if(convFc == null) {
+            convFc = 0.0;
+            log.error("Couldn't find conversion factor for FaCatchEntity with id: " + catchId);
         }
         if (weightSum > 0.0) {
             totalWeight = convFc * weightSum;
@@ -402,6 +437,145 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             return true;
         }
 
+    }
+
+    private static Double extractConversionFactor(AapProcessEntity aapProc) {
+        FaCatchEntity entity = aapProc.getFaCatch();
+        List<FluxLocationEntity> catchLocations = entity.getFluxLocations().stream()
+                .filter(location -> FluxLocationSchemeId.TERRITORY.name().equals(location.getCountryIdSchemeId())
+                        || FluxLocationSchemeId.MANAGEMENT_AREA.name().equals(location.getFluxLocationIdentifierSchemeId())
+                        || FluxLocationSchemeId.TERRITORY.name().equals(location.getFluxLocationIdentifierSchemeId())).collect(Collectors.toList());
+        if (catchLocations.size() != 1) {
+            return getConversionFactorIfReported(aapProc);
+        } else {
+            String speciesCode = entity.getSpeciesCode();
+            String preservation = entity.getAapProcesses().stream().flatMap(aapProcess -> aapProcess.getAapProcessCode().stream())
+                    .filter(x -> x.getTypeCodeListId().equals("FISH_PRESERVATION")).findFirst().map(AapProcessCodeEntity::getTypeCode).orElse("");
+            String presentation = entity.getAapProcesses().stream().flatMap(aapProcess -> aapProcess.getAapProcessCode().stream())
+                    .filter(x -> x.getTypeCodeListId().equals("FISH_PRESENTATION")).findFirst().map(AapProcessCodeEntity::getTypeCode).orElse("");
+            FluxLocationEntity catchLocation = catchLocations.get(0);
+            String locationSchemeId;
+            String locationId;
+            if(catchLocation.getTypeCode().equals("AREA")) {
+                locationSchemeId = catchLocation.getFluxLocationIdentifierSchemeId();
+                locationId = catchLocation.getFluxLocationIdentifier();
+            } else {
+                locationSchemeId = catchLocation.getCountryIdSchemeId();
+                locationId = catchLocation.getCountryId();
+            }
+            boolean condition = false;
+            if(catchLocation.getTypeCode().equals("AREA") && locationSchemeId.equals(FluxLocationSchemeId.MANAGEMENT_AREA.name())) {
+                condition = isPresentInMdr(MDRAcronymType.MANAGEMENT_AREA, locationId);
+            } else if (locationSchemeId.equals(FluxLocationSchemeId.TERRITORY.name())) {
+                condition = !locationId.equals("XEU") && !isPresentInMdr(MDRAcronymType.MEMBER_STATE, locationId);
+            }
+            if(condition) {
+                Double factor = getConversionFactorFromMdr(new MDRCondition(MDRCondition.CODE, speciesCode),
+                        new MDRCondition(MDRCondition.PRESENTATION, presentation),
+                        new MDRCondition(MDRCondition.STATE, preservation),
+                        new MDRCondition(MDRCondition.PLACES_CODE, locationId));
+                if(factor != null) {
+                    return factor;
+                } else {
+                    return getEUConversionFactor(aapProc, speciesCode, preservation, presentation);
+                }
+            } else {
+                return getEUConversionFactor(aapProc, speciesCode, preservation, presentation);
+            }
+        }
+    }
+
+    private static Double getConversionFactorIfReported(AapProcessEntity aapProc) {
+        return aapProc.getConversionFactor();
+    }
+
+    private static Double getEUConversionFactor(AapProcessEntity aapProc, String speciesCode, String preservation, String presentation) {
+        Double factor = getConversionFactorFromMdr(new MDRCondition(MDRCondition.CODE, speciesCode),
+                new MDRCondition(MDRCondition.PRESENTATION, presentation),
+                new MDRCondition(MDRCondition.STATE, preservation),
+                new MDRCondition(MDRCondition.PLACES_CODE, "XEU"));
+        if(factor != null) {
+            return factor;
+        } else {
+            return getFlagStateConversionFactor(aapProc, speciesCode, preservation, presentation);
+        }
+    }
+
+    private static Double getFlagStateConversionFactor(AapProcessEntity aapProc, String speciesCode, String preservation, String presentation) {
+        FaCatchEntity entity = aapProc.getFaCatch();
+        String flagState = entity.getFishingActivity().getFaReportDocument().getVesselTransportMeans().stream().map(VesselTransportMeansEntity::getCountry).findFirst().orElse("");
+        if(!flagState.isEmpty()) {
+            Double factor = getConversionFactorFromMdr(new MDRCondition(MDRCondition.CODE, speciesCode),
+                    new MDRCondition(MDRCondition.PRESENTATION, presentation),
+                    new MDRCondition(MDRCondition.STATE, preservation),
+                    new MDRCondition(MDRCondition.PLACES_CODE, flagState));
+            if(factor != null) {
+                return factor;
+            } else {
+                return getConversionFactorIfReported(aapProc);
+            }
+        } else {
+            return getConversionFactorIfReported(aapProc);
+        }
+    }
+
+    private static Double getConversionFactorFromMdr(MDRCondition... conditions) {
+        Predicate<ObjectRepresentation> predicates = is -> true;
+        for(MDRCondition condition: conditions){
+            predicates = predicates.and(entry -> entry.getFields().stream().anyMatch(column -> column.getColumnName().equals(condition.getColumn()) && column.getColumnValue().equals(condition.getValue())));
+        }
+
+        List<ObjectRepresentation> entries = getMDRCacheBean().getEntry(MDRAcronymType.CONVERSION_FACTOR);
+        ObjectRepresentation result = entries.stream().filter(predicates).findAny().orElse(null);
+        if(result != null) {
+            String factor = result.getFields().stream().filter(field -> field.getColumnName().equals("factor")).findFirst().map(ColumnDataType::getColumnValue).orElse("");
+            return Double.parseDouble(factor);
+        } else {
+            return null;
+        }
+    }
+
+    private static Boolean isPresentInMdr(MDRAcronymType acronym, String value) {
+        List<ObjectRepresentation> entries = getMDRCacheBean().getEntry(acronym);
+        for(ObjectRepresentation entry: entries) {
+            if(entry.getFields().stream().anyMatch(column -> column.getColumnName().equals("code") && column.getColumnValue().equals(value))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static MDRCache getMDRCacheBean() {
+        try {
+            Context context = new InitialContext();
+            return (MDRCache) context.lookup("java:app/service-1.1.16-MARE-SNAPSHOT/MDRCache");
+        } catch (NamingException e) {
+            throw new RuntimeException("Failed to lookup MDRCache bean ", e);
+        }
+    }
+
+    static class MDRCondition {
+
+        static final String CODE = "code"; //species code
+        static final String PRESENTATION = "presentation"; //self-explanatory
+        static final String STATE = "state"; //preservation state
+        static final String PLACES_CODE = "placesCode"; //catch location
+
+        String column;
+        String value;
+
+        public MDRCondition(String column, String value) {
+            this.column = column;
+            this.value = value;
+        }
+
+        public String getColumn() {
+            return column;
+        }
+
+        public String getValue() {
+            return value;
+        }
     }
 
 }
