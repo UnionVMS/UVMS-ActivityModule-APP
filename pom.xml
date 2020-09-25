@@ -42,7 +42,7 @@
         <javaee.version>8.0</javaee.version>
 
         <!-- Other UVMS module dependencies -->
-        <activity.model.version>1.0.10</activity.model.version>
+        <activity.model.version>1.0.11-SWE</activity.model.version>
 
         <uvms.pom.version>3.2</uvms.pom.version>
         <uvms.commons.version>4.1.7</uvms.commons.version>
