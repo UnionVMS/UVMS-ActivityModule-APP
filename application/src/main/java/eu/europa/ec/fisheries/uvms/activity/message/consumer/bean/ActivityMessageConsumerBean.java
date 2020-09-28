@@ -68,10 +68,10 @@ public class ActivityMessageConsumerBean implements MessageListener {
         try {
             String function = textMessage.getStringProperty(MessageConstants.JMS_FUNCTION_PROPERTY);
             ExchangeModuleMethod exchangeMethod = (function != null) ? ExchangeModuleMethod.valueOf(function) : null;
-            if (exchangeMethod == ExchangeModuleMethod.EFR_SAVE_REPORT) {
+            if (exchangeMethod == ExchangeModuleMethod.EFR_SAVE_ACTIVITY) {
                 log.trace("Received EFR message: {}", textMessage);
-                String shouldBeReportClass = textMessage.getText();
-                efrMessageSaver.saveEfrReport(shouldBeReportClass);
+                String efrMessageText = textMessage.getText();
+                efrMessageSaver.handleEfrActivity(efrMessageText);
             } else {
                 MappedDiagnosticContext.addMessagePropertiesToThreadMappedDiagnosticContext(textMessage);
                 ActivityModuleRequest request = JAXBMarshaller.unmarshallTextMessage(textMessage, ActivityModuleRequest.class);
