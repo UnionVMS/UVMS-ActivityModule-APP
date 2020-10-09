@@ -256,6 +256,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             } else if (previousMovement == null) {
                 faReportGeom = GeometryMapper.INSTANCE.wktToGeometry(nextMovement.getWkt()).getValue();
                 faReportGeom.setSRID(dialect.defaultSRID());
+                movementLocationData.setGeometry(faReportGeom);
                 movementLocationData.setAreas(nextMovement.getMetaData().getAreas().stream().filter(a -> a.getTransitionType() != EXI).collect(Collectors.toList()));
             } else {
                 movementLocationData = calculateIntermediatePoint(previousMovement, nextMovement, activityDate);

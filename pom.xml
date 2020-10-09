@@ -79,7 +79,7 @@
     <release.branch.name>uvms-1.0.0</release.branch.name>
     <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
     <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
-    <database.dialect>oracle</database.dialect>
+    <database.dialect>postgres</database.dialect>
     <geotools.version>14.4</geotools.version>
     <mave.plugin.api.version>2.0</mave.plugin.api.version>
     <dom4j.version>1.6.1</dom4j.version>
