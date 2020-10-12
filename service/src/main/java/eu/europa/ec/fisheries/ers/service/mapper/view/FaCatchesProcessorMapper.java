@@ -207,6 +207,14 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         groupingDetailsMap.put(LSC, lscGroupDetailsDto);
 
     }
+    
+    public static Double getCalculatedWeightMeasure(FaCatchEntity entity) {
+        Double calculatedWeightMeasure = entity.getCalculatedWeightMeasure();
+        if (calculatedWeightMeasure == null) {
+            calculatedWeightMeasure = extractLiveWeight(entity.getAapProcesses());
+        }
+        return calculatedWeightMeasure;
+    }
 
     private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
         Double totalWeight = null;
