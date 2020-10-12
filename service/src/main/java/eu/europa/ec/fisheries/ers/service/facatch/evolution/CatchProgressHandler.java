@@ -5,6 +5,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.catchprogress.CatchProgressDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.catchprogress.DetailedCatchProgressDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.catchprogress.SimpleCatchProgressDTO;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import org.apache.commons.lang3.EnumUtils;
 
@@ -21,17 +22,17 @@ public abstract class CatchProgressHandler {
     public abstract CatchProgressDTO prepareCatchProgressDTO(FishingActivityEntity fishingActivity);
 
     protected void handleSimpleCatch(FaCatchEntity faCatch, SimpleCatchProgressDTO catchProgressDTO) {
-        catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), faCatch.getCalculatedWeightMeasure());
+        catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), FaCatchesProcessorMapper.getCalculatedWeightMeasure(faCatch));
     }
 
     protected void handleSubtractingCatch(FaCatchEntity faCatch, Set<FaCatchEntity> faCatches, SimpleCatchProgressDTO catchProgressDTO) {
         FaCatchTypeEnum faCatchType = EnumUtils.getEnum(FaCatchTypeEnum.class, faCatch.getTypeCode());
         if(ADDED_CATCH_TYPES.contains(faCatchType)){
-            catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), faCatch.getCalculatedWeightMeasure());
+            catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), FaCatchesProcessorMapper.getCalculatedWeightMeasure(faCatch));
         } else if (faCatchType == FaCatchTypeEnum.TAKEN_ONBOARD && !isFaCatchTypePresent(faCatches, FaCatchTypeEnum.ONBOARD)){
-            catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), faCatch.getCalculatedWeightMeasure());
+            catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), FaCatchesProcessorMapper.getCalculatedWeightMeasure(faCatch));
         } else if(SUBTRACTED_CATCH_TYPES.contains(faCatchType) && isFaCatchTypePresent(faCatches, FaCatchTypeEnum.TAKEN_ONBOARD) && !isFaCatchTypePresent(faCatches, FaCatchTypeEnum.ONBOARD)){
-            catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), -faCatch.getCalculatedWeightMeasure());
+            catchProgressDTO.updateTotal(faCatch.getSpeciesCode(), -FaCatchesProcessorMapper.getCalculatedWeightMeasure(faCatch));
         }
     }
 
@@ -39,13 +40,13 @@ public abstract class CatchProgressHandler {
         FaCatchTypeEnum faCatchType = EnumUtils.getEnum(FaCatchTypeEnum.class, faCatch.getTypeCode());
         switch (faCatchType){
             case ONBOARD:
-                catchProgressDTO.addOnboard(faCatch.getSpeciesCode(), faCatch.getCalculatedWeightMeasure());
+                catchProgressDTO.addOnboard(faCatch.getSpeciesCode(), FaCatchesProcessorMapper.getCalculatedWeightMeasure(faCatch));
                 break;
             case LOADED:
-                catchProgressDTO.addLoaded(faCatch.getSpeciesCode(), faCatch.getCalculatedWeightMeasure());
+                catchProgressDTO.addLoaded(faCatch.getSpeciesCode(), FaCatchesProcessorMapper.getCalculatedWeightMeasure(faCatch));
                 break;
             case UNLOADED:
-                catchProgressDTO.addUnloaded(faCatch.getSpeciesCode(), faCatch.getCalculatedWeightMeasure());
+                catchProgressDTO.addUnloaded(faCatch.getSpeciesCode(), FaCatchesProcessorMapper.getCalculatedWeightMeasure(faCatch));
                 break;
         }
     }
