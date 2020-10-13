@@ -548,7 +548,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     private static MDRCache getMDRCacheBean() {
         try {
             Context context = new InitialContext();
-            return (MDRCache) context.lookup("java:app/service-1.1.16-MARE-SNAPSHOT/MDRCache");
+            return (MDRCache) context.lookup("java:module/MDRCache");
         } catch (NamingException e) {
             throw new RuntimeException("Failed to lookup MDRCache bean ", e);
         }
