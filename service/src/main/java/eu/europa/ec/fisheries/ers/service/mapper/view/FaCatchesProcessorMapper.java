@@ -13,6 +13,8 @@ package eu.europa.ec.fisheries.ers.service.mapper.view;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -234,6 +236,8 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         }
         if (weightSum > 0.0) {
             totalWeight = convFc * weightSum;
+            BigDecimal bd = new BigDecimal(totalWeight).setScale(2, RoundingMode.HALF_UP);
+            totalWeight = bd.doubleValue();
         }
         return totalWeight;
     }
