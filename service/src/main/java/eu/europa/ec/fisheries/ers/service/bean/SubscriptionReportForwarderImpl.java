@@ -90,8 +90,10 @@ public class SubscriptionReportForwarderImpl implements SubscriptionReportForwar
                         Optional.ofNullable(ctx.getAssetHistoryGuid(Pair.of(vesselTransportMeansEntity.getGuid(), activityDate))).ifPresent(assetHistoryGuids::add);
                     }
                 }
-                StringWrapper stringWrapper = GeometryMapper.INSTANCE.geometryToWkt(fishingActivityEntity.getGeom());
-                activitiesGeometries.add(stringWrapper.getValue());
+                Optional.ofNullable(fishingActivityEntity.getGeom())
+                        .map(GeometryMapper.INSTANCE::geometryToWkt)
+                        .map(StringWrapper::getValue)
+                        .ifPresent(activitiesGeometries::add);
             }
             
             faReports.add(new ReportToSubscription(fluxFaReportMessageIds, fishingActivities, faReportDocumentEntity.getTypeCode(), activityAreas, assetHistoryGuids,
