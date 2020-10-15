@@ -65,6 +65,7 @@ public class FilterMap {
     public static final String AAP_PRODUCT_TABLE_ALIAS = " aprocess.aapProducts aprod ";
     private static final String DATASOURCE = "dataSource";
     private static final String FAREPORT_ID = "faReportId";
+    private static final String FLUX_FA_REPORT_ID = "fluxReportIdentifierId";
     private static final String AREA_GEOM = "areaGeom";
     private static final String FA_CATCH_TERITTORY = "faCatch.territory";
     private static final String FA_CATCH_FAO_AREA = "faCatch.faoArea";
@@ -76,6 +77,7 @@ public class FilterMap {
     public static final String FLUX_REP_MESSAGE_FROM_FA_REP = "fa.fluxFaReportMessage fluxMsg ";
     public static final String FLUX_REP_DOC_FROM_MESSAGE = "fluxMsg.fluxReportDocument fluxRepDoc ";
     public static final String FLUX_PARTY_FOR_MESSAGE = "fluxRepDoc.fluxParty fpFrom ";
+    public static final String FLUX_FA_REPORT_IDENTIFIER_TABLE_ALIAS = "flux.fluxReportIdentifiers fluxRepIdent ";
     // For Sort criteria, which expression should be used
     private static EnumMap<SearchFilter, String> filterSortMappings = new EnumMap<>(SearchFilter.class);
     // Query parameter mapping
@@ -162,6 +164,7 @@ public class FilterMap {
         filterQueryParameterMappings.put(SearchFilter.QUANTITY_MAX, QUANTITY_MAX);
         filterQueryParameterMappings.put(SearchFilter.MASTER, CONTACT_PERSON_NAME);
         filterQueryParameterMappings.put(SearchFilter.FA_REPORT_ID, FAREPORT_ID);
+        filterQueryParameterMappings.put(SearchFilter.FLUX_FA_REPORT_ID, FLUX_FA_REPORT_ID);
         filterQueryParameterMappings.put(SearchFilter.AREA_GEOM, AREA_GEOM);
         filterQueryParameterMappings.put(SearchFilter.TRIP_ID, TRIP_ID);
         filterQueryParameterMappings.put(SearchFilter.CONTACT_ROLE_CODE, CONTACT_ROLE_CODE);
@@ -253,6 +256,7 @@ public class FilterMap {
                 "UPPER(cPerson.givenName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.middleName) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.familyName) IN (:" + CONTACT_PERSON_NAME + ") " + StringUtils.SPACE +
                 "or UPPER(cPerson.familyNamePrefix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.nameSuffix) IN (:" + CONTACT_PERSON_NAME + ") " + " or UPPER(cPerson.alias) IN (:" + CONTACT_PERSON_NAME + ") " + ")"));
         filterMappings.put(SearchFilter.FA_REPORT_ID, new FilterDetails(StringUtils.SPACE, "fa.id =:" + FAREPORT_ID));
+        filterMappings.put(SearchFilter.FLUX_FA_REPORT_ID, new FilterDetails(FLUX_FA_REPORT_IDENTIFIER_TABLE_ALIAS, "fluxRepIdent.fluxReportIdentifierId =:" + FLUX_FA_REPORT_ID));
         filterMappings.put(SearchFilter.AREA_GEOM, new FilterDetails(StringUtils.SPACE, "intersects(fa.geom, :" + AREA_GEOM + ") = true "));
         filterMappings.put(SearchFilter.TRIP_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripId =:" + TRIP_ID + StringUtils.SPACE));
         filterMappings.put(SearchFilter.FISHING_TRIP_SCHEME_ID, new FilterDetails(StringUtils.SPACE + FISHING_TRIP_TABLE_ALIAS + " JOIN FETCH " + FISHING_TRIP_IDENTIFIER_TABLE_ALIAS, "fishingTripId.tripSchemeId =:" + TRIP_SCHEME_ID + StringUtils.SPACE));
