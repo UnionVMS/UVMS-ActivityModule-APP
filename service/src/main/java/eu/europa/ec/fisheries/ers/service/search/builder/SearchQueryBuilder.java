@@ -14,7 +14,6 @@
 package eu.europa.ec.fisheries.ers.service.search.builder;
 
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -129,6 +128,10 @@ public abstract class SearchQueryBuilder {
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_REP_DOC_FROM_MESSAGE);
                 appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_PARTY_FOR_MESSAGE);
                 appendJoinFetchString(sql, joinString);
+                break;
+            case FLUX_FA_REPORT_ID:
+                appendJoinFetchIfConditionDoesntExist(sql, FilterMap.FLUX_REPORT_DOC_TABLE_ALIAS);
+                appendJoinString(sql, joinString);
                 break;
             case AREAS: /* We need to do Right join here as one activity can have multiple areas and in the resultDTO we want to show all the areas for the activity*/
                 appendRightJoinString(sql, joinString);
@@ -427,6 +430,9 @@ public abstract class SearchQueryBuilder {
                 break;
             case FA_REPORT_ID:
                 typedQuery.setParameter(queryParameterMappings.get(key), Integer.parseInt(value));
+                break;
+            case FLUX_FA_REPORT_ID:
+                typedQuery.setParameter(queryParameterMappings.get(key), value);
                 break;
             case AREA_GEOM:
                 Geometry geom;
