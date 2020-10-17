@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import javax.naming.Context;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -33,22 +34,33 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.JointFishingOperationViewM
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import eu.europa.ec.fisheries.ers.service.mdrcache.MDRAcronymType;
+import eu.europa.ec.fisheries.ers.service.mdrcache.MDRCache;
 import lombok.SneakyThrows;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getFishingActivity;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by kovian on 09/02/2017.
  */
 public class FishingActivityViewMapperTest {
+
+    private final Context context = mock(Context.class);
+
+    @Rule
+    public MockInitialContextRule mockInitialContextRule = new MockInitialContextRule(context);
 
     FishingActivityEntity fishingActivity;
 
@@ -144,6 +156,12 @@ public class FishingActivityViewMapperTest {
     @Test
     @SneakyThrows
     public void testActivityJointFishingOperationViewMapper() {
+//        ObjectRepresentation or = new ObjectRepresentation();
+//        or.setFields();
+        MDRCache mdrCache = mock(MDRCache.class);
+        when(mdrCache.getEntry(MDRAcronymType.CONVERSION_FACTOR)).thenReturn(Collections.emptyList());
+        when(context.lookup("java:module/MDRCache")).thenReturn(mdrCache);
+
         FishingActivity fishingActivity = getFishingActivity();
         FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, new FishingActivityEntity());
         fishingActivityEntity.setTypeCode("JOINT_FISHING_OPERATION");
