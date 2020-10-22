@@ -24,6 +24,7 @@ import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
 import eu.europa.ec.fisheries.ers.service.EventService;
 import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
+import eu.europa.ec.fisheries.ers.service.FaQueryService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
@@ -74,8 +75,12 @@ import eu.europa.ec.fisheries.wsdl.subscription.module.ActivityReportGenerationR
 import eu.europa.ec.fisheries.wsdl.subscription.module.AttachmentType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionModuleMethod;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @LocalBean
 @Stateless
@@ -116,6 +121,9 @@ public class ActivityEventServiceBean implements EventService {
 
     @Inject
     private FishingActivityService  fishingActivityService;
+    
+    @Inject
+    private FaQueryService faQueryService;
 
     @Override
     public void receiveFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
@@ -133,14 +141,12 @@ public class ActivityEventServiceBean implements EventService {
                     saveReportBean.handleFaReportSaving(request);
                     break;
                 case GET_FLUX_FA_QUERY:
-                    log.warn("TODO : FAQUERY mappers NOT implemented yet....");
                     FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
-                    // TODO : Implement me... Map tp real HQl/SQL query and run the query and map the results to FLUXFAReportMessage and send it to
-                    FLUXFAReportMessage faRepQueryResponseAfterMapping = new FLUXFAReportMessage();
-                    activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faRepQueryResponseAfterMapping, "getTheOnValueFromSomewahre", request.getRequestType(), jmsMessage.getJMSMessageID());
+                    FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
+                    activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faReports, "getTheOnValueFromSomewahre", request.getRequestType(), jmsMessage.getJMSMessageID());
                     break;
             }
-        } catch (ActivityModelMarshallException | ActivityModuleException | JMSException e) {
+        } catch (ActivityModelMarshallException | JMSException | ActivityModuleException e) {
             sendError(eventMessage, e);
         }
     }

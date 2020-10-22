@@ -195,12 +195,12 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 if(faReportXMLObj.getFLUXReportDocument() != null && CollectionUtils.isNotEmpty(faReportXMLObj.getFLUXReportDocument().getIDS())){
                     logId = faReportXMLObj.getFLUXReportDocument().getIDS().get(0).getValue();
                 }
-                final String faReportXMLStr = JAXBMarshaller.marshallJaxBObjectToString(faReportXMLObj);
+                final String faReportXMLStr = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(faReportXMLObj));
                 // TODO : change this values (username, senderOrReceiver (Node name?)) when got answer from CEDRIC
                 final String sendFLUXFAReportMessageRequest = RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(faReportXMLStr, "FLUX",
-                        logId, dataFlow, "BEL", onValue, isEmptyReportMessage(faReportXMLObj));
+                        logId, dataFlow, localNodeName, onValue, isEmptyReportMessage(faReportXMLObj));
                 if(SyncAsyncRequestType.SYNC.equals(type)){
-                    activityResponseQueueProducer.sendMessageWithSpecificIds(sendFLUXFAReportMessageRequest, activityConsumerBean.getDestination(), null, null, jmsMessageCorrId);
+                    activityResponseQueueProducer.sendMessageWithSpecificIds(sendFLUXFAReportMessageRequest, activityResponseQueueProducer.getDestination(), null, null, jmsMessageCorrId);
                 } else {
                     rulesProducerBean.sendModuleMessage(sendFLUXFAReportMessageRequest, activityConsumerBean.getDestination());
                 }

@@ -36,14 +36,21 @@ import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQueryParameter;
 
 @Stateless
 @Slf4j
 public class FAQueryServiceBean implements FaQueryService {
-
+    
+    public static final String VESSELID = "VESSELID";
+    public static final String TRIPID = "TRIPID";
+    public static final String CONSOLIDATED = "CONSOLIDATED";
     private static final String FLUX_LOCAL_NATION_CODE = "flux_local_nation_code";
 
     @PersistenceContext(unitName = "activityPUpostgres")
@@ -111,5 +118,38 @@ public class FAQueryServiceBean implements FaQueryService {
         }
 
         return null;
+    }
+
+    @Override
+    public FLUXFAReportMessage getReportsByCriteria(FAQuery faQuery) {
+        Criteria criteria = new Criteria();
+        faQuery.getSimpleFAQueryParameters().forEach(param -> addCriterion(param, criteria));
+        criteria.setStartDate(faQuery.getSpecifiedDelimitedPeriod().getStartDateTime().getDateTime().toString());
+        criteria.setEndDate(faQuery.getSpecifiedDelimitedPeriod().getEndDateTime().getDateTime().toString());
+
+        List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(criteria.tripID, criteria.consolidated, criteria.vesselId, criteria.schemeId, criteria.startDate, criteria.endDate);
+        return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip, localNodeName);
+    }
+
+    private void addCriterion(FAQueryParameter faQueryParameter, Criteria criteria) {
+        if(VESSELID.equals(faQueryParameter.getTypeCode().getValue())) {
+            criteria.setSchemeId(faQueryParameter.getValueID().getSchemeID());
+            criteria.setVesselId(faQueryParameter.getValueID().getValue());
+        } else if (TRIPID.equals(faQueryParameter.getTypeCode().getValue())) {
+            criteria.setTripID(faQueryParameter.getValueID().getValue());
+        } else if (CONSOLIDATED.equals(faQueryParameter.getTypeCode().getValue())) {
+            criteria.setConsolidated(faQueryParameter.getValueCode().getValue());
+        }
+    }
+    
+    @Data
+    @NoArgsConstructor
+    class Criteria {
+        String startDate;
+        String endDate;
+        String tripID;
+        String vesselId;
+        String schemeId;
+        String consolidated;
     }
 }

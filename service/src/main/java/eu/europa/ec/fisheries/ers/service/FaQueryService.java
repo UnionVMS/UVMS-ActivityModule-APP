@@ -16,10 +16,13 @@ import java.util.List;
 
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
 
 @Local
 public interface FaQueryService {
 
     FLUXFAReportMessage getReportsByCriteria(List<SubscriptionDataCriteria> subscriptionDataCriteria);
+    
+    FLUXFAReportMessage getReportsByCriteria(FAQuery faQuery);
 
 }
