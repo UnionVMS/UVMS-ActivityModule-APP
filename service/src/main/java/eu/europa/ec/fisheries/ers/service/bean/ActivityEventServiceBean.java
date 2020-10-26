@@ -18,6 +18,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
+import javax.xml.bind.JAXBException;
 import java.util.List;
 
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
@@ -70,6 +71,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.subscription.module.ActivityReportGenerationResultsRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.AttachmentType;

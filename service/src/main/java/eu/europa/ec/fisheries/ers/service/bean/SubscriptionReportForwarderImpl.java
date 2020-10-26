@@ -102,6 +102,46 @@ public class SubscriptionReportForwarderImpl implements SubscriptionReportForwar
         activitySubscriptionServiceBean.sendForwardReportToSubscriptionRequest(faReports);
     }
 
+    public boolean requestPermissionFromSubscription(FluxFaReportMessageMappingContext ctx, FluxFaReportMessageEntity messageEntity) {
+        List<ReportToSubscription> faReports = new ArrayList<>();
+        for(FaReportDocumentEntity faReportDocumentEntity: messageEntity.getFaReportDocuments()) {
+            List<FluxReportIdentifier> fluxFaReportMessageIds = new ArrayList<>();
+            List<FishingActivity> fishingActivities = new ArrayList<>();
+            List<ActivityAreas> activityAreas = new ArrayList<>();
+            List<String> assetHistoryGuids = new ArrayList<>();
+            for(FluxReportIdentifierEntity fluxReportIdentifier: faReportDocumentEntity.getFluxReportDocument().getFluxReportIdentifiers()) {
+                fluxFaReportMessageIds.add(new FluxReportIdentifier(fluxReportIdentifier.getFluxReportIdentifierId(), fluxReportIdentifier.getFluxReportIdentifierSchemeId()));
+            }
+            List<String> activitiesGeometries = new ArrayList<>();
+            for(FishingActivityEntity fishingActivityEntity: faReportDocumentEntity.getFishingActivities()) {
+                FishingActivity fishingActivity = ctx.getFishingActivity(fishingActivityEntity);
+                fishingActivities.add(fishingActivity);
+                List<MovementMetaDataAreaType> movementAreas = ctx.getAreasForEntity(fishingActivityEntity);
+                if(movementAreas != null) {
+                    List<Area> areas = movementAreas.stream().map(area -> new Area(area.getAreaType(), area.getRemoteId(), area.getName())).collect(Collectors.toList());
+                    activityAreas.add(new ActivityAreas(areas));
+                } else {
+                    activityAreas.add(new ActivityAreas(Collections.emptyList()));
+                }
+                Date activityDate = fishingActivityEntity.getOccurence() != null ? fishingActivityEntity.getOccurence() : getFirstDateFromDelimitedPeriods(fishingActivityEntity.getDelimitedPeriods());
+                for(VesselTransportMeansEntity vesselTransportMeansEntity :faReportDocumentEntity.getVesselTransportMeans()) {
+                    if(vesselTransportMeansEntity.getGuid() != null && activityDate != null) {
+                        Optional.ofNullable(ctx.getAssetHistoryGuid(Pair.of(vesselTransportMeansEntity.getGuid(), activityDate))).ifPresent(assetHistoryGuids::add);
+                    }
+                }
+                Optional.ofNullable(fishingActivityEntity.getGeom())
+                        .map(GeometryMapper.INSTANCE::geometryToWkt)
+                        .map(StringWrapper::getValue)
+                        .ifPresent(activitiesGeometries::add);
+            }
+
+            faReports.add(new ReportToSubscription(fluxFaReportMessageIds, fishingActivities, faReportDocumentEntity.getTypeCode(), activityAreas, assetHistoryGuids,
+                    activitiesGeometries));
+        }
+//        activitySubscriptionServiceBean.sendForwardReportToSubscriptionRequest(faReports);
+        return activitySubscriptionServiceBean.requestSubscriptionForPermission(faReports);
+    }
+
     private Date getFirstDateFromDelimitedPeriods(Collection<DelimitedPeriodEntity> delimitedPeriods) {
         return delimitedPeriods.stream()
                 .map(DelimitedPeriodEntity::getStartDate)

@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.europa.ec.fisheries.ers.service.mapper.SubscriptionMapper;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
+import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityEventQueueConsumerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.MapToSubscriptionRequestEvent;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
@@ -23,6 +25,8 @@ import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshal
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
+import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardReportToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.MapToSubscriptionRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ReportToSubscription;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
@@ -30,7 +34,15 @@ import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import eu.europa.ec.fisheries.uvms.config.constants.ConfigHelper;
+import eu.europa.ec.fisheries.uvms.user.model.exception.ModelMarshallException;
+import eu.europa.ec.fisheries.wsdl.asset.module.FindVesselIdsByAssetHistGuidResponse;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionBaseRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataRequest;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionModuleMethod;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionAnswer;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
+import eu.europa.fisheries.uvms.subscription.model.exceptions.ApplicationException;
+import eu.europa.fisheries.uvms.subscription.model.mapper.SubscriptionModuleResponseMapper;
 import lombok.extern.slf4j.Slf4j;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
@@ -49,6 +61,13 @@ public class ActivitySubscriptionServiceBean {
 
     @EJB
     private SubscriptionDataProducerBean subscriptionDataProducerBean;
+
+    @EJB
+    private ActivityEventQueueConsumerBean activityEventQueueConsumerBean;
+
+
+    @EJB
+    private ActivityConsumerBean activityConsumerBean;
 
     @EJB
     private ConfigHelper configHelper;
@@ -90,9 +109,25 @@ public class ActivitySubscriptionServiceBean {
         }
     }
 
+    public boolean requestSubscriptionForPermission(List<ReportToSubscription> faReports) {
+        try {
+            String request = ActivityModuleRequestMapper.mapToForwardReportToSubscriptionRequest(faReports);
+            String correlationId = subscriptionProducer.sendMessageToSpecificQueue(request, JMSUtils.lookupQueue("jms/queue/UVMSSubscriptionPermissionEvent"), JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY));
+            if (correlationId != null) {
+                TextMessage message = activityConsumerBean.getMessage(correlationId, TextMessage.class);
+                log.debug("Received response message from Subscription.");
+                SubscriptionPermissionResponse subscriptionPermissionResponse = SubscriptionModuleResponseMapper.mapToSubscriptionPermissionResponse(message.getText());
+                SubscriptionPermissionAnswer subscriptionCheck = subscriptionPermissionResponse.getSubscriptionCheck();
+                return SubscriptionPermissionAnswer.YES.equals(subscriptionCheck);
+            }
+            return false;
+        } catch (MessageException | JMSException | JAXBException | ActivityModelMarshallException e) {
+            throw new ApplicationException(e.getMessage(), e);
+        }
+    }
+
     private void sendError(EventMessage message, Exception e) {
         log.error("[ Error in activity module. ] ", e);
         errorEvent.fire(new EventMessage(message.getJmsMessage(), ActivityModuleResponseMapper.createFaultMessage(FaultCode.ACTIVITY_MESSAGE, "Exception in activity [ " + e.getMessage())));
     }
-
 }
