@@ -17,44 +17,40 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMappingContext;
-import eu.europa.ec.fisheries.schema.movement.v1.MovementMetaDataAreaType;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityUniquinessList;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.Area;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.PluginType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
+import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
+import eu.europa.ec.fisheries.uvms.commons.message.impl.JMSUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 
@@ -79,11 +75,14 @@ public class FaReportSaverBean {
     @EJB
     private FishingActivityEnricherBean activityEnricher;
 
+    @EJB
+    private ActivityRulesProducerBean activityRulesProducerBean;
+
     @Inject
     SubscriptionReportForwarder subscriptionReportForwarder;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
+    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request, String permissionData) {
         mdrModuleServiceBean.loadCache();
         FLUXFAReportMessage fluxFAReportMessage;
         try {
@@ -106,18 +105,47 @@ public class FaReportSaverBean {
         } catch (Exception e){
             log.error("[ERROR] Error while trying to Enrich faReportDocuments, the saving will continue!");
         }
-        try {
-            if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
-                // Saves Reports and updates FaReport Corrections Or Cancellations and fish trip start end dates
-                fluxMessageService.saveFishingActivityReportDocuments(messageEntity);
-            } else {
-                log.warn("[WARN] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
+
+        if (isRequestPermittedBySubscription(ctx, messageEntity)) {
+            try {
+                if (CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())) {
+                    // Saves Reports and updates FaReport Corrections Or Cancellations and fish trip start end dates
+                    fluxMessageService.saveFishingActivityReportDocuments(messageEntity);
+                } else {
+                    log.warn("[WARN] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
+                }
+                subscriptionReportForwarder.forwardReportToSubscription(ctx, messageEntity);
+
+//                permissionData.setRequestPermitted(true);
+                Map<String, String> props = new HashMap<>();
+                props.put("isPermitted", "true");
+                activityRulesProducerBean.sendMessageToSpecificQueue(permissionData, JMSUtils.lookupQueue("jms/queue/UVMSRulesPermissionEvent"), null, props);
+            } catch (Exception e) {
+                log.error("[ERROR] Error while trying to FaReportSaverBean.handleFaReportSaving(...). Failed to save it! Going to change the state in exchange log!", e);
+                exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
             }
-        } catch (Exception e){
-            log.error("[ERROR] Error while trying to FaReportSaverBean.handleFaReportSaving(...). Failed to save it! Going to change the state in exchange log!", e);
-            exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
+        } else {
+            log.debug("Subscription denied permission for {}", messageEntity.toString());
+            try {
+//                permissionData.setRequestPermitted(false);
+                Map<String, String> props = new HashMap<>();
+                props.put("isPermitted", "false");
+                activityRulesProducerBean.sendMessageToSpecificQueue(permissionData, JMSUtils.lookupQueue("jms/queue/UVMSRulesPermissionEvent"), null, props);
+            } catch (MessageException e) {
+                log.error("error sending permissions response to rules", e);
+            }
+
         }
-        subscriptionReportForwarder.forwardReportToSubscription(ctx, messageEntity);
+    }
+
+    private boolean isRequestPermittedBySubscription(FluxFaReportMessageMappingContext ctx, FluxFaReportMessageEntity messageEntity) {
+        try {
+            return subscriptionReportForwarder.requestPermissionFromSubscription(ctx, messageEntity);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            // by default deny permission in case of an Error/Exception ??
+            return false;
+        }
     }
 
     private void deleteDuplicatedReportsFromXMLDocument(FLUXFAReportMessage repMsg) {

@@ -24,4 +24,14 @@ public interface SubscriptionReportForwarder {
      * @param messageEntity
      */
     void forwardReportToSubscription(FluxFaReportMessageMappingContext ctx, FluxFaReportMessageEntity messageEntity);
-}
+
+    /**
+     * Handle and request permission based on the FluxFaReportMessage data
+     *
+     * @param ctx
+     * @param messageEntity
+     * @return true or false depending whether the request is to be permitted or not
+     */
+    boolean requestPermissionFromSubscription(FluxFaReportMessageMappingContext ctx, FluxFaReportMessageEntity messageEntity);
+
+    }
