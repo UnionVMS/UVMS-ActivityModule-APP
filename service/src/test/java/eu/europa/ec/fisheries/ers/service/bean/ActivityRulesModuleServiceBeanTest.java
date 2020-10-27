@@ -53,7 +53,7 @@ public class ActivityRulesModuleServiceBeanTest {
         subscriptionPermissionResponse.setSubscriptionCheck(SubscriptionPermissionAnswer.YES);
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
-        CreateAndSendFAQueryForVesselRequest request = new CreateAndSendFAQueryForVesselRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_VESSEL, PluginType.FLUX,
+        CreateAndSendFAQueryForVesselRequest request = new CreateAndSendFAQueryForVesselRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_VESSEL, PluginType.FLUX, "",
                 Collections.singletonList(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, "CFR123456789")), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"), DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T12:00:00"), "XEU.XEU", "durn:un:unece:uncefact:fisheries:FLUX:FA:EU:2");
         sut.composeAndSendVesselFaQueryToRules(request);
         verify(rulesProducerBean).sendModuleMessage(anyString(), any());
@@ -65,7 +65,7 @@ public class ActivityRulesModuleServiceBeanTest {
         subscriptionPermissionResponse.setSubscriptionCheck(SubscriptionPermissionAnswer.YES);
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
-        CreateAndSendFAQueryForVesselRequest request = new CreateAndSendFAQueryForVesselRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_VESSEL, PluginType.FLUX,
+        CreateAndSendFAQueryForVesselRequest request = new CreateAndSendFAQueryForVesselRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_VESSEL, PluginType.FLUX, "",
                 Collections.singletonList(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, "CFR123456789")), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"),
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T12:00:00"), "XEU.XEU", "");
         sut.composeAndSendVesselFaQueryToRules(request);
@@ -77,7 +77,7 @@ public class ActivityRulesModuleServiceBeanTest {
         subscriptionPermissionResponse.setSubscriptionCheck(SubscriptionPermissionAnswer.NO);
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
-        CreateAndSendFAQueryForVesselRequest request = new CreateAndSendFAQueryForVesselRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_VESSEL, PluginType.FLUX,
+        CreateAndSendFAQueryForVesselRequest request = new CreateAndSendFAQueryForVesselRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_VESSEL, PluginType.FLUX, "",
                 Collections.singletonList(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, "CFR123456789")), true, DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-01-01T12:00:00"),
                 DatatypeFactory.newInstance().newXMLGregorianCalendar("2019-02-01T12:00:00"), "XEU.XEU", "durn:un:unece:uncefact:fisheries:FLUX:FA:EU:2");
         sut.composeAndSendVesselFaQueryToRules(request);
@@ -90,7 +90,7 @@ public class ActivityRulesModuleServiceBeanTest {
         subscriptionPermissionResponse.setSubscriptionCheck(SubscriptionPermissionAnswer.YES);
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
-        CreateAndSendFAQueryForTripRequest request = new CreateAndSendFAQueryForTripRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_TRIP, PluginType.FLUX,
+        CreateAndSendFAQueryForTripRequest request = new CreateAndSendFAQueryForTripRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_TRIP, PluginType.FLUX, "",
                 "SRC-TRP-00000000001", true, "XEU.XEU", "durn:un:unece:uncefact:fisheries:FLUX:FA:EU:2");
         sut.composeAndSendTripFaQueryToRules(request);
         verify(rulesProducerBean).sendModuleMessage(anyString(), any());
@@ -102,7 +102,7 @@ public class ActivityRulesModuleServiceBeanTest {
         subscriptionPermissionResponse.setSubscriptionCheck(SubscriptionPermissionAnswer.YES);
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
-        CreateAndSendFAQueryForTripRequest request = new CreateAndSendFAQueryForTripRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_TRIP, PluginType.FLUX,
+        CreateAndSendFAQueryForTripRequest request = new CreateAndSendFAQueryForTripRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_TRIP, PluginType.FLUX, "",
                 "SRC-TRP-00000000001", true, "XEU.XEU", "");
         sut.composeAndSendTripFaQueryToRules(request);
     }
@@ -113,7 +113,7 @@ public class ActivityRulesModuleServiceBeanTest {
         subscriptionPermissionResponse.setSubscriptionCheck(SubscriptionPermissionAnswer.NO);
         when(permissionChecker.checkPermissionForFaQuery(any(FAQuery.class))).thenReturn(subscriptionPermissionResponse);
         when(activityConsumerBean.getDestination()).thenReturn(new Destination() {});
-        CreateAndSendFAQueryForTripRequest request = new CreateAndSendFAQueryForTripRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_TRIP, PluginType.FLUX,
+        CreateAndSendFAQueryForTripRequest request = new CreateAndSendFAQueryForTripRequest(ActivityModuleMethod.CREATE_AND_SEND_FA_QUERY_FOR_TRIP, PluginType.FLUX, "",
                 "SRC-TRP-00000000001", true, "XEU.XEU", "durn:un:unece:uncefact:fisheries:FLUX:FA:EU:2");
         sut.composeAndSendTripFaQueryToRules(request);
     }

@@ -116,7 +116,6 @@ public class FaReportSaverBean {
                 }
                 subscriptionReportForwarder.forwardReportToSubscription(ctx, messageEntity);
 
-//                permissionData.setRequestPermitted(true);
                 Map<String, String> props = new HashMap<>();
                 props.put("isPermitted", "true");
                 activityRulesProducerBean.sendMessageToSpecificQueue(permissionData, JMSUtils.lookupQueue("jms/queue/UVMSRulesPermissionEvent"), null, props);
@@ -127,7 +126,6 @@ public class FaReportSaverBean {
         } else {
             log.debug("Subscription denied permission for {}", messageEntity.toString());
             try {
-//                permissionData.setRequestPermitted(false);
                 Map<String, String> props = new HashMap<>();
                 props.put("isPermitted", "false");
                 activityRulesProducerBean.sendMessageToSpecificQueue(permissionData, JMSUtils.lookupQueue("jms/queue/UVMSRulesPermissionEvent"), null, props);
