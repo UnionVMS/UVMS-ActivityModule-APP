@@ -132,7 +132,7 @@ public class ActivityEventServiceBean implements EventService {
             }
             switch (eventMessage.getMethod()) {
                 case GET_FLUX_FA_REPORT :
-                    saveReportBean.handleFaReportSaving(request, request.getPermissionData());
+                    saveReportBean.handleFaReportSaving(request);
                     break;
                 case GET_FLUX_FA_QUERY:
                     log.warn("TODO : FAQUERY mappers NOT implemented yet....");
