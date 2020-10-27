@@ -140,9 +140,7 @@ public class ActivityEventServiceBean implements EventService {
             }
             switch (eventMessage.getMethod()) {
                 case GET_FLUX_FA_REPORT :
-//                    PermissionData permissionData = JAXBUtils.unMarshallMessage(jmsMessage.getStringProperty("context"), PermissionData.class);
-                    String permissionData = jmsMessage.getStringProperty("context");
-                    saveReportBean.handleFaReportSaving(request, permissionData);
+                    saveReportBean.handleFaReportSaving(request, request.getPermissionData());
                     break;
                 case GET_FLUX_FA_QUERY:
                     FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
