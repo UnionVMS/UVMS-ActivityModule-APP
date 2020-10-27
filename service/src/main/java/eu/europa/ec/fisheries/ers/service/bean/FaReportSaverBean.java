@@ -82,7 +82,7 @@ public class FaReportSaverBean {
     SubscriptionReportForwarder subscriptionReportForwarder;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request, String permissionData) {
+    public void handleFaReportSaving(SetFLUXFAReportOrQueryMessageRequest request) {
         mdrModuleServiceBean.loadCache();
         FLUXFAReportMessage fluxFAReportMessage;
         try {
@@ -118,7 +118,7 @@ public class FaReportSaverBean {
 
                 Map<String, String> props = new HashMap<>();
                 props.put("isPermitted", "true");
-                activityRulesProducerBean.sendMessageToSpecificQueue(permissionData, JMSUtils.lookupQueue("jms/queue/UVMSRulesPermissionEvent"), null, props);
+                activityRulesProducerBean.sendMessageToSpecificQueue(request.getPermissionData(), JMSUtils.lookupQueue("jms/queue/UVMSRulesPermissionEvent"), null, props);
             } catch (Exception e) {
                 log.error("[ERROR] Error while trying to FaReportSaverBean.handleFaReportSaving(...). Failed to save it! Going to change the state in exchange log!", e);
                 exchangeServiceBean.updateExchangeMessage(request.getExchangeLogGuid(), e);
@@ -128,7 +128,7 @@ public class FaReportSaverBean {
             try {
                 Map<String, String> props = new HashMap<>();
                 props.put("isPermitted", "false");
-                activityRulesProducerBean.sendMessageToSpecificQueue(permissionData, JMSUtils.lookupQueue("jms/queue/UVMSRulesPermissionEvent"), null, props);
+                activityRulesProducerBean.sendMessageToSpecificQueue(request.getPermissionData(), JMSUtils.lookupQueue("jms/queue/UVMSRulesPermissionEvent"), null, props);
             } catch (MessageException e) {
                 log.error("error sending permissions response to rules", e);
             }
