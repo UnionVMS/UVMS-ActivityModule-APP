@@ -43,6 +43,7 @@
 
     <movement.model.version>${uvms.movement.module.version}</movement.model.version>
     <asset.model.version>${uvms.asset.module.version}</asset.model.version>
+    <asset.rest.client.version>${uvms.asset.module.version}</asset.rest.client.version>
     <audit.model.version>${uvms.audit.module.version}</audit.model.version>
     <!-- TODO: is this needed? -->
     <uvms.test.version>0.0.4</uvms.test.version>
@@ -126,6 +127,12 @@
         <groupId>eu.europa.ec.fisheries.uvms.subscription</groupId>
         <artifactId>subscription-model</artifactId>
         <version>${subscription.model}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.asset</groupId>
+        <artifactId>asset-rest-client</artifactId>
+        <version>${asset.rest.client.version}</version>
       </dependency>
 
       <dependency>

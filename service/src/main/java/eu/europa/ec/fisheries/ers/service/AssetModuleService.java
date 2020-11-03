@@ -43,5 +43,5 @@ public interface AssetModuleService {
 
     String getAssetHistoryGuid(String assetGuid, Date occurrenceDate) throws ServiceException;
 
-    VesselIdentifiersHolder getAssetVesselIdentifiersByAssetHistoryGuid(String assetHistoryGuid) throws ServiceException;
+    VesselIdentifiersHolder getAssetVesselIdentifiersByAssetHistoryGuid(String assetHistoryGuid);
 }
