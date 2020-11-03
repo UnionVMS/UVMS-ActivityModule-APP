@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet author="nomikosi" id="Reporting-parameters-for-admin-configuration" >
+        <createTable remarks="Table as a placeholder of parameters and its values" tableName="parameter">
+            <column name="param_id" remarks="Name or code for parameter." type="VARCHAR(500)" >
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="param_description" remarks="Description of parameter or value." type="VARCHAR(500)">
+                <constraints nullable="false" />
+            </column>
+            <column name="param_value" remarks="Parameter value." type="VARCHAR(4000)" />
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="parameter"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

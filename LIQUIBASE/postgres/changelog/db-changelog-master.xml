@@ -13,4 +13,5 @@
 
   <include file="postgres/changelog/1.1.16/db-changelog-UNIONVMS-4427.xml"/>
   <include file="postgres/changelog/1.1.17/db-changelog-UNIONVMS-4863.xml"/>
+  <include file="postgres\changelog\3.4\db-changelog-UNIONVMS-4885.xml"/>
 </databaseChangeLog>
