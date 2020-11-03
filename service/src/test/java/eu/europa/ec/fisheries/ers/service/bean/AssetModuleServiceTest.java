@@ -54,7 +54,7 @@ public class AssetModuleServiceTest {
     public void testGetGuidsFromAssets(){//
         doReturn("12222-4rrr-566t-dwq11").when(assetProducer).sendModuleMessage(Mockito.anyString(), any(Destination.class));
         doReturn(null).when(activityConsumer).getMessage("12222-4rrr-566t-dwq11", TextMessage.class);
-        doReturn(new ArrayList<>()).when(assetsModuleBean).getGuidsFromAssets(Mockito.anyString());
+        doReturn(new ArrayList<>()).when(assetsModuleBean).getGuidsFromAssets(Mockito.anyList());
         assetsModuleBean.getAssetGuids("JEANNE", "test-group");
 
         // Verify
