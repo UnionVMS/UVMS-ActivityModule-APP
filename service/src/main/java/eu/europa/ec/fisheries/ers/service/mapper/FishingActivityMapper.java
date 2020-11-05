@@ -25,6 +25,8 @@ import eu.europa.ec.fisheries.ers.service.dto.FluxReportIdentifierDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.ReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivitySummary;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
@@ -431,17 +433,19 @@ public abstract class FishingActivityMapper extends BaseMapper {
      */
     protected Double getQuantity(FishingActivityEntity entity) {
         if (entity == null || entity.getFaCatchs() == null) {
-            return new Double(0);
+            return 0.0;
         }
 
-        Double quantity = new Double(0);
+        Double quantity = 0.0;
         Set<FaCatchEntity> faCatchList = entity.getFaCatchs();
 
         for (FaCatchEntity faCatch : faCatchList) {
-            if (faCatch.getCalculatedWeightMeasure() != null)
-                quantity = quantity + faCatch.getCalculatedWeightMeasure();
-
-            getQuantityFromAapProduct(faCatch, quantity);
+            Double calculatedWeightMeasure = FaCatchesProcessorMapper.getCalculatedWeightMeasure(faCatch);
+            if (FaCatchTypeEnum.UNLOADED.name().equals(faCatch.getTypeCode())) {
+                quantity -= calculatedWeightMeasure;
+            } else {
+                quantity += calculatedWeightMeasure;
+            }
         }
 
         return quantity;
