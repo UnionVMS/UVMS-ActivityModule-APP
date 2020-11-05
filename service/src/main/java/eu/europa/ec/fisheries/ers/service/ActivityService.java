@@ -40,6 +40,16 @@ public interface ActivityService {
      */
     FilterFishingActivityReportResultDTO getFishingActivityListByQuery(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException;
 
+    /**
+     * returns fishing Activity reports list based on filters as a List of strings.
+     * 
+     * @param query
+     * @param datasets
+     * @return
+     * @throws ServiceException
+     */
+    List<String> getFishingActivityListByQueryAsStringArray(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException;
+
 
     /**
      * <p>
