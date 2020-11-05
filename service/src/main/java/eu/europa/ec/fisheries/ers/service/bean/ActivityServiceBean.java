@@ -10,12 +10,27 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.ICCAT;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,7 +46,11 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
-import eu.europa.ec.fisheries.ers.service.*;
+import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
+import eu.europa.ec.fisheries.ers.service.SpatialModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FilterFishingActivityReportResultDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FishingActivityReportDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.FaReportCorrectionDTO;
@@ -47,7 +66,12 @@ import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.search.FilterMap;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FaIdsListWithTripIdMap;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityForTripIds;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingActivityWithIdentifiers;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -60,8 +84,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
-
-import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.*;
 
 
 /**
@@ -136,6 +158,42 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
         int totalCountOfRecords = getRecordsCountForFilterFishingActivityReports(query);
         log.debug("Total count of records: {} ", totalCountOfRecords);
         return createResultDTO(activityList, totalCountOfRecords);
+    }
+
+    @Override
+    public List<String> getFishingActivityListByQueryAsStringArray(FishingActivityQuery query, List<Dataset> datasets) throws ServiceException {
+        FilterFishingActivityReportResultDTO resultDTO = this.getFishingActivityListByQuery(query, datasets);
+        if(resultDTO.getResultList() != null && !resultDTO.getResultList().isEmpty()){
+            return resultDTO.getResultList().stream().map(this::getFishingActivityReportDTOAsString).collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+    
+    private String getFishingActivityReportDTOAsString(FishingActivityReportDTO dto) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(Optional.ofNullable(dto.getFAReportType()).orElse("")).append(",");
+        stringBuilder.append(Optional.ofNullable(dto.getActivityType()).orElse("")).append(",");
+        stringBuilder.append(Optional.ofNullable(dto.getPurposeCode()).orElse("")).append(",");
+        stringBuilder.append(Optional.ofNullable(dto.getDataSource()).orElse("")).append(",");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getFromId()).orElse(Collections.emptyList()))).append(",");
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+        stringBuilder.append(Optional.ofNullable(dto.getStartDate()).map(simpleDateFormat::format).orElse("")).append(",");  
+        stringBuilder.append(Optional.ofNullable(dto.getEndDate()).map(simpleDateFormat::format).orElse("")).append(",");
+        Map<String, String> vesselIdTypes = dto.getVesselIdTypes();
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(CFR.name())).orElse("")).append(",");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(IRCS.name())).orElse("")).append(",");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(EXT_MARK.name())).orElse("")).append(",");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(UVI.name())).orElse("")).append(",");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(ICCAT.name())).orElse("")).append(",");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(GFCM.name())).orElse("")).append(",");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getAreas()).orElse(Collections.emptyList()))).append(",");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getPort()).orElse(Collections.emptyList()))).append(",");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getFishingGear()).orElse(Collections.emptySet()))).append(",");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getSpeciesCode()).orElse(Collections.emptyList()))).append(",");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getQuantity()).map(String::valueOf).orElse(""))).append(",");
+        return stringBuilder.toString();
     }
 
     /**

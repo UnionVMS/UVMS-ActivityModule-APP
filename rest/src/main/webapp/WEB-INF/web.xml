@@ -44,11 +44,13 @@
  	<filter>
  		<filter-name>AuthenticationFilter</filter-name>
  		<filter-class>eu.europa.ec.fisheries.uvms.rest.security.AuthenticationFilter</filter-class>
+		<async-supported>true</async-supported>
  	</filter>
 
  	<filter>
  		<filter-name>AuthorizationFilter</filter-name>
  		<filter-class>eu.europa.ec.fisheries.uvms.rest.security.AuthorizationFilter</filter-class>
+		<async-supported>true</async-supported>
  	</filter>
  	<filter-mapping>
  		<filter-name>AuthorizationFilter</filter-name>
