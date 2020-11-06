@@ -69,7 +69,7 @@
 
         <!-- Test dependency versions -->
         <uvms.test.version>0.0.4</uvms.test.version>
-        <activemq.artemis.version>2.15.0</activemq.artemis.version>
+        <activemq.artemis.version>2.16.0</activemq.artemis.version>
         <arquillian.jacoco.version>1.1.0</arquillian.jacoco.version>
 
         <!-- Test filter -->
