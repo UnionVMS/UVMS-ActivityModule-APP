@@ -172,14 +172,14 @@ public class JasperReportServiceBean implements JasperReportService {
             String identifier = getIdentifierByOrder(identifierMap);
             gearMapper(fa,gearGrouping,matchGearTypeToFA);
             if(TRANSHIPMENT.equals(fa.getTypeCode()) || LANDING.equals(fa.getTypeCode()) || RELOCATION.equals(fa.getTypeCode())) {
-                if(isReceiverVessel(fa) && tripInfoLogBookModelList.isEmpty()){
-                    addMasterDetails(masterModel,fa);
-                    tripInfoLogBookModelList.add(calculateTripInfoList(tripInfoLogBookModel,identifier,identifierMap,fa));
+                if((isReceiverVessel(fa.getVesselTransportMeans()) || isReceiverVessel(fa.getFaReportDocument().getVesselTransportMeans())) && tripInfoLogBookModelList.isEmpty()){
+                    addMasterDetails(masterModel,fa.getVesselTransportMeans());
+                    tripInfoLogBookModelList.add(calculateTripInfoList(tripInfoLogBookModel,fa.getVesselTransportMeans()));
                 }
             }
 
             if (vesselIdentifierLogBookModelList.get(identifier) == null) {
-                createVesselIdentifierLogBookModel(vesselIdentifierLogBookModelList,masterModel,identifierMap,identifier,fa);
+                createVesselIdentifierLogBookModel(vesselIdentifierLogBookModelList,masterModel,identifierMap,identifier,fa.getFaReportDocument().getVesselTransportMeans());
             }
         }));
 
@@ -187,7 +187,6 @@ public class JasperReportServiceBean implements JasperReportService {
         String portAndCountryOfDestination = calculatePortAndCountryOfDestination(destinationList);
         logbookModel.setPorts(retrievePortLogBookModel(activities));
         logbookModel.setVesselIdentifier( new ArrayList(vesselIdentifierLogBookModelList.values()));
-        //.values().stream().sorted(Comparator.comparingInt(VesselIdentifierLogBookModel::getId)).collect(Collectors.toList()))
         logbookModel.setTripInfo(processPortLogBookModel(portAndCountryOfDestination, tripInfoLogBookModelList));
         logbookModel.setCatches(createCatchesModel(activities,matchGearTypeToFA));
         List<FishingActivityEntity> transhipmentLandingRelocList = activities.stream().filter(t -> TRANSHIPMENT.equals(t.getTypeCode()) || LANDING.equals(t.getTypeCode()) || RELOCATION.equals(t.getTypeCode())).collect(Collectors.toList());
@@ -198,18 +197,15 @@ public class JasperReportServiceBean implements JasperReportService {
         return logbookModel;
     }
 
-    private void addMasterDetails(List<MasterModel> masterModel,FishingActivityEntity fa){
+    private void addMasterDetails(List<MasterModel> masterModel,Set<VesselTransportMeansEntity> vesselTransportMeans){
         MasterModel master = new MasterModel();
-        master.setId("R");
-        master.setAddress(getMastersAddress(fa));
-        master.setMastersName(getMastersName(fa));
+        master.setId(String.valueOf(masterModel.size() + 1));
+        master.setAddress(getMastersAddress(vesselTransportMeans));
+        master.setMastersName(getMastersName(vesselTransportMeans));
         masterModel.add(master);
     }
 
     private List<TripInfoLogBookModel> processPortLogBookModel(String portAndCountryOfDestination,List<TripInfoLogBookModel> receiverList){
-        if(portAndCountryOfDestination == null){
-            return new ArrayList<>();
-        }
 
         if(receiverList.isEmpty()){
             TripInfoLogBookModel logBookModel = new TripInfoLogBookModel();
@@ -366,36 +362,33 @@ public class JasperReportServiceBean implements JasperReportService {
         return new HashMap<>();
     }
 
-    private  TripInfoLogBookModel calculateTripInfoList(TripInfoLogBookModel tripInfoLogBookModel,String identifier,Map<String,String> identifiers,FishingActivityEntity fa){
+    private  TripInfoLogBookModel calculateTripInfoList(TripInfoLogBookModel tripInfoLogBookModel,Set<VesselTransportMeansEntity> vesselTransportMeans){
 
-        tripInfoLogBookModel.setCountry(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getCountry());
-        tripInfoLogBookModel.setExtMark(getIdentifier(fa, EXT_MARK));
-        tripInfoLogBookModel.setIdentifier(identifier);
-        tripInfoLogBookModel.setImo(getIdentifier(fa, UVI));
-        tripInfoLogBookModel.setIrcs(getIdentifier(fa, IRCS));
-        tripInfoLogBookModel.setVesselName(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getName());
-        tripInfoLogBookModel.setOther((identifiers.get(GFCM) == null? "":identifiers.get(GFCM)) + " " + (identifiers.get(ICCAT) == null ? "":identifiers.get(ICCAT)));
+        tripInfoLogBookModel.setCountry(vesselTransportMeans == null || vesselTransportMeans.isEmpty() ? null : vesselTransportMeans.iterator().next().getCountry());
+        tripInfoLogBookModel.setExtMark(getIdentifier(vesselTransportMeans, EXT_MARK));
+        tripInfoLogBookModel.setIdentifier(getIdentifier(vesselTransportMeans, CFR));
+        tripInfoLogBookModel.setImo(getIdentifier(vesselTransportMeans, UVI));
+        tripInfoLogBookModel.setIrcs(getIdentifier(vesselTransportMeans, IRCS));
+        tripInfoLogBookModel.setGfcm(getIdentifier(vesselTransportMeans, GFCM));
+        tripInfoLogBookModel.setGfcm(getIdentifier(vesselTransportMeans, ICCAT));
+        tripInfoLogBookModel.setVesselName(vesselTransportMeans == null || vesselTransportMeans.isEmpty() ? null : vesselTransportMeans.iterator().next().getName());
+        tripInfoLogBookModel.setOther((tripInfoLogBookModel.getGfcm() == null? "":tripInfoLogBookModel.getGfcm()) + " " + (tripInfoLogBookModel.getIccat() == null ? "":tripInfoLogBookModel.getIccat()));
         return tripInfoLogBookModel;
     }
 
-    private void createVesselIdentifierLogBookModel( Map<String, VesselIdentifierLogBookModel> vesselIdentifierLogBookModelList,List<MasterModel> masterModelList,Map<String,String> identifiers,String identifier,FishingActivityEntity fa){
+    private void createVesselIdentifierLogBookModel( Map<String, VesselIdentifierLogBookModel> vesselIdentifierLogBookModelList,List<MasterModel> masterModelList,Map<String,String> identifiers,String identifier,Set<VesselTransportMeansEntity> vesselTransportMeans){
         VesselIdentifierLogBookModel dto = new VesselIdentifierLogBookModel();
         dto.setId(vesselIdentifierLogBookModelList.size()+1);
         dto.setCfr(identifiers.get(CFR));
-        dto.setCountry(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getCountry());
-        dto.setVesselName(fa.getFaReportDocument().getVesselTransportMeans() == null || fa.getFaReportDocument().getVesselTransportMeans().isEmpty() ? null : fa.getFaReportDocument().getVesselTransportMeans().iterator().next().getName());
-        dto.setExtMark(getIdentifier(fa, EXT_MARK));
-        dto.setIrcs(getIdentifier(fa, IRCS));
-        dto.setImo(getIdentifier(fa, UVI));
-        dto.setRole(getRole(fa));
+        dto.setCountry(vesselTransportMeans == null || vesselTransportMeans.isEmpty() ? null : vesselTransportMeans.iterator().next().getCountry());
+        dto.setVesselName(vesselTransportMeans == null || vesselTransportMeans.isEmpty() ? null : vesselTransportMeans.iterator().next().getName());
+        dto.setExtMark(getIdentifier(vesselTransportMeans, EXT_MARK));
+        dto.setIrcs(getIdentifier(vesselTransportMeans, IRCS));
+        dto.setImo(getIdentifier(vesselTransportMeans, UVI));
+        dto.setRole(getRole(vesselTransportMeans));
         dto.setOther( (identifiers.get(GFCM) == null? "":identifiers.get(GFCM)) + " " + (identifiers.get(ICCAT) == null ? "":identifiers.get(ICCAT)) );
         vesselIdentifierLogBookModelList.put(identifier, dto);
-
-        MasterModel masterModel = new MasterModel();
-        masterModel.setId(String.valueOf(masterModelList.size() + 1));
-        masterModel.setAddress(getMastersAddress(fa));
-        masterModel.setMastersName(getMastersName(fa));
-        masterModelList.add(masterModel);
+        addMasterDetails(masterModelList,vesselTransportMeans);
     }
 
     private String getIdentifierByOrder(Map<String,String> identifiers){
@@ -405,8 +398,8 @@ public class JasperReportServiceBean implements JasperReportService {
         return cfr == null ? gfcm == null ? iccat : gfcm : cfr;
     }
 
-    private boolean isReceiverVessel(FishingActivityEntity fa){
-        for(VesselTransportMeansEntity vesselTransportMeansEntity:fa.getVesselTransportMeans()) {
+    private boolean isReceiverVessel(Set<VesselTransportMeansEntity> vesselTransportMeans){
+        for(VesselTransportMeansEntity vesselTransportMeansEntity:vesselTransportMeans) {
             if(RECEIVER.equals(vesselTransportMeansEntity.getRoleCode())){
                 return true;
             }
@@ -414,14 +407,13 @@ public class JasperReportServiceBean implements JasperReportService {
         return false;
     }
 
-    private String getRole(FishingActivityEntity fa){
+    private String getRole(Set<VesselTransportMeansEntity> vesselTransportMeans){
 
-        if(fa.getVesselTransportMeans() == null || fa.getVesselTransportMeans().isEmpty()){
+        if(vesselTransportMeans == null  ) {
             return null;
         }
 
-        Set<VesselTransportMeansEntity> transportMeansEntitySet = fa.getVesselTransportMeans();
-        for(VesselTransportMeansEntity transportMeansEntity:transportMeansEntitySet){
+        for(VesselTransportMeansEntity transportMeansEntity:vesselTransportMeans){
             String roleCode = transportMeansEntity.getRoleCode();
             if(PAIR_FISHING_PARTNER.equals(roleCode) || PARTICIPATING_VESSEL.equals(roleCode)){
                 return P;
@@ -438,11 +430,11 @@ public class JasperReportServiceBean implements JasperReportService {
         return null;
     }
 
-    private String getMastersAddress(FishingActivityEntity fa){
-        StructuredAddressEntity structuredAddressEntity = fa.getVesselTransportMeans() == null || fa.getVesselTransportMeans().isEmpty() ?
-                null : fa.getVesselTransportMeans().iterator().next().getContactParty() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().isEmpty() ?
-                null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses().isEmpty() ?
-                null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getStructuredAddresses().iterator().next();
+    private String getMastersAddress(Set<VesselTransportMeansEntity> vesselTransportMeans){
+        StructuredAddressEntity structuredAddressEntity = vesselTransportMeans == null || vesselTransportMeans.isEmpty() ?
+                null : vesselTransportMeans.iterator().next().getContactParty() == null || vesselTransportMeans.iterator().next().getContactParty().isEmpty() ?
+                null : vesselTransportMeans.iterator().next().getContactParty().iterator().next().getStructuredAddresses() == null || vesselTransportMeans.iterator().next().getContactParty().iterator().next().getStructuredAddresses().isEmpty() ?
+                null : vesselTransportMeans.iterator().next().getContactParty().iterator().next().getStructuredAddresses().iterator().next();
 
         if(structuredAddressEntity == null){
             return null;
@@ -451,11 +443,11 @@ public class JasperReportServiceBean implements JasperReportService {
         return  this.isNotNullAppend(structuredAddressEntity.getCityName()) + this.isNotNullAppend(structuredAddressEntity.getStreetName()) + this.isNotNullAppend(structuredAddressEntity.getPostalAreaValue()) + this.isNotNullAppend(structuredAddressEntity.getCountryName());
     }
 
-    private String getMastersName(FishingActivityEntity fa){
-        return fa.getVesselTransportMeans() == null || fa.getVesselTransportMeans().isEmpty() ?
-                null : fa.getVesselTransportMeans().iterator().next().getContactParty() == null || fa.getVesselTransportMeans().iterator().next().getContactParty().isEmpty() ?
-                null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getContactPerson() == null  ?
-                null : fa.getVesselTransportMeans().iterator().next().getContactParty().iterator().next().getContactPerson().getGivenName();
+    private String getMastersName(Set<VesselTransportMeansEntity> vesselTransportMeans){
+        return vesselTransportMeans == null || vesselTransportMeans.isEmpty() ?
+                null : vesselTransportMeans.iterator().next().getContactParty() == null || vesselTransportMeans.iterator().next().getContactParty().isEmpty() ?
+                null : vesselTransportMeans.iterator().next().getContactParty().iterator().next().getContactPerson() == null  ?
+                null : vesselTransportMeans.iterator().next().getContactParty().iterator().next().getContactPerson().getGivenName();
     }
 
     private String isNotNullAppend(String s){
@@ -465,9 +457,14 @@ public class JasperReportServiceBean implements JasperReportService {
         else return  s + " ";
     }
 
-    private String getIdentifier(FishingActivityEntity fishingActivityEntity, String identifierType){
+    private String getIdentifier(Set<VesselTransportMeansEntity> vesselTransportMeans, String identifierType){
+
+
+        if(vesselTransportMeans.isEmpty()){
+            return null;
+        }
         Set<VesselIdentifierEntity> identifierEntitySet = new HashSet<>();
-        fishingActivityEntity.getFaReportDocument().getVesselTransportMeans().forEach( z-> identifierEntitySet.addAll(z.getVesselIdentifiers()));
+        vesselTransportMeans.forEach( z-> identifierEntitySet.addAll(z.getVesselIdentifiers()));
 
         for(VesselIdentifierEntity vesselIdentifier:identifierEntitySet){
             if(identifierType.equals(vesselIdentifier.getVesselIdentifierSchemeId())){
@@ -478,7 +475,7 @@ public class JasperReportServiceBean implements JasperReportService {
         return null;
     }
 
-    public List<TranshipmentLandingModel> createTranshipmentLanding(List<FishingActivityEntity> faList){
+    private List<TranshipmentLandingModel> createTranshipmentLanding(List<FishingActivityEntity> faList){
 
         if(faList.isEmpty()){
             return new ArrayList<>();
@@ -673,16 +670,24 @@ public class JasperReportServiceBean implements JasperReportService {
            weight = faCatch.getWeightMeasure() == null ? 0 : faCatch.getWeightMeasure();
 
            if(LSC.equals(faCatch.getFishClassCode())) {
-               model.setWeightLSC(model.getWeightLSC() + weight);
-               model.setNbLSC(model.getNbLSC() +unitQuantity);
+               model.setWeightLSC(model.getWeightLSC() + addOrSubtractValue(faCatch.getTypeCode(),weight));
+               model.setNbLSC(model.getNbLSC() + addOrSubtractValue(faCatch.getTypeCode(),unitQuantity));
            }
            if(BMS.equals(faCatch.getFishClassCode())){
-               model.setWeightBMS(model.getWeightBMS() + weight);
-               model.setNbBMS(model.getNbBMS() + weight);
+               model.setWeightBMS(model.getWeightBMS() + addOrSubtractValue(faCatch.getTypeCode(),weight));
+               model.setNbBMS(model.getNbBMS() + addOrSubtractValue(faCatch.getTypeCode(),unitQuantity));
            }
         }
     }
 
+    private double addOrSubtractValue(String typeCode,double value){
+        if("UNLOADED".equals(typeCode)){
+            return -value;
+        }
+
+        return value;
+
+    }
 
     private void calculateFishingTimeLocationAndGears(List<FishingActivityEntity> activityEntities, FACatchModel model,Map<Integer,Integer> matchGearTypeToFA){
        Set<String> gears = new HashSet<>();

@@ -26,6 +26,8 @@ public class TripInfoLogBookModel {
     private String extMark;
     private String ircs;
     private String imo;
+    private String gfcm;
+    private String iccat;
     private String destination;
     private String other;
 }
