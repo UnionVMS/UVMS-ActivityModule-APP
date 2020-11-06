@@ -211,38 +211,38 @@
                 </staticText>
             </frame>
             <componentElement>
-                <reportElement x="-18" y="-19" width="400" height="19" uuid="3a8deaef-3976-44f9-83f4-4753dbb62794"/>
+                <reportElement x="-18" y="-19" width="608" height="19" uuid="3a8deaef-3976-44f9-83f4-4753dbb62794"/>
                 <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
                     <datasetRun subDataset="HeaderDataSet" uuid="3a676aa6-f038-4c1a-8e76-fd057f9c35ae">
                         <dataSourceExpression><![CDATA[$P{HeaderParam}]]></dataSourceExpression>
                     </datasetRun>
-                    <jr:listContents height="19" width="400">
+                    <jr:listContents height="19" width="608">
                         <textField>
-                            <reportElement x="278" y="0" width="92" height="19" uuid="479ca673-d78f-4f42-9e2b-b201e6d9c546"/>
-                            <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                            <reportElement x="503" y="0" width="105" height="19" uuid="479ca673-d78f-4f42-9e2b-b201e6d9c546"/>
+                            <textElement textAlignment="Left" verticalAlignment="Middle"/>
                             <textFieldExpression><![CDATA[$F{generationDate}]]></textFieldExpression>
                         </textField>
                         <textField>
-                            <reportElement x="34" y="0" width="166" height="19" uuid="06771919-7b21-4b67-ab21-5bd1401e86c5"/>
-                            <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                            <reportElement x="42" y="0" width="353" height="19" uuid="06771919-7b21-4b67-ab21-5bd1401e86c5"/>
+                            <textElement textAlignment="Left" verticalAlignment="Middle"/>
                             <textFieldExpression><![CDATA[$F{tripId}]]></textFieldExpression>
                         </textField>
                     </jr:listContents>
                 </jr:list>
             </componentElement>
             <frame>
-                <reportElement x="-20" y="1" width="825" height="60" uuid="515eb66a-5171-4f83-b1f3-dcdbf5cea9a9">
+                <reportElement x="-20" y="1" width="840" height="60" uuid="515eb66a-5171-4f83-b1f3-dcdbf5cea9a9">
                     <property name="com.jaspersoft.studio.unit.height" value="px"/>
                 </reportElement>
                 <componentElement>
-                    <reportElement x="561" y="4" width="264" height="14" uuid="a1e6ca01-0e87-4b5e-9849-ee9e25b7d692">
+                    <reportElement x="561" y="4" width="279" height="14" uuid="a1e6ca01-0e87-4b5e-9849-ee9e25b7d692">
                         <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
                     </reportElement>
                     <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
                         <datasetRun subDataset="PortDataSet" uuid="a3b6932d-6c98-48b0-854b-170c897e9b70">
                             <dataSourceExpression><![CDATA[$P{PortParam}]]></dataSourceExpression>
                         </datasetRun>
-                        <jr:listContents height="14" width="264">
+                        <jr:listContents height="14" width="279">
                             <textField isBlankWhenNull="true">
                                 <reportElement x="7" y="0" width="83" height="14" uuid="48c1eb80-76e4-4a83-993c-310908e584a2"/>
                                 <textFieldExpression><![CDATA[($F{activityType} == null)? "N/A":$F{activityType}]]></textFieldExpression>
@@ -252,7 +252,7 @@
                                 <textFieldExpression><![CDATA[($F{port} == null)? "N/A":$F{port}]]></textFieldExpression>
                             </textField>
                             <textField isBlankWhenNull="true">
-                                <reportElement x="187" y="0" width="77" height="14" uuid="5361e51e-01b4-405a-ab1a-8e8087b2a464"/>
+                                <reportElement x="187" y="0" width="92" height="14" uuid="5361e51e-01b4-405a-ab1a-8e8087b2a464"/>
                                 <textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
                             </textField>
                         </jr:listContents>
@@ -283,7 +283,7 @@
                                 <textFieldExpression><![CDATA[($F{country}== null)? "N/A":$F{country}]]></textFieldExpression>
                             </textField>
                             <textField isBlankWhenNull="true">
-                                <reportElement x="279" y="0" width="68" height="18" uuid="67a37b93-fc98-4e4f-8fff-5a74d79cebb7"/>
+                                <reportElement x="279" y="0" width="81" height="18" uuid="67a37b93-fc98-4e4f-8fff-5a74d79cebb7"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[($F{cfr}== null)? "N/A":$F{cfr}]]></textFieldExpression>
                             </textField>
@@ -298,7 +298,7 @@
                                 <textFieldExpression><![CDATA[($F{ircs} == null)? "N/A" : $F{ircs}]]></textFieldExpression>
                             </textField>
                             <textField isBlankWhenNull="true">
-                                <reportElement x="347" y="0" width="50" height="18" uuid="5cd7cc96-20ca-4608-9b6e-023207e745b3"/>
+                                <reportElement x="349" y="0" width="50" height="18" uuid="5cd7cc96-20ca-4608-9b6e-023207e745b3"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
                                 <textFieldExpression><![CDATA[($F{imo} == null)? "N/A" : $F{imo}]]></textFieldExpression>
                             </textField>
@@ -327,7 +327,7 @@
                     <text><![CDATA[TripId:]]></text>
                 </staticText>
                 <staticText>
-                    <reportElement x="215" y="-20" width="70" height="19" uuid="ff79e75e-ac69-4286-a4fa-3b6e134f740d"/>
+                    <reportElement x="434" y="-20" width="70" height="19" uuid="ff79e75e-ac69-4286-a4fa-3b6e134f740d"/>
                     <textElement textAlignment="Center" verticalAlignment="Middle"/>
                     <text><![CDATA[Generated on:]]></text>
                 </staticText>
@@ -339,7 +339,7 @@
                     <property name="com.jaspersoft.studio.unit.y" value="pixel"/>
                 </reportElement>
                 <staticText>
-                    <reportElement x="26" y="0" width="40" height="33" uuid="0b50a678-38a8-4327-93ff-5c92a37b7a3a"/>
+                    <reportElement x="22" y="0" width="40" height="33" uuid="0b50a678-38a8-4327-93ff-5c92a37b7a3a"/>
                     <textElement textAlignment="Left" verticalAlignment="Middle"/>
                     <text><![CDATA[Receiver]]></text>
                 </staticText>
@@ -350,7 +350,7 @@
                     </reportElement>
                 </line>
                 <line>
-                    <reportElement x="70" y="1" width="1" height="32" uuid="cd8f39b5-2f06-4aa1-b8ec-b6bb0c68a4ca"/>
+                    <reportElement x="63" y="1" width="1" height="32" uuid="cd8f39b5-2f06-4aa1-b8ec-b6bb0c68a4ca"/>
                 </line>
                 <line>
                     <reportElement x="559" y="1" width="1" height="32" uuid="24adbbde-5993-446b-8551-7a3812cef71f">
@@ -369,7 +369,7 @@
                             <textField>
                                 <reportElement x="0" y="0" width="80" height="30" uuid="88d34356-18aa-4191-a2ef-407ae60b64f2"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{vesselName}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{vesselName} == null)? "N/A" : $F{vesselName}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement x="80" y="0" width="28" height="30" uuid="fbafacee-ddb5-45dd-9bfa-14b6f05bf007"/>
@@ -679,7 +679,7 @@
                     </reportElement>
                 </line>
                 <line>
-                    <reportElement stretchType="ContainerHeight" x="556" y="0" width="1" height="101" uuid="bb9b873c-d476-4c53-ac36-9338aa653623">
+                    <reportElement stretchType="ContainerHeight" x="560" y="1" width="1" height="98" uuid="bb9b873c-d476-4c53-ac36-9338aa653623">
                         <property name="com.jaspersoft.studio.unit.width" value="px"/>
                     </reportElement>
                 </line>
@@ -953,62 +953,62 @@
                             <textField>
                                 <reportElement positionType="Float" x="5" y="0" width="40" height="21" uuid="57e5337a-2237-4e20-89e0-1c5200043b5b"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{faoArea}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{faoArea} == null)? "N/A" : $F{faoArea}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="56" y="0" width="33" height="21" uuid="f88d756c-93af-4ed7-8080-e56bafbda38a"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{gfcmArea}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{gfcmArea} == null)? "N/A" : $F{gfcmArea}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="100" y="0" width="36" height="21" uuid="92b16e5e-d725-4b1a-9d1e-6468a3270c72"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{statRect}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{statRect} == null)? "N/A" : $F{statRect}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="149" y="0" width="47" height="21" uuid="15312f61-346b-4957-9b6d-31376b303835"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{eez}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{eez} == null)? "N/A" : $F{eez}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="211" y="0" width="35" height="21" uuid="d65c690e-6e91-4990-8497-fa9a1d2da207"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{species}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{species} == null)? "N/A" : $F{species}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="250" y="0" width="32" height="21" uuid="7fc9feac-4677-40e5-9ba2-b24aec5138e0"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{presentation}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{presentation} == null)? "N/A" : $F{presentation}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="310" y="0" width="30" height="21" uuid="c787f520-c95f-461c-9d94-771b93f3c165"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{weightLSC}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{weightLSC} == null)? "N/A" : $F{weightLSC}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="340" y="0" width="36" height="21" uuid="2f95cb4e-9f47-4ff2-adc8-8b7fba1ef55e"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{nbLSC}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{nbLSC} == null)? "N/A" : $F{nbLSC}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="376" y="0" width="47" height="21" uuid="c0e14a27-13a4-488b-9505-d5311dff5a11"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{weightBMS}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{weightBMS} == null)? "N/A" : $F{weightBMS}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="423" y="0" width="47" height="21" uuid="533f084e-ee04-4b71-9b8f-98aa0fc975eb"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{nbBMS}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{nbBMS} == null)? "N/A" : $F{nbBMS}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="470" y="0" width="47" height="21" uuid="c7907291-6acc-44d9-87b4-0b3c66b9a7d7"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{weightTotal}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{weightTotal} == null)? "N/A" : $F{weightTotal}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement positionType="Float" x="517" y="0" width="47" height="21" uuid="3ed1d586-52b9-49ed-a4dc-309d9b43a5d3"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{nbTotal}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{nbTotal} == null)? "N/A" : $F{nbTotal}]]></textFieldExpression>
                             </textField>
                         </jr:listContents>
                     </jr:list>
