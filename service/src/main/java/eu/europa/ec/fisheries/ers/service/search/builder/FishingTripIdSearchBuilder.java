@@ -53,7 +53,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
     private static final String PERIOD_START_SELECT = ", a";
     private static final String FLAG_STATE_SELECT = ", a";
     private static final String FISHING_TRIP_JOIN = " from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
-    private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ftripId) from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
+    private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ftripId.tripId) from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
 
     /**
      * For some usecases we need different database column mappings for same filters.
@@ -78,6 +78,16 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         boolean isSorted = Optional.ofNullable(query.getSorting()).map(SortKey::getSortBy).isPresent();
 
         prepareSelect(sql,isActivityTrip, isSorted ? query.getSorting().isReversed():false);
+
+        if (isActivityTrip) {
+            SortKey sort = query.getSorting();
+            if (sort != null && sort.getSortBy() != null) {
+                SearchFilter field = sort.getSortBy();
+                String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
+                sql.append(" , ").append(sortFieldMapping).append(" ");
+            }
+        }
+
         if(isSorted && !isActivityTrip) {
             updateSQLQueryFilter(query,sql); // Add Order by clause for only requested Sort field
         }
@@ -131,7 +141,8 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         StringBuilder sql = new StringBuilder();
         sql.append(FISHING_TRIP_COUNT_JOIN); // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
-        createWherePartForQuery(sql, query);  // Add Where part associated with Filters
+        createWherePartForQuery(sql, query); // Add Where part associated with Filters
+
         LOG.info("sql :" + sql);
         return sql;
     }

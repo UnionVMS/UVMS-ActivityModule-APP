@@ -134,6 +134,12 @@ public class FilterMap {
         filterSortMappings.put(SearchFilter.FA_STATUS, "fa.status");
         filterSortMappings.put(SearchFilter.TRIP_ID, "ftripid.tripId");
         filterSortMappings.put(SearchFilter.FLAG_STATE, "a.flagState");
+        filterSortMappings.put(SearchFilter.CFR, "a.cfr");
+        filterSortMappings.put(SearchFilter.ICCAT, "a.iccat");
+        filterSortMappings.put(SearchFilter.IRCS, "a.ircs");
+        filterSortMappings.put(SearchFilter.EXT_MARK, "a.extMark");
+        filterSortMappings.put(SearchFilter.GFCM, "a.gfcm");
+        filterSortMappings.put(SearchFilter.UVI, "a.uvi");
     }
 
     /**
