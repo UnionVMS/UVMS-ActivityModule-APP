@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import javax.naming.InitialContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -25,29 +26,38 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.ers.service.dto.view.GearShotRetrievalDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.ActivityArrivalViewMapper;
-import eu.europa.ec.fisheries.ers.service.mapper.view.GearShotRetrievalTileMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.JointFishingOperationViewMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewEnum;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.ActivityViewMapperFactory;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import eu.europa.ec.fisheries.ers.service.mdrcache.MDRCache;
 import lombok.SneakyThrows;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
 import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getFishingActivity;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
 
 /**
  * Created by kovian on 09/02/2017.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class FishingActivityViewMapperTest {
 
     FishingActivityEntity fishingActivity;
@@ -75,8 +85,6 @@ public class FishingActivityViewMapperTest {
         assertNotNull(fishingActivityViewDTO.getReportDetails());
         assertTrue(fishingActivityViewDTO.getGears().size() == 1);
         assertNull(mapperForView.mapFaEntityToFaDto(null));
-
-//        printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Arrival.class);
     }
 
 
@@ -95,13 +103,11 @@ public class FishingActivityViewMapperTest {
         assertNotNull(fishingActivityViewDTO.getActivityDetails());
         assertNotNull(fishingActivityViewDTO.getReportDetails());
         assertNull(ActivityArrivalViewMapper.INSTANCE.mapFaEntityToFaDto(null));
-
-        // printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.Landing.class);
     }
 
     @Test
     @SneakyThrows
-         public void testActivityDepartureViewMapper() {
+    public void testActivityDepartureViewMapper() {
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.DEPARTURE);
         FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
 
@@ -137,30 +143,48 @@ public class FishingActivityViewMapperTest {
         FishingActivityEntity fishingActivityEntity1 = getFishingActivityEntity();
         Set<FishingActivityEntity> fishingActivityEntity = new HashSet<>();
         fishingActivityEntity.add(fishingActivityEntity1);
-        List<GearShotRetrievalDto> fishingActivityViewDTO = GearShotRetrievalTileMapper.INSTANCE.mapEntityListToDtoList(fishingActivityEntity);
-        // printDtoOnConsole(fishingActivityViewDTO, FishingActivityView.CommonView.class);
     }
 
     @Test
-    @SneakyThrows
-    public void testActivityJointFishingOperationViewMapper() {
-        FishingActivity fishingActivity = getFishingActivity();
-        FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, new FishingActivityEntity());
-        fishingActivityEntity.setTypeCode("JOINT_FISHING_OPERATION");
-        fishingActivityEntity.getAllRelatedFishingActivities().iterator().next().setTypeCode("RELOCATION");
-        fishingActivityEntity.getFaCatchs().iterator().next().setId(1);
-        JointFishingOperationViewMapper mapper = new JointFishingOperationViewMapper();
-        FishingActivityViewDTO dto = mapper.mapFaEntityToFaDto(fishingActivityEntity);
-        assertNotNull(dto);
-        assertNotNull(dto.getActivityDetails());
-        assertNotNull(dto.getCatches());
-        assertNotNull(dto.getGears());
-        assertNotNull(dto.getGearProblems());
-        assertNotNull(dto.getVesselDetails());
-        assertNotNull(dto.getRelocations());
-        assertNotNull(dto.getProcessingProducts());
-        assertNotNull(dto.getLocations());
+    public void test() {
+        JUnitCore.runClasses(SubTestWithRunner.class);
     }
+
+    @RunWith(PowerMockRunner.class)
+    public static class SubTestWithRunner {
+
+        @InjectMocks
+        protected MDRCache mdrCache;
+
+        @Test
+        @SneakyThrows
+        @PrepareForTest(FaCatchesProcessorMapper.class)
+        public void testActivityJointFishingOperationViewMapper() {
+
+            InitialContext initialContext = PowerMockito.mock(InitialContext.class);
+
+            PowerMockito.whenNew(InitialContext.class).withNoArguments().thenReturn(initialContext);
+            PowerMockito.when(initialContext.lookup(anyString())).thenReturn(mdrCache);
+
+            FishingActivity fishingActivity = getFishingActivity();
+            FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, new FishingActivityEntity());
+            fishingActivityEntity.setTypeCode("JOINT_FISHING_OPERATION");
+            fishingActivityEntity.getAllRelatedFishingActivities().iterator().next().setTypeCode("RELOCATION");
+            fishingActivityEntity.getFaCatchs().iterator().next().setId(1);
+            JointFishingOperationViewMapper mapper = new JointFishingOperationViewMapper();
+            FishingActivityViewDTO dto = mapper.mapFaEntityToFaDto(fishingActivityEntity);
+            assertNotNull(dto);
+            assertNotNull(dto.getActivityDetails());
+            assertNotNull(dto.getCatches());
+            assertNotNull(dto.getGears());
+            assertNotNull(dto.getGearProblems());
+            assertNotNull(dto.getVesselDetails());
+            assertNotNull(dto.getRelocations());
+            assertNotNull(dto.getProcessingProducts());
+            assertNotNull(dto.getLocations());
+        }
+    }
+
 
     @SneakyThrows
     private Set<FaCatchEntity> generateFaCatches(FaCatchEntity faCatchExample) {
