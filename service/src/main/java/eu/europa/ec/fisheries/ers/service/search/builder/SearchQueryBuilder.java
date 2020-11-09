@@ -258,6 +258,7 @@ public abstract class SearchQueryBuilder {
         if(query.getShowOnlyLatest() != null){
             sql.append(" a.latest=:latest ").append(" and ");
         }
+
         int i = 0;
         for (SearchFilter key : keySet) {
             if (!appendWhereQueryPart(sql, filterMappings, keySet, i, key)) {
@@ -313,6 +314,12 @@ public abstract class SearchQueryBuilder {
         SortKey sort = query.getSorting();
         if (sort != null && sort.getSortBy() != null) {
             SearchFilter field = sort.getSortBy();
+            String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
+
+            if (isActivityTrip) {
+                sql.append(" , ").append(sortFieldMapping).append(" ");
+            }
+
             if (SearchFilter.PERIOD_END.equals(field)) {
                 getSqlForStartAndEndDateSorting(sql, field, query);
             }
@@ -320,24 +327,21 @@ public abstract class SearchQueryBuilder {
                 getMaxEndDate(sql, field, query);
             }
             StringBuilder orderBy =new StringBuilder();
-            if(isActivityTrip){
-                orderBy.append( " timeout ");
-            }
+
             if (sort.isReversed()) {
                 orderBy.append(" DESC NULLS LAST");
             } else {
                 orderBy.append(" ASC ");
             }
-            String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
+
             if (sortFieldMapping == null) {
                 throw new ServiceException("Information about which database field to be used for sorting is unavailable");
             }
+
             sql.append(" order by ");
-            if(isActivityTrip){
-                sql.append(orderBy);
-            } else{
-                sql.append(sortFieldMapping);
-            }
+            sql.append(sortFieldMapping);
+            sql.append(orderBy);
+
         } else {
             sql.append(" order by fa.acceptedDatetime ASC ");
         }
