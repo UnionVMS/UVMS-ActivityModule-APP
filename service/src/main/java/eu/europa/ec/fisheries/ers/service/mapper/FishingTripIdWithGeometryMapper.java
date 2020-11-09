@@ -152,17 +152,31 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         if (CollectionUtils.isEmpty(vesselTransportMeansEntityList) || CollectionUtils.isEmpty(vesselTransportMeansEntityList.iterator().next().getVesselIdentifiers())) {
             return Collections.emptyList();
         }
-        Set<VesselIdentifierEntity> vesselIdentifierEntities = vesselTransportMeansEntityList.iterator().next().getVesselIdentifiers();
         List<VesselIdentifierType> vesselIdentifierTypes = new ArrayList<>();
 
-        if (CollectionUtils.isNotEmpty(vesselIdentifierEntities)) {
-            for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifierEntities) {
-                VesselIdentifierType vesselIdentifierType = new VesselIdentifierType();
-                vesselIdentifierType.setKey(VesselIdentifierSchemeIdEnum.valueOf(vesselIdentifierEntity.getVesselIdentifierSchemeId()));
-                vesselIdentifierType.setValue(vesselIdentifierEntity.getVesselIdentifierId());
-                vesselIdentifierTypes.add(vesselIdentifierType);
-            }
-        }
+        Optional.ofNullable(fishingActivityEntity.getCfr())
+                .map(cfr -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("CFR"), cfr))
+                .ifPresent(vesselIdentifierTypes::add);
+
+        Optional.ofNullable(fishingActivityEntity.getExtMark())
+                .map(extMark -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("EXT_MARK"), extMark))
+                .ifPresent(vesselIdentifierTypes::add);
+
+        Optional.ofNullable(fishingActivityEntity.getIccat())
+                .map(iccat -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("ICCAT"), iccat))
+                .ifPresent(vesselIdentifierTypes::add);
+
+        Optional.ofNullable(fishingActivityEntity.getIrcs())
+                .map(ircs -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("IRCS"), ircs))
+                .ifPresent(vesselIdentifierTypes::add);
+
+        Optional.ofNullable(fishingActivityEntity.getUvi())
+                .map(uvi -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("UVI"), uvi))
+                .ifPresent(vesselIdentifierTypes::add);
+
+        Optional.ofNullable(fishingActivityEntity.getGfcm())
+                .map(gfcm -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("GFCM"), gfcm))
+                .ifPresent(vesselIdentifierTypes::add);
 
         return vesselIdentifierTypes;
     }
@@ -268,11 +282,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
         }
         int totalFishingActivityCount = fishingActivities.size();
         FishingActivityEntity fishingActivityEntity = fishingActivities.get(totalFishingActivityCount - 1);
-        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = fishingActivityEntity.getFaReportDocument().getVesselTransportMeans();
-        if (CollectionUtils.isEmpty(vesselTransportMeansEntityList)) {
-            return null;
-        }
-        return vesselTransportMeansEntityList.iterator().next().getCountry();
+        return fishingActivityEntity.getFlagState();
     }
 
     private int getNumberOfCorrectionsForFishingActivities(List<FishingActivityEntity> fishingActivities) {

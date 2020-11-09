@@ -237,6 +237,24 @@ public abstract class FishingActivityMapper extends BaseMapper {
         Set<VesselTransportMeansEntity> vesselTransportMeansEntities = new HashSet<>();
         for (VesselTransportMeans vesselTransportMeans : vesselList) {
             VesselTransportMeansEntity vesselTransportMeansEntity = VesselTransportMeansMapper.INSTANCE.mapToVesselTransportMeansEntity(vesselTransportMeans);
+            if (vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.IRCS) != null) {
+                fishingActivityEntity.setIrcs(vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.IRCS));
+            }
+            if (vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.CFR) != null) {
+                fishingActivityEntity.setCfr(vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.CFR));
+            }
+            if (vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.ICCAT) != null) {
+                fishingActivityEntity.setIccat(vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.ICCAT));
+            }
+            if (vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.UVI) != null) {
+                fishingActivityEntity.setUvi(vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.UVI));
+            }
+            if (vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.GFCM) != null) {
+                fishingActivityEntity.setGfcm(vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.GFCM) );
+            }
+            if (vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.EXT_MARK) != null) {
+                fishingActivityEntity.setExtMark(vesselTransportMeansEntity.getVesselIdentifiersMap().get(VesselIdentifierSchemeIdEnum.EXT_MARK));
+            }
             vesselTransportMeansEntity.setFaReportDocument(faReportDocumentEntity);
             vesselTransportMeansEntity.setFishingActivity(fishingActivityEntity);
             vesselTransportMeansEntities.add(vesselTransportMeansEntity);
@@ -372,14 +390,31 @@ public abstract class FishingActivityMapper extends BaseMapper {
             return Collections.emptyMap();
         }
         Map<String, String> vesselTransportIdList = new HashMap<>();
-        /*
-            We can assume that FaReportDocument will always have only one VesselTransportMeans.One to many relation is artificially created
-         */
-        Set<VesselIdentifierEntity> identifierList = entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers();
 
-        for (VesselIdentifierEntity identity : identifierList) {
-            vesselTransportIdList.put(identity.getVesselIdentifierSchemeId(), identity.getVesselIdentifierId());
+        if (entity.getCfr() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.CFR.value(), entity.getCfr());
         }
+
+        if (entity.getIrcs() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.IRCS.value(), entity.getIrcs());
+        }
+
+        if (entity.getExtMark() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.EXT_MARK.value(), entity.getExtMark());
+        }
+
+        if (entity.getIccat() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.ICCAT.value(), entity.getIccat());
+        }
+
+        if (entity.getUvi() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.UVI.value(), entity.getUvi());
+        }
+
+        if (entity.getGfcm() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.GFCM.value(), entity.getGfcm());
+        }
+
         return vesselTransportIdList;
     }
 
@@ -393,6 +428,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
         for (VesselIdentifierEntity identity : identifierList) {
             identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf(identity.getVesselIdentifierSchemeId()), identity.getVesselIdentifierId()));
         }
+
         return identifiers;
     }
 
