@@ -19,7 +19,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Set;;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
@@ -155,8 +155,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         log.debug("SQL:" + sqlToGetActivityList);
         Query typedQuery = em.createQuery(sqlToGetActivityList.toString());
         Query query = search.fillInValuesForTypedQuery(queryDto, typedQuery);
-        Long nrOfFa = (Long) query.getResultList().get(0);
-        return nrOfFa.intValue();
+        return ((Long) query.getResultList().get(0)).intValue();
 
     }
 

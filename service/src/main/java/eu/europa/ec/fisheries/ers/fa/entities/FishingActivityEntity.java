@@ -162,6 +162,24 @@ public class FishingActivityEntity implements Serializable {
 	@Column(name="deleted_by")
 	private Integer deletedBy;
 
+	@Column(name = "cfr")
+	private String cfr;
+
+	@Column(name = "ircs")
+	private String ircs;
+
+	@Column(name="ext_mark")
+	private String extMark;
+
+	@Column(name="iccat")
+	private String iccat;
+
+	@Column(name="uvi")
+	private String uvi;
+
+	@Column(name="gfcm")
+	private String gfcm;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_start_time", length = 29)
 	private Date calculatedStartTime;
