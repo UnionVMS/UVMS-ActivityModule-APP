@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+	<changeSet id="UNIONVMS-4863" author="tprotopapas">
+		<addColumn  tableName="activity_fishing_activity">
+			<column name="cfr" type="VARCHAR"/>
+			<column name="ircs" type="VARCHAR"/>
+			<column name="iccat" type="VARCHAR"/>
+			<column name="ext_mark" type="VARCHAR"/>
+			<column name="gfcm" type="VARCHAR"/>
+			<column name="uvi" type="VARCHAR"/>
+		</addColumn>
+		<rollback />
+	</changeSet>
+
+	<changeSet id="UNIONVMS-4863-patch" author="tprotopapas">
+		<sqlFile path="db-changelog-UNIONVMS-4863-patch.sql" relativeToChangelogFile="true" encoding="utf8" />
+		<rollback />
+	</changeSet>
+
+</databaseChangeLog>
