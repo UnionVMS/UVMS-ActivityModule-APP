@@ -230,7 +230,7 @@ public abstract class BaseActivityViewMapper extends BaseMapper {
     }
 
     protected Set<FaCatchGroupDto> mapCatchesToGroupDto(FishingActivityEntity faEntity) {
-        return FaCatchesProcessorMapper.getCatchGroupsFromListEntity(faEntity.getFaCatchs());
+        return FaCatchesProcessorMapper.getCatchGroupsFromListEntity(faEntity);
     }
 
 }

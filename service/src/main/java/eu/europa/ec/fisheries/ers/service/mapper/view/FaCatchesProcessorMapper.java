@@ -16,6 +16,7 @@ import javax.naming.NamingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,15 +76,16 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     /**
      * Takes a list of FaCatches and returns the list of groupDtos.
      *
-     * @param faCatches
+     * @param faEntity
      * @return List<FaCatchGroupDto>
      */
-    public static Set<FaCatchGroupDto> getCatchGroupsFromListEntity(Set<FaCatchEntity> faCatches) {
+    public static Set<FaCatchGroupDto> getCatchGroupsFromListEntity(FishingActivityEntity faEntity) {
+        Set<FaCatchEntity> faCatches = faEntity.getFaCatchs();
         if (CollectionUtils.isEmpty(faCatches)) {
             return new HashSet<>();
         }
         Map<String, Set<FaCatchEntity>> faCatchGroups = groupCatches(faCatches);
-        return computeSumsAndMapToDtoGroups(faCatchGroups);
+        return computeSumsAndMapToDtoGroups(faCatchGroups, faEntity);
     }
 
     /**
@@ -129,11 +131,12 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
      * @param faCatchGroups
      * @return
      */
-    private static Set<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, Set<FaCatchEntity>> faCatchGroups) {
+    private static Set<FaCatchGroupDto> computeSumsAndMapToDtoGroups(Map<String, Set<FaCatchEntity>> faCatchGroups, FishingActivityEntity faEntity) {
         Set<FaCatchGroupDto> faCatchGroupsDtoList = new HashSet<>();
         for (Map.Entry<String, Set<FaCatchEntity>> group : faCatchGroups.entrySet()) {
             faCatchGroupsDtoList.add(mapFaCatchListToCatchGroupDto(group.getValue()));
         }
+        faEntity.setFaCatchs(faCatchGroups.values().stream().flatMap(Collection::stream).collect(Collectors.toSet()));
         return faCatchGroupsDtoList;
     }
 
@@ -177,6 +180,8 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             Double calculatedWeightMeasure = entity.getCalculatedWeightMeasure();
             if (calculatedWeightMeasure == null) {
                 calculatedWeightMeasure = extractLiveWeight(entity.getAapProcesses());
+            } else {
+                findConversionFactor(entity);
             }
             Double unitQuantity = entity.getUnitQuantity();
             String fishClassCode = entity.getFishClassCode() != null ? entity.getFishClassCode() : StringUtils.EMPTY;
@@ -217,6 +222,17 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         }
         return calculatedWeightMeasure;
     }
+    
+    private static void findConversionFactor(FaCatchEntity entity) {
+        Set<AapProcessEntity> aapProcesses = entity.getAapProcesses();
+        Double convFc = null;
+        if (CollectionUtils.isNotEmpty(aapProcesses)) {
+            for (AapProcessEntity aapProc : aapProcesses) {
+                convFc = extractConversionFactor(aapProc);
+                aapProc.setConversionFactor(convFc);
+            }
+        }
+    }
 
     private static Double extractLiveWeight(Set<AapProcessEntity> aapProcesses) {
         Double totalWeight = null;
@@ -227,6 +243,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
             for (AapProcessEntity aapProc : aapProcesses) {
                 catchId = aapProc.getFaCatch().getId();
                 convFc = extractConversionFactor(aapProc);
+                aapProc.setConversionFactor(convFc);
                 weightSum = addToTotalWeightFromSetOfAapProduct(aapProc.getAapProducts(), weightSum);
             }
         }
@@ -452,6 +469,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     }
 
     private static Double extractConversionFactor(AapProcessEntity aapProc) {
+        aapProc.setConversionFactorIsFromMdr(true);
         FaCatchEntity entity = aapProc.getFaCatch();
         List<FluxLocationEntity> catchLocations = entity.getFluxLocations().stream()
                 .filter(location -> FluxLocationSchemeId.TERRITORY.name().equals(location.getCountryIdSchemeId())
@@ -498,6 +516,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     }
 
     private static Double getConversionFactorIfReported(AapProcessEntity aapProc) {
+        aapProc.setConversionFactorIsFromMdr(false);
         return aapProc.getConversionFactor();
     }
 
