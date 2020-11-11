@@ -118,7 +118,7 @@
         <queryString>
             <![CDATA[]]>
         </queryString>
-        <field name="date" class="java.util.Date"/>
+        <field name="date" class="java.lang.String"/>
         <field name="port" class="java.lang.String"/>
         <field name="activityType" class="java.lang.String"/>
     </subDataset>
