@@ -15,8 +15,10 @@ import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.service.dto.view.ActivityDetailsDto;
 import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityViewDTO;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
+import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
@@ -30,13 +32,19 @@ public abstract class ActivityAreaExitViewMapper extends BaseActivityViewMapper 
             @Mapping(target = "activityDetails", expression = "java(mapActivityDetails(faEntity))"),
             @Mapping(target = "locations", source = "locations_"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
-            @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
-            @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
             @Mapping(target = "areas", expression = "java(getSortedAreas(faEntity, new eu.europa.ec.fisheries.ers.service.mapper.view.base.FluxLocationDTOSchemeIdComparator()))"),
-            @Mapping(target = "gearProblems", ignore = true)
+            @Mapping(target = "gearProblems", ignore = true),
+            @Mapping(target = "catches", ignore = true),
+            @Mapping(target = "processingProducts", ignore = true),
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
+    @BeforeMapping
+    public void mapCatchesFirst(FishingActivityEntity faEntity, @MappingTarget FishingActivityViewDTO target) {
+        target.setCatches(mapCatchesToGroupDto(faEntity));
+        target.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
+    }
+    
     @Override
     protected ActivityDetailsDto populateActivityDetails(FishingActivityEntity faEntity, ActivityDetailsDto activityDetails) {
         activityDetails.setFisheryType(faEntity.getFisheryTypeCode());
