@@ -73,7 +73,8 @@ public abstract class AapProductMapper {
             @Mapping(target = "quantity", source = "unitQuantity"),
             @Mapping(target = "packageWeight", source = "packagingUnitAverageWeight"),
             @Mapping(target = "packageQuantity", source = "packagingUnitCount"),
-            @Mapping(target = "packagingType", source = "packagingTypeCode")
+            @Mapping(target = "packagingType", source = "packagingTypeCode"),
+            @Mapping(target = "conversionFactorIsFromMdr", source = "aapProcess.conversionFactorIsFromMdr")
     })
     public abstract ProcessingProductsDto mapToProcessingProduct(AapProductEntity aapProduct);
 

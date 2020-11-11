@@ -23,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -58,6 +59,9 @@ public class AapProcessEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fa_catch_id")
 	private FaCatchEntity faCatch;
+	
+	@Transient
+	private Boolean conversionFactorIsFromMdr;
 
 	public void addAapProducts(AapProductEntity aapProductEntity){
 		aapProducts.add(aapProductEntity);

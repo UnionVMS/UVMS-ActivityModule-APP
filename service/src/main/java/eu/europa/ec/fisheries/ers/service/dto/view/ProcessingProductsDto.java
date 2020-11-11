@@ -65,12 +65,15 @@ public class ProcessingProductsDto {
     @JsonView(CommonView.class)
     private String packagingType;
 
+    @JsonView(CommonView.class)
+    private boolean conversionFactorIsFromMdr;
+
     public ProcessingProductsDto() {
         super();
     }
 
     @Builder
-    public ProcessingProductsDto(String type, Map<String, String> locations, String species, String gear, String presentation, String preservation, String freshness, Double conversionFactor, Double weight, Double quantity, Double packageWeight, Double packageQuantity, String packagingType) {
+    public ProcessingProductsDto(String type, Map<String, String> locations, String species, String gear, String presentation, String preservation, String freshness, Double conversionFactor, Double weight, Double quantity, Double packageWeight, Double packageQuantity, String packagingType, boolean conversionFactorIsFromMdr) {
         this.type = type;
         this.locations = locations;
         this.species = species;
@@ -84,6 +87,7 @@ public class ProcessingProductsDto {
         this.packageWeight = packageWeight;
         this.packageQuantity = packageQuantity;
         this.packagingType = packagingType;
+        this.conversionFactorIsFromMdr = conversionFactorIsFromMdr;
     }
 
     public String getType() {
@@ -188,5 +192,13 @@ public class ProcessingProductsDto {
 
     public void setPackagingType(String packagingType) {
         this.packagingType = packagingType;
+    }
+
+    public boolean getConversionFactorIsFromMdr() {
+        return conversionFactorIsFromMdr;
+    }
+
+    public void setConversionFactorIsFromMdr(boolean conversionFactorIsFromMdr) {
+        this.conversionFactorIsFromMdr = conversionFactorIsFromMdr;
     }
 }

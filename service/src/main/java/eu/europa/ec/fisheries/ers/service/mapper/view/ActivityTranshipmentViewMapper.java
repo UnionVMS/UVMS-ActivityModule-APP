@@ -30,8 +30,10 @@ import eu.europa.ec.fisheries.ers.service.mapper.VesselTransportMeansMapper;
 import eu.europa.ec.fisheries.ers.service.mapper.view.base.BaseActivityViewMapper;
 import io.jsonwebtoken.lang.Collections;
 import org.apache.commons.collections.CollectionUtils;
+import org.mapstruct.BeforeMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
@@ -51,13 +53,19 @@ public abstract class ActivityTranshipmentViewMapper extends BaseActivityViewMap
             @Mapping(target = "activityDetails", expression = "java(mapActivityDetails(faEntity))"),
             @Mapping(target = "locations", expression = "java(mapFromFluxLocation(faEntity.getFluxLocations()))"),
             @Mapping(target = "reportDetails", expression = "java(getReportDocsFromEntity(faEntity.getFaReportDocument()))"),
-            @Mapping(target = "catches", expression = "java(mapCatchesToGroupDto(faEntity))"),
-            @Mapping(target = "processingProducts", expression = "java(getProcessingProductsByFaCatches(faEntity.getFaCatchs()))"),
             @Mapping(target = "vesselDetails", expression = "java(getVesselDetailsDTO(faEntity))"),
-            @Mapping(target = "gearProblems", ignore = true)
+            @Mapping(target = "gearProblems", ignore = true),
+            @Mapping(target = "catches", ignore = true),
+            @Mapping(target = "processingProducts", ignore = true)
     })
     public abstract FishingActivityViewDTO mapFaEntityToFaDto(FishingActivityEntity faEntity);
 
+    @BeforeMapping
+    public void mapCatchesFirst(FishingActivityEntity faEntity, @MappingTarget FishingActivityViewDTO target) {
+        target.setCatches(mapCatchesToGroupDto(faEntity));
+        target.setProcessingProducts(getProcessingProductsByFaCatches(faEntity.getFaCatchs()));
+    }
+    
     /**
      * Addded this method as we want to set storage information explicitely in VesselDetailsDTO.Storage informaation we can only get from activities
      * @param faEntity
