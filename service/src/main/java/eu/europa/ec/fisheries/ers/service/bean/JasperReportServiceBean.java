@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -112,6 +113,12 @@ public class JasperReportServiceBean implements JasperReportService {
     private static final String LANDING = "LANDING";
     private static final String FISH_PRESENTATION = "FISH_PRESENTATION";
     private static final String RETAINED = "RETAINED";
+    private static final String FISHING_OPERATION = "FISHING_OPERATION";
+    private static final String JOINT_FISHING_OPERATION = "JOINT_FISHING_OPERATION";
+    private static final DateFormat outputformat = new SimpleDateFormat("dd-MM-yy HH:mm");
+    private static final String DISCARD = "DISCARD";
+    private static final String DISCARDED = "DISCARDED";
+    private static final String DEMINIMIS = "DEMINIMIS";
 
 
     @EJB
@@ -188,7 +195,8 @@ public class JasperReportServiceBean implements JasperReportService {
         logbookModel.setPorts(retrievePortLogBookModel(activities));
         logbookModel.setVesselIdentifier( new ArrayList(vesselIdentifierLogBookModelList.values()));
         logbookModel.setTripInfo(processPortLogBookModel(portAndCountryOfDestination, tripInfoLogBookModelList));
-        logbookModel.setCatches(createCatchesModel(activities,matchGearTypeToFA));
+        List<FishingActivityEntity> fishingActivities = activities.stream().filter(t -> FISHING_OPERATION.equals(t.getTypeCode()) || JOINT_FISHING_OPERATION.equals(t.getTypeCode()) || DISCARD.equals(t.getTypeCode())).collect(Collectors.toList());
+        logbookModel.setCatches(createCatchesModel(fishingActivities,matchGearTypeToFA));
         List<FishingActivityEntity> transhipmentLandingRelocList = activities.stream().filter(t -> TRANSHIPMENT.equals(t.getTypeCode()) || LANDING.equals(t.getTypeCode()) || RELOCATION.equals(t.getTypeCode())).collect(Collectors.toList());
         logbookModel.setTranshipmentLandings(createTranshipmentLanding(transhipmentLandingRelocList));
         logbookModel.setGears(createGearsModel(gearGrouping));
@@ -517,7 +525,7 @@ public class JasperReportServiceBean implements JasperReportService {
     public void getCatchesWeightAndCountBySpecies(Set<FaCatchEntity> catches, TranshipmentLandingModel model){
         double weight,unitQuantity;
         for(FaCatchEntity faCatch: catches){
-            if(model.getSpecies() == null || !model.getSpecies().equals(faCatch.getSpeciesCode()) || !FaCatchTypeEnum.UNLOADED.value().equals(faCatch.getTypeCode())){
+            if(model.getSpecies() == null || !model.getSpecies().equals(faCatch.getSpeciesCode()) || !(FaCatchTypeEnum.UNLOADED.value().equals(faCatch.getTypeCode()) || FaCatchTypeEnum.LOADED.value().equals(faCatch.getTypeCode()))){
                 continue;
             }
             weight = calculateWeight(faCatch);
@@ -525,7 +533,7 @@ public class JasperReportServiceBean implements JasperReportService {
 
             if(LSC.equals(faCatch.getFishClassCode())) {
                 model.setWeightLSC(model.getWeightLSC() + weight);
-                model.setNbLSC(model.getNbLSC() +unitQuantity);
+                model.setNbLSC(model.getNbLSC() + unitQuantity);
             }
             if(BMS.equals(faCatch.getFishClassCode())){
                 model.setWeightBMS(model.getWeightBMS() + weight);
@@ -681,7 +689,7 @@ public class JasperReportServiceBean implements JasperReportService {
     }
 
     private double addOrSubtractValue(String typeCode,double value){
-        if("UNLOADED".equals(typeCode)){
+        if(DISCARDED.equals(typeCode) || DEMINIMIS.equals(typeCode) ){
             return -value;
         }
 
@@ -921,7 +929,7 @@ public class JasperReportServiceBean implements JasperReportService {
         FluxLocationEntity fluxLocationEntity = fa.getFluxLocations() == null || fa.getFluxLocations().isEmpty() ? null : fa.getFluxLocations().stream().filter(r -> LOCATION.equals(r.getTypeCode())).findFirst().orElse(null);
         String portName = getPortName(fluxLocationEntity);
         portLogBookModel.setPort(portName == null ? formatCoordinates(fluxLocationEntity):portName);
-        portLogBookModel.setDate(fa.getCalculatedStartTime());
+        portLogBookModel.setDate(outputformat.format(fa.getCalculatedStartTime()));
         portLogBookModel.setId(fa.getId());
         logBookModelList.add(portLogBookModel);
     }
