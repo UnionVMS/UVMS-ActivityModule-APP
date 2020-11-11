@@ -13,10 +13,10 @@
 
 package eu.europa.ec.fisheries.ers.service.dto.fareport.details;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import java.util.List;
 
 /**
  * Created by padhyad on 8/12/2016.
@@ -32,6 +32,9 @@ public class AapProcessDetailsDTO {
 
     @JsonProperty("aapProduct")
     private List<AapProductDetailsDTO> aapProductDetails;
+
+    @JsonProperty("conversionFactorIsFromMdr")
+    private Boolean conversionFactorIsFromMdr;
 
     public AapProcessDetailsDTO() {
     }
@@ -70,5 +73,13 @@ public class AapProcessDetailsDTO {
     @JsonProperty("aapProduct")
     public void setAapProductDetails(List<AapProductDetailsDTO> aapProductDetails) {
         this.aapProductDetails = aapProductDetails;
+    }
+
+    public Boolean getConversionFactorIsFromMdr() {
+        return conversionFactorIsFromMdr;
+    }
+
+    public void setConversionFactorIsFromMdr(Boolean conversionFactorIsFromMdr) {
+        this.conversionFactorIsFromMdr = conversionFactorIsFromMdr;
     }
 }
