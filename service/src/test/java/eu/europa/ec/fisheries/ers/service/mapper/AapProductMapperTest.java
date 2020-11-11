@@ -25,6 +25,7 @@ package eu.europa.ec.fisheries.ers.service.mapper;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProductEntity;
@@ -49,7 +50,8 @@ public class AapProductMapperTest {
         AAPProcess aapProcess = MapperUtil.getAapProcess();
         AapProcessEntity aapProcessEntity = AapProcessMapper.INSTANCE.mapToAapProcessEntity(aapProcess);
         aapProcessEntity.setFaCatch(faCatchEntity);
-
+        aapProcessEntity.setConversionFactorIsFromMdr(true);
+        
         AAPProduct aapProduct = MapperUtil.getAapProduct();
         AapProductEntity aapProductEntity = AapProductMapper.INSTANCE.mapToAapProductEntity(aapProduct);
         aapProductEntity.setAapProcess(aapProcessEntity);
@@ -68,5 +70,6 @@ public class AapProductMapperTest {
         assertEquals(processingProductsDto.getPackageWeight(), aapProductEntity.getPackagingUnitAverageWeight());
         assertEquals(processingProductsDto.getPackageQuantity(), aapProductEntity.getPackagingUnitCount(), 0);
         assertEquals(processingProductsDto.getPackagingType(), aapProductEntity.getPackagingTypeCode());
+        assertTrue(processingProductsDto.getConversionFactorIsFromMdr());
     }
 }
