@@ -116,6 +116,16 @@ public interface FishingTripService {
      */
 
     FishingTripResponse filterFishingTripsForReporting(FishingActivityQuery query) throws ServiceException;
+    
+    /**
+     * Returns filtered FishingTrips as a list of Strings
+     *
+     * @param query Filter criterias
+     * @return List of unique Fishing tripIds with their Geometries
+     * List of Fishing Activities which happened duriong those fishing trips
+     * @throws ServiceException
+     */
+    List<String> getFishingTripsAsStrings(FishingActivityQuery query) throws ServiceException;
 
 
     Map<String, FishingActivityTypeDTO> populateFishingActivityReportListAndFishingTripSummary(String fishingTripId, List<ReportDTO> reportDTOList,
