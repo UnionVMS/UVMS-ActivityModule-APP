@@ -10,12 +10,26 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.mapper;
 
+import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getFaReportDocumentEntity;
+import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getFishingActivity;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import javax.naming.Context;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationConfig;
@@ -43,14 +57,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.mdr.communication.ObjectRepresentation;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
-import static eu.europa.ec.fisheries.ers.service.util.MapperUtil.getFishingActivity;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by kovian on 09/02/2017.
@@ -95,6 +102,7 @@ public class FishingActivityViewMapperTest {
     @Test
     @SneakyThrows
     public void testActivityLandingViewMapper(){
+        mockMdrCache();
 
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.LANDING);
         FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
@@ -113,7 +121,9 @@ public class FishingActivityViewMapperTest {
 
     @Test
     @SneakyThrows
-         public void testActivityDepartureViewMapper() {
+    public void testActivityDepartureViewMapper() {
+        mockMdrCache();
+        
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.DEPARTURE);
         FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
 
@@ -130,6 +140,8 @@ public class FishingActivityViewMapperTest {
     @Test
     @SneakyThrows
     public void testActivityRelocationViewMapper() {
+        mockMdrCache();
+
         BaseActivityViewMapper mapperForView = ActivityViewMapperFactory.getMapperForView(ActivityViewEnum.RELOCATION);
         FishingActivityEntity fishingActivityEntity = getFishingActivityEntity();
 
@@ -156,17 +168,15 @@ public class FishingActivityViewMapperTest {
     @Test
     @SneakyThrows
     public void testActivityJointFishingOperationViewMapper() {
-//        ObjectRepresentation or = new ObjectRepresentation();
-//        or.setFields();
-        MDRCache mdrCache = mock(MDRCache.class);
-        when(mdrCache.getEntry(MDRAcronymType.CONVERSION_FACTOR)).thenReturn(Collections.emptyList());
-        when(context.lookup("java:module/MDRCache")).thenReturn(mdrCache);
-
+        mockMdrCache();
         FishingActivity fishingActivity = getFishingActivity();
         FishingActivityEntity fishingActivityEntity = FishingActivityMapper.INSTANCE.mapToFishingActivityEntity(fishingActivity, null, new FishingActivityEntity());
         fishingActivityEntity.setTypeCode("JOINT_FISHING_OPERATION");
         fishingActivityEntity.getAllRelatedFishingActivities().iterator().next().setTypeCode("RELOCATION");
         fishingActivityEntity.getFaCatchs().iterator().next().setId(1);
+        FaReportDocumentEntity faReportDocumentEntity = getFaReportDocumentEntity();
+        faReportDocumentEntity.setVesselTransportMeans(fishingActivityEntity.getVesselTransportMeans());
+        fishingActivityEntity.setFaReportDocument(faReportDocumentEntity);
         JointFishingOperationViewMapper mapper = new JointFishingOperationViewMapper();
         FishingActivityViewDTO dto = mapper.mapFaEntityToFaDto(fishingActivityEntity);
         assertNotNull(dto);
@@ -178,6 +188,13 @@ public class FishingActivityViewMapperTest {
         assertNotNull(dto.getRelocations());
         assertNotNull(dto.getProcessingProducts());
         assertNotNull(dto.getLocations());
+    }
+    
+    @SneakyThrows
+    private void mockMdrCache() {
+        MDRCache mdrCache = mock(MDRCache.class);
+        when(mdrCache.getEntry(MDRAcronymType.CONVERSION_FACTOR)).thenReturn(Collections.emptyList());
+        when(context.lookup("java:module/MDRCache")).thenReturn(mdrCache);
     }
 
     @SneakyThrows
