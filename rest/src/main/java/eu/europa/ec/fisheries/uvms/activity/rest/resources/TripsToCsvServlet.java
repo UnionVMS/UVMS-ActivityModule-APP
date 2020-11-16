@@ -9,56 +9,38 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
+import eu.europa.ec.fisheries.ers.fa.utils.CsvExportType;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.rest.security.bean.USMService;
-import eu.europa.ec.fisheries.uvms.spatial.model.constants.USMSpatial;
-import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
-import lombok.SneakyThrows;
 
 @WebServlet(
 		asyncSupported = true,
-		urlPatterns = "/rest/csv/*"
+		urlPatterns = "/rest/csv/trips/*"
 )
-public class CsvServlet extends HttpServlet {
+public class TripsToCsvServlet extends HttpServlet {
 	
 	public static final int PAGE_SIZE = 200;
 	public static final String COLUMN_TITLES =	
-			"Report Type, Activity Type, Purpose Code, Data Source, From, Start Date, " +
-			"End Date, CFR, IRCS, Ext. Mark., UVI, ICCAT, GFCM, Areas, Port, Gear, Species, Weight (kg)";
+			"Trip ID, F.S., Ext. Mark., IRCS, CFR, UVI, ICCAT, GFCM, First Event, First Event Date, Last Event, Last Event Date, Duration (At Sea), Corrections";
 
 	@Resource
 	private ManagedExecutorService managedExecutorService;
 	
 	@Inject
-	private ActivityService activityService;
+	private FishingTripService fishingTripService;
 	
-	@Inject
-	private USMService usmService;
-
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		FishingActivityQuery fishingActivityQuery = new ObjectMapper().readValue(req.getInputStream(), FishingActivityQuery.class);
 		
-		
 		PaginationDto paginationDto = new PaginationDto(0,PAGE_SIZE);
 		fishingActivityQuery.setPagination(paginationDto);
-
-
-		List<Dataset> datasets = null;
-		try {
-			datasets = usmService.getDatasetsPerCategory(USMSpatial.USM_DATASET_CATEGORY,
-							req.getRemoteUser(), USMSpatial.APPLICATION_NAME, req.getHeader("roleName"), req.getHeader("scopeName"));
-		} catch (ServiceException e) {
-			throw new IOException(e);
-		}
-
+		
 		resp.setContentType("text/csv");
 		resp.setHeader("Content-Disposition", "attachment; filename=\"export.csv\"");
 		AsyncContext asyncCtx = req.startAsync();
@@ -67,6 +49,6 @@ public class CsvServlet extends HttpServlet {
 		asyncCtx.getResponse().getWriter().println(COLUMN_TITLES);
 		asyncCtx.getResponse().getWriter().flush();
 		
-		managedExecutorService.execute(new CsvExportTask(asyncCtx, managedExecutorService, fishingActivityQuery, activityService, datasets));
+		managedExecutorService.execute(new CsvExportTask(CsvExportType.TRIP, asyncCtx, managedExecutorService, fishingActivityQuery, null, fishingTripService, null));
 	}
 }
