@@ -16,6 +16,12 @@ package eu.europa.ec.fisheries.ers.service.bean;
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.ARRIVAL;
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.DEPARTURE;
 import static eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum.LANDING;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.ICCAT;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.IRCS;
+import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.UVI;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +35,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
@@ -121,6 +129,7 @@ import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidA
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselContactPartyType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
@@ -727,6 +736,58 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return fishingTripResponse;
     }
 
+    @Override
+    public List<String> getFishingTripsAsStrings(FishingActivityQuery query) throws ServiceException {
+        FishingTripResponse fishingTripResponse = filterFishingTrips(query);
+        return fishingTripResponse.getFishingTripIdLists().stream().map(this::getFishingTripSummaryAsString).collect(Collectors.toList());
+    }
+
+    private String getFishingTripSummaryAsString(FishingTripIdWithGeometry tripSummary) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(Optional.ofNullable(tripSummary.getTripId()).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(tripSummary.getFlagState()).orElse("")).append(", ");
+
+        List<VesselIdentifierType> vesselIdTypes = tripSummary.getVesselIdLists();
+        stringBuilder.append(findIdentifier(vesselIdTypes, EXT_MARK)).append(", ");
+        stringBuilder.append(findIdentifier(vesselIdTypes, IRCS)).append(", ");
+        stringBuilder.append(findIdentifier(vesselIdTypes, CFR)).append(", ");
+        stringBuilder.append(findIdentifier(vesselIdTypes, UVI)).append(", ");
+        stringBuilder.append(findIdentifier(vesselIdTypes, ICCAT)).append(", ");
+        stringBuilder.append(findIdentifier(vesselIdTypes, GFCM)).append(", ");
+        
+        stringBuilder.append(Optional.ofNullable(tripSummary.getFirstFishingActivity()).orElse("")).append(", ");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        stringBuilder.append(Optional.ofNullable(tripSummary.getFirstFishingActivityDateTime()).map(date -> date.toGregorianCalendar().getTime()).map(simpleDateFormat::format).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(tripSummary.getLastFishingActivity()).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(tripSummary.getLastFishingActivityDateTime()).map(date -> date.toGregorianCalendar().getTime()).map(simpleDateFormat::format).orElse("")).append(", ");
+        appendDuration(stringBuilder, tripSummary.getTripDuration());
+        stringBuilder.append(tripSummary.getNoOfCorrections()).append(", ");
+        return stringBuilder.toString();
+    }
+
+    private String findIdentifier(List<VesselIdentifierType> vesselIdTypes, VesselIdentifierSchemeIdEnum key) {
+        return vesselIdTypes.stream().filter(id -> id.getKey().equals(key)).findFirst().map(VesselIdentifierType::getValue).orElse("");
+    }
+    
+    private void appendDuration(StringBuilder stringBuilder, double duration) {
+        Duration d = Duration.ofMillis(Math.round(duration));
+        long days = d.toDays();
+        d = d.minusDays(days);
+        long hours = d.toHours();
+        d = d.minusHours(hours);
+        long mins = d.toMinutes();
+
+        if (days > 0) {
+            stringBuilder.append(days).append("d ");
+        }
+        if (hours > 0) {
+            stringBuilder.append(hours).append("h ");
+        }
+        if (mins > 0) {
+            stringBuilder.append(mins).append("m");
+        }
+        stringBuilder.append(", ");
+    }
 
     /**
      * This method builds FishingTripSerachReponse objectc for FishingTripIds passed to the method
