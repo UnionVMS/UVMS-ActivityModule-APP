@@ -172,27 +172,27 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
     
     private String getFishingActivityReportDTOAsString(FishingActivityReportDTO dto) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(Optional.ofNullable(dto.getFAReportType()).orElse("")).append(",");
-        stringBuilder.append(Optional.ofNullable(dto.getActivityType()).orElse("")).append(",");
-        stringBuilder.append(Optional.ofNullable(dto.getPurposeCode()).orElse("")).append(",");
-        stringBuilder.append(Optional.ofNullable(dto.getDataSource()).orElse("")).append(",");
-        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getFromId()).orElse(Collections.emptyList()))).append(",");
+        stringBuilder.append(Optional.ofNullable(dto.getFAReportType()).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(dto.getActivityType()).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(dto.getPurposeCode()).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(dto.getDataSource()).orElse("")).append(", ");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getFromId()).orElse(Collections.emptyList()))).append(", ");
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-        stringBuilder.append(Optional.ofNullable(dto.getStartDate()).map(simpleDateFormat::format).orElse("")).append(",");  
-        stringBuilder.append(Optional.ofNullable(dto.getEndDate()).map(simpleDateFormat::format).orElse("")).append(",");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        stringBuilder.append(Optional.ofNullable(dto.getStartDate()).map(simpleDateFormat::format).orElse("")).append(", ");  
+        stringBuilder.append(Optional.ofNullable(dto.getEndDate()).map(simpleDateFormat::format).orElse("")).append(", ");
         Map<String, String> vesselIdTypes = dto.getVesselIdTypes();
-        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(CFR.name())).orElse("")).append(",");
-        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(IRCS.name())).orElse("")).append(",");
-        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(EXT_MARK.name())).orElse("")).append(",");
-        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(UVI.name())).orElse("")).append(",");
-        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(ICCAT.name())).orElse("")).append(",");
-        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(GFCM.name())).orElse("")).append(",");
-        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getAreas()).orElse(Collections.emptyList()))).append(",");
-        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getPort()).orElse(Collections.emptyList()))).append(",");
-        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getFishingGear()).orElse(Collections.emptySet()))).append(",");
-        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getSpeciesCode()).orElse(Collections.emptyList()))).append(",");
-        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getQuantity()).map(String::valueOf).orElse(""))).append(",");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(CFR.name())).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(IRCS.name())).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(EXT_MARK.name())).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(UVI.name())).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(ICCAT.name())).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(vesselIdTypes.get(GFCM.name())).orElse("")).append(", ");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getAreas()).orElse(Collections.emptyList()))).append(", ");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getPort()).orElse(Collections.emptyList()))).append(", ");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getFishingGear()).orElse(Collections.emptySet()))).append(", ");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getSpeciesCode()).orElse(Collections.emptyList()))).append(", ");
+        stringBuilder.append(String.join(";", Optional.ofNullable(dto.getQuantity()).map(String::valueOf).orElse("")));
         return stringBuilder.toString();
     }
 
