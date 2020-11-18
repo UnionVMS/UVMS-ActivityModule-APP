@@ -19,6 +19,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+			<artifactId>mdr-rest-client</artifactId>
+			<version>${mdr.rest.client.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<version>${mockito.version}</version>
