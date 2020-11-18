@@ -744,7 +744,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private String getFishingTripSummaryAsString(FishingTripIdWithGeometry tripSummary) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(Optional.ofNullable(tripSummary.getTripId()).orElse("")).append(", ");
+        stringBuilder.append(Optional.ofNullable(tripSummary.getSchemeId()).map(s -> s + ":").orElse("")).append(Optional.ofNullable(tripSummary.getTripId()).orElse("")).append(", ");
         stringBuilder.append(Optional.ofNullable(tripSummary.getFlagState()).orElse("")).append(", ");
 
         List<VesselIdentifierType> vesselIdTypes = tripSummary.getVesselIdLists();
@@ -756,7 +756,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         stringBuilder.append(findIdentifier(vesselIdTypes, GFCM)).append(", ");
         
         stringBuilder.append(Optional.ofNullable(tripSummary.getFirstFishingActivity()).orElse("")).append(", ");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         stringBuilder.append(Optional.ofNullable(tripSummary.getFirstFishingActivityDateTime()).map(date -> date.toGregorianCalendar().getTime()).map(simpleDateFormat::format).orElse("")).append(", ");
         stringBuilder.append(Optional.ofNullable(tripSummary.getLastFishingActivity()).orElse("")).append(", ");
         stringBuilder.append(Optional.ofNullable(tripSummary.getLastFishingActivityDateTime()).map(date -> date.toGregorianCalendar().getTime()).map(simpleDateFormat::format).orElse("")).append(", ");
