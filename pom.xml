@@ -44,6 +44,7 @@
     <movement.model.version>${uvms.movement.module.version}</movement.model.version>
     <asset.model.version>${uvms.asset.module.version}</asset.model.version>
     <audit.model.version>${uvms.audit.module.version}</audit.model.version>
+    <mdr.rest.client.version>${uvms.mdr.module.version}</mdr.rest.client.version>
     <!-- TODO: is this needed? -->
     <uvms.test.version>0.0.4</uvms.test.version>
 
@@ -91,6 +92,12 @@
   <dependencyManagement>
 
     <dependencies>
+
+      <dependency>
+        <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
+        <artifactId>mdr-rest-client</artifactId>
+        <version>${mdr.rest.client.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>eu.europa.ec.fisheries.uvms.mdr</groupId>
