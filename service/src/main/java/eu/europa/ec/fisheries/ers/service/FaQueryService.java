@@ -11,12 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service;
 
-import javax.ejb.Local;
-import java.util.List;
-
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardQueryToSubscriptionRequest;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
+
+import javax.ejb.Local;
+import java.util.List;
 
 @Local
 public interface FaQueryService {
@@ -25,4 +27,5 @@ public interface FaQueryService {
     
     FLUXFAReportMessage getReportsByCriteria(FAQuery faQuery);
 
+    ForwardQueryToSubscriptionRequest getForwardQueryToSubscriptionRequestByFAQuery(FAQuery faQuery) throws ServiceException;
 }

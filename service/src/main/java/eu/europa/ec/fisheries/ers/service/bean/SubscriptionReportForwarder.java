@@ -11,6 +11,13 @@ package eu.europa.ec.fisheries.ers.service.bean;
 
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMappingContext;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardQueryToSubscriptionRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
+import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
+
+import java.util.Optional;
 
 /**
  * Interface for forwarding a report to Subscription module.
@@ -24,6 +31,13 @@ public interface SubscriptionReportForwarder {
      * @param messageEntity
      */
     void forwardReportToSubscription(FluxFaReportMessageMappingContext ctx, FluxFaReportMessageEntity messageEntity);
+
+    /**
+     * Handle and forward FluxFaQueryMessage data to Subscription module
+     *
+     * @param forwardQueryToSubscriptionRequest
+     */
+    Optional<SubscriptionPermissionResponse> requestPermissionFromSubscription(ForwardQueryToSubscriptionRequest forwardQueryToSubscriptionRequest);
 
     /**
      * Handle and request permission based on the FluxFaReportMessage data

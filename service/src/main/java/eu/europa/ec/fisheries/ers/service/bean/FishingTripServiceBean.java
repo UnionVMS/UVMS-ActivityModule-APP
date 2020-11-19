@@ -312,6 +312,20 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return detailsDTO;
     }
 
+    @Override
+    public Optional<VesselTransportMeansEntity> getVesselTransportMeansEntityByFishingTripId(final String fishingTripId) throws ServiceException {
+        if (fishingTripId == null) {
+            throw new IllegalArgumentException("PARAMETER CANNOT BE NULL");
+        }
+        Optional<VesselTransportMeansEntity> vesselTransportMeansEntityOptional;
+        try {
+            vesselTransportMeansEntityOptional = Optional.ofNullable(vesselTransportMeansDao.findLatestVesselByTripId(fishingTripId));
+        } catch (ServiceException e) {
+            throw new ServiceException(e.getMessage(), e);
+        }
+        return vesselTransportMeansEntityOptional;
+    }
+
     @Nullable
     private VesselDetailsDTO getVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity fishingActivityEntity) {
         VesselDetailsDTO detailsDTO;
