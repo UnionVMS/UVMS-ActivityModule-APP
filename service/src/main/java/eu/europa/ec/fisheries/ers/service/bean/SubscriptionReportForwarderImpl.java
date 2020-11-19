@@ -10,33 +10,20 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import eu.europa.ec.fisheries.ers.fa.entities.DelimitedPeriodEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.FluxReportIdentifierEntity;
-import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMappingContext;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementMetaDataAreaType;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityAreas;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.Area;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FluxReportIdentifier;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ReportToSubscription;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.model.StringWrapper;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
 import org.apache.commons.lang3.tuple.Pair;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FishingActivity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class SubscriptionReportForwarderImpl implements SubscriptionReportForwarder {
@@ -100,6 +87,13 @@ public class SubscriptionReportForwarderImpl implements SubscriptionReportForwar
                     activitiesGeometries));
         }
         activitySubscriptionServiceBean.sendForwardReportToSubscriptionRequest(faReports);
+    }
+
+    @Override
+    public Optional<SubscriptionPermissionResponse> requestPermissionFromSubscription(ForwardQueryToSubscriptionRequest forwardQueryToSubscriptionRequest) {
+
+        return activitySubscriptionServiceBean.requestSubscriptionForPermission(forwardQueryToSubscriptionRequest);
+
     }
 
     public boolean requestPermissionFromSubscription(FluxFaReportMessageMappingContext ctx, FluxFaReportMessageEntity messageEntity) {

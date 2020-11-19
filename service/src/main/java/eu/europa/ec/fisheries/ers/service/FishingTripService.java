@@ -16,11 +16,13 @@ package eu.europa.ec.fisheries.ers.service;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.service.dto.fareport.details.VesselDetailsDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchEvolutionDTO;
 import eu.europa.ec.fisheries.ers.service.dto.fishingtrip.CatchSummaryListDTO;
@@ -147,4 +149,6 @@ public interface FishingTripService {
     ActivityReportGenerationResults forwardFAReportFromPosition(ForwardFAReportFromPositionRequest request) throws ServiceException;
 
     List<FaReportDocumentEntity> findFaReportDocumentsByIdentifierIds(List<String> reportIds) throws ServiceException;
+
+    Optional<VesselTransportMeansEntity> getVesselTransportMeansEntityByFishingTripId(final String fishingTripId) throws ServiceException;
 }

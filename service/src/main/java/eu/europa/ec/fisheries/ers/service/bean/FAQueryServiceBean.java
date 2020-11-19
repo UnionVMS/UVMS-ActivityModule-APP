@@ -21,21 +21,22 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import eu.europa.ec.fisheries.ers.fa.dao.FaReportDocumentDao;
 import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FaQueryService;
+import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.mapper.ActivityEntityToModelMapper;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardQueryToSubscriptionRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.QueryToSubscription;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubCriteriaType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionDataCriteria;
+import io.jsonwebtoken.lang.Collections;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,16 @@ import org.apache.commons.collections.CollectionUtils;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQueryParameter;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Stateless
 @Slf4j
@@ -58,6 +69,12 @@ public class FAQueryServiceBean implements FaQueryService {
 
     @PersistenceContext(unitName = "activityPUoracle")
     private EntityManager oracle;
+
+    @Inject
+    AssetModuleService assetModuleService;
+
+    @Inject
+    FishingTripService fishingTripService;
 
     private EntityManager em;
     private FaReportDocumentDao FAReportDAO;
@@ -122,13 +139,47 @@ public class FAQueryServiceBean implements FaQueryService {
 
     @Override
     public FLUXFAReportMessage getReportsByCriteria(FAQuery faQuery) {
-        Criteria criteria = new Criteria();
-        faQuery.getSimpleFAQueryParameters().forEach(param -> addCriterion(param, criteria));
-        criteria.setStartDate(faQuery.getSpecifiedDelimitedPeriod().getStartDateTime().getDateTime().toString());
-        criteria.setEndDate(faQuery.getSpecifiedDelimitedPeriod().getEndDateTime().getDateTime().toString());
+        Criteria criteria = buildCriteria(faQuery);
 
         List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(criteria.tripID, criteria.consolidated, criteria.vesselId, criteria.schemeId, criteria.startDate, criteria.endDate);
         return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip, localNodeName, faQuery.getID());
+    }
+
+    @Override
+    public ForwardQueryToSubscriptionRequest getForwardQueryToSubscriptionRequestByFAQuery(FAQuery faQuery) throws ServiceException {
+        ForwardQueryToSubscriptionRequest forwardQueryToSubscriptionRequest = new ForwardQueryToSubscriptionRequest();
+        QueryToSubscription queryToSubscription = new QueryToSubscription();
+
+        Criteria criteria = buildCriteria(faQuery);
+        queryToSubscription.setConsolidated(criteria.getConsolidated());
+        queryToSubscription.setEndDate(criteria.getEndDate());
+        queryToSubscription.setStartDate(criteria.getStartDate());
+        queryToSubscription.setTripID(criteria.getTripID());
+        if (criteria.getTripID() != null) {
+            criteria.setVesselId(getVesselIdByTripId(criteria.getTripID()));
+        }
+        queryToSubscription.setVesselId(criteria.getVesselId());
+        List<String> assetHistGuids = Lists.newArrayList();
+        for (String assetGuid: assetModuleService.getAssetGuids(criteria.getVesselId(),null)){
+            assetHistGuids.add(assetModuleService.getAssetHistoryGuid(assetGuid, new Date()));
+        }
+
+        queryToSubscription.setAssetHistGuids(assetHistGuids);
+        forwardQueryToSubscriptionRequest.setQueryToSubscription(queryToSubscription);
+
+        return forwardQueryToSubscriptionRequest;
+    }
+
+    private Criteria buildCriteria(FAQuery faQuery){
+        Criteria criteria = new Criteria();
+        faQuery.getSimpleFAQueryParameters().forEach(param -> addCriterion(param, criteria));
+        if (faQuery.getSpecifiedDelimitedPeriod() != null && faQuery.getSpecifiedDelimitedPeriod().getStartDateTime() != null) {
+            criteria.setStartDate(faQuery.getSpecifiedDelimitedPeriod().getStartDateTime().getDateTime().toString());
+        }
+        if (faQuery.getSpecifiedDelimitedPeriod() != null && faQuery.getSpecifiedDelimitedPeriod().getEndDateTime() != null) {
+            criteria.setEndDate(faQuery.getSpecifiedDelimitedPeriod().getEndDateTime().getDateTime().toString());
+        }
+        return criteria;
     }
 
     private void addCriterion(FAQueryParameter faQueryParameter, Criteria criteria) {
@@ -141,10 +192,25 @@ public class FAQueryServiceBean implements FaQueryService {
             criteria.setConsolidated(faQueryParameter.getValueCode().getValue());
         }
     }
+
+    private String getVesselIdByTripId(String tripId) throws ServiceException {
+        AtomicReference<String> vesselId = new AtomicReference<>();
+        Optional<VesselTransportMeansEntity> vesselTransportMeansEntityOptional = fishingTripService.
+                getVesselTransportMeansEntityByFishingTripId(tripId);
+        if (vesselTransportMeansEntityOptional.isPresent()) {
+            VesselTransportMeansEntity vesselTransportMeansEntity = vesselTransportMeansEntityOptional.get();
+            if (CollectionUtils.isNotEmpty(vesselTransportMeansEntity.getVesselIdentifiers())) {
+                vesselTransportMeansEntity.getVesselIdentifiers().forEach(vesselIdentifier -> {
+                    vesselId.set(vesselIdentifier.getVesselIdentifierId());
+                });
+            }
+        }
+        return vesselId.get();
+    }
     
     @Data
     @NoArgsConstructor
-    class Criteria {
+    public class Criteria {
         String startDate;
         String endDate;
         String tripID;
