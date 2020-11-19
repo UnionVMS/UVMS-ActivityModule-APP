@@ -11,11 +11,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service;
 
 import javax.ejb.Local;
+import javax.jms.Destination;
+import javax.jms.TextMessage;
 
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMapperException;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForTripRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
@@ -56,6 +59,8 @@ public interface ActivityRulesModuleService {
     String composeAndSendTripFaQueryToRules(CreateAndSendFAQueryForTripRequest request) throws ActivityModuleException;
 
     void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXML, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId, String senderOrReceiver) throws ActivityModuleException;
+
+    void retrieveSubscriptionPermissionAndSendToRulesForFaQuery(TextMessage jmsMessage) throws ActivityModuleException;
 
     void forwardFluxFAReportMessageToRules(FLUXFAReportMessage report, String dataFlow, String receiver) throws ActivityModuleException;
 }

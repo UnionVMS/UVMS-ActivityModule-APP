@@ -32,58 +32,20 @@ import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
 import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityErrorMessageServiceBean;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ActivityMessageErrorEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForTripEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendFAQueryForVesselEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.CreateAndSendGetAttachmentsForGuidAndQueryPeriodEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.FindMovementGuidsByReportIdsAndAssetGuid;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportFromPosition;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardFAReportWithLogbook;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ForwardMultipleFAReports;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFACatchSummaryReportEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingActivityForTripsRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetFishingTripListEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.GetNonUniqueIdsRequestEvent;
-import eu.europa.ec.fisheries.uvms.activity.message.event.ReceiveFishingActivityRequestEvent;
+import eu.europa.ec.fisheries.uvms.activity.message.event.*;
 import eu.europa.ec.fisheries.uvms.activity.message.event.carrier.EventMessage;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleResponseMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.FaultCode;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityReportGenerationResults;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.AttachmentResponseObject;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FACatchSummaryReportResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FindMovementGuidsByReportIdsAndAssetGuidRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FindMovementGuidsByReportIdsAndAssetGuidResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.FishingTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportFromPositionRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriodRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetAttachmentsForGuidAndQueryPeriodResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardFAReportWithLogbookRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.ForwardMultipleFAReportsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetFishingActivitiesForTripResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.GetNonUniqueIdsResponse;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SetFLUXFAReportOrQueryMessageRequest;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
-import eu.europa.ec.fisheries.uvms.commons.message.impl.JAXBUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.subscription.module.ActivityReportGenerationResultsRequest;
 import eu.europa.ec.fisheries.wsdl.subscription.module.AttachmentType;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionModuleMethod;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
-import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
-import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
-import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 @LocalBean
 @Stateless
@@ -124,9 +86,7 @@ public class ActivityEventServiceBean implements EventService {
 
     @Inject
     private FishingActivityService  fishingActivityService;
-    
-    @Inject
-    private FaQueryService faQueryService;
+
 
     @Override
     public void receiveFishingActivityMessage(@Observes @ReceiveFishingActivityRequestEvent EventMessage eventMessage) {
@@ -144,18 +104,12 @@ public class ActivityEventServiceBean implements EventService {
                     saveReportBean.handleFaReportSaving(request);
                     break;
                 case GET_FLUX_FA_QUERY:
-                    FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
-                    FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
-                    activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faReports, "getTheOnValueFromSomewahre", request.getRequestType(), jmsMessage.getJMSMessageID(), extractFRValueFromRequest(jmsMessage));
+                    activityRulesModuleServiceBean.retrieveSubscriptionPermissionAndSendToRulesForFaQuery(jmsMessage);
                     break;
             }
-        } catch (ActivityModelMarshallException | JMSException | ActivityModuleException e) {
+        } catch (ActivityModelMarshallException | ActivityModuleException e) {
             sendError(eventMessage, e);
         }
-    }
-    
-    private String extractFRValueFromRequest(TextMessage jmsMessage) throws JMSException {
-        return Optional.ofNullable(jmsMessage.getStringProperty("FLUX_FR")).orElse("");
     }
 
     @Override

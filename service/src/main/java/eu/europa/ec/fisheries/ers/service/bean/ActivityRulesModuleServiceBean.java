@@ -11,14 +11,8 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.List;
-
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
+import eu.europa.ec.fisheries.ers.service.FaQueryService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
@@ -28,10 +22,9 @@ import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQue
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForTripRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.CreateAndSendFAQueryForVesselRequest;
-import eu.europa.ec.fisheries.uvms.activity.model.schemas.SyncAsyncRequestType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
+import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
@@ -48,6 +41,18 @@ import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentit
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.inject.Inject;
+import javax.jms.JMSException;
+import javax.jms.TextMessage;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 @Stateless
 @Transactional
@@ -73,6 +78,12 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
 
     @Inject
     ParameterService parameterService;
+
+    @Inject
+    FaQueryService faQueryService;
+
+    @Inject
+    SubscriptionReportForwarder subscriptionReportForwarder;
 
     private String localNodeName;
 
@@ -152,6 +163,72 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             log.error("[ERROR] Error while trying to ActivityRulesModuleService.composeAndSendTripFaQueryToRules(...)!", e);
             throw new ActivityModuleException("JAXBException or MessageException!", e);
         }
+    }
+
+    @Override
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void retrieveSubscriptionPermissionAndSendToRulesForFaQuery(TextMessage jmsMessage) throws ActivityModuleException {
+        try {
+            SetFLUXFAReportOrQueryMessageRequest request = JAXBMarshaller.unmarshallTextMessage(jmsMessage, SetFLUXFAReportOrQueryMessageRequest.class);
+            FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
+            FAQuery faQuery = fluxFAQueryMessage.getFAQuery();
+
+            // fa reports needed in RulesFaQueryServiceBean so keep generating them
+            FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
+
+            ForwardQueryToSubscriptionRequest forwardQueryToSubscriptionRequest =
+                    faQueryService.getForwardQueryToSubscriptionRequestByFAQuery(fluxFAQueryMessage.getFAQuery());
+
+            SubscriptionPermissionResponse subscriptionPermissionResponse = subscriptionReportForwarder.
+                    requestPermissionFromSubscription(forwardQueryToSubscriptionRequest).orElseThrow(() ->
+                    new ActivityModuleException("MessageException! could not  define subscription for request " + request));
+            SubscriptionPermissionAnswer subscriptionCheck = subscriptionPermissionResponse.getSubscriptionCheck();
+            boolean isPermitted = SubscriptionPermissionAnswer.YES.equals(subscriptionCheck);
+            enrichResponseAndSend(subscriptionPermissionResponse.getParameters(), faReports, "getTheOnValueFromSomeWhere", jmsMessage.getJMSMessageID(), isPermitted, extractFRValueFromRequest(jmsMessage));
+
+        } catch (ActivityModelMarshallException | ServiceException | JMSException | RulesModelMapperException | MessageException e) {
+            log.error("[ERROR] Error while trying to ActivityEventServiceBean.ReceiveFishingActivityRequestEvent(...)!", e);
+            throw new ActivityModuleException("JAXBException or MessageException!", e);
+        }
+    }
+
+    private String extractFRValueFromRequest(TextMessage jmsMessage) throws JMSException {
+        return Optional.ofNullable(jmsMessage.getStringProperty("FLUX_FR")).orElse("");
+    }
+
+    // Please see @sendSyncAsyncFaReportToRules. It was added for compatibility reasons
+    private void enrichResponseAndSend(List<SubscriptionParameter> parameters, FLUXFAReportMessage fLUXFAReportMessage,
+                                       String onValue, String jmsMessageCorrId, boolean isPermitted, String senderOrReceiver) throws ActivityModuleException, ActivityModelMarshallException,
+            RulesModelMapperException, MessageException {
+        String sendFLUXFAReportMessageRequest = null;
+        if (isPermitted) {
+            String dataFlow = extractParameterByName(parameters, "DF");
+            // TODO : mocking up df value untill subscription is ready
+            if (StringUtils.isEmpty(dataFlow)) {
+                dataFlow = "urn:un:unece:uncefact:fisheries:FLUX:FA:EU:2";
+            }
+            // TODO : END Mocking
+            if (StringUtils.isEmpty(dataFlow)) {
+                log.error("[ERROR] Subscription is missing the dataFlow parameter! Cannot send FaQuery! ");
+                throw new ActivityModuleException("Subscription is missing the dataFlow parameter! Cannot send FaQuery!");
+            }
+            String logId = null;
+            if (fLUXFAReportMessage.getFLUXReportDocument() != null && CollectionUtils.isNotEmpty(fLUXFAReportMessage.getFLUXReportDocument().getIDS())) {
+                logId = fLUXFAReportMessage.getFLUXReportDocument().getIDS().get(0).getValue();
+            }
+            final String fLUXFAReportMessageString = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(fLUXFAReportMessage));
+            // TODO : change this values (username, senderOrReceiver (Node name?)) when got answer from CEDRIC
+            sendFLUXFAReportMessageRequest = RulesModuleRequestMapper.createSetFLUXFAQueryMessageRequest(fLUXFAReportMessageString, "FLUX",
+                    logId, dataFlow, localNodeName, onValue, isEmptyReportMessage(fLUXFAReportMessage), isPermitted, senderOrReceiver);
+        } else {
+            final String fLUXFAReportMessageString = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(fLUXFAReportMessage));
+            // TODO : change this values (username, senderOrReceiver (Node name?)) when got answer from CEDRIC
+            sendFLUXFAReportMessageRequest = RulesModuleRequestMapper.createSetFLUXFAQueryMessageRequest(fLUXFAReportMessageString, "FLUX",
+                    null, null, localNodeName, onValue, isEmptyReportMessage(fLUXFAReportMessage), isPermitted, senderOrReceiver);
+        }
+
+        activityResponseQueueProducer.sendMessageWithSpecificIds(sendFLUXFAReportMessageRequest,
+                activityResponseQueueProducer.getDestination(), null, null, jmsMessageCorrId);
     }
 
     private void sendFAQueryToRules(FAQuery faQuery, String dataFlow, String receiver) throws ActivityModuleException, ActivityModelMarshallException, RulesModelMapperException, MessageException {
