@@ -33,6 +33,7 @@ copy of the GNU General Public License along with the IFDM Suite. If not, see <h
 package eu.europa.ec.fisheries.ers.service.bean;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Collections;
@@ -41,6 +42,11 @@ import eu.europa.ec.fisheries.uvms.config.constants.ConfigHelper;
 
 @Stateless
 public class ActivityConfigRegistration implements ConfigHelper {
+
+    public static final String MODULE_VERSION_PROPERTIES_KEY = "uvms.module.version";
+
+    @Inject
+    private PropertiesBean propertiesBean;
 
     @PersistenceContext(unitName = "activityConfig")
     private EntityManager em;
@@ -53,6 +59,11 @@ public class ActivityConfigRegistration implements ConfigHelper {
     @Override
     public String getModuleName() {
         return "activity";
+    }
+
+    @Override
+    public String getModuleVersion() {
+        return propertiesBean.getProperty(MODULE_VERSION_PROPERTIES_KEY);
     }
 
     @Override
