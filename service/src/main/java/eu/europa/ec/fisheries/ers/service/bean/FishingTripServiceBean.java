@@ -837,8 +837,6 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             fishingTripIdLists.add(fishingTripIdWithGeometry);
         }
 
-        new FishingTripIdWithGeometryMapper().populateGeometryFromAssetModule(fishingTripIdLists,assetModuleService);
-        // populate response object
         FishingTripResponse response = new FishingTripResponse();
         response.setFishingActivityLists(fishingActivitySummaries);
         response.setFishingTripIdLists(fishingTripIdLists);

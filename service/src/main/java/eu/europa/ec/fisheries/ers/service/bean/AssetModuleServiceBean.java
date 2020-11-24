@@ -97,6 +97,18 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     }
 
     @Override
+    public List<Asset> getAssetsHavingAtLeastOneIdentifier(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
+        String request;
+        try {
+            request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselIdentifiers));
+        } catch (AssetModelMapperException e) {
+            log.error("Error while mapping vesselIdentifiers to create AssetListQuery!");
+            throw new ServiceException(e.getMessage(), e.getCause());
+        }
+        return getAssets(request);
+    }
+
+    @Override
     public List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearch) throws ServiceException {
         List<String> guidsFromVesselSearchStr = null;
         List<String> guidsFromVesselGroup     = null;
@@ -140,6 +152,22 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
                     assetGuids.add(asset.getAssetId().getGuid());
                 }
                 return assetGuids;
+            } else {
+                throw new ServiceException("FAILED TO GET DATA FROM ASSET");
+            }
+        } catch (ServiceException | MessageException | AssetModelMapperException e) {
+            log.error("Exception in communication with assets");
+            throw new ServiceException(e.getMessage(), e);
+        }
+    }    
+    
+    @NotNull
+    protected List<Asset> getAssets(String request) throws ServiceException {
+        try {
+            String correlationId = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
+            TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class, 120000L);
+            if (response != null) {
+                return AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationId);
             } else {
                 throw new ServiceException("FAILED TO GET DATA FROM ASSET");
             }

@@ -402,59 +402,7 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
             activityReportDTOList.add(fishingActivityReportDTO);
         }
-        enrichActivityReportsFromAssetClass(activityReportDTOList);
         return activityReportDTOList;
-    }
-
-    private void enrichActivityReportsFromAssetClass(final List<FishingActivityReportDTO> activityReportDTOS){
-        FishingTripIdWithGeometryMapper mapper = new FishingTripIdWithGeometryMapper();
-
-        Set<String> cfrSet = activityReportDTOS.stream()
-                .map(s -> s.getVesselIdTypes().get(CFR.name()))
-                .filter(s -> s != null)
-                .collect(Collectors.toSet());
-        Set<Asset> assets = mapper.retrieveVesselIdentifiersFromAssetModule(cfrSet,assetsServiceBean);
-
-        activityReportDTOS.forEach( t-> {
-            String cfr  = t.getVesselIdTypes().get(CFR.name());
-            if(cfr == null ){
-                return;
-            }
-
-            Map<String,String> vesselIdentifierEntry = t.getVesselIdTypes();
-            Set<VesselIdentifierSchemeIdEnum> presentIdentifierEnums =
-                    vesselIdentifierEntry.keySet().stream().map(VesselIdentifierSchemeIdEnum::valueOf).collect(Collectors.toSet());
-
-            Stream.of(VesselIdentifierSchemeIdEnum.values())
-                .filter(l -> !presentIdentifierEnums.contains(l))
-                .forEach(l -> {
-                    assets.stream().filter(a -> cfr.equals(a.getCfr())).findFirst().ifPresent( asset -> {
-                        switch(l){
-                            case UVI:
-                                addVesselTypes(t,asset.getUvi(),UVI);
-                                break;
-                            case GFCM:
-                                addVesselTypes(t,asset.getGfcm(),GFCM);
-                                break;
-                            case EXT_MARK:
-                                addVesselTypes(t,asset.getExternalMarking(),EXT_MARK);
-                                break;
-                            case IRCS:
-                                addVesselTypes(t,asset.getIrcs(),IRCS);
-                                break;
-                            case ICCAT:
-                                addVesselTypes(t,asset.getIccat(),ICCAT);
-                                break;
-                        }
-                    });
-                });
-        });
-    }
-
-    private void addVesselTypes(FishingActivityReportDTO fishingActivityReport,String identifier,VesselIdentifierSchemeIdEnum schemeIdEnum) {
-        if(identifier !=null) {
-            fishingActivityReport.getVesselIdTypes().put(schemeIdEnum.name(), identifier);
-        }
     }
 
     private Geometry getRestrictedAreaGeometry(List<Dataset> datasets) throws ServiceException {
