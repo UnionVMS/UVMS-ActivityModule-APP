@@ -178,7 +178,7 @@ public class FishingTripDaoTest extends BaseErsFaDaoTest {
 
         searchCriteriaMapMultiVal.put(SearchFilter.PURPOSE, purposeCodeValues);
         Set<FishingTripId> fishingTripIdSet= dao.getFishingTripIdsForMatchingFilterCriteria(query,false);
-        FishingTripId fishingTripId = new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID");
+        FishingTripId fishingTripId = new FishingTripId("NOR-TRP-20160517234053706","EU_TRIP_ID", null, null);
 
         assertEquals(true,fishingTripIdSet.contains(fishingTripId));
         assertNotNull(fishingTripIdSet);

@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FluxLocationEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationEnum;
+import eu.europa.ec.fisheries.ers.fa.utils.IdentifierSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.MovementTypeComparator;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
@@ -40,9 +42,11 @@ import eu.europa.ec.fisheries.ers.service.util.DatabaseDialect;
 import eu.europa.ec.fisheries.ers.service.util.Oracle;
 import eu.europa.ec.fisheries.ers.service.util.Postgres;
 import eu.europa.ec.fisheries.schema.movement.v1.MovementType;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum;
 import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -74,6 +78,9 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
 
     @Inject
     private FishingActivityService fishingActivityService;
+    
+    @Inject
+    ActivityIdentifiersEnricherBean activityIdentifiersEnricher;
 
     private DatabaseDialect dialect;
 
@@ -385,12 +392,12 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
     }
 
     private void enrichFishingActivityVesselWithGuiId(FishingActivityEntity fishingActivityEntity) {
-        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = fishingActivityEntity.getVesselTransportMeans();
+        Set<VesselTransportMeansEntity> vesselTransportMeansEntityList = fishingActivityEntity.getFaReportDocument().getVesselTransportMeans();
         if (CollectionUtils.isEmpty(vesselTransportMeansEntityList)) {
             return;
         }
         for (VesselTransportMeansEntity entity : vesselTransportMeansEntityList) {
-            enrichWithGuidFromAssets(entity);
+            enrichActivityIdentifiers(fishingActivityEntity, entity);
             fishingActivityEntity.setVesselTransportGuid(entity.getGuid());
         }
     }
@@ -411,5 +418,9 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             log.error("[ERROR] Error while trying to get guids from Assets Module!");
         }
         return null;
-    }
+    }    
+    
+    private void enrichActivityIdentifiers(FishingActivityEntity fishingActivity, VesselTransportMeansEntity vesselTransport) {
+        activityIdentifiersEnricher.enrichActivityIdentifiers(fishingActivity, vesselTransport);
+    }    
 }

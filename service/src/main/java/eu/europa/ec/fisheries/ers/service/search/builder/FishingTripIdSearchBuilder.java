@@ -53,6 +53,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
     private static final String PERIOD_START_SELECT = ", a";
     private static final String FLAG_STATE_SELECT = ", a";
     private static final String FISHING_TRIP_JOIN = " from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
+    private static final String FISHING_TRIP_JOIN_FLAG_STATE = " from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa JOIN fa.vesselTransportMeans vtm ";
     private static final String FISHING_TRIP_COUNT_JOIN = "SELECT COUNT(DISTINCT ftripId.tripId) from FishingTripIdentifierEntity ftripId JOIN  ftripId.fishingTrip ft JOIN ft.fishingActivity a LEFT JOIN a.faReportDocument fa ";
 
     /**
@@ -74,6 +75,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
 
     public StringBuilder createSQL(FishingActivityQuery query,boolean isActivityTrip) throws ServiceException {
         LOG.debug("Start building SQL depending upon Filter Criterias");
+        SearchFilter field = null;
         StringBuilder sql = new StringBuilder();
         boolean isSorted = Optional.ofNullable(query.getSorting()).map(SortKey::getSortBy).isPresent();
 
@@ -82,7 +84,7 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
         if (isActivityTrip) {
             SortKey sort = query.getSorting();
             if (sort != null && sort.getSortBy() != null) {
-                SearchFilter field = sort.getSortBy();
+                field = sort.getSortBy();
                 String sortFieldMapping = FilterMap.getFilterSortMappings().get(field);
                 sql.append(" , ").append(sortFieldMapping).append(" ");
             }
@@ -92,7 +94,13 @@ public class FishingTripIdSearchBuilder extends SearchQueryBuilder {
             updateSQLQueryFilter(query,sql); // Add Order by clause for only requested Sort field
         }
 
-        sql.append(FISHING_TRIP_JOIN); // Common Join for all filters
+        if (SearchFilter.FLAG_STATE.equals(field)) {
+            sql.append(FISHING_TRIP_JOIN_FLAG_STATE);
+        } else {
+            sql.append(FISHING_TRIP_JOIN);
+        }
+
+        // Common Join for all filters
         createJoinTablesPartForQuery(sql, query); // Join only required tables based on filter criteria
         createWherePartForQuery(sql, query);  // Add Where part associated with Filters
         LOG.info("sql :" + sql);

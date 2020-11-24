@@ -135,7 +135,7 @@ public class FilterMap {
         filterSortMappings.put(SearchFilter.PURPOSE, "flux.purposeCode");
         filterSortMappings.put(SearchFilter.FA_STATUS, "fa.status");
         filterSortMappings.put(SearchFilter.TRIP_ID, "ftripid.tripId");
-        filterSortMappings.put(SearchFilter.FLAG_STATE, "a.flagState");
+        filterSortMappings.put(SearchFilter.FLAG_STATE, "vtm.country");
         filterSortMappings.put(SearchFilter.CFR, "a.cfr");
         filterSortMappings.put(SearchFilter.ICCAT, "a.iccat");
         filterSortMappings.put(SearchFilter.IRCS, "a.ircs");
