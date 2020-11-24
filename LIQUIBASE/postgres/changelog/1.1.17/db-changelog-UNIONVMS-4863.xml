@@ -9,12 +9,30 @@
 			<column name="gfcm" type="VARCHAR"/>
 			<column name="uvi" type="VARCHAR"/>
 		</addColumn>
-		<rollback />
 	</changeSet>
 
 	<changeSet id="UNIONVMS-4863-patch" author="tprotopapas">
 		<sqlFile path="db-changelog-UNIONVMS-4863-patch.sql" relativeToChangelogFile="true" encoding="utf8" />
-		<rollback />
+		<rollback>
+			<sqlFile path="db-changelog-UNIONVMS-4863-patch-revert.sql" relativeToChangelogFile="true" encoding="utf8" />
+		</rollback>
+	</changeSet>
+
+	<changeSet id="UNIONVMS-4863-patch alt and src columns for vessels" author="tprotopapas">
+		<addColumn  tableName="activity_fishing_activity">
+			<column name="cfr_alt" type="VARCHAR"/>
+			<column name="ircs_alt" type="VARCHAR"/>
+			<column name="iccat_alt" type="VARCHAR"/>
+			<column name="ext_mark_alt" type="VARCHAR"/>
+			<column name="gfcm_alt" type="VARCHAR"/>
+			<column name="uvi_alt" type="VARCHAR"/>
+			<column name="cfr_src" type="VARCHAR(8)"/>
+			<column name="ircs_src" type="VARCHAR(8)"/>
+			<column name="iccat_src" type="VARCHAR(8)"/>
+			<column name="ext_mark_src" type="VARCHAR(8)"/>
+			<column name="gfcm_src" type="VARCHAR(8)"/>
+			<column name="uvi_src" type="VARCHAR(8)"/>
+		</addColumn>
 	</changeSet>
 
 </databaseChangeLog>

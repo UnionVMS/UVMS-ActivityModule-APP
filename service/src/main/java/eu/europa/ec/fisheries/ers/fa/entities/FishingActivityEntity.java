@@ -12,12 +12,14 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.fa.entities;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import com.vividsolutions.jts.geom.Geometry;
+import eu.europa.ec.fisheries.ers.fa.utils.IdentifierSourceEnum;
 import eu.europa.ec.fisheries.ers.fa.utils.UnitCodeEnum;
 import eu.europa.ec.fisheries.ers.service.dto.view.FluxLocationDto;
 import eu.europa.ec.fisheries.ers.service.mapper.FluxLocationMapper;
@@ -27,6 +29,7 @@ import lombok.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.annotations.Type;
 import static com.google.common.collect.Sets.newHashSet;
+import static javax.persistence.EnumType.STRING;
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 
@@ -179,6 +182,48 @@ public class FishingActivityEntity implements Serializable {
 
 	@Column(name="gfcm")
 	private String gfcm;
+
+	@Column(name = "cfr_alt")
+	private String cfrAlt;
+
+	@Column(name = "ircs_alt")
+	private String ircsAlt;
+
+	@Column(name="ext_mark_alt")
+	private String extMarkAlt;
+
+	@Column(name="iccat_alt")
+	private String iccatAlt;
+
+	@Column(name="uvi_alt")
+	private String uviAlt;
+
+	@Column(name="gfcm_alt")
+	private String gfcmAlt;
+
+	@Enumerated(STRING)
+	@Column(name = "cfr_src")
+	private IdentifierSourceEnum cfrSrc;
+
+	@Enumerated(STRING)
+	@Column(name = "ircs_src")
+	private IdentifierSourceEnum ircsSrc;
+
+	@Enumerated(STRING)
+	@Column(name="ext_mark_src")
+	private IdentifierSourceEnum extMarkSrc;
+
+	@Enumerated(STRING)
+	@Column(name="iccat_src")
+	private IdentifierSourceEnum iccatSrc;
+
+	@Enumerated(STRING)
+	@Column(name="uvi_src")
+	private IdentifierSourceEnum uviSrc;
+
+	@Enumerated(STRING)
+	@Column(name="gfcm_src")
+	private IdentifierSourceEnum gfcmSrc;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "calculated_start_time", length = 29)

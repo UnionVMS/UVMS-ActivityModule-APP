@@ -28,6 +28,7 @@ import eu.europa.ec.fisheries.ers.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.ers.service.search.FishingTripId;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripIdSearchBuilder;
 import eu.europa.ec.fisheries.ers.service.search.builder.FishingTripSearchBuilder;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import eu.europa.ec.fisheries.uvms.commons.rest.dto.PaginationDto;
 import eu.europa.ec.fisheries.uvms.commons.service.dao.AbstractDAO;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
@@ -133,7 +134,11 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         for(Object[] objArr :resultList){
             try {
                 if (objArr !=null ){
-                    fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1]) );
+                    if(query.getSorting() != null && query.getSorting().getSortBy() != null) {
+                        fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1], query.getSorting().getSortBy(), (String)objArr[3]));
+                    } else {
+                        fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1]));
+                    }
                 }
             } catch (Exception e) {
                 log.error("Could not map sql selection to FishingTripId object", e);

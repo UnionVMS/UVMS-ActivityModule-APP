@@ -13,6 +13,7 @@
 
 package eu.europa.ec.fisheries.ers.service.search;
 
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
 import lombok.Data;
 
 /**
@@ -23,6 +24,15 @@ public class FishingTripId {
 
     private String tripId;
     private String schemeID;
+    private SearchFilter searchFilter;
+    private String vessel;
+
+    public FishingTripId(String tripId, String schemeID,SearchFilter searchFilter, String vessel) {
+        this.tripId = tripId;
+        this.schemeID = schemeID;
+        this.searchFilter = searchFilter;
+        this.vessel = vessel;
+    }
 
     public FishingTripId(String tripId, String schemeID) {
         this.tripId = tripId;
