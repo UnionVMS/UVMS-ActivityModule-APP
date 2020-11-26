@@ -23,9 +23,9 @@ public class LogbookModel {
 	private List<PortLogBookModel> ports;
 	private List<TripInfoLogBookModel> tripInfo;
 	private List<FACatchModel> catches;
-	private List<TranshipmentLandingModel> transhipmentLandings;
 	private List<GearModel> gears;
 	private List<MasterModel> master;
 	private List<HeaderModel> header;
+	private List<FooterModel> footer;
 
 }
