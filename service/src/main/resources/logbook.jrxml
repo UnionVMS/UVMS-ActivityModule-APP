@@ -29,6 +29,15 @@
             <rightPen lineWidth="0.5" lineColor="#000000"/>
         </box>
     </style>
+    <style name="BOX_BLACK">
+        <box>
+            <pen lineWidth="1.0"/>
+        </box>
+    </style>
+    <style name="DATA_TEXT" vTextAlign="Middle" isBlankWhenNull="true" fontSize="9"/>
+    <style name="DATA_DEC" style="DATA_TEXT" hTextAlign="Right" pattern="#,###,##0.00">
+        <box rightPadding="2"/>
+    </style>
     <subDataset name="HeaderDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
         <parameter name="HeaderParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
         <queryString>
@@ -78,6 +87,22 @@
         <field name="nbBMS" class="java.lang.Double"/>
         <field name="weightTotal" class="java.lang.Double"/>
         <field name="nbTotal" class="java.lang.Double"/>
+        <variable name="LSC_W" class="java.lang.Double" calculation="Sum">
+            <variableExpression><![CDATA[$F{weightLSC}]]></variableExpression>
+            <initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+        </variable>
+        <variable name="LSC_Nb" class="java.lang.Double" calculation="Sum">
+            <variableExpression><![CDATA[$F{nbLSC}]]></variableExpression>
+            <initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+        </variable>
+        <variable name="BMS_W" class="java.lang.Double" calculation="Sum">
+            <variableExpression><![CDATA[$F{weightBMS}]]></variableExpression>
+            <initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+        </variable>
+        <variable name="BMS_Nb" class="java.lang.Double" calculation="Sum">
+            <variableExpression><![CDATA[$F{nbBMS}]]></variableExpression>
+            <initialValueExpression><![CDATA[0.0]]></initialValueExpression>
+        </variable>
     </subDataset>
     <subDataset name="VesselDataSet" uuid="844434fc-9553-47c3-8ec6-40ae3025fa2a">
         <parameter name="VesselParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
@@ -118,7 +143,7 @@
         <queryString>
             <![CDATA[]]>
         </queryString>
-        <field name="date" class="java.util.Date"/>
+        <field name="date" class="java.lang.String"/>
         <field name="port" class="java.lang.String"/>
         <field name="activityType" class="java.lang.String"/>
     </subDataset>
@@ -136,10 +161,29 @@
         <field name="destination" class="java.lang.String"/>
         <field name="other" class="java.lang.String"/>
     </subDataset>
+    <subDataset name="DS_FooterModel" uuid="a73cba9e-f169-4924-9e20-ff624bbed50a">
+        <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+        <field name="activityType" class="java.lang.String">
+            <fieldDescription><![CDATA[activityType]]></fieldDescription>
+        </field>
+        <field name="date" class="java.lang.String">
+            <fieldDescription><![CDATA[date]]></fieldDescription>
+        </field>
+        <field name="port" class="java.lang.String">
+            <fieldDescription><![CDATA[port]]></fieldDescription>
+        </field>
+        <field name="elementList" class="java.util.List">
+            <fieldDescription><![CDATA[elementList]]></fieldDescription>
+        </field>
+    </subDataset>
     <parameter name="CatchParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
     <parameter name="PortParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
     <parameter name="VesselParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
     <parameter name="TranshipmentLandingParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+    <parameter name="FooterParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
     <parameter name="MasterParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
     <parameter name="TripParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
     <parameter name="GearParam" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
@@ -151,7 +195,7 @@
         <band height="59" splitType="Stretch"/>
     </pageHeader>
     <detail>
-        <band height="424" splitType="Stretch">
+        <band height="285" splitType="Stretch">
             <frame>
                 <reportElement x="-10" y="2" width="833" height="24" uuid="3e83cbe7-f7e0-4aac-bf77-04c351451aac">
                     <property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -369,7 +413,7 @@
                             <textField>
                                 <reportElement x="0" y="0" width="80" height="30" uuid="88d34356-18aa-4191-a2ef-407ae60b64f2"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{vesselName} == null)? "N/A" : $F{vesselName}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[$F{vesselName}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement x="80" y="0" width="28" height="30" uuid="fbafacee-ddb5-45dd-9bfa-14b6f05bf007"/>
@@ -810,228 +854,354 @@
                     <text><![CDATA[Species]]></text>
                 </staticText>
             </frame>
-            <frame>
-                <reportElement positionType="Float" x="-20" y="289" width="842" height="132" uuid="85e4c91a-3100-428a-b435-8813ec87ec2b"/>
-                <line>
-                    <reportElement x="147" y="23" width="574" height="1" uuid="e3b3b8f9-4261-49f2-952b-68652df4c7b1"/>
-                </line>
-                <staticText>
-                    <reportElement positionType="Float" x="254" y="0" width="308" height="20" uuid="6ec9cdbb-4e21-44cb-b36e-a52f8f82da9b"/>
-                    <text><![CDATA[[Landing | Transhipment | Transfer] declaration in kilograms or units]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement x="207" y="26" width="100" height="30" uuid="efb1a24a-2661-4556-bba6-6f86228ff870"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Location]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="147" y="57" width="51" height="25" uuid="db326479-3b08-438d-ac2d-f1c6315b6a4b"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[FAO]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="198" y="58" width="54" height="24" uuid="4fb3c82a-7886-4120-95e9-172eee8dbf1d"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[GFCM]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="250" y="58" width="46" height="24" uuid="77257692-4eb5-4cc1-a430-623319ab9545"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Stat Rect]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="297" y="58" width="52" height="24" uuid="ab17a17c-0e6f-45e1-99a0-f5b307673848"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[EEZ]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement x="354" y="56" width="49" height="27" uuid="0434af8e-9e8f-470f-8edc-7ba26dcc9fbc"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Species]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="457" y="57" width="52" height="24" uuid="80436370-fa78-48a7-98dc-0dfef6fcb23f"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Weight(kg)]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement x="471" y="41" width="37" height="16" uuid="75001a42-f9ba-4e6e-a7ca-6ecb1bedc9b5">
-                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                    </reportElement>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[LSC]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="506" y="57" width="26" height="26" uuid="d583dbbd-0832-4cf3-8833-497d48f46d9c"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Nb]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="536" y="58" width="52" height="24" uuid="a5bf90f4-243a-422a-9604-af27f36732fb"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Weight(kg)]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="594" y="57" width="26" height="26" uuid="a99c2f9a-e999-44ec-8962-9eccc4b3d84e"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Nb]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement x="553" y="40" width="50" height="17" uuid="64e3e827-a6e7-4ec5-b4d7-e1ea055eab00">
-                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                    </reportElement>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[BMS]]></text>
-                </staticText>
-                <line>
-                    <reportElement x="147" y="56" width="574" height="1" uuid="0af24988-901d-413e-8027-36f7a31983e5">
-                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                    </reportElement>
-                </line>
-                <staticText>
-                    <reportElement x="406" y="57" width="49" height="26" uuid="6c9f6080-a1d4-432f-aad5-b8bc7e7a2a0a"/>
-                    <text><![CDATA[Presentation]]></text>
-                </staticText>
-                <line>
-                    <reportElement stretchType="ContainerHeight" x="354" y="23" width="1" height="87" uuid="ab449a92-e5df-4996-b727-ab98b213b7fe"/>
-                </line>
-                <line>
-                    <reportElement stretchType="ContainerHeight" x="456" y="24" width="1" height="85" uuid="8c22b218-b5d5-4ff0-91a1-27fc13175819"/>
-                </line>
-                <line>
-                    <reportElement x="457" y="42" width="264" height="1" uuid="a1e241c4-2f82-44fa-8176-1ca1ce5bae84"/>
-                </line>
-                <line>
-                    <reportElement stretchType="ContainerHeight" x="532" y="42" width="1" height="68" uuid="fecbd03a-ae38-4f22-9f0b-50db7ef2f101"/>
-                </line>
-                <line>
-                    <reportElement stretchType="ContainerHeight" x="621" y="43" width="1" height="68" uuid="b4f9250e-4fd1-421b-937e-644b64ef9913"/>
-                </line>
-                <staticText>
-                    <reportElement x="622" y="40" width="100" height="15" uuid="927910b8-0049-4490-aa87-362163a0e0df"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Total]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="631" y="57" width="52" height="24" uuid="cfb0dbd2-9c13-4f92-b9f3-61349cce219e"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Weight(kg)]]></text>
-                </staticText>
-                <staticText>
-                    <reportElement positionType="Float" x="689" y="56" width="26" height="26" uuid="0e5ca412-0709-4790-9b02-c6a22c9a1092"/>
-                    <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                    <text><![CDATA[Nb]]></text>
-                </staticText>
-                <line>
-                    <reportElement stretchType="ContainerHeight" x="721" y="40" width="1" height="69" uuid="87218eb0-3d3e-4829-80bd-0ae1a445091b"/>
-                </line>
-                <line>
-                    <reportElement x="147" y="81" width="574" height="2" uuid="a45d1717-18df-4c3d-adef-8bce9dd0c6b7"/>
-                </line>
-                <line>
-                    <reportElement positionType="Float" x="147" y="110" width="574" height="1" uuid="e1b136ce-5baa-4809-a36d-ac1b1a03808f">
-                        <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                    </reportElement>
-                </line>
-                <staticText>
-                    <reportElement positionType="Float" x="356" y="112" width="95" height="16" uuid="eac8892c-66ac-4607-be7a-2738eea4314d"/>
-                    <textElement textAlignment="Right"/>
-                    <text><![CDATA[Overall total:]]></text>
-                </staticText>
-                <line>
-                    <reportElement x="721" y="24" width="1" height="16" uuid="421c47a4-a1a2-45a3-9d3f-050ad6773e21">
-                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                    </reportElement>
-                </line>
-                <componentElement>
-                    <reportElement x="150" y="85" width="571" height="21" uuid="146d72cf-4207-40b0-bde2-30beab2a77cd"/>
-                    <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
-                        <datasetRun subDataset="TranshipmentLandingDataSet" uuid="b79e0cb1-147e-4752-89a9-1b1561e6f798">
-                            <dataSourceExpression><![CDATA[$P{TranshipmentLandingParam}]]></dataSourceExpression>
-                        </datasetRun>
-                        <jr:listContents height="21" width="571">
+        </band>
+        <band height="120">
+            <componentElement>
+                <reportElement x="101" y="0" width="600" height="120" uuid="5bee34b5-1cf3-443f-b83b-19eb784b7b71">
+                    <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+                </reportElement>
+                <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+                    <datasetRun subDataset="DS_FooterModel" uuid="49cd0ecd-b434-4bb0-86ab-3ab1ed233355">
+                        <dataSourceExpression><![CDATA[$P{FooterParam}]]></dataSourceExpression>
+                    </datasetRun>
+                    <jr:column width="600" uuid="3a6d6170-c3cf-4676-919b-bec8d1dfd343">
+                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+                        <jr:detailCell height="120">
+                            <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
                             <textField>
-                                <reportElement positionType="Float" x="5" y="0" width="40" height="21" uuid="57e5337a-2237-4e20-89e0-1c5200043b5b"/>
+                                <reportElement x="0" y="0" width="600" height="20" uuid="5b5f5d8e-91c9-4a71-b272-afcd7973f080"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{faoArea} == null)? "N/A" : $F{faoArea}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{activityType}!=null?$F{activityType}:"N/A") +" declaration in kilograms or units " +($F{date}!=null?$F{date}:"N/A") + " port " + ($F{port}!=null?$F{port}:"N/A")]]></textFieldExpression>
                             </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="56" y="0" width="33" height="21" uuid="f88d756c-93af-4ed7-8080-e56bafbda38a"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{gfcmArea} == null)? "N/A" : $F{gfcmArea}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="100" y="0" width="36" height="21" uuid="92b16e5e-d725-4b1a-9d1e-6468a3270c72"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{statRect} == null)? "N/A" : $F{statRect}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="149" y="0" width="47" height="21" uuid="15312f61-346b-4957-9b6d-31376b303835"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{eez} == null)? "N/A" : $F{eez}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="211" y="0" width="35" height="21" uuid="d65c690e-6e91-4990-8497-fa9a1d2da207"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{species} == null)? "N/A" : $F{species}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="250" y="0" width="32" height="21" uuid="7fc9feac-4677-40e5-9ba2-b24aec5138e0"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{presentation} == null)? "N/A" : $F{presentation}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="310" y="0" width="30" height="21" uuid="c787f520-c95f-461c-9d94-771b93f3c165"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{weightLSC} == null)? "N/A" : $F{weightLSC}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="340" y="0" width="36" height="21" uuid="2f95cb4e-9f47-4ff2-adc8-8b7fba1ef55e"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{nbLSC} == null)? "N/A" : $F{nbLSC}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="376" y="0" width="47" height="21" uuid="c0e14a27-13a4-488b-9505-d5311dff5a11"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{weightBMS} == null)? "N/A" : $F{weightBMS}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="423" y="0" width="47" height="21" uuid="533f084e-ee04-4b71-9b8f-98aa0fc975eb"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{nbBMS} == null)? "N/A" : $F{nbBMS}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="470" y="0" width="47" height="21" uuid="c7907291-6acc-44d9-87b4-0b3c66b9a7d7"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{weightTotal} == null)? "N/A" : $F{weightTotal}]]></textFieldExpression>
-                            </textField>
-                            <textField>
-                                <reportElement positionType="Float" x="517" y="0" width="47" height="21" uuid="3ed1d586-52b9-49ed-a4dc-309d9b43a5d3"/>
-                                <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{nbTotal} == null)? "N/A" : $F{nbTotal}]]></textFieldExpression>
-                            </textField>
-                        </jr:listContents>
-                    </jr:list>
-                </componentElement>
-                <line>
-                    <reportElement stretchType="ContainerHeight" x="147" y="24" width="1" height="86" uuid="6f6f29f4-5c2c-4b82-a158-1ba9acb4eb6a">
-                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                    </reportElement>
-                </line>
-                <line>
-                    <reportElement positionType="Float" x="456" y="111" width="1" height="17" uuid="2182e4b2-fe72-4f24-a62c-30b1656d69b2">
-                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                    </reportElement>
-                </line>
-                <line>
-                    <reportElement positionType="Float" x="355" y="128" width="101" height="1" uuid="f9c0570d-b99f-45f7-ba2a-527f42af720c"/>
-                </line>
-                <line>
-                    <reportElement positionType="Float" x="354" y="111" width="1" height="17" uuid="ad969a91-fb95-4b2a-86f4-470c63e0b7d6">
-                        <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                    </reportElement>
-                </line>
-            </frame>
+                            <frame>
+                                <reportElement style="BOX_BLACK" x="0" y="20" width="600" height="80" uuid="4109e9a8-d516-4a30-a898-050de1364791"/>
+                                <componentElement>
+                                    <reportElement x="0" y="0" width="600" height="80" uuid="c9191c75-52a4-41a8-9de0-3f70406c6e1f">
+                                        <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+                                    </reportElement>
+                                    <jr:table>
+                                        <datasetRun subDataset="TranshipmentLandingDataSet" uuid="55a8c12a-0b81-4e9f-bbb7-20fd03dacfa1">
+                                            <dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{elementList})]]></dataSourceExpression>
+                                        </datasetRun>
+                                        <jr:column width="600" uuid="0fc0d46a-3fd8-4d5d-b5ee-169b535389d0">
+                                            <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+                                            <jr:tableFooter height="15">
+                                                <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="0" y="0" width="200" height="15" uuid="788bd30c-48a9-4651-ab03-50088104ed40"/>
+                                                    <box>
+                                                        <leftPen lineWidth="0.0"/>
+                                                        <bottomPen lineWidth="0.0"/>
+                                                    </box>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="200" y="0" width="100" height="15" uuid="e23142b7-be8c-4073-ace2-bc16d52da540"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="90" height="15" uuid="8c33f162-7ea7-4bc4-be4e-9e5572e04fb6"/>
+                                                        <textElement textAlignment="Right" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Overall total: "]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="300" y="0" width="100" height="15" uuid="792c690d-f598-4614-8077-103ad557a378"/>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="0" y="0" width="60" height="15" uuid="fcd53343-8f05-450c-ba59-aac3bca58bf1"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$V{LSC_W}]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="60" y="0" width="40" height="15" uuid="adeada81-c3c5-4361-a1e7-41ca347be913"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$V{LSC_Nb}]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="400" y="0" width="100" height="15" uuid="8b870aee-fc4e-4937-a83b-74e96d657cc3"/>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="0" y="0" width="60" height="15" uuid="264ef438-c1ec-4043-ae18-94403f84d945"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$V{BMS_W}]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="60" y="0" width="40" height="15" uuid="cc42a08b-80c2-42aa-aca2-2ddd704e1152"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$V{BMS_Nb}]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="500" y="0" width="100" height="15" uuid="f6ca1aa9-03d3-4948-808e-d8ab7fcb367a"/>
+                                                    <box>
+                                                        <bottomPen lineWidth="0.0"/>
+                                                        <rightPen lineWidth="0.0"/>
+                                                    </box>
+                                                </frame>
+                                            </jr:tableFooter>
+                                            <jr:columnHeader height="50">
+                                                <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="0" y="0" width="200" height="30" uuid="be950c5e-f6f7-4964-9fa9-1c0039d39205"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="200" height="30" uuid="767b9ae1-e6f2-41ab-b157-80604a877729"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA["Location"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="200" y="0" width="100" height="30" uuid="5464832b-f362-41e1-847f-08f0bbfd9d9c"/>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="300" y="0" width="300" height="15" uuid="f7ad515f-2355-408f-b3b7-aeb47dd0d48d"/>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="300" y="15" width="100" height="15" uuid="5faf028f-7cfe-4c3d-8283-cc240e32faa8"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="100" height="15" uuid="f580a7d1-9567-417d-9c47-183f24f41ae7"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA["LSC"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="400" y="15" width="100" height="15" uuid="0b9c9807-271d-4ec3-8565-288fdc3cdefa"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="100" height="15" uuid="f0917f14-5f04-4b54-b097-8bb390cdc2f2"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA["BMS"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="500" y="15" width="100" height="15" uuid="c16d4d99-3731-40c9-9efd-3e13cccb0140"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="100" height="15" uuid="1bf1027c-1146-4cc9-8b7c-ade4f3a00219"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA["Total"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="0" y="30" width="200" height="20" uuid="3e54ed64-18c8-4b16-8905-f01b26434896"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="50" height="20" uuid="f0520ba8-7c74-43a8-9091-e6bcc37352ab"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["FAO"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="50" y="0" width="50" height="20" uuid="a925cd35-e6e8-4cb6-bec8-96bdca4ec59e"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["GFCM"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="100" y="0" width="50" height="20" uuid="650d7529-275c-42c9-9e6a-977d51048900"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Stat Rect"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="150" y="0" width="50" height="20" uuid="7fc4b9d9-b6b9-4da6-80e2-003c5876dbdb"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["EEZ"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="200" y="30" width="100" height="20" uuid="fe4634ec-e8ab-4aaf-8c7e-11ac7862e9ec"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="50" height="20" uuid="d6b53c8f-359b-4537-a8f7-0311eb7d9d2c"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Species"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="50" y="0" width="50" height="20" uuid="4dcffbad-1220-4be7-81c5-a6002213c6c7"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Pres/on"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="300" y="30" width="100" height="20" uuid="aa928f0d-e26c-4c68-9a8d-6cd2bd798e19"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="60" height="20" uuid="fb68defa-7bf5-4325-81cb-572ba65aac03"/>
+                                                        <box rightPadding="2"/>
+                                                        <textElement textAlignment="Right" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Weight(kg)"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="60" y="0" width="40" height="20" uuid="a6035723-e099-4b63-ad98-118f2ae036f9"/>
+                                                        <box rightPadding="2"/>
+                                                        <textElement textAlignment="Right" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Nb"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="400" y="30" width="100" height="20" uuid="d7c93754-e4f7-4b4c-b822-8b3f4905fa04"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="60" height="20" uuid="7704bef3-78af-4f41-8aad-ffc43e27427d"/>
+                                                        <box rightPadding="2"/>
+                                                        <textElement textAlignment="Right" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Weight(kg)"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="60" y="0" width="40" height="20" uuid="a093d498-41ae-46af-b6ed-395a82ca0031"/>
+                                                        <box rightPadding="2"/>
+                                                        <textElement textAlignment="Right" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Nb"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="500" y="30" width="100" height="20" uuid="35242467-a160-403b-8cc2-e626dc213e87"/>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="60" height="20" uuid="56f8e4a7-0bd8-480c-af8f-9389c47bb1a4"/>
+                                                        <box rightPadding="2"/>
+                                                        <textElement textAlignment="Right" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Weight(kg)"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="60" y="0" width="40" height="20" uuid="256caa17-31be-4603-b7f2-839c7147a162"/>
+                                                        <box rightPadding="2"/>
+                                                        <textElement textAlignment="Right" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA["Nb"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                            </jr:columnHeader>
+                                            <jr:detailCell height="15">
+                                                <property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="0" y="0" width="200" height="15" uuid="71bdfcfb-943d-4058-98c9-2eae0b80d25a"/>
+                                                    <box>
+                                                        <topPen lineWidth="0.0"/>
+                                                        <bottomPen lineWidth="0.0"/>
+                                                    </box>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="50" height="15" uuid="1c39a21f-a66f-48cd-aedb-c083372dd9e9"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA[$F{faoArea}!= null?$F{faoArea}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="50" y="0" width="50" height="15" uuid="74665fe8-54b8-4a07-8798-3a694da29772"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA[$F{gfcmArea}!= null?$F{gfcmArea}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="100" y="0" width="50" height="15" uuid="db2825ad-70b8-41c5-8dc5-0ddc22f88d64"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA[$F{statRect}!=null?$F{statRect}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="150" y="0" width="50" height="15" uuid="78c68c3a-c937-4230-9b23-ac0009cffa3f"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA[$F{eez}!=null?$F{eez}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="200" y="0" width="100" height="15" uuid="c8b5d35f-f193-40a2-b489-caba1fa5d042"/>
+                                                    <box>
+                                                        <topPen lineWidth="0.0"/>
+                                                        <bottomPen lineWidth="0.0"/>
+                                                    </box>
+                                                    <textField>
+                                                        <reportElement x="0" y="0" width="50" height="15" uuid="694635bf-bce9-4454-8a45-0d5e31ad7588"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA[$F{species}!=null?$F{species}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement x="50" y="0" width="50" height="15" uuid="76ab2584-45c1-4c68-bfae-343b70dacdd9"/>
+                                                        <textElement textAlignment="Center" verticalAlignment="Middle">
+                                                            <font size="9"/>
+                                                        </textElement>
+                                                        <textFieldExpression><![CDATA[$F{presentation}!=null?$F{presentation}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="300" y="0" width="100" height="15" uuid="f873fd4f-4564-4f42-b4ce-0a5baa848929"/>
+                                                    <box>
+                                                        <topPen lineWidth="0.0"/>
+                                                        <bottomPen lineWidth="0.0"/>
+                                                    </box>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="0" y="0" width="60" height="15" uuid="8830ba4e-005e-4880-a906-22234f970859"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$F{weightLSC}!=null?$F{weightLSC}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="60" y="0" width="40" height="15" uuid="9702a7df-d3a8-41d6-b82d-4cf89fa5728d"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$F{nbLSC}!=null?$F{nbLSC}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="400" y="0" width="100" height="15" uuid="f52a7576-97c0-44d2-a699-a30be0ac6bd2"/>
+                                                    <box>
+                                                        <topPen lineWidth="0.0"/>
+                                                        <bottomPen lineWidth="0.0"/>
+                                                    </box>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="0" y="0" width="60" height="15" uuid="37f2796b-90c5-4910-b2b7-ad940960c34a"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$F{weightBMS}!=null?$F{weightBMS}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="60" y="0" width="40" height="15" uuid="03cc1e77-b585-4e46-adee-4face471251c"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$F{nbBMS}!=null?$F{nbBMS}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                                <frame>
+                                                    <reportElement style="BOX_BLACK" x="500" y="0" width="100" height="15" uuid="218f77f7-864f-473f-991f-864596d69dc9"/>
+                                                    <box>
+                                                        <topPen lineWidth="0.0"/>
+                                                        <bottomPen lineWidth="0.0"/>
+                                                    </box>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="0" y="0" width="60" height="15" uuid="3036dc4b-ed66-4b20-8e1e-e8c34d1c488b"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$F{weightTotal}!=null?$F{weightTotal}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                    <textField>
+                                                        <reportElement style="DATA_DEC" x="60" y="0" width="40" height="15" uuid="e9a32a88-24c8-4635-8a52-0e10c2dc5688"/>
+                                                        <textElement verticalAlignment="Middle"/>
+                                                        <textFieldExpression><![CDATA[$F{nbTotal}!=null?$F{nbTotal}:"N/A"]]></textFieldExpression>
+                                                    </textField>
+                                                </frame>
+                                            </jr:detailCell>
+                                        </jr:column>
+                                    </jr:table>
+                                </componentElement>
+                            </frame>
+                        </jr:detailCell>
+                    </jr:column>
+                </jr:table>
+            </componentElement>
         </band>
     </detail>
 </jasperReport>

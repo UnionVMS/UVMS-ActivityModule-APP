@@ -16,6 +16,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.FishingActivityTypeEnum;
 import eu.europa.ec.fisheries.ers.service.JasperReportService;
 import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.dto.FACatchModel;
+import eu.europa.ec.fisheries.ers.service.dto.FooterModel;
 import eu.europa.ec.fisheries.ers.service.dto.GearMapperModel;
 import eu.europa.ec.fisheries.ers.service.dto.GearModel;
 import eu.europa.ec.fisheries.ers.service.dto.HeaderModel;
@@ -48,11 +49,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -64,6 +67,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 @Stateless
 @Local(JasperReportService.class)
@@ -112,6 +116,13 @@ public class JasperReportServiceBean implements JasperReportService {
     private static final String LANDING = "LANDING";
     private static final String FISH_PRESENTATION = "FISH_PRESENTATION";
     private static final String RETAINED = "RETAINED";
+    private static final String DELIMITER = "DELIMITER";
+    private static final String FISHING_OPERATION = "FISHING_OPERATION";
+    private static final String JOINT_FISHING_OPERATION = "JOINT_FISHING_OPERATION";
+    private static final DateFormat outputformat = new SimpleDateFormat("dd-MM-yy HH:mm");
+    private static final String DISCARD = "DISCARD";
+    private static final String DISCARDED = "DISCARDED";
+    private static final String DEMINIMIS = "DEMINIMIS";
 
 
     @EJB
@@ -138,19 +149,19 @@ public class JasperReportServiceBean implements JasperReportService {
         JRBeanCollectionDataSource vesselCollection = new JRBeanCollectionDataSource(logbookModel.getVesselIdentifier());
         JRBeanCollectionDataSource tripCollection = new JRBeanCollectionDataSource(logbookModel.getTripInfo());
         JRBeanCollectionDataSource catchCollection = new JRBeanCollectionDataSource(logbookModel.getCatches());
-        JRBeanCollectionDataSource transhipmentLandingCollection = new JRBeanCollectionDataSource(logbookModel.getTranshipmentLandings());
         JRBeanCollectionDataSource masterCollection = new JRBeanCollectionDataSource(logbookModel.getMaster());
         JRBeanCollectionDataSource gearCollection = new JRBeanCollectionDataSource(logbookModel.getGears());
         JRBeanCollectionDataSource headerCollection = new JRBeanCollectionDataSource(logbookModel.getHeader());
+        JRBeanCollectionDataSource footerCollection = new JRBeanCollectionDataSource(logbookModel.getFooter());
         Map<String,Object> params = new HashMap<>();
         params.put("PortParam",portsCollection);
         params.put("VesselParam", vesselCollection);
         params.put("TripParam", tripCollection);
         params.put("CatchParam", catchCollection);
-        params.put("TranshipmentLandingParam", transhipmentLandingCollection);
         params.put("MasterParam", masterCollection);
         params.put("GearParam", gearCollection);
         params.put("HeaderParam", headerCollection);
+        params.put("FooterParam", footerCollection);
         return params;
     }
 
@@ -164,10 +175,12 @@ public class JasperReportServiceBean implements JasperReportService {
         Map<Integer,Integer> matchGearTypeToFA = new HashMap<>();
         TripInfoLogBookModel tripInfoLogBookModel = new TripInfoLogBookModel();
         tripInfoLogBookModel.setTripId(tripId);
-
+        List<FishingActivityEntity> specifiedFA = faReportDocumentEntities.stream().map(t -> t.getFishingActivities()).flatMap(Set::stream).collect(Collectors.toList());
+        List<FishingActivityEntity> relatedFA = faReportDocumentEntities.stream().map(t -> t.getFishingActivities()).flatMap(Set::stream).filter(t -> t.getAllRelatedFishingActivities() !=null).map(t -> t.getAllRelatedFishingActivities()).flatMap(Collection::stream).collect(Collectors.toList());
+        activities.addAll(specifiedFA);
+        activities.addAll(relatedFA);
         Map<String, VesselIdentifierLogBookModel> vesselIdentifierLogBookModelList = new HashMap<>();
-        faReportDocumentEntities.forEach(t -> t.getFishingActivities().forEach(fa -> {
-            activities.add(fa);
+        activities.forEach(fa -> {
             HashMap<String,String> identifierMap = getIdentifiers(fa);
             String identifier = getIdentifierByOrder(identifierMap);
             gearMapper(fa,gearGrouping,matchGearTypeToFA);
@@ -179,18 +192,19 @@ public class JasperReportServiceBean implements JasperReportService {
             }
 
             if (vesselIdentifierLogBookModelList.get(identifier) == null) {
-                createVesselIdentifierLogBookModel(vesselIdentifierLogBookModelList,masterModel,identifierMap,identifier,fa.getFaReportDocument().getVesselTransportMeans());
+                createVesselIdentifierLogBookModel(vesselIdentifierLogBookModelList, masterModel, identifierMap, identifier, fa.getFaReportDocument().getVesselTransportMeans());
             }
-        }));
+        });
 
         List<FishingActivityEntity> destinationList = activities.stream().filter(t -> TRANSHIPMENT.equals(t.getTypeCode()) || RELOCATION.equals(t.getTypeCode())).collect(Collectors.toList());
         String portAndCountryOfDestination = calculatePortAndCountryOfDestination(destinationList);
         logbookModel.setPorts(retrievePortLogBookModel(activities));
         logbookModel.setVesselIdentifier( new ArrayList(vesselIdentifierLogBookModelList.values()));
         logbookModel.setTripInfo(processPortLogBookModel(portAndCountryOfDestination, tripInfoLogBookModelList));
-        logbookModel.setCatches(createCatchesModel(activities,matchGearTypeToFA));
+        List<FishingActivityEntity> fishingActivities = activities.stream().filter(t -> FISHING_OPERATION.equals(t.getTypeCode()) || JOINT_FISHING_OPERATION.equals(t.getTypeCode()) || DISCARD.equals(t.getTypeCode())).collect(Collectors.toList());
+        logbookModel.setCatches(createCatchesModel(fishingActivities,matchGearTypeToFA));
         List<FishingActivityEntity> transhipmentLandingRelocList = activities.stream().filter(t -> TRANSHIPMENT.equals(t.getTypeCode()) || LANDING.equals(t.getTypeCode()) || RELOCATION.equals(t.getTypeCode())).collect(Collectors.toList());
-        logbookModel.setTranshipmentLandings(createTranshipmentLanding(transhipmentLandingRelocList));
+        logbookModel.setFooter(createFooter(transhipmentLandingRelocList));
         logbookModel.setGears(createGearsModel(gearGrouping));
         logbookModel.setHeader(Arrays.asList(new HeaderModel(tripId,new Date())));
         logbookModel.setMaster(new ArrayList<>(masterModel));
@@ -475,34 +489,63 @@ public class JasperReportServiceBean implements JasperReportService {
         return null;
     }
 
-    private List<TranshipmentLandingModel> createTranshipmentLanding(List<FishingActivityEntity> faList){
+    private List<FooterModel> createFooter(List<FishingActivityEntity> faList){
 
         if(faList.isEmpty()){
             return new ArrayList<>();
         }
 
-        Map<String, Map<String, List<FishingActivityEntity>>> groupedFA = groupBySpeciesAndPresentation(faList);
-        List<TranshipmentLandingModel> modelList = new ArrayList<>();
-
+        List<FooterModel> footerList = new ArrayList<>();
+        Map<String, Map<String, Map<String, List<FishingActivityEntity>>>> groupedFA = groupBySpeciesAndPresentation(faList);
         int presentationCounter = 0;
-        for( Map.Entry<String, Map<String, List<FishingActivityEntity>>> productBySpecies:groupedFA.entrySet()) {
-            TranshipmentLandingModel model = new TranshipmentLandingModel();
-            model.setSpecies(productBySpecies.getKey());
-            for(Map.Entry<String, List<FishingActivityEntity>> productByPresentation:productBySpecies.getValue().entrySet()){
-                if(presentationCounter > 0){
-                    model = new TranshipmentLandingModel();
-                }
-                model.setPresentation(productByPresentation.getKey());
-                calculateCatchesWeightBySpeciesAndCategory(productByPresentation.getValue(),model);
-                calculateTranshipmentLandingAreas(getLocationsForTranshipmentsLanding(new ArrayList<>(productByPresentation.getValue())),model);
 
-                modelList.add(model);
-                presentationCounter++;
+
+        for( Map.Entry<String, Map<String, Map<String, List<FishingActivityEntity>>>> productByActivity:groupedFA.entrySet()) {
+
+            FooterModel footerModel = new FooterModel();
+            String[] keySplit = productByActivity.getKey().split(DELIMITER);
+            footerModel.setActivityType(returnActivityTypeForFooter(keySplit[0]));
+            footerModel.setDate(keySplit[1]);
+            footerModel.setPort("null".equals(keySplit[2])? "N/A":keySplit[2]);
+            List<TranshipmentLandingModel> modelList = new ArrayList<>();
+
+            for( Map.Entry<String, Map<String, List<FishingActivityEntity>>> productBySpecies:productByActivity.getValue().entrySet()) {
+                TranshipmentLandingModel model = new TranshipmentLandingModel();
+                model.setSpecies(productBySpecies.getKey());
+                for(Map.Entry<String, List<FishingActivityEntity>> productByPresentation:productBySpecies.getValue().entrySet()){
+                    if(presentationCounter > 0){
+                        model = new TranshipmentLandingModel();
+                    }
+                    model.setPresentation(productByPresentation.getKey());
+                    calculateCatchesWeightBySpeciesAndCategory(productByPresentation.getValue(),model);
+                    calculateTranshipmentLandingAreas(getLocationsForTranshipmentsLanding(new ArrayList<>(productByPresentation.getValue())),model);
+
+                    modelList.add(model);
+                    presentationCounter++;
+                }
+                presentationCounter = 0;
             }
-            presentationCounter = 0;
+            footerModel.setElementList(modelList);
+            footerList.add(footerModel);
         }
 
-        return modelList;
+        return footerList;
+    }
+
+    private String returnActivityTypeForFooter(String faType){
+
+        if(TRANSHIPMENT.equals(faType)){
+            return "Transhipment";
+        }
+
+        if(LANDING.equals(faType)){
+            return "Landing";
+        }
+
+        if(RELOCATION.equals(faType)){
+            return "Transfer";
+        }
+        return null;
     }
 
     private void calculateCatchesWeightBySpeciesAndCategory(List<FishingActivityEntity> presentationActivities, TranshipmentLandingModel model){
@@ -517,7 +560,7 @@ public class JasperReportServiceBean implements JasperReportService {
     public void getCatchesWeightAndCountBySpecies(Set<FaCatchEntity> catches, TranshipmentLandingModel model){
         double weight,unitQuantity;
         for(FaCatchEntity faCatch: catches){
-            if(model.getSpecies() == null || !model.getSpecies().equals(faCatch.getSpeciesCode()) || !FaCatchTypeEnum.UNLOADED.value().equals(faCatch.getTypeCode())){
+            if(model.getSpecies() == null || !model.getSpecies().equals(faCatch.getSpeciesCode()) || !(FaCatchTypeEnum.UNLOADED.value().equals(faCatch.getTypeCode()) || FaCatchTypeEnum.LOADED.value().equals(faCatch.getTypeCode()))){
                 continue;
             }
             weight = calculateWeight(faCatch);
@@ -525,7 +568,7 @@ public class JasperReportServiceBean implements JasperReportService {
 
             if(LSC.equals(faCatch.getFishClassCode())) {
                 model.setWeightLSC(model.getWeightLSC() + weight);
-                model.setNbLSC(model.getNbLSC() +unitQuantity);
+                model.setNbLSC(model.getNbLSC() + unitQuantity);
             }
             if(BMS.equals(faCatch.getFishClassCode())){
                 model.setWeightBMS(model.getWeightBMS() + weight);
@@ -565,15 +608,19 @@ public class JasperReportServiceBean implements JasperReportService {
     }
 
 
-    public Map<String, Map<String,  List<FishingActivityEntity>>> groupBySpeciesAndPresentation(List<FishingActivityEntity> faList){
+    public Map<String, Map<String, Map<String, List<FishingActivityEntity>>>> groupBySpeciesAndPresentation(List<FishingActivityEntity> faList){
         if(faList == null || faList.isEmpty()){
             return  new HashMap<>();
         }
-        //The order of the mapping is as follows: species, presentation
-        Map<String, Map<String, List<FishingActivityEntity>>> bySpecies = new HashMap<>();
+        //The order of the mapping is as follows: activityType/date, species, presentation
+        Map<String, Map<String, Map<String, List<FishingActivityEntity>>>> activityTypeDate = new HashMap<>();
         for (FishingActivityEntity fa : faList) {
+            FluxLocationEntity fluxLocationEntity = fa.getFluxLocations() == null || fa.getFluxLocations().isEmpty() ? null : fa.getFluxLocations().stream().filter(r -> LOCATION.equals(r.getTypeCode())).findFirst().orElse(null);
+            String portName = getPortName(fluxLocationEntity);
+            Map<String, Map<String, List<FishingActivityEntity>>> bySpecies = activityTypeDate.computeIfAbsent(fa.getTypeCode() + DELIMITER + formatDay(fa.getCalculatedStartTime())+ DELIMITER + portName, k -> new HashMap<>());
             for (FaCatchEntity faCatch : fa.getFaCatchs()) {
                 Map<String, List<FishingActivityEntity>> byPresentation = bySpecies.computeIfAbsent(faCatch.getSpeciesCode(), k -> new HashMap<>());
+
                 for(AapProcessEntity processEntity : faCatch.getAapProcesses()){
                     for(AapProcessCodeEntity codeEntity : processEntity.getAapProcessCode()) {
                         if(!FISH_PRESENTATION.equals(codeEntity.getTypeCodeListId())){
@@ -593,7 +640,7 @@ public class JasperReportServiceBean implements JasperReportService {
                 }
             }
         }
-        return bySpecies;
+        return activityTypeDate;
     }
 
     private boolean isElementUnique(Map<String, List<FishingActivityEntity>> byPresentation,int faId,String type){
@@ -681,7 +728,7 @@ public class JasperReportServiceBean implements JasperReportService {
     }
 
     private double addOrSubtractValue(String typeCode,double value){
-        if("UNLOADED".equals(typeCode)){
+        if(DISCARDED.equals(typeCode) || DEMINIMIS.equals(typeCode) ){
             return -value;
         }
 
@@ -921,7 +968,7 @@ public class JasperReportServiceBean implements JasperReportService {
         FluxLocationEntity fluxLocationEntity = fa.getFluxLocations() == null || fa.getFluxLocations().isEmpty() ? null : fa.getFluxLocations().stream().filter(r -> LOCATION.equals(r.getTypeCode())).findFirst().orElse(null);
         String portName = getPortName(fluxLocationEntity);
         portLogBookModel.setPort(portName == null ? formatCoordinates(fluxLocationEntity):portName);
-        portLogBookModel.setDate(fa.getCalculatedStartTime());
+        portLogBookModel.setDate(outputformat.format(fa.getCalculatedStartTime()));
         portLogBookModel.setId(fa.getId());
         logBookModelList.add(portLogBookModel);
     }
