@@ -110,7 +110,8 @@ public class ActivitySubscriptionServiceBean {
     public boolean requestSubscriptionForPermission(List<ReportToSubscription> faReports) {
         try {
             String request = ActivityModuleRequestMapper.mapToForwardReportToSubscriptionRequest(faReports, MessageType.FLUX_FA_REPORT_MESSAGE);
-            String correlationId = subscriptionProducer.sendMessageToSpecificQueue(request, JMSUtils.lookupQueue("jms/queue/UVMSSubscriptionPermissionEvent"), JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY));
+            String correlationId = subscriptionProducer.sendMessageToSpecificQueue(request, JMSUtils.lookupQueue("jms/queue/UVMSSubscriptionPermissionEvent"),
+                    JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY), Collections.singletonMap(MessageConstants.JMS_SUBSCRIPTION_SOURCE_PROPERTY, configHelper.getModuleName()));
             if (correlationId != null) {
                 TextMessage message = activityConsumerBean.getMessage(correlationId, TextMessage.class);
                 log.debug("Received response message from Subscription.");
@@ -127,8 +128,11 @@ public class ActivitySubscriptionServiceBean {
     public Optional<SubscriptionPermissionResponse> requestSubscriptionForPermission(ForwardQueryToSubscriptionRequest forwardQueryToSubscriptionRequest) {
         SubscriptionPermissionResponse subscriptionPermissionResponse = null;
         try {
-            String request = ActivityModuleRequestMapper.mapToSubscriptionRequest(JAXBMarshaller.marshallJaxBObjectToString(forwardQueryToSubscriptionRequest), MessageType.FLUX_FA_QUERY_MESSAGE);
-            String correlationId = subscriptionProducer.sendMessageToSpecificQueue(request, JMSUtils.lookupQueue("jms/queue/UVMSSubscriptionPermissionEvent"), JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY));
+            String request = ActivityModuleRequestMapper.mapToSubscriptionRequest(JAXBMarshaller.marshallJaxBObjectToString(forwardQueryToSubscriptionRequest),
+                    MessageType.FLUX_FA_QUERY_MESSAGE);
+            String correlationId = subscriptionProducer.sendMessageToSpecificQueue(request,
+                    JMSUtils.lookupQueue("jms/queue/UVMSSubscriptionPermissionEvent"), JMSUtils.lookupQueue(MessageConstants.QUEUE_ACTIVITY),
+                    Collections.singletonMap(MessageConstants.JMS_SUBSCRIPTION_SOURCE_PROPERTY, configHelper.getModuleName()));
             if (correlationId != null) {
                 TextMessage message = activityConsumerBean.getMessage(correlationId, TextMessage.class);
                 log.debug("Received response message from Subscription.");
