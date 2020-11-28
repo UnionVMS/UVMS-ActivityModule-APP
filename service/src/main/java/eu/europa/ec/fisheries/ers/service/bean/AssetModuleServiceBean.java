@@ -18,13 +18,7 @@ import eu.europa.ec.fisheries.ers.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.bean.asset.gateway.ActivityAssetGateway;
-import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsumerBean;
-import eu.europa.ec.fisheries.uvms.activity.message.producer.AssetProducerBean;
-import eu.europa.ec.fisheries.uvms.asset.model.exception.AssetModelMapperException;
-import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleRequestMapper;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
-import eu.europa.ec.fisheries.uvms.asset.model.mapper.JAXBMarshaller;
-import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
@@ -35,10 +29,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.jms.TextMessage;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -65,26 +57,19 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
      * {@inheritDoc}
      */
     @Override
-    public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
+    public List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) {
 
         List<Asset> assetListByQuery = activityAssetGateway.getAssetListByQuery(createAssetListQuery(vesselIdentifiers));
         return getGuidsFromAssets(assetListByQuery);
     }
 
     @Override
-    public List<Asset> getAssetsHavingAtLeastOneIdentifier(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException {
-        String request;
-        try {
-            request = AssetModuleRequestMapper.createAssetListModuleRequest(createAssetListQuery(vesselIdentifiers));
-        } catch (AssetModelMapperException e) {
-            log.error("Error while mapping vesselIdentifiers to create AssetListQuery!");
-            throw new ServiceException(e.getMessage(), e.getCause());
-        }
-        return getAssets(request);
+    public List<Asset> getAssetsHavingAtLeastOneIdentifier(Collection<VesselIdentifierEntity> vesselIdentifiers) {
+        return activityAssetGateway.getAssetListByQuery(createAssetListQuery(vesselIdentifiers));
     }
 
     @Override
-    public List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearch) throws ServiceException {
+    public List<String> getAssetGuids(String vesselSearchStr, String vesselGroupSearch) {
         List<String> guidsFromVesselSearchStr = null;
         List<String> guidsFromVesselGroup     = null;
 
@@ -111,22 +96,6 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             assetGuids.add(asset.getAssetId().getGuid());
         }
         return assetGuids;
-    }
-    
-    @NotNull
-    protected List<Asset> getAssets(String request) throws ServiceException {
-        try {
-            String correlationId = assetProducer.sendModuleMessage(request, activityConsumer.getDestination());
-            TextMessage response = activityConsumer.getMessage(correlationId, TextMessage.class, 120000L);
-            if (response != null) {
-                return AssetModuleResponseMapper.mapToAssetListFromResponse(response, correlationId);
-            } else {
-                throw new ServiceException("FAILED TO GET DATA FROM ASSET");
-            }
-        } catch (ServiceException | MessageException | AssetModelMapperException e) {
-            log.error("Exception in communication with assets");
-            throw new ServiceException(e.getMessage(), e);
-        }
     }
 
     private List<String> joinResults(List<String> guidsFromVesselSearchStr, List<String> guidsFromVesselGroup) {
