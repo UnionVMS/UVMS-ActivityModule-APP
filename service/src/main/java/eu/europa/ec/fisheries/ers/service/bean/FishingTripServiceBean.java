@@ -579,7 +579,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         if(query.isXml()){
-            FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName);
+            FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName, null);
             try {
                 AttachmentResponseObject responseObject = new AttachmentResponseObject();
                 String controlSource = JAXBUtils.marshallJaxBObjectToString(toBeMarshalled, "UTF-8", false, new FANamespaceMapper());
@@ -1063,7 +1063,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
 
     private FLUXFAReportMessage makeMessageIfNeededAndForwardToRules(ForwardFAReportBaseRequest request, List<FaReportDocumentEntity> faReportDocumentEntities) throws ActivityModuleException {
         if (shouldSendFaReport(request) || (request.getEmailConfig() != null && request.getEmailConfig().isXml())) {
-            FLUXFAReportMessage fluxfaReportMessage = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName);
+            FLUXFAReportMessage fluxfaReportMessage = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName, null);
             fluxfaReportMessage.getFAReportDocuments().forEach(faReport -> filterVesselIdentifiers(request.getVesselIdentifiers(), faReport));
             if (request.isNewReportIds()) {
                 fluxfaReportMessage.getFAReportDocuments().forEach(this::setNewReportId);

@@ -113,7 +113,7 @@ public class FAQueryServiceBean implements FaQueryService {
             }
 
             List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(tripID, consolidated, vesselId, schemeId, startDate, endDate);
-            return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip, localNodeName);
+            return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip, localNodeName, null);
 
         }
 
@@ -128,7 +128,7 @@ public class FAQueryServiceBean implements FaQueryService {
         criteria.setEndDate(faQuery.getSpecifiedDelimitedPeriod().getEndDateTime().getDateTime().toString());
 
         List<FaReportDocumentEntity> faReportDocumentsForTrip = FAReportDAO.loadReports(criteria.tripID, criteria.consolidated, criteria.vesselId, criteria.schemeId, criteria.startDate, criteria.endDate);
-        return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip, localNodeName);
+        return ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentsForTrip, localNodeName, faQuery.getID());
     }
 
     private void addCriterion(FAQueryParameter faQueryParameter, Criteria criteria) {
