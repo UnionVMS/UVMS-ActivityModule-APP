@@ -172,7 +172,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     }
 
     @Override
-    public void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXMLObj, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId) throws ActivityModuleException {
+    public void sendSyncAsyncFaReportToRules(FLUXFAReportMessage faReportXMLObj, String onValue, SyncAsyncRequestType type, String jmsMessageCorrId, String senderOrReceiver) throws ActivityModuleException {
         String sendTo = extractOwnerFromFLUXReportDocument(faReportXMLObj.getFLUXReportDocument());
         if (StringUtils.isEmpty(sendTo)) {
             throw new ActivityModuleException("Owner for the provided FLUXFAReportMessage was not found, so FLUXFAReportMessage won't be sent!");
@@ -198,7 +198,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 final String faReportXMLStr = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(faReportXMLObj));
                 // TODO : change this values (username, senderOrReceiver (Node name?)) when got answer from CEDRIC
                 final String sendFLUXFAReportMessageRequest = RulesModuleRequestMapper.createSendFLUXFAReportMessageRequest(faReportXMLStr, "FLUX",
-                        logId, dataFlow, localNodeName, onValue, isEmptyReportMessage(faReportXMLObj));
+                        logId, dataFlow, senderOrReceiver, onValue, isEmptyReportMessage(faReportXMLObj));
                 if(SyncAsyncRequestType.SYNC.equals(type)){
                     activityResponseQueueProducer.sendMessageWithSpecificIds(sendFLUXFAReportMessageRequest, activityResponseQueueProducer.getDestination(), null, null, jmsMessageCorrId);
                 } else {
