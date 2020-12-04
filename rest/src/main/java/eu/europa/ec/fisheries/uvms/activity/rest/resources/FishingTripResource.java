@@ -194,7 +194,7 @@ public class FishingTripResource extends UnionVMSResource {
                                                 @Context HttpServletResponse response) throws ServiceException {
         LOG.info("Going to process sending of FaReportMessage....");
         try {
-            rulesService.sendSyncAsyncFaReportToRules((FLUXFAReportMessage)JAXBMarshaller.unMarshallMessage(mockedFaReport, FLUXFAReportMessage.class), "SOMEON", SyncAsyncRequestType.ASYNC, null);
+            rulesService.sendSyncAsyncFaReportToRules((FLUXFAReportMessage)JAXBMarshaller.unMarshallMessage(mockedFaReport, FLUXFAReportMessage.class), "SOMEON", SyncAsyncRequestType.ASYNC, null, "");
         } catch (ActivityModuleException | RulesModelMarshallException e) {
             return createErrorResponse("Error while trying to send Update Trip Query!" + e.getMessage());
         }

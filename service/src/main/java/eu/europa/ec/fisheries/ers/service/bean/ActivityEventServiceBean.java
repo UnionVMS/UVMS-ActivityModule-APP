@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import java.util.List;
+import java.util.Optional;
 
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
@@ -143,12 +144,16 @@ public class ActivityEventServiceBean implements EventService {
                 case GET_FLUX_FA_QUERY:
                     FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
                     FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
-                    activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faReports, "getTheOnValueFromSomewahre", request.getRequestType(), jmsMessage.getJMSMessageID());
+                    activityRulesModuleServiceBean.sendSyncAsyncFaReportToRules(faReports, "getTheOnValueFromSomewahre", request.getRequestType(), jmsMessage.getJMSMessageID(), extractFRValueFromRequest(jmsMessage));
                     break;
             }
         } catch (ActivityModelMarshallException | JMSException | ActivityModuleException e) {
             sendError(eventMessage, e);
         }
+    }
+    
+    private String extractFRValueFromRequest(TextMessage jmsMessage) throws JMSException {
+        return Optional.ofNullable(jmsMessage.getStringProperty("FLUX_FR")).orElse("");
     }
 
     @Override
