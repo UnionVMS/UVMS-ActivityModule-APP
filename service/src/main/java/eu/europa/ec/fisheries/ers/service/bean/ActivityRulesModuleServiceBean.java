@@ -201,6 +201,10 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                                        String onValue, String jmsMessageCorrId, boolean isPermitted, String senderOrReceiver) throws ActivityModuleException, ActivityModelMarshallException,
             RulesModelMapperException, MessageException {
         String sendFLUXFAReportMessageRequest = null;
+        String logId = null;
+        if (fLUXFAReportMessage.getFLUXReportDocument() != null && CollectionUtils.isNotEmpty(fLUXFAReportMessage.getFLUXReportDocument().getIDS())) {
+            logId = fLUXFAReportMessage.getFLUXReportDocument().getIDS().get(0).getValue();
+        }
         if (isPermitted) {
             String dataFlow = extractParameterByName(parameters, "DF");
             // TODO : mocking up df value untill subscription is ready
@@ -212,10 +216,6 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                 log.error("[ERROR] Subscription is missing the dataFlow parameter! Cannot send FaQuery! ");
                 throw new ActivityModuleException("Subscription is missing the dataFlow parameter! Cannot send FaQuery!");
             }
-            String logId = null;
-            if (fLUXFAReportMessage.getFLUXReportDocument() != null && CollectionUtils.isNotEmpty(fLUXFAReportMessage.getFLUXReportDocument().getIDS())) {
-                logId = fLUXFAReportMessage.getFLUXReportDocument().getIDS().get(0).getValue();
-            }
             final String fLUXFAReportMessageString = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(fLUXFAReportMessage));
             // TODO : change this values (username, senderOrReceiver (Node name?)) when got answer from CEDRIC
             sendFLUXFAReportMessageRequest = RulesModuleRequestMapper.createSetFLUXFAQueryMessageRequest(fLUXFAReportMessageString, "FLUX",
@@ -224,7 +224,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             final String fLUXFAReportMessageString = clearEmptyTags(JAXBMarshaller.marshallJaxBObjectToString(fLUXFAReportMessage));
             // TODO : change this values (username, senderOrReceiver (Node name?)) when got answer from CEDRIC
             sendFLUXFAReportMessageRequest = RulesModuleRequestMapper.createSetFLUXFAQueryMessageRequest(fLUXFAReportMessageString, "FLUX",
-                    null, null, localNodeName, onValue, isEmptyReportMessage(fLUXFAReportMessage), isPermitted, senderOrReceiver);
+                    logId , null, localNodeName, onValue, isEmptyReportMessage(fLUXFAReportMessage), isPermitted, senderOrReceiver);
         }
 
         activityResponseQueueProducer.sendMessageWithSpecificIds(sendFLUXFAReportMessageRequest,
