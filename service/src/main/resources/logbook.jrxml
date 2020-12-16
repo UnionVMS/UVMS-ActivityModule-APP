@@ -319,7 +319,7 @@
                             <textField isBlankWhenNull="true">
                                 <reportElement x="49" y="0" width="86" height="18" uuid="f83fc426-a8bb-4b7f-afd3-2bae65d85484"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[($F{vesselName}== null)? "N/A":$F{vesselName}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{vesselName} == null)? "N/A":$F{vesselName}]]></textFieldExpression>
                             </textField>
                             <textField isBlankWhenNull="true">
                                 <reportElement x="135" y="0" width="25" height="18" uuid="37e8f36c-4722-4655-b833-e5baa9690e49"/>
@@ -413,7 +413,7 @@
                             <textField>
                                 <reportElement x="0" y="0" width="80" height="30" uuid="88d34356-18aa-4191-a2ef-407ae60b64f2"/>
                                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
-                                <textFieldExpression><![CDATA[$F{vesselName}]]></textFieldExpression>
+                                <textFieldExpression><![CDATA[($F{vesselName} == null)? "N/A":$F{vesselName}]]></textFieldExpression>
                             </textField>
                             <textField>
                                 <reportElement x="80" y="0" width="28" height="30" uuid="fbafacee-ddb5-45dd-9bfa-14b6f05bf007"/>
