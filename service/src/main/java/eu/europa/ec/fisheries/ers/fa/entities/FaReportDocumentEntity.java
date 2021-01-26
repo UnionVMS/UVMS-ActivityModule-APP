@@ -70,7 +70,7 @@ import org.hibernate.annotations.Type;
                         "LEFT OUTER JOIN fshtrp.fishingTripIdentifiers fshtrpids " +
                         "WHERE rpt.status IN (:statuses) " +
                         "AND ((:tripId IS NULL) OR fshtrpids.tripId = :tripId) " +
-                        "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= act.calculatedStartTime AND act.calculatedStartTime <= :endDate)))"
+                        "AND ((:vesselId IS NULL OR :schemeId IS NULL) OR (vtmids.vesselIdentifierId = :vesselId AND vtmids.vesselIdentifierSchemeId = :schemeId AND (:startDate <= flxrep.creationDatetime AND flxrep.creationDatetime <= :endDate)))"
         ),
         @NamedQuery(name = FaReportDocumentEntity.FIND_FA_DOCS_BY_TRIP_ID,
                 query = "SELECT DISTINCT rpt FROM FaReportDocumentEntity rpt " +
