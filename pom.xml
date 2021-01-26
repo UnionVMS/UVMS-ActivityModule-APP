@@ -55,18 +55,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <javaee.version>8.0</javaee.version>
-    <sl4j.version>1.7.25</sl4j.version>
-    <logback.version>1.2.3</logback.version>
     <mapstruct.version>1.2.0.Final</mapstruct.version>
     <jackson.version>2.7.3</jackson.version>
-    <logback.core.version>1.2.3</logback.core.version>
 
     <application.name>${project.parent.artifactId}</application.name>
     <application.version>${project.parent.version}</application.version>
-    <application.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}.log
+    <application.logfile>${project.parent.artifactId}/${project.parent.artifactId}.log
     </application.logfile>
-    <application.error.logfile>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-error.log
-    </application.error.logfile>
     <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
     </application.logfile.boot>
     <hibernate.version>4.3.11.Final</hibernate.version>
@@ -403,21 +398,6 @@
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-plugin-api</artifactId>
         <version>${mave.plugin.api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>1.2.3</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.2.3</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>1.7.25</version>
       </dependency>
 
       <dependency>
