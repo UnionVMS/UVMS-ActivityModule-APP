@@ -47,7 +47,7 @@ public class ContactPartyEntity implements Serializable {
     private int id;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "contact_person_id")
+	@JoinColumn(name = "contact_person_id", nullable = false)
 	private ContactPersonEntity contactPerson;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
