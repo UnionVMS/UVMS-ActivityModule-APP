@@ -62,7 +62,7 @@
         <xmlunit-core.version>2.7.0</xmlunit-core.version>
         <apache.commons.lang3.version>3.11</apache.commons.lang3.version>
         <commons.io.version>2.6</commons.io.version>
-        <lombok.version>1.18.12</lombok.version>
+        <lombok.version>1.18.18</lombok.version>
         <slf4j.api.version>1.7.25</slf4j.api.version>
         <jetbrains.annotations.java5.version>16.0.3</jetbrains.annotations.java5.version>
         <geotools.version>22.0</geotools.version>
