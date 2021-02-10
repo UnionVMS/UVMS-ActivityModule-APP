@@ -62,7 +62,7 @@
 
     <application.name>${project.parent.artifactId}</application.name>
     <application.version>${project.parent.version}</application.version>
-    <application.logfile>${project.parent.artifactId}/${project.parent.artifactId}.log
+    <application.logfile>${project.parent.artifactId}.log
     </application.logfile>
     <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
     </application.logfile.boot>
