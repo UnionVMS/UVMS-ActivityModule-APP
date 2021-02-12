@@ -7,7 +7,7 @@
 	<packaging>ejb</packaging>
 	
 	<properties>
-		<jts.version>1.13</jts.version>
+		<jts.version>1.14.0</jts.version>
 		<application.logfile.message.pattern>%replace(%rEx){'[\r\n]+', '~~'}%nopex %n</application.logfile.message.pattern>
 	</properties>
 
@@ -33,7 +33,7 @@
 	
 	  	<dependency>
             <groupId>com.vividsolutions</groupId>
-            <artifactId>jts</artifactId>
+            <artifactId>jts-core</artifactId>
             <version>${jts.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -126,7 +126,7 @@
 			<exclusions>
 				<exclusion>
 					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
+					<artifactId>jts-core</artifactId>
 				</exclusion>
 			</exclusions>			
         </dependency>
@@ -164,7 +164,7 @@
 			<exclusions>
 				<exclusion>
 					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
+					<artifactId>jts-core</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -185,7 +185,7 @@
 			<exclusions>
 				<exclusion>
 					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
+					<artifactId>jts-core</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -245,26 +245,26 @@
 			<scope>test</scope>
 		</dependency>
 
- 		<dependency>
-			<groupId>fish.focus.uvms.maven</groupId>
-			<artifactId>uvms-pom-gis-deps</artifactId>
-			<type>pom</type>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-entitymanager</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+ 		<!--<dependency>-->
+			<!--<groupId>fish.focus.uvms.maven</groupId>-->
+			<!--<artifactId>uvms-pom-gis-deps</artifactId>-->
+			<!--<type>pom</type>-->
+			<!--<scope>provided</scope>-->
+			<!--<exclusions>-->
+				<!--<exclusion>-->
+					<!--<groupId>com.vividsolutions</groupId>-->
+					<!--<artifactId>jts-core</artifactId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<groupId>org.hibernate</groupId>-->
+					<!--<artifactId>hibernate-core</artifactId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<groupId>org.hibernate</groupId>-->
+					<!--<artifactId>hibernate-entitymanager</artifactId>-->
+				<!--</exclusion>-->
+			<!--</exclusions>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
@@ -273,6 +273,11 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-spatial</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
         <dependency>
