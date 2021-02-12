@@ -66,11 +66,10 @@
     </application.logfile>
     <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
     </application.logfile.boot>
-    <hibernate.version>4.3.11.Final</hibernate.version>
-    <!--hibernate.version>5.1.9.Final</hibernate.version -->
-    <hibernate-spatial.version>4.3</hibernate-spatial.version>
+    <hibernate.version>5.3.17.Final</hibernate.version>
+    <hibernate-spatial.version>5.3.17.Final</hibernate-spatial.version>
     <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
-    <hibernate-entitymanager.version>4.3.11.Final</hibernate-entitymanager.version>
+    <hibernate-entitymanager.version>5.3.17.Final</hibernate-entitymanager.version>
     <geotools.version>14.4</geotools.version>
     <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
     <release.branch.name>uvms-1.0.0</release.branch.name>
@@ -383,12 +382,12 @@
         <artifactId>jts2geojson</artifactId>
         <version>0.7.0</version>
       </dependency>
-      <dependency>
-        <groupId>fish.focus.uvms.maven</groupId>
-        <artifactId>uvms-pom-gis-deps</artifactId>
-        <version>1.21</version>
-        <type>pom</type>
-      </dependency>
+      <!--<dependency>-->
+        <!--<groupId>fish.focus.uvms.maven</groupId>-->
+        <!--<artifactId>uvms-pom-gis-deps</artifactId>-->
+        <!--<version>1.21</version>-->
+        <!--<type>pom</type>-->
+      <!--</dependency>-->
       <dependency>
         <groupId>fish.focus.uvms.maven</groupId>
         <artifactId>uvms-pom-logging-deps</artifactId>
@@ -525,10 +524,10 @@
       <id>OSGEO GeoTools repo</id>
       <url>http://download.osgeo.org/webdav/geotools</url>
     </repository>
-    <repository>
-      <id>Hibernate Spatial Repo</id>
-      <url>http://nexus.e-is.pro/nexus/content/repositories/hibernatespatial/</url>
-    </repository>
+    <!--<repository>-->
+      <!--<id>Hibernate Spatial Repo</id>-->
+      <!--<url>http://nexus.e-is.pro/nexus/content/repositories/hibernatespatial/</url>-->
+    <!--</repository>-->
     <repository>
       <id>JBOSS</id>
       <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
