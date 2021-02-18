@@ -53,7 +53,7 @@
 				<db.outputFile>postgres/changelog/generatedChangelog.xml</db.outputFile>
 				<driver.groupId>org.postgresql</driver.groupId>
 				<driver.artifactId>postgresql</driver.artifactId>
-				<driver.version>42.2.16</driver.version>
+				<driver.version>42.2.19</driver.version>
 			</properties>
 			<dependencies>
 				<dependency>
