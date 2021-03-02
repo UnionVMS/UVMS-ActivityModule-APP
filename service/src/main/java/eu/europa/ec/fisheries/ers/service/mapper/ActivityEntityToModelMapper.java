@@ -63,9 +63,9 @@ public class ActivityEntityToModelMapper {
         }
         fluxReportDocument.setCreationDateTime(dateTimeType);
 
-        TextType textType = new TextType();
-        textType.setValue("LOAD_REPORTS");
-        fluxReportDocument.setPurpose(textType);
+//        TextType textType = new TextType();
+//        textType.setValue("LOAD_REPORTS");
+//        fluxReportDocument.setPurpose(textType);
 
         FLUXParty party = new FLUXParty();
         IDType idType1 = new IDType();
