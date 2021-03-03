@@ -51,7 +51,7 @@ public class ReportDocumentResource extends UnionVMSResource {
         List<SubscriptionDataCriteria> queryCriteria = subscriptionDataRequest.getQuery().getCriteria();
         log.info(queryCriteria.toString());
         FLUXFAReportMessage reportsByCriteria = faQueryService.getReportsByCriteria(queryCriteria);
-        String controlSource = JAXBUtils.marshallJaxBObjectToString(reportsByCriteria, "ISO-8859-15", true, new FANamespaceMapper());
+        String controlSource = JAXBUtils.marshallJaxBObjectToString(reportsByCriteria, "ISO-8859-15", true, null);
         return clearEmptyTags(controlSource);
     }
 

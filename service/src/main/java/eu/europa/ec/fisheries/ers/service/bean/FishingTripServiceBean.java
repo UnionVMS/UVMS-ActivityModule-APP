@@ -605,7 +605,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName, null);
             try {
                 AttachmentResponseObject responseObject = new AttachmentResponseObject();
-                String controlSource = JAXBUtils.marshallJaxBObjectToString(toBeMarshalled, "UTF-8", false, new FANamespaceMapper());
+                String controlSource = JAXBUtils.marshallJaxBObjectToString(toBeMarshalled, "UTF-8", false, null);
                 responseObject.setContent(controlSource);
                 responseObject.setTripId(tripId);
                 responseObject.setType(AttachmentType.XML);
@@ -1195,7 +1195,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         if (request.getEmailConfig().isXml()) {
             try {
                 AttachmentResponseObject responseObject = new AttachmentResponseObject();
-                String controlSource = JAXBUtils.marshallJaxBObjectToString(fluxfaReportMessage, "UTF-8", false, new FANamespaceMapper());
+                String controlSource = JAXBUtils.marshallJaxBObjectToString(fluxfaReportMessage, "UTF-8", false, null);
                 responseObject.setContent(controlSource);
                 responseObject.setTripId("report");
                 responseObject.setType(AttachmentType.XML);
