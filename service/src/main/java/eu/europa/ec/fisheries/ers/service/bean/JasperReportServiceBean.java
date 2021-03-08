@@ -490,7 +490,7 @@ public class JasperReportServiceBean implements JasperReportService {
     }
 
     private List<FooterModel> createFooter(List<FishingActivityEntity> faList){
-
+        faList = faList.stream().filter(fishingActivityEntity -> fishingActivityEntity.getTypeCode() != null && fishingActivityEntity.getCalculatedStartTime() != null).collect(Collectors.toList());
         if(faList.isEmpty()){
             return new ArrayList<>();
         }
