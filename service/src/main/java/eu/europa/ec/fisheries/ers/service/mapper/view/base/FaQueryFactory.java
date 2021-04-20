@@ -53,6 +53,7 @@ public class FaQueryFactory {
     public static final String TRIPID = "TRIPID";
     public static final String CONSOLIDATED = "CONSOLIDATED";
     public static final String BOOLEAN_VALUE = "BOOLEAN_VALUE";
+    public static final String BOOLEAN_TYPE = "BOOLEAN_TYPE";
     public static final String UUID_ = "UUID";
     public static final String EU_TRIP_ID = "EU_TRIP_ID";
 
@@ -83,10 +84,17 @@ public class FaQueryFactory {
             null, null,
             createIDType(tripId, EU_TRIP_ID))
         );
+
+        CodeType codeType;
+        if(consolidated){
+            codeType =  createCodeType("Y", BOOLEAN_TYPE);
+        } else{
+            codeType =  createCodeType("N", BOOLEAN_VALUE);
+        }
         simpleParams.add(
             new FAQueryParameter(
                     createCodeType(CONSOLIDATED, FA_QUERY_PARAMETER),
-                    createCodeType(consolidated?"Y":"N", BOOLEAN_VALUE),
+                    codeType,
                     null, null));
         faq.setSimpleFAQueryParameters(simpleParams);
         return faq;
@@ -103,10 +111,18 @@ public class FaQueryFactory {
                 Collections.singletonList(createIDType(submitterFluxParty, FLUX_GP_PARTY)), null));
         List<FAQueryParameter> simpleParams = new ArrayList<>();
         chooseVesselIdentifier(vesselIdentifiers).ifPresent(simpleParams::add);
+        CodeType codeType;
+        if(consolidated){
+            codeType =  createCodeType("Y", BOOLEAN_TYPE);
+        } else{
+            codeType =  createCodeType("N", BOOLEAN_VALUE);
+        }
+
         simpleParams.add(
             new FAQueryParameter(
                     createCodeType(CONSOLIDATED, FA_QUERY_PARAMETER),
-                    createCodeType(consolidated?"Y":"N", BOOLEAN_VALUE),
+                    codeType
+                    ,
                     null, null));
         faq.setSimpleFAQueryParameters(simpleParams);
         return faq;
