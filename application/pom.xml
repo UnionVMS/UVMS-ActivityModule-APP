@@ -16,7 +16,7 @@
         <docker.dev.start.phase>test-compile</docker.dev.start.phase>
         <docker.dev.prestop.phase>install</docker.dev.prestop.phase>
         <docker.liquibase.phase>test-compile</docker.liquibase.phase>
-        <jaxb-impl.version>2.3.3</jaxb-impl.version>
+        <jaxb-impl.version>3.0.1</jaxb-impl.version>
     </properties>
 
     <dependencies>
