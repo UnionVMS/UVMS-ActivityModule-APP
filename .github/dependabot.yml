@@ -1,0 +1,64 @@
+version: 2
+registries:
+  maven-repository-nexus-focus-fish-nexus-content-repositories-rel:
+    type: maven-repository
+    url: http://nexus.focus.fish/nexus/content/repositories/releases/
+    username: greg
+    password: "${{secrets.MAVEN_REPOSITORY_NEXUS_FOCUS_FISH_NEXUS_CONTENT_REPOSITORIES_REL_PASSWORD}}"
+
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "20:00"
+  open-pull-requests-limit: 99
+  target-branch: swe-dev
+  reviewers:
+  - robertkrantz
+  - psjobergprivat
+  - RobinMilding
+  ignore:
+  - dependency-name: org.liquibase:liquibase-maven-plugin
+    versions:
+    - 4.2.2
+    - 4.3.0
+    - 4.3.1
+    - 4.3.2
+    - 4.3.3
+  - dependency-name: eu.europa.ec.fisheries.uvms.asset:asset-client
+    versions:
+    - 6.8.5
+    - 6.8.6
+    - 6.8.7
+    - 6.8.8
+  - dependency-name: eu.europa.ec.fisheries.uvms.asset:asset-model
+    versions:
+    - 6.8.5
+    - 6.8.6
+    - 6.8.7
+    - 6.8.8
+  - dependency-name: org.postgresql:postgresql
+    versions:
+    - 42.2.18
+    - 42.2.19
+  - dependency-name: org.projectlombok:lombok
+    versions:
+    - 1.18.18
+  - dependency-name: com.sun.xml.bind:jaxb-impl
+    versions:
+    - 3.0.0
+  - dependency-name: org.apache.activemq:artemis-jms-client
+    versions:
+    - 2.16.0
+  - dependency-name: org.eclipse:yasson
+    versions:
+    - 2.0.1
+  - dependency-name: org.mapstruct:mapstruct-processor
+    versions:
+    - 1.4.1.Final
+  - dependency-name: org.mapstruct:mapstruct
+    versions:
+    - 1.4.1.Final
+  registries:
+  - maven-repository-nexus-focus-fish-nexus-content-repositories-rel
