@@ -151,7 +151,6 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
-import org.mockito.internal.util.collections.Sets;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
@@ -949,7 +948,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     private void setFlapDocuments(VesselDetailsDTO detailsDTO, FishingActivityEntity parent, TripWidgetDto tripWidgetDto) {
         FlapDocumentDto flapDocumentDto = FlapDocumentMapper.INSTANCE.mapToFlapDocumentDto(parent.getFirstFlapDocument());
         if (flapDocumentDto != null) {
-            tripWidgetDto.setFlapDocuments(Sets.newSet(flapDocumentDto));
+            tripWidgetDto.setFlapDocuments(Collections.singleton(flapDocumentDto));
         }
         tripWidgetDto.setVesselDetails(detailsDTO);
     }

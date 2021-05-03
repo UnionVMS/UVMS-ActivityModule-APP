@@ -11,22 +11,6 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.service.dto.view;
 
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaExit;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Arrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.CommonView;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Departure;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Discard;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.FishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.JointFishingOperation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Landing;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.NotificationOfArrival;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Relocation;
-import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.Transhipment;
-
-import java.util.Date;
-import java.util.Map;
-import java.util.Set;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -38,11 +22,17 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.europa.ec.fisheries.ers.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.ers.service.dto.FlapDocumentDto;
 import eu.europa.ec.fisheries.ers.service.dto.FluxCharacteristicsDto;
-import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.AreaEntry;
-import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
+import eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.*;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
+import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import lombok.ToString;
-import org.mockito.internal.util.collections.Sets;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static eu.europa.ec.fisheries.ers.service.dto.view.parent.FishingActivityView.*;
 
 @JsonInclude(Include.NON_NULL)
 @ToString
@@ -69,7 +59,7 @@ public class ActivityDetailsDto {
 
     @JsonSerialize(using = CustomDateSerializer.class)
     @JsonView({Landing.class, Departure.class, AreaEntry.class, AreaExit.class, FishingOperation.class, Discard.class,
-            JointFishingOperation.class, Relocation.class,NotificationOfArrival.class})
+            JointFishingOperation.class, Relocation.class, NotificationOfArrival.class})
     private Date occurrence;
 
     @JsonSerialize(using = CustomDateSerializer.class)
@@ -287,12 +277,12 @@ public class ActivityDetailsDto {
     }
 
     private void add(String key, Object value, Map<String, Set<Object>> map) {
-        if(key !=null) {
+        if (key != null) {
             Set<Object> valueSet = map.get(key);
             if (valueSet == null) {
-                valueSet = Sets.newSet();
+                valueSet = new HashSet<>();
             } else if (value != null) {
-                    valueSet.add(value);
+                valueSet.add(value);
             }
             map.put(key, valueSet);
         }
