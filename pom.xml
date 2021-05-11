@@ -66,17 +66,14 @@
     </application.logfile>
     <application.logfile.boot>/app/logs/${project.parent.artifactId}/${project.parent.artifactId}-boot.log
     </application.logfile.boot>
-    <hibernate.version>5.3.17.Final</hibernate.version>
-    <hibernate-spatial.version>5.3.17.Final</hibernate-spatial.version>
+    <hibernate.version>5.3.20.Final</hibernate.version>
     <hibernate.validator.version>4.3.2.Final</hibernate.validator.version>
-    <hibernate-entitymanager.version>5.3.17.Final</hibernate-entitymanager.version>
-    <geotools.version>14.4</geotools.version>
+    <geotools.version>19.4</geotools.version>
     <usm_deployment_descriptor_force_update>false</usm_deployment_descriptor_force_update>
     <release.branch.name>uvms-1.0.0</release.branch.name>
     <maven.release.plugin.version>2.5.2</maven.release.plugin.version>
     <maven.scm.provider.version>2.1.1</maven.scm.provider.version>
     <database.dialect>postgres</database.dialect>
-    <geotools.version>14.4</geotools.version>
     <mave.plugin.api.version>2.0</mave.plugin.api.version>
     <dom4j.version>1.6.1</dom4j.version>
     <jasper.version>6.13.0</jasper.version>
@@ -431,21 +428,6 @@
       -->
     </dependencies>
   </dependencyManagement>
-
-  <dependencies>
-    <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-      <version>${dom4j.version}</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
 
   <distributionManagement>
     <repository>
