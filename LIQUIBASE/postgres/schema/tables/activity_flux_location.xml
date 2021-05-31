@@ -3,7 +3,7 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:spatial="http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd http://www.liquibase.org/xml/ns/dbchangelog-ext/liquibase-spatial
-      http://lonnyj.github.com/liquibase-spatial/liquibase-spatial.xsd">
+      http://lonnyj.github.io/liquibase-spatial/liquibase-spatial.xsd">
 
     <changeSet author="padhyad" id="123456-44">
         <createSequence cycle="false" incrementBy="1" maxValue="9223372036854775807" minValue="1"

@@ -11,33 +11,16 @@ details. You should have received a copy of the GNU General Public License along
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
-
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Objects;
+import java.util.Set;
 
 @NamedQueries({
         @NamedQuery(name = FaReportDocumentEntity.FIND_BY_FA_ID_AND_SCHEME,
@@ -132,7 +115,6 @@ public class FaReportDocumentEntity implements Serializable {
     @JoinColumn(name = "flux_report_document_id", nullable = false)
     private FluxReportDocumentEntity fluxReportDocument;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
     @Column(name = "geom")
     private Geometry geom;
 
@@ -178,9 +160,9 @@ public class FaReportDocumentEntity implements Serializable {
     public boolean equals(Object other) {
         return other instanceof FaReportDocumentEntity
                 && (
-                    (this.fluxReportDocument == null && ((FaReportDocumentEntity) other).fluxReportDocument == null)
-                    || (this.fluxReportDocument != null && ((FaReportDocumentEntity) other).fluxReportDocument != null && Objects.equals(this.fluxReportDocument.getFluxReportIdentifiers(), ((FaReportDocumentEntity) other).fluxReportDocument.getFluxReportIdentifiers()))
-                );
+                (this.fluxReportDocument == null && ((FaReportDocumentEntity) other).fluxReportDocument == null)
+                        || (this.fluxReportDocument != null && ((FaReportDocumentEntity) other).fluxReportDocument != null && Objects.equals(this.fluxReportDocument.getFluxReportIdentifiers(), ((FaReportDocumentEntity) other).fluxReportDocument.getFluxReportIdentifiers()))
+        );
     }
 
     @Override

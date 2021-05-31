@@ -13,25 +13,13 @@
 
 package eu.europa.ec.fisheries.ers.fa.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.util.Date;
-
 import com.vividsolutions.jts.geom.Geometry;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @Table(name = "activity_vessel_position_event")
@@ -71,7 +59,6 @@ public class VesselPositionEventEntity implements Serializable {
     @Column(name = "activity_type_code")
     private String activityTypeCode;
 
-    @Type(type = "org.hibernate.spatial.GeometryType")
     private Geometry geom;
 
 }
