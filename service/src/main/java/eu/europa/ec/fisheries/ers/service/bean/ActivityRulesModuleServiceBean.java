@@ -21,25 +21,31 @@ import eu.europa.ec.fisheries.uvms.activity.message.consumer.bean.ActivityConsum
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityResponseQueueProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
+import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelValidationException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.*;
+import eu.europa.ec.fisheries.uvms.commons.date.XMLDateUtils;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageException;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionElement;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionParameter;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionAnswer;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
+import eu.europa.fisheries.uvms.subscription.model.enums.SubscriptionTimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.annotation.PostConstruct;
@@ -51,8 +57,15 @@ import javax.inject.Inject;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 import javax.transaction.Transactional;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Stateless
 @Transactional
@@ -173,8 +186,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             FLUXFAQueryMessage fluxFAQueryMessage = JAXBMarshaller.unmarshallTextMessage(request.getRequest(), FLUXFAQueryMessage.class);
             FAQuery faQuery = fluxFAQueryMessage.getFAQuery();
 
-            // fa reports needed in RulesFaQueryServiceBean so keep generating them
-            FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
+
 
             ForwardQueryToSubscriptionRequest forwardQueryToSubscriptionRequest =
                     faQueryService.getForwardQueryToSubscriptionRequestByFAQuery(fluxFAQueryMessage.getFAQuery());
@@ -184,12 +196,95 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
                     new ActivityModuleException("MessageException! could not  define subscription for request " + request));
             SubscriptionPermissionAnswer subscriptionCheck = subscriptionPermissionResponse.getSubscriptionCheck();
             boolean isPermitted = SubscriptionPermissionAnswer.YES.equals(subscriptionCheck);
-            enrichResponseAndSend(subscriptionPermissionResponse.getParameters(), faReports, "getTheOnValueFromSomeWhere", jmsMessage.getJMSMessageID(), isPermitted, extractFRValueFromRequest(jmsMessage));
+
+            try {
+                updateFaQueryFromSubscriptions(fluxFAQueryMessage,subscriptionPermissionResponse.getSubElements());
+                FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
+                enrichResponseAndSend(subscriptionPermissionResponse.getParameters(), faReports, "getTheOnValueFromSomeWhere", jmsMessage.getJMSMessageID(), isPermitted, extractFRValueFromRequest(jmsMessage));
+            } catch (ActivityModelValidationException e) {
+                FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
+                enrichResponseAndSend(subscriptionPermissionResponse.getParameters(), faReports, "getTheOnValueFromSomeWhere", jmsMessage.getJMSMessageID(), false, extractFRValueFromRequest(jmsMessage));
+            }
+
 
         } catch (ActivityModelMarshallException | ServiceException | JMSException | RulesModelMapperException | MessageException e) {
             log.error("[ERROR] Error while trying to ActivityEventServiceBean.ReceiveFishingActivityRequestEvent(...)!", e);
             throw new ActivityModuleException("JAXBException or MessageException!", e);
         }
+    }
+
+    private FLUXFAQueryMessage updateFaQueryFromSubscriptions(FLUXFAQueryMessage fluxFAQueryMessage,List<SubscriptionElement> subElements) throws ActivityModelValidationException{
+        if(subElements == null || subElements.isEmpty()){
+            return fluxFAQueryMessage;
+        }
+
+        DelimitedPeriod specifiedDelimitedPeriod = fluxFAQueryMessage.getFAQuery().getSpecifiedDelimitedPeriod();
+        Date startDate = XMLDateUtils.xmlGregorianCalendarToDate(specifiedDelimitedPeriod.getStartDateTime().getDateTime());
+        Date endDate = XMLDateUtils.xmlGregorianCalendarToDate(specifiedDelimitedPeriod.getEndDateTime().getDateTime());
+
+        Date minDate = new Date();
+        Integer min = 0;
+        for(SubscriptionElement subElement:subElements){
+
+            if(min == 0){
+                min = subElement.getHistory();
+            }
+
+            if(subElement.getHistory() > 0){
+                if(min != 0 && minDate.after(convertNowToHistory(subElement))){
+                    minDate = convertNowToHistory(subElement);
+                }
+            }
+        }
+
+        if(endDate.before(minDate)){
+            throw new ActivityModelValidationException("Invalid Fa Query date");
+        }
+
+        if(startDate.before(minDate)){
+            GregorianCalendar c = new GregorianCalendar();
+            c.setTime(minDate);
+            DateTimeType dateTimeType = new DateTimeType();
+            try {
+                dateTimeType.setDateTime(DatatypeFactory.newInstance().newXMLGregorianCalendar(c));
+                fluxFAQueryMessage.getFAQuery().getSpecifiedDelimitedPeriod().setStartDateTime(dateTimeType);
+            } catch (DatatypeConfigurationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return  fluxFAQueryMessage;
+    }
+
+
+    private Date convertNowToHistory(SubscriptionElement subElement){
+        Date historyDate;
+
+        SubscriptionTimeUnit subscriptionTimeUnit = SubscriptionTimeUnit.valueOf(subElement.getTimeUnit());
+
+        switch(subscriptionTimeUnit){
+            case HOURS:
+                historyDate = new Date(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(subElement.getHistory()));
+                break;
+            case DAYS:
+                historyDate = new Date(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(subElement.getHistory()));
+                break;
+            case WEEKS:
+                Calendar calendarWeek = Calendar.getInstance();
+                calendarWeek.add(Calendar.WEEK_OF_YEAR, - subElement.getHistory());
+                historyDate = calendarWeek.getTime();
+                break;
+            case MONTHS:
+                Calendar calendarMonth = Calendar.getInstance();
+                calendarMonth.add(Calendar.MONTH, - subElement.getHistory());
+                historyDate = calendarMonth.getTime();
+                break;
+            default:
+                historyDate = new Date();
+        }
+
+        return historyDate;
+
     }
 
     private String extractFRValueFromRequest(TextMessage jmsMessage) throws JMSException {
