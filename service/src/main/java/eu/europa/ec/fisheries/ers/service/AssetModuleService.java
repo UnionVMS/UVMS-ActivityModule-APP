@@ -23,6 +23,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
 import eu.europa.ec.fisheries.wsdl.asset.types.BatchAssetListResponseElement;
 import eu.europa.ec.fisheries.wsdl.asset.types.VesselIdentifiersHolder;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 public interface AssetModuleService {
 
@@ -34,6 +35,8 @@ public interface AssetModuleService {
      * @throws ServiceException
      */
     List<String> getAssetGuids(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException;
+
+    List<Asset> getAssetsHavingAtLeastOneIdentifier(List<IDType> idTypes);
     
     List<Asset> getAssetsHavingAtLeastOneIdentifier(Collection<VesselIdentifierEntity> vesselIdentifiers) throws ServiceException;
 

@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -66,6 +67,11 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
     @Override
     public List<Asset> getAssetsHavingAtLeastOneIdentifier(Collection<VesselIdentifierEntity> vesselIdentifiers) {
         return activityAssetGateway.getAssetListByQuery(createAssetListQuery(vesselIdentifiers));
+    }
+
+    @Override
+    public List<Asset> getAssetsHavingAtLeastOneIdentifier(List<IDType> idTypes) {
+        return activityAssetGateway.getAssetListByQuery(createAssetListQuery(idTypes));
     }
 
     @Override
@@ -139,6 +145,31 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
                 criteriaPair.setKey(queryEnum.getConfigSearchField());
                 criteriaPair.setValue(vesselToSearchFor);
                 assetListCriteria.getCriterias().add(criteriaPair);
+            }
+        }
+        assetListCriteria.setIsDynamic(false); // DO not know why
+        assetListQuery.setAssetSearchCriteria(assetListCriteria);
+        // Set asset pagination
+        AssetListPagination pagination = new AssetListPagination();
+        pagination.setPage(1);
+        pagination.setListSize(1000);
+        assetListQuery.setPagination(pagination);
+        return assetListQuery;
+    }
+
+    private AssetListQuery createAssetListQuery(List<IDType> vesselsIdentifiers) {
+        AssetListQuery assetListQuery = new AssetListQuery();
+        //Set asset list criteria
+        AssetListCriteria assetListCriteria = new AssetListCriteria();
+        for (IDType identifier : vesselsIdentifiers) {
+            VesselTypeAssetQueryEnum queryEnum = VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(identifier.getSchemeID());
+            if(queryEnum != null && queryEnum.getConfigSearchField() != null && StringUtils.isNotEmpty(identifier.getValue())){
+                AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+                criteriaPair.setKey(queryEnum.getConfigSearchField());
+                criteriaPair.setValue(identifier.getValue());
+                assetListCriteria.getCriterias().add(criteriaPair);
+            } else {
+                log.warn("For Identifier : '"+identifier.getValue() + "' it was not found the counterpart in the VesselTypeAssetQueryEnum.");
             }
         }
         assetListCriteria.setIsDynamic(false); // DO not know why

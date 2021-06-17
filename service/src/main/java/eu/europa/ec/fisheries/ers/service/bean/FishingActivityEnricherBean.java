@@ -414,7 +414,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
                 vesselTransport.setGuid(guids.get(0));
             }
             return guids;
-        } catch (ServiceException e) {
+        } catch (Exception e) {
             log.error("[ERROR] Error while trying to get guids from Assets Module!");
         }
         return null;
