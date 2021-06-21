@@ -11,7 +11,9 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.ers.service.bean;
 
 
+import eu.europa.ec.fisheries.ers.fa.utils.IdentifierSourceEnum;
 import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
+import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.FaQueryService;
 import eu.europa.ec.fisheries.ers.service.FishingTripService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
@@ -31,10 +33,12 @@ import eu.europa.ec.fisheries.uvms.config.exception.ConfigServiceException;
 import eu.europa.ec.fisheries.uvms.config.service.ParameterService;
 import eu.europa.ec.fisheries.uvms.rules.model.exception.RulesModelMapperException;
 import eu.europa.ec.fisheries.uvms.rules.model.mapper.RulesModuleRequestMapper;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionElement;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionParameter;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionAnswer;
 import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionPermissionResponse;
+import eu.europa.ec.fisheries.wsdl.subscription.module.SubscriptionVesselIdentifier;
 import eu.europa.fisheries.uvms.subscription.model.enums.SubscriptionTimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,6 +47,7 @@ import un.unece.uncefact.data.standard.fluxfaquerymessage._3.FLUXFAQueryMessage;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.DelimitedPeriod;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAQuery;
+import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FAReportDocument;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXParty;
 import un.unece.uncefact.data.standard.reusableaggregatebusinessinformationentity._20.FLUXReportDocument;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.DateTimeType;
@@ -59,13 +64,16 @@ import javax.jms.TextMessage;
 import javax.transaction.Transactional;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
@@ -79,6 +87,9 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
 
     @EJB
     private ActivityConsumerBean activityConsumerBean;
+
+    @EJB
+    private AssetModuleService assetService;
 
     @EJB
     private FishingTripService fishingTripService;
@@ -200,7 +211,8 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             try {
                 updateFaQueryFromSubscriptions(fluxFAQueryMessage,subscriptionPermissionResponse.getSubElements());
                 FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
-                enrichResponseAndSend(subscriptionPermissionResponse.getParameters(), faReports, "getTheOnValueFromSomeWhere", jmsMessage.getJMSMessageID(), isPermitted, extractFRValueFromRequest(jmsMessage));
+                FLUXFAReportMessage fluxfaReportMessage = processFaReportMessageFromSubscriptions(faReports, subscriptionPermissionResponse.getSubElements());
+                enrichResponseAndSend(subscriptionPermissionResponse.getParameters(), fluxfaReportMessage, "getTheOnValueFromSomeWhere", jmsMessage.getJMSMessageID(), isPermitted, extractFRValueFromRequest(jmsMessage));
             } catch (ActivityModelValidationException e) {
                 FLUXFAReportMessage faReports = faQueryService.getReportsByCriteria(fluxFAQueryMessage.getFAQuery());
                 enrichResponseAndSend(subscriptionPermissionResponse.getParameters(), faReports, "getTheOnValueFromSomeWhere", jmsMessage.getJMSMessageID(), false, extractFRValueFromRequest(jmsMessage));
@@ -211,6 +223,99 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
             log.error("[ERROR] Error while trying to ActivityEventServiceBean.ReceiveFishingActivityRequestEvent(...)!", e);
             throw new ActivityModuleException("JAXBException or MessageException!", e);
         }
+    }
+
+    private FLUXFAReportMessage processFaReportMessageFromSubscriptions(FLUXFAReportMessage faReports,List<SubscriptionElement> subElements){
+
+        if(faReports.getFAReportDocuments() == null || faReports.getFAReportDocuments().isEmpty()){
+            return faReports;
+        }
+
+        boolean generateNewReportIds = false;
+        Set<SubscriptionVesselIdentifier> subscriptionVesselIdentifiers = new HashSet<>();
+        for(SubscriptionElement element: subElements){
+            if(Boolean.TRUE.equals(element.isGenerateNewReportIds())) {
+                generateNewReportIds = true;
+            }
+
+            subscriptionVesselIdentifiers.addAll(element.getSubscriptionVesselIdentifier());
+        }
+
+        for(FAReportDocument reportDocument:faReports.getFAReportDocuments() ) {
+            List<Asset> assets = assetService.getAssetsHavingAtLeastOneIdentifier(reportDocument.getSpecifiedVesselTransportMeans().getIDS());
+            reportDocument.getSpecifiedVesselTransportMeans().getIDS().clear();
+            applyAssetsToFAReportDocument(assets,subscriptionVesselIdentifiers,reportDocument);
+        }
+
+        if(!generateNewReportIds){
+            return faReports;
+        } else {
+            for(FAReportDocument reportDocument:faReports.getFAReportDocuments() ) {
+                reportDocument.getRelatedFLUXReportDocument().getIDS().forEach(t -> t.setValue(UUID.randomUUID().toString()));
+            }
+        }
+
+        return faReports;
+    }
+
+
+    private void applyAssetsToFAReportDocument(List<Asset> assets, Set<SubscriptionVesselIdentifier> subscriptionVesselIdentifiers,FAReportDocument reportDocument){
+
+
+        if(!assets.isEmpty()) {
+            Asset asset = assets.get(0);
+
+            String cfr = asset.getCfr();
+            if(cfr != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.CFR)) {
+                IDType idType = new IDType();
+                idType.setValue(cfr);
+                idType.setSchemeID(SubscriptionVesselIdentifier.CFR.value());
+                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
+            }
+
+            String ircs = asset.getIrcs();
+            if(ircs != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.IRCS)) {
+                IDType idType = new IDType();
+                idType.setValue(ircs);
+                idType.setSchemeID(SubscriptionVesselIdentifier.IRCS.value());
+                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
+            }
+
+            String extMark  = asset.getExternalMarking();
+            if(extMark != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.EXT_MARK)) {
+                IDType idType = new IDType();
+                idType.setValue(extMark);
+                idType.setSchemeID(SubscriptionVesselIdentifier.EXT_MARK.value());
+                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
+
+            }
+
+            String uvi  = asset.getUvi();
+            if(uvi != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.UVI)) {
+                IDType idType = new IDType();
+                idType.setValue(uvi);
+                idType.setSchemeID(SubscriptionVesselIdentifier.UVI.value());
+                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
+            }
+
+            String iccat  = asset.getIccat();
+            if(iccat != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.ICCAT)) {
+                IDType idType = new IDType();
+                idType.setValue(iccat);
+                idType.setSchemeID(SubscriptionVesselIdentifier.ICCAT.value());
+                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
+
+            }
+
+            String gfcm = asset.getGfcm();
+            if(gfcm != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.GFCM)) {
+                IDType idType = new IDType();
+                idType.setValue(gfcm);
+                idType.setSchemeID(SubscriptionVesselIdentifier.GFCM.value());
+                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
+            }
+        }
+
     }
 
     private FLUXFAQueryMessage updateFaQueryFromSubscriptions(FLUXFAQueryMessage fluxFAQueryMessage,List<SubscriptionElement> subElements) throws ActivityModelValidationException{
