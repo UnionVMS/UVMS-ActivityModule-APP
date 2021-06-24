@@ -134,7 +134,7 @@ public class FishingTripDao extends AbstractDAO<FishingTripEntity> {
         for(Object[] objArr :resultList){
             try {
                 if (objArr !=null ){
-                    if(query.getSorting() != null && query.getSorting().getSortBy() != null) {
+                    if(query.getSorting() != null && query.getSorting().getSortBy() != null && !"PERIOD_START".equals(query.getSorting().getSortBy().value())) {
                         fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1], query.getSorting().getSortBy(), (String)objArr[3]));
                     } else {
                         fishingTripIds.add(new FishingTripId((String)objArr[0], (String)objArr[1]));
