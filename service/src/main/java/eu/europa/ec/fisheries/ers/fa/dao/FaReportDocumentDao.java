@@ -66,9 +66,11 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
 
         // Find reports that refer to this report
         FluxReportIdentifierEntity repId = faReportEntity.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
-        FaReportDocumentEntity reportThatRefersToThisOne = findFaReportByRefIdAndRefScheme(repId.getFluxReportIdentifierId(), repId.getFluxReportIdentifierSchemeId());
-        if(reportThatRefersToThisOne != null && !alreadyExistsInList(reportsList, reportThatRefersToThisOne)){
-            getHistoryOfFaReport(reportThatRefersToThisOne, reportsList);
+        List<FaReportDocumentEntity> reportThatRefersToThisOneList = findFaReportByRefIdAndRefScheme(repId.getFluxReportIdentifierId(), repId.getFluxReportIdentifierSchemeId());
+        for (FaReportDocumentEntity reportThatRefersToThisOne : reportThatRefersToThisOneList) {
+            if (reportThatRefersToThisOne != null && !alreadyExistsInList(reportsList, reportThatRefersToThisOne)) {
+                getHistoryOfFaReport(reportThatRefersToThisOne, reportsList);
+            }
         }
 
         // Find reports that this report refers to
@@ -121,17 +123,11 @@ public class FaReportDocumentDao extends AbstractDAO<FaReportDocumentEntity> {
      * @return FaReportDocumentEntity
      * @throws ServiceException
      */
-    public FaReportDocumentEntity findFaReportByRefIdAndRefScheme(String reportRefId, String refSchemId) {
+    public List<FaReportDocumentEntity> findFaReportByRefIdAndRefScheme(String reportRefId, String refSchemId) {
         TypedQuery query = getEntityManager().createNamedQuery(FaReportDocumentEntity.FIND_BY_REF_FA_ID_AND_SCHEME, FaReportDocumentEntity.class);
         query.setParameter(REPORT_REF_ID, reportRefId);
         query.setParameter(SCHEME_REF_ID, refSchemId);
-        FaReportDocumentEntity singleResult;
-        try {
-            singleResult = (FaReportDocumentEntity) query.getSingleResult();
-        } catch (NoResultException ex){
-            singleResult = null; // no need to log this exception!
-        }
-        return singleResult;
+        return query.getResultList();
     }
 
 
