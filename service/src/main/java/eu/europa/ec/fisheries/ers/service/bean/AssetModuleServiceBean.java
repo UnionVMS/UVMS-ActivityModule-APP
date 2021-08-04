@@ -13,12 +13,17 @@
 
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
+import eu.europa.ec.fisheries.ers.service.MdrModuleService;
 import eu.europa.ec.fisheries.ers.service.ModuleService;
 import eu.europa.ec.fisheries.ers.service.bean.asset.gateway.ActivityAssetGateway;
+import eu.europa.ec.fisheries.ers.service.mdrcache.MDRAcronymType;
 import eu.europa.ec.fisheries.uvms.asset.model.mapper.AssetModuleResponseMapper;
+import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroupSearchField;
@@ -30,10 +35,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.swing.*;
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Stateless
 @Transactional
@@ -43,6 +52,9 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
 
     @Inject
     private ActivityAssetGateway activityAssetGateway;
+
+    @EJB
+    private MdrModuleService mdrModuleServiceBean;
 
     @Override
     public List<Asset> getAssetListResponse(AssetListQuery assetListQuery) {
@@ -229,4 +241,64 @@ public class AssetModuleServiceBean extends ModuleService implements AssetModule
             FindVesselIdsByAssetHistGuidResponse findVesselIdsByAssetHistGuidResponse = AssetModuleResponseMapper.createFindVesselIdsByAssetHistGuidResponseObject(assetFromAssetHistId);
             return findVesselIdsByAssetHistGuidResponse.getIdentifiers();
     }
+
+
+    @Override
+    public Asset getAssetGuidByIdentifierPrecedence(VesselTransportMeansEntity vesselTransport, FaReportDocumentEntity faReportDocumentEntity) throws  ServiceException{
+        Collection<VesselIdentifierEntity> vesselIdentifiers = vesselTransport.getVesselIdentifiers();
+        List<AssetListCriteriaPair> criteriaPairs =
+                vesselIdentifiers.stream()
+                        .map(entry -> {
+                            AssetListCriteriaPair criteriaPair = new AssetListCriteriaPair();
+                            criteriaPair.setKey(VesselTypeAssetQueryEnum.getVesselTypeAssetQueryEnum(entry.getVesselIdentifierSchemeId()).getConfigSearchField());
+                            criteriaPair.setValue(entry.getVesselIdentifierId());
+                            return criteriaPair;
+                        })
+                        .collect(Collectors.toList());
+
+        //Check for cfr
+        AssetListCriteriaPair cfrPair =
+                criteriaPairs.stream().filter(p->ConfigSearchField.CFR == p.getKey()).findAny().orElse(null);
+        if (cfrPair != null) {
+            //If a CFR is in the message, it should be for an EU country
+            Map<String, List<String>> memberStates = mdrModuleServiceBean.getAcronymFromMdr(MDRAcronymType.MEMBER_STATE.name(), "code", "startDate","endDate");
+            String country = memberStates.get("code").stream().filter(s->s.equals(vesselTransport.getCountry())).findAny().orElse(null);
+            if (country != null) {
+                int indexOfCountry = memberStates.get("code").indexOf(country);
+                Date startDate = DateUtils.parseToUTCDate(memberStates.get("startDate").get(indexOfCountry), DateUtils.DATE_TIME_UI_FORMAT_MS);
+                Date endDate = DateUtils.parseToUTCDate(memberStates.get("endDate").get(indexOfCountry), DateUtils.DATE_TIME_UI_FORMAT_MS);
+                if (!(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime().compareTo(startDate) >= 0 &&
+                        faReportDocumentEntity.getFluxReportDocument().getCreationDatetime().compareTo(endDate) <= 0)) {
+                    //remove cfr from criteria
+                    criteriaPairs.remove(cfrPair);
+                }
+            } else {
+                criteriaPairs.remove(cfrPair);
+            }
+        }
+
+        try {
+            AssetListCriteria assetListCriteria = new AssetListCriteria();
+            assetListCriteria.getCriterias().addAll(criteriaPairs);
+
+            //Add the flagstate criterion
+            AssetListCriteriaPair flagStatePair = new AssetListCriteriaPair();
+            flagStatePair.setKey(ConfigSearchField.FLAG_STATE);
+            flagStatePair.setValue(vesselTransport.getCountry());
+            assetListCriteria.getCriterias().add(flagStatePair);
+
+            //Add the creation date criterion
+            AssetListCriteriaPair datePair = new AssetListCriteriaPair();
+            datePair.setKey(ConfigSearchField.DATE);
+            datePair.setValue(DateUtils.dateToString(faReportDocumentEntity.getFluxReportDocument().getCreationDatetime()));
+            assetListCriteria.getCriterias().add(datePair);
+
+
+            return activityAssetGateway.getAssetByIdentifierPrecedence(assetListCriteria);
+        } catch (Exception e) {
+            log.error("Error while trying to get Asset List..");
+            throw new ServiceException(e.getMessage(), e.getCause());
+        }
+    }
+
 }
