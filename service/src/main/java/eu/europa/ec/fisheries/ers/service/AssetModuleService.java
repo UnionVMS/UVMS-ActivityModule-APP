@@ -17,12 +17,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.VesselTypeAssetQueryEnum;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import eu.europa.ec.fisheries.wsdl.asset.types.BatchAssetListResponseElement;
-import eu.europa.ec.fisheries.wsdl.asset.types.VesselIdentifiersHolder;
+import eu.europa.ec.fisheries.wsdl.asset.types.*;
 import un.unece.uncefact.data.standard.unqualifieddatatype._20.IDType;
 
 public interface AssetModuleService {
@@ -49,4 +49,6 @@ public interface AssetModuleService {
     String getAssetHistoryGuid(String assetGuid, Date occurrenceDate) throws ServiceException;
 
     VesselIdentifiersHolder getAssetVesselIdentifiersByAssetHistoryGuid(String assetHistoryGuid);
+
+    Asset getAssetGuidByIdentifierPrecedence(VesselTransportMeansEntity vesselTransport, FaReportDocumentEntity faReportDocument) throws ServiceException;
 }

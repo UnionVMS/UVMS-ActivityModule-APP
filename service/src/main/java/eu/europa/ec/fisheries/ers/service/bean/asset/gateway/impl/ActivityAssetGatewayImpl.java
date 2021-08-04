@@ -13,10 +13,7 @@ package eu.europa.ec.fisheries.ers.service.bean.asset.gateway.impl;
 import eu.europa.ec.fisheries.ers.service.bean.asset.gateway.ActivityAssetGateway;
 import eu.europa.ec.fisheries.uvms.asset.rest.client.AssetClient;
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import eu.europa.ec.fisheries.wsdl.asset.types.BatchAssetListResponseElement;
-import eu.europa.ec.fisheries.wsdl.asset.types.ListAssetResponse;
+import eu.europa.ec.fisheries.wsdl.asset.types.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -67,6 +64,11 @@ public class ActivityAssetGatewayImpl implements ActivityAssetGateway {
     @Override
     public Asset getAssetFromAssetHistId(String assetHistGuid) {
         return assetClient.getAssetFromAssetHistGuid(assetHistGuid);
+    }
+
+    @Override
+    public Asset getAssetByIdentifierPrecedence(AssetListCriteria assetListCriteria) {
+        return assetClient.getAssetByIdentifierPrecedence(assetListCriteria);
     }
 }
 

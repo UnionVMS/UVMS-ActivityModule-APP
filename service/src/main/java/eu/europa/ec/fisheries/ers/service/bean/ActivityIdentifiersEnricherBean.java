@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.IdentifierSourceEnum;
@@ -48,12 +49,11 @@ public class ActivityIdentifiersEnricherBean {
         //NOOP
     }
     
-    public void enrichActivityIdentifiers(FishingActivityEntity fishingActivityEntity, VesselTransportMeansEntity vesselTransportMeansEntity) {
+    public void enrichActivityIdentifiers(FishingActivityEntity fishingActivityEntity, VesselTransportMeansEntity vesselTransportMeansEntity, FaReportDocumentEntity faReportDocumentEntity) {
         try {
-            List<Asset> assets = assetService.getAssetsHavingAtLeastOneIdentifier(vesselTransportMeansEntity.getVesselIdentifiers());
+            Asset asset = assetService.getAssetGuidByIdentifierPrecedence(vesselTransportMeansEntity, faReportDocumentEntity);
             Map<VesselIdentifierSchemeIdEnum, String> existingIds = vesselTransportMeansEntity.getVesselIdentifiersMap();
-            if(!assets.isEmpty()) {
-                Asset asset = assets.get(0);
+            if(asset != null) {
                 vesselTransportMeansEntity.setGuid(asset.getAssetId().getGuid());
 
                 String cfr = existingIds.get(VesselIdentifierSchemeIdEnum.CFR);

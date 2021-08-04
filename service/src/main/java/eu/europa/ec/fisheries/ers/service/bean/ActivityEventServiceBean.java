@@ -22,12 +22,7 @@ import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Optional;
 
-import eu.europa.ec.fisheries.ers.service.ActivityRulesModuleService;
-import eu.europa.ec.fisheries.ers.service.ActivityService;
-import eu.europa.ec.fisheries.ers.service.EventService;
-import eu.europa.ec.fisheries.ers.service.FaCatchReportService;
-import eu.europa.ec.fisheries.ers.service.FaQueryService;
-import eu.europa.ec.fisheries.ers.service.FishingTripService;
+import eu.europa.ec.fisheries.ers.service.*;
 import eu.europa.ec.fisheries.ers.service.exception.ActivityModuleException;
 import eu.europa.ec.fisheries.ers.service.facatch.FACatchSummaryHelper;
 import eu.europa.ec.fisheries.ers.service.mapper.FishingActivityRequestMapper;
