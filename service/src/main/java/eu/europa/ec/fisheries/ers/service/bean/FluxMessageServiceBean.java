@@ -30,9 +30,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Stateless
 @Transactional
@@ -160,7 +158,13 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
             // If we received an original report we have to check if we have previously received a correction/deletion/cancellation related to it.
             if (FaReportStatusType.NEW.getPurposeCode().toString().equals(justSavedPurposeCode)) {
                 FluxReportIdentifierEntity faReportIdentifier = justSavedReport.getFluxReportDocument().getFluxReportIdentifiers().iterator().next();
-                FaReportDocumentEntity foundRelatedFaReportCorrOrDelOrCanc = faReportDocumentDao.findFaReportByRefIdAndRefScheme(faReportIdentifier.getFluxReportIdentifierId(), faReportIdentifier.getFluxReportIdentifierSchemeId());
+                List<FaReportDocumentEntity> relatedDocumentsList =
+                        faReportDocumentDao.findFaReportByRefIdAndRefScheme(faReportIdentifier.getFluxReportIdentifierId(), faReportIdentifier.getFluxReportIdentifierSchemeId());
+                FaReportDocumentEntity foundRelatedFaReportCorrOrDelOrCanc = null;
+                if (CollectionUtils.isNotEmpty(relatedDocumentsList)) {
+                    Collections.sort(relatedDocumentsList, Comparator.comparing(doc->doc.getAAcceptedDatetime));
+                    foundRelatedFaReportCorrOrDelOrCanc = relatedDocumentsList.get(0);
+                }
                 if (foundRelatedFaReportCorrOrDelOrCanc != null) {
                     String purposeCodeFromDb = foundRelatedFaReportCorrOrDelOrCanc.getFluxReportDocument().getPurposeCode();
                     FaReportStatusType faReportStatusEnumFromDb = FaReportStatusType.getFaReportStatusEnum(Integer.parseInt(purposeCodeFromDb));

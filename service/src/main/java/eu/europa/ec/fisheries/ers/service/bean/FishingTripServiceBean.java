@@ -496,6 +496,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             cloneActivity.setAllRelatedFishingActivities(fishAct.getAllRelatedFishingActivities());
             cloneActivity.setFisheryTypeCodeListId(fishAct.getFisheryTypeCodeListId());
             cloneActivity.setFluxCharacteristics(fishAct.getFluxCharacteristics());
+            cloneActivity.setFluxLocations(fishAct.getFluxLocations());
             fishingActivityEntities.add(cloneActivity);
         }
         return fishingActivityEntities;
