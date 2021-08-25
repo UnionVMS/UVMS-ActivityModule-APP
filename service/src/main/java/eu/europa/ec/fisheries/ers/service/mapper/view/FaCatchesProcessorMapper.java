@@ -223,7 +223,7 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
         return calculatedWeightMeasure;
     }
     
-    private static void findConversionFactor(FaCatchEntity entity) {
+    public static void findConversionFactor(FaCatchEntity entity) {
         Set<AapProcessEntity> aapProcesses = entity.getAapProcesses();
         Double convFc = null;
         if (CollectionUtils.isNotEmpty(aapProcesses)) {
