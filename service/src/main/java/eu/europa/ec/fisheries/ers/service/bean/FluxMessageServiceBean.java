@@ -162,7 +162,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
                         faReportDocumentDao.findFaReportByRefIdAndRefScheme(faReportIdentifier.getFluxReportIdentifierId(), faReportIdentifier.getFluxReportIdentifierSchemeId());
                 FaReportDocumentEntity foundRelatedFaReportCorrOrDelOrCanc = null;
                 if (CollectionUtils.isNotEmpty(relatedDocumentsList)) {
-                    Collections.sort(relatedDocumentsList, Comparator.comparing(doc->doc.getAAcceptedDatetime));
+                    Collections.sort(relatedDocumentsList, Comparator.comparing(FaReportDocumentEntity::getAcceptedDatetime));
                     foundRelatedFaReportCorrOrDelOrCanc = relatedDocumentsList.get(0);
                 }
                 if (foundRelatedFaReportCorrOrDelOrCanc != null) {
