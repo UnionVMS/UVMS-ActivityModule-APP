@@ -47,8 +47,10 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.mapper.GeometryMapper;
 import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetId;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 
@@ -371,10 +373,10 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
         if (CollectionUtils.isNotEmpty(faReportDocument.getVesselTransportMeans())) {
             boolean nextVessel = true;
             for (VesselTransportMeansEntity vesselTransportMeansEntity : faReportDocument.getVesselTransportMeans()) {
-                List<String> guids = enrichWithGuidFromAssets(vesselTransportMeansEntity);
+                String guid = enrichWithGuidFromAssets(vesselTransportMeansEntity, faReportDocument);
                 vesselTransportMeansEntity.setFaReportDocument(faReportDocument);
-                if(nextVessel && CollectionUtils.isNotEmpty(guids)){
-                    nextVessGuids.addAll(guids);
+                if(nextVessel && StringUtils.isNotEmpty(guid)){
+                    nextVessGuids.add(guid);
                     nextVessel = false;
                 }
             }
@@ -397,7 +399,7 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
             return;
         }
         for (VesselTransportMeansEntity entity : vesselTransportMeansEntityList) {
-            enrichActivityIdentifiers(fishingActivityEntity, entity);
+            enrichActivityIdentifiers(fishingActivityEntity, entity, fishingActivityEntity.getFaReportDocument());
             fishingActivityEntity.setVesselTransportGuid(entity.getGuid());
         }
     }
@@ -407,20 +409,22 @@ public class FishingActivityEnricherBean extends BaseActivityBean {
      *
      * @param vesselTransport The vessel transport
      */
-    private List<String> enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport) {
+    private String enrichWithGuidFromAssets(VesselTransportMeansEntity vesselTransport, FaReportDocumentEntity faReportDocument) {
         try {
-            List<String> guids = assetService.getAssetGuids(vesselTransport.getVesselIdentifiers());
-            if (CollectionUtils.isNotEmpty(guids)) {
-                vesselTransport.setGuid(guids.get(0));
+            Asset asset = assetService.getAssetGuidByIdentifierPrecedence(vesselTransport, faReportDocument);
+            String guid = null;
+            if (asset != null) {
+                guid = asset.getAssetId().getGuid();
+                vesselTransport.setGuid(guid);
             }
-            return guids;
+            return guid;
         } catch (Exception e) {
             log.error("[ERROR] Error while trying to get guids from Assets Module!");
         }
         return null;
     }    
     
-    private void enrichActivityIdentifiers(FishingActivityEntity fishingActivity, VesselTransportMeansEntity vesselTransport) {
-        activityIdentifiersEnricher.enrichActivityIdentifiers(fishingActivity, vesselTransport);
+    private void enrichActivityIdentifiers(FishingActivityEntity fishingActivity, VesselTransportMeansEntity vesselTransport,FaReportDocumentEntity faReportDocumentEntity) {
+        activityIdentifiersEnricher.enrichActivityIdentifiers(fishingActivity, vesselTransport, faReportDocumentEntity);
     }    
 }

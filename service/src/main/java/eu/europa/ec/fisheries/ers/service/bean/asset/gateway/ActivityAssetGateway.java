@@ -12,9 +12,7 @@ package eu.europa.ec.fisheries.ers.service.bean.asset.gateway;
 
 
 import eu.europa.ec.fisheries.wsdl.asset.group.AssetGroup;
-import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
-import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
-import eu.europa.ec.fisheries.wsdl.asset.types.BatchAssetListResponseElement;
+import eu.europa.ec.fisheries.wsdl.asset.types.*;
 
 import java.util.Date;
 import java.util.List;
@@ -30,5 +28,7 @@ public interface ActivityAssetGateway {
     Asset getAssetFromAssetGuidAndDate(String assetGuid, Date occurrenceDate);
 
     Asset getAssetFromAssetHistId(String assetHistGuid);
+
+    Asset getAssetByIdentifierPrecedence(AssetListCriteria assetListCriteria);
 
 }

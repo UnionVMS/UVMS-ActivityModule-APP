@@ -8,9 +8,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FluxReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
+import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.IdentifierSourceEnum;
 import eu.europa.ec.fisheries.ers.service.AssetModuleService;
 import eu.europa.ec.fisheries.ers.service.util.ActivityDataUtil;
@@ -44,12 +47,18 @@ public class ActivityIdentifiersEnricherBeanTest {
 
         VesselTransportMeansEntity vesselTransportMeansEntity = ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
         vesselTransportMeansEntity.setVesselIdentifiers(Collections.emptySet());
+
+        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
+
+        FaReportDocumentEntity faReportDocumentEntity =  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
+                vesselTransportMeansEntity, FaReportStatusType.NEW);
         Asset asset = new Asset();
         AssetId assetId = new AssetId();
         assetId.setGuid("guid");
         asset.setAssetId(assetId);
         when(assetService.getAssetsHavingAtLeastOneIdentifier(vesselTransportMeansEntity.getVesselIdentifiers())).thenReturn(Collections.singletonList(asset));
-        sut.enrichActivityIdentifiers(fishingActivityEntity, vesselTransportMeansEntity);
+        sut.enrichActivityIdentifiers(fishingActivityEntity, vesselTransportMeansEntity, faReportDocumentEntity);
         
         assertNull(fishingActivityEntity.getCfr());
         assertNull(fishingActivityEntity.getCfrAlt());
@@ -89,13 +98,20 @@ public class ActivityIdentifiersEnricherBeanTest {
                                                                 new VesselIdentifierEntity(0, vesselTransportMeansEntity, "reportedIccat", VesselIdentifierSchemeIdEnum.ICCAT.value()),
                                                                 new VesselIdentifierEntity(0, vesselTransportMeansEntity, "reportedGfcm", VesselIdentifierSchemeIdEnum.GFCM.value()),
                                                                 new VesselIdentifierEntity(0, vesselTransportMeansEntity, "reportedExtMark", VesselIdentifierSchemeIdEnum.EXT_MARK.value()))));
-        
+
+        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
+
+        FaReportDocumentEntity faReportDocumentEntity =  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
+                vesselTransportMeansEntity, FaReportStatusType.NEW);
+
+
         Asset asset = new Asset();
         AssetId assetId = new AssetId();
         assetId.setGuid("guid");
         asset.setAssetId(assetId);
         when(assetService.getAssetsHavingAtLeastOneIdentifier(vesselTransportMeansEntity.getVesselIdentifiers())).thenReturn(Collections.singletonList(asset));
-        sut.enrichActivityIdentifiers(fishingActivityEntity, vesselTransportMeansEntity);
+        sut.enrichActivityIdentifiers(fishingActivityEntity, vesselTransportMeansEntity, faReportDocumentEntity);
         assertEquals("CFR123456789", fishingActivityEntity.getCfr());
         assertNull(fishingActivityEntity.getCfrAlt());
         assertEquals(IdentifierSourceEnum.MESSAGE, fishingActivityEntity.getCfrSrc());
@@ -134,7 +150,14 @@ public class ActivityIdentifiersEnricherBeanTest {
                                                                 new VesselIdentifierEntity(0, vesselTransportMeansEntity, "reportedIccat", VesselIdentifierSchemeIdEnum.ICCAT.value()),
                                                                 new VesselIdentifierEntity(0, vesselTransportMeansEntity, "reportedGfcm", VesselIdentifierSchemeIdEnum.GFCM.value()),
                                                                 new VesselIdentifierEntity(0, vesselTransportMeansEntity, "reportedExtMark", VesselIdentifierSchemeIdEnum.EXT_MARK.value()))));
-        
+
+        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
+
+        FaReportDocumentEntity faReportDocumentEntity =  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
+                vesselTransportMeansEntity, FaReportStatusType.NEW);
+
+
         Asset asset = new Asset();
         asset.setCfr("assetCfr");
         asset.setIrcs("assetIrcs");
@@ -146,7 +169,7 @@ public class ActivityIdentifiersEnricherBeanTest {
         assetId.setGuid("guid");
         asset.setAssetId(assetId);
         when(assetService.getAssetsHavingAtLeastOneIdentifier(vesselTransportMeansEntity.getVesselIdentifiers())).thenReturn(Collections.singletonList(asset));
-        sut.enrichActivityIdentifiers(fishingActivityEntity, vesselTransportMeansEntity);
+        sut.enrichActivityIdentifiers(fishingActivityEntity, vesselTransportMeansEntity, faReportDocumentEntity);
         assertEquals("CFR123456789", fishingActivityEntity.getCfr());
         assertEquals("assetCfr", fishingActivityEntity.getCfrAlt());
         assertEquals(IdentifierSourceEnum.MESSAGE, fishingActivityEntity.getCfrSrc());
@@ -179,6 +202,13 @@ public class ActivityIdentifiersEnricherBeanTest {
 
         VesselTransportMeansEntity vesselTransportMeansEntity = ActivityDataUtil.getVesselTransportMeansEntity("PAIR_FISHING_PARTNER", "FA_VESSEL_ROLE", "vesselGroup1", null);
         vesselTransportMeansEntity.setVesselIdentifiers(Collections.emptySet());
+
+        FluxReportDocumentEntity fluxReportDocumentEntity1=   ActivityDataUtil.getFluxReportDocumentEntity("FLUX_REPORT_DOCUMENT1",null, DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"),
+                "PURPOSE", "PURPOSE_CODE_LIST",null, "OWNER_FLUX_ID1","flux1");
+
+        FaReportDocumentEntity faReportDocumentEntity =  ActivityDataUtil.getFaReportDocumentEntity("Declaration" , "FLUX_FA_REPORT_TYPE", DateUtils.parseToUTCDate("2016-06-27 07:47:31","yyyy-MM-dd HH:mm:ss"), fluxReportDocumentEntity1,
+                vesselTransportMeansEntity, FaReportStatusType.NEW);
+
         Asset asset = new Asset();
         asset.setCfr("assetCfr");
         asset.setIrcs("assetIrcs");
@@ -190,7 +220,7 @@ public class ActivityIdentifiersEnricherBeanTest {
         assetId.setGuid("guid");
         asset.setAssetId(assetId);
         when(assetService.getAssetsHavingAtLeastOneIdentifier(vesselTransportMeansEntity.getVesselIdentifiers())).thenReturn(Collections.singletonList(asset));
-        sut.enrichActivityIdentifiers(fishingActivityEntity, vesselTransportMeansEntity);
+        sut.enrichActivityIdentifiers(fishingActivityEntity, vesselTransportMeansEntity, faReportDocumentEntity);
         assertEquals("assetCfr", fishingActivityEntity.getCfr());
         assertNull(fishingActivityEntity.getCfrAlt());
         assertEquals(IdentifierSourceEnum.ASSET, fishingActivityEntity.getCfrSrc());

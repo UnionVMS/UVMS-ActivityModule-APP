@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.ers.service.FluxMessageService;
@@ -35,6 +37,7 @@ import eu.europa.ec.fisheries.ers.service.mapper.FluxFaReportMessageMappingConte
 import eu.europa.ec.fisheries.uvms.activity.message.producer.ActivityRulesProducerBean;
 import eu.europa.ec.fisheries.uvms.activity.model.exception.ActivityModelMarshallException;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.ActivityModuleRequestMapper;
+import eu.europa.ec.fisheries.ers.service.mapper.view.FaCatchesProcessorMapper;
 import eu.europa.ec.fisheries.uvms.activity.model.mapper.JAXBMarshaller;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityIDType;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityTableType;
@@ -99,6 +102,11 @@ public class FaReportSaverBean {
             if(CollectionUtils.isNotEmpty(fluxFAReportMessage.getFAReportDocuments())){
                 // Enriches with asset and movement data before saving
                 activityEnricher.enrichFaReportDocuments(ctx, messageEntity.getFaReportDocuments());
+                for (FaReportDocumentEntity faReportDocumentEntity:  messageEntity.getFaReportDocuments()) {
+                    for (FishingActivityEntity fishingActivityEntity: faReportDocumentEntity.getFishingActivities()) {
+                            fishingActivityEntity.getFaCatchs().forEach(FaCatchesProcessorMapper::findConversionFactor);
+                    }
+                }
             } else {
                 log.warn("[WARN] After checking faReportDocuments IDs, all of them exist already in Activity DB.. So nothing will be saved!!");
             }
