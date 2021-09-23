@@ -15,17 +15,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessCodeEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.AapProcessEntity;
@@ -553,17 +546,24 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
     private static Double getConversionFactorFromMdr(MDRCondition... conditions) {
         Predicate<ObjectRepresentation> predicates = is -> true;
         for(MDRCondition condition: conditions){
-            predicates = predicates.and(entry -> entry.getFields().stream().anyMatch(column -> column.getColumnName().equals(condition.getColumn()) && column.getColumnValue().equals(condition.getValue())));
+            predicates = predicates.and(entry -> collectionToStream(entry.getFields()).anyMatch(column -> column.getColumnName().equals(condition.getColumn()) && column.getColumnValue().equals(condition.getValue())));
         }
 
         List<ObjectRepresentation> entries = getMDRCacheBean().getEntry(MDRAcronymType.CONVERSION_FACTOR);
-        ObjectRepresentation result = entries.stream().filter(predicates).findAny().orElse(null);
+        ObjectRepresentation result = collectionToStream(entries).filter(predicates).findAny().orElse(null);
         if(result != null) {
-            String factor = result.getFields().stream().filter(field -> field.getColumnName().equals("factor")).findFirst().map(ColumnDataType::getColumnValue).orElse("");
-            return Double.parseDouble(factor);
-        } else {
-            return null;
+            String factor = collectionToStream(result.getFields()).filter(field -> field.getColumnName().equals("factor")).findFirst().map(ColumnDataType::getColumnValue).orElse("");
+            if (StringUtils.isNotEmpty(factor)) {
+                return Double.parseDouble(factor);
+            }
         }
+        return null;
+    }
+
+    private static <T> Stream<T> collectionToStream(List<T> collection){
+        return  Optional.ofNullable(collection)
+                .map(Collection::stream)
+                .orElseGet(Stream::empty);
     }
 
     private static Boolean isPresentInMdr(MDRAcronymType acronym, String value) {
