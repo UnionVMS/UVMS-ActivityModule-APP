@@ -64,14 +64,7 @@ import javax.jms.TextMessage;
 import javax.transaction.Transactional;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -243,8 +236,19 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
 
         for(FAReportDocument reportDocument:faReports.getFAReportDocuments() ) {
             List<Asset> assets = assetService.getAssetsHavingAtLeastOneIdentifier(reportDocument.getSpecifiedVesselTransportMeans().getIDS());
-            reportDocument.getSpecifiedVesselTransportMeans().getIDS().clear();
-            applyAssetsToFAReportDocument(assets,subscriptionVesselIdentifiers,reportDocument);
+            String ids = reportDocument.getSpecifiedVesselTransportMeans().getIDS().stream()
+                    .map(id->id.getSchemeID() +" : "+id.getValue())
+                    .collect(Collectors.joining(","));
+            if (assets != null && !assets.isEmpty()) {
+                log.info("processFaReportMessageFromSubscriptions: found ["+ assets.size()+"] assets for IDs [" + ids+ "]");
+                List<IDType> idTypes = applyAssetsToFAReportDocument(assets, subscriptionVesselIdentifiers);
+                if (!idTypes.isEmpty()) {
+                    log.info("processFaReportMessageFromSubscriptions: Replacing existing VesselTransportMeansIds in report document");
+                    reportDocument.getSpecifiedVesselTransportMeans().setIDS(idTypes);
+                }
+            } else {
+                log.info("processFaReportMessageFromSubscriptions: No assets found for IDs [" + ids + "]");
+            }
         }
 
         if(!generateNewReportIds){
@@ -259,63 +263,64 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     }
 
 
-    private void applyAssetsToFAReportDocument(List<Asset> assets, Set<SubscriptionVesselIdentifier> subscriptionVesselIdentifiers,FAReportDocument reportDocument){
+    private List<IDType> applyAssetsToFAReportDocument(List<Asset> assets, Set<SubscriptionVesselIdentifier> subscriptionVesselIdentifiers){
+        List<IDType> idTypes = new ArrayList<>();
+        Asset asset = assets.get(0);
 
-
-        if(!assets.isEmpty()) {
-            Asset asset = assets.get(0);
-
-            String cfr = asset.getCfr();
-            if(cfr != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.CFR)) {
-                IDType idType = new IDType();
-                idType.setValue(cfr);
-                idType.setSchemeID(SubscriptionVesselIdentifier.CFR.value());
-                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
-            }
-
-            String ircs = asset.getIrcs();
-            if(ircs != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.IRCS)) {
-                IDType idType = new IDType();
-                idType.setValue(ircs);
-                idType.setSchemeID(SubscriptionVesselIdentifier.IRCS.value());
-                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
-            }
-
-            String extMark  = asset.getExternalMarking();
-            if(extMark != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.EXT_MARK)) {
-                IDType idType = new IDType();
-                idType.setValue(extMark);
-                idType.setSchemeID(SubscriptionVesselIdentifier.EXT_MARK.value());
-                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
-
-            }
-
-            String uvi  = asset.getUvi();
-            if(uvi != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.UVI)) {
-                IDType idType = new IDType();
-                idType.setValue(uvi);
-                idType.setSchemeID(SubscriptionVesselIdentifier.UVI.value());
-                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
-            }
-
-            String iccat  = asset.getIccat();
-            if(iccat != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.ICCAT)) {
-                IDType idType = new IDType();
-                idType.setValue(iccat);
-                idType.setSchemeID(SubscriptionVesselIdentifier.ICCAT.value());
-                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
-
-            }
-
-            String gfcm = asset.getGfcm();
-            if(gfcm != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.GFCM)) {
-                IDType idType = new IDType();
-                idType.setValue(gfcm);
-                idType.setSchemeID(SubscriptionVesselIdentifier.GFCM.value());
-                reportDocument.getSpecifiedVesselTransportMeans().getIDS().add(idType);
-            }
+        String cfr = asset.getCfr();
+        if(cfr != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.CFR)) {
+            log.debug("applyAssetsToFAReportDocument: Adding cfr -> " + cfr);
+            IDType idType = new IDType();
+            idType.setValue(cfr);
+            idType.setSchemeID(SubscriptionVesselIdentifier.CFR.value());
+            idTypes.add(idType);
         }
 
+        String ircs = asset.getIrcs();
+        if(ircs != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.IRCS)) {
+            log.debug("applyAssetsToFAReportDocument: Adding ircs -> " + ircs);
+            IDType idType = new IDType();
+            idType.setValue(ircs);
+            idType.setSchemeID(SubscriptionVesselIdentifier.IRCS.value());
+            idTypes.add(idType);
+        }
+
+        String extMark  = asset.getExternalMarking();
+        if(extMark != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.EXT_MARK)) {
+            log.debug("applyAssetsToFAReportDocument: Adding extMark -> " + extMark);
+            IDType idType = new IDType();
+            idType.setValue(extMark);
+            idType.setSchemeID(SubscriptionVesselIdentifier.EXT_MARK.value());
+            idTypes.add(idType);
+        }
+
+        String uvi  = asset.getUvi();
+        if(uvi != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.UVI)) {
+            log.debug("applyAssetsToFAReportDocument: Adding uvi -> " + uvi);
+            IDType idType = new IDType();
+            idType.setValue(uvi);
+            idType.setSchemeID(SubscriptionVesselIdentifier.UVI.value());
+            idTypes.add(idType);
+        }
+
+        String iccat  = asset.getIccat();
+        if(iccat != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.ICCAT)) {
+            log.debug("applyAssetsToFAReportDocument: Adding iccat -> " + iccat);
+            IDType idType = new IDType();
+            idType.setValue(iccat);
+            idType.setSchemeID(SubscriptionVesselIdentifier.ICCAT.value());
+            idTypes.add(idType);
+        }
+
+        String gfcm = asset.getGfcm();
+        if(gfcm != null && subscriptionVesselIdentifiers.contains(SubscriptionVesselIdentifier.GFCM)) {
+            log.debug("applyAssetsToFAReportDocument: Adding gfcm -> " + gfcm);
+            IDType idType = new IDType();
+            idType.setValue(gfcm);
+            idType.setSchemeID(SubscriptionVesselIdentifier.GFCM.value());
+            idTypes.add(idType);
+        }
+        return  idTypes;
     }
 
     private FLUXFAQueryMessage updateFaQueryFromSubscriptions(FLUXFAQueryMessage fluxFAQueryMessage,List<SubscriptionElement> subElements) throws ActivityModelValidationException{
