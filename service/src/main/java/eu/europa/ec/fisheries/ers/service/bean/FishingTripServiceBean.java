@@ -335,11 +335,12 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
     }
 
     @Nullable
-    private VesselDetailsDTO getVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity fishingActivityEntity) {
+    private VesselDetailsDTO getVesselDetailsDTO(VesselTransportMeansEntity vesselTransportMeansEntity, FishingActivityEntity fishingActivityEntity)
+                                                                throws ServiceException{
         VesselDetailsDTO detailsDTO;
         detailsDTO = VesselTransportMeansMapper.INSTANCE.map(vesselTransportMeansEntity);
 
-        getMdrCodesEnrichWithAssetsModuleDataIfNeeded(detailsDTO);
+        //getMdrCodesEnrichWithAssetsModuleDataIfNeeded(detailsDTO);
 
         if (fishingActivityEntity != null) {
             VesselStorageCharacteristicsEntity sourceVesselCharId = fishingActivityEntity.getSourceVesselCharId();
@@ -347,6 +348,9 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 detailsDTO.setStorageDto(VesselStorageCharacteristicsMapper.INSTANCE.mapToStorageDto(sourceVesselCharId));
             }
         }
+        Asset asset = assetModuleService.getAssetGuidByIdentifierPrecedence(vesselTransportMeansEntity, vesselTransportMeansEntity.getFaReportDocument());
+        detailsDTO.enrichIdentifiers(asset);
+        detailsDTO.setName(asset.getName());
         return detailsDTO;
     }
 
