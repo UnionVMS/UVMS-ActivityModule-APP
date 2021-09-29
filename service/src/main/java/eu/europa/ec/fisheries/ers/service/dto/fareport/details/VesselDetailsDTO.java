@@ -164,9 +164,7 @@ public class VesselDetailsDTO {
                     .findAny();
             if(optionalIdentifier.isPresent()){
                 AssetIdentifierDto identifier = optionalIdentifier.get();
-                if(isEmpty(identifier.getFaIdentifierId())){
-                    setIdentifier(identifier, faIdentifierId);
-                }
+                setIdentifier(identifier, faIdentifierId);
             } else {
                 vesselIdentifiers.add(new AssetIdentifierDto(identifierSchemeId, faIdentifierId));
             }

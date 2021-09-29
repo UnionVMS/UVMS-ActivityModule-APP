@@ -393,43 +393,45 @@ public abstract class FishingActivityMapper extends BaseMapper {
         }
         Map<String, String> vesselTransportIdList = new HashMap<>();
 
-        if (entity.getCfr() != null) {
-            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.CFR.value(), entity.getCfr());
+        if (entity.getCfrAlt() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.CFR.value(), entity.getCfrAlt());
         }
 
-        if (entity.getIrcs() != null) {
-            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.IRCS.value(), entity.getIrcs());
+        if (entity.getIrcsAlt() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.IRCS.value(), entity.getIrcsAlt());
         }
 
-        if (entity.getExtMark() != null) {
-            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.EXT_MARK.value(), entity.getExtMark());
+        if (entity.getExtMarkAlt() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.EXT_MARK.value(), entity.getExtMarkAlt());
         }
 
-        if (entity.getIccat() != null) {
-            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.ICCAT.value(), entity.getIccat());
+        if (entity.getIccatAlt() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.ICCAT.value(), entity.getIccatAlt());
         }
 
-        if (entity.getUvi() != null) {
-            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.UVI.value(), entity.getUvi());
+        if (entity.getUviAlt() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.UVI.value(), entity.getUviAlt());
         }
 
-        if (entity.getGfcm() != null) {
-            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.GFCM.value(), entity.getGfcm());
+        if (entity.getGfcmAlt() != null) {
+            vesselTransportIdList.put(VesselIdentifierSchemeIdEnum.GFCM.value(), entity.getGfcmAlt());
         }
 
         return vesselTransportIdList;
     }
 
+
     protected List<VesselIdentifierType> getVesselIdentifierTypeList(FishingActivityEntity entity) {
-        if (entity == null || entity.getFaReportDocument() == null || entity.getFaReportDocument().getVesselTransportMeans() == null
-                || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans()) || CollectionUtils.isEmpty(entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers())) {
+        if (entity == null) {
             return Collections.emptyList();
         }
         List<VesselIdentifierType> identifiers = new ArrayList<>();
-        Set<VesselIdentifierEntity> identifierList = entity.getFaReportDocument().getVesselTransportMeans().iterator().next().getVesselIdentifiers();
-        for (VesselIdentifierEntity identity : identifierList) {
-            identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf(identity.getVesselIdentifierSchemeId()), identity.getVesselIdentifierId()));
-        }
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.CFR, entity.getCfrAlt()));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.UVI, entity.getUviAlt()));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.EXT_MARK, entity.getExtMarkAlt()));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.ICCAT, entity.getIccatAlt()));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.IRCS, entity.getIrcsAlt()));
+        identifiers.add(new VesselIdentifierType(VesselIdentifierSchemeIdEnum.GFCM, entity.getGfcmAlt()));
 
         return identifiers;
     }

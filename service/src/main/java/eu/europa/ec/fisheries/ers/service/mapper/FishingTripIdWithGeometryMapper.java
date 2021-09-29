@@ -172,7 +172,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             VesselIdentifierType vesselIdentifierType = new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("CFR"), dto.getVessel());
             vesselIdentifierTypes.add(vesselIdentifierType);
         } else {
-            Optional.ofNullable(fishingActivityEntity.getCfr())
+            Optional.ofNullable(fishingActivityEntity.getCfrAlt())
                     .map(cfr -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("CFR"), cfr))
                     .ifPresent(vesselIdentifierTypes::add);
         }
@@ -181,7 +181,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             VesselIdentifierType vesselIdentifierType = new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("EXT_MARK"), dto.getVessel());
             vesselIdentifierTypes.add(vesselIdentifierType);
         } else {
-            Optional.ofNullable(fishingActivityEntity.getExtMark())
+            Optional.ofNullable(fishingActivityEntity.getExtMarkAlt())
                     .map(extMark -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("EXT_MARK"), extMark))
                     .ifPresent(vesselIdentifierTypes::add);
         }
@@ -190,7 +190,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             VesselIdentifierType vesselIdentifierType = new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("ICCAT"), dto.getVessel());
             vesselIdentifierTypes.add(vesselIdentifierType);
         } else {
-            Optional.ofNullable(fishingActivityEntity.getIccat())
+            Optional.ofNullable(fishingActivityEntity.getIccatAlt())
                     .map(iccat -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("ICCAT"), iccat))
                     .ifPresent(vesselIdentifierTypes::add);
         }
@@ -199,7 +199,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             VesselIdentifierType vesselIdentifierType = new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("IRCS"), dto.getVessel());
             vesselIdentifierTypes.add(vesselIdentifierType);
         } else {
-            Optional.ofNullable(fishingActivityEntity.getIrcs())
+            Optional.ofNullable(fishingActivityEntity.getIrcsAlt())
                     .map(ircs -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("IRCS"), ircs))
                     .ifPresent(vesselIdentifierTypes::add);
         }
@@ -208,7 +208,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             VesselIdentifierType vesselIdentifierType = new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("UVI"), dto.getVessel());
             vesselIdentifierTypes.add(vesselIdentifierType);
         } else {
-            Optional.ofNullable(fishingActivityEntity.getUvi())
+            Optional.ofNullable(fishingActivityEntity.getUviAlt())
                     .map(uvi -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("UVI"), uvi))
                     .ifPresent(vesselIdentifierTypes::add);
         }
@@ -217,7 +217,7 @@ public class FishingTripIdWithGeometryMapper extends BaseMapper {
             VesselIdentifierType vesselIdentifierType = new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("GFCM"), dto.getVessel());
             vesselIdentifierTypes.add(vesselIdentifierType);
         } else {
-            Optional.ofNullable(fishingActivityEntity.getGfcm())
+            Optional.ofNullable(fishingActivityEntity.getGfcmAlt())
                     .map(gfcm -> new VesselIdentifierType(VesselIdentifierSchemeIdEnum.valueOf("GFCM"), gfcm))
                     .ifPresent(vesselIdentifierTypes::add);
         }
