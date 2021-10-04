@@ -225,6 +225,11 @@
                             <filtering>true</filtering>
                         </resource>
                     </webResources>
+                    <archive>
+                        <manifestEntries>
+                            <Logging-Profile>activity</Logging-Profile>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
             </plugin>
             <plugin>

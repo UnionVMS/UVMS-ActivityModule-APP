@@ -19,6 +19,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntit
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.EventProducer;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxFaReportMessageMapper;
@@ -51,6 +52,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @Inject
     FluxFaReportMessageMapper fluxFaReportMessageMapper;
 
+    @Inject
+    EventProducer eventProducer;
+
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
@@ -64,6 +68,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
 
         persistAndUpdateFishingActivityReport(messageEntity);
 
+        eventProducer.sendActivityEvent(messageEntity);
+
         return messageEntity;
     }
 
@@ -74,7 +80,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private void persistAndUpdateFishingActivityReport(FluxFaReportMessageEntity messageEntity) {
-        entityManager.persist(messageEntity);
+        entityManager.merge(messageEntity);
 
         for (FaReportDocumentEntity faReportDocument : messageEntity.getFaReportDocuments()) {
             updateGeometry(faReportDocument);

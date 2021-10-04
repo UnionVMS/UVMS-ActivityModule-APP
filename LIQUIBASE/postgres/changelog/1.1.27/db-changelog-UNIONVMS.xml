@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
+        logicalFilePath="changelog/1.1.27/db-changelog-UNIONVMS.xml">
+
+    <changeSet author="peerik" id="create parameter table">
+        <createTable remarks="Table as a placeholder of parameters and its values" tableName="parameter">
+            
+            <column name="param_id" remarks="Id and code for parameter." type="VARCHAR(500)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="param_pk"/>
+            </column>
+            
+            <column name="param_description" remarks="Description of parameter or value." type="VARCHAR(500)">
+                <constraints nullable="false" />
+            </column>
+            
+            <column name="param_value" remarks="Parameter value." type="VARCHAR(4000)" />
+            
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
