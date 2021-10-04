@@ -15,6 +15,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.dao.FluxLocationDao;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingGearEntity;
+import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FlapDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxCharacteristicEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
@@ -205,6 +206,10 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                 fishingActivityEntity.addFluxCharacteristics(fluxCharacteristicEntity);
             }
             fishingActivityEntity.setVesselTransportMeans(Set.of(vesselTransportMeansEntity));
+            FishingTripEntity existingFishingTrip = em.find(FishingTripEntity.class, fishingActivityEntity.getFishingTrip().getFishingTripKey());
+            if (existingFishingTrip != null) {
+                fishingActivityEntity.setFishingTrip(existingFishingTrip);
+            }
             fishingTripCache.addAndUpdateFishingTripOfActivityIfItExists(fishingActivityEntity);
         }
         return specifiedFishingActivityEntities;

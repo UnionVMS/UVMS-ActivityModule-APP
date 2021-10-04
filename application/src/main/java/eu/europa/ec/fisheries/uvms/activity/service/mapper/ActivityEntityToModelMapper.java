@@ -213,7 +213,7 @@ public abstract class ActivityEntityToModelMapper extends BaseMapper {
             mapCatches(target, faCatchs);
         }
 
-        mapRelatedVesselTransportMeans(target, source.getVesselTransportMeans());
+//        mapRelatedVesselTransportMeans(target, source.getVesselTransportMeans());
 
         target.setSpecifiedFLAPDocuments(flapDocumentMapper.mapToFlapDocumentList(source.getFlapDocuments()));
 

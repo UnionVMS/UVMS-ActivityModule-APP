@@ -25,7 +25,6 @@ import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -80,7 +79,7 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     }
 
     private void persistAndUpdateFishingActivityReport(FluxFaReportMessageEntity messageEntity) {
-        entityManager.merge(messageEntity);
+        entityManager.persist(messageEntity);
 
         for (FaReportDocumentEntity faReportDocument : messageEntity.getFaReportDocuments()) {
             updateGeometry(faReportDocument);
