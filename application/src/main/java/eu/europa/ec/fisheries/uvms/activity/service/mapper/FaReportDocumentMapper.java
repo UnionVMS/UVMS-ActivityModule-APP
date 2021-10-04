@@ -205,7 +205,6 @@ public abstract class FaReportDocumentMapper extends BaseMapper {
                 }
                 fishingActivityEntity.addFluxCharacteristics(fluxCharacteristicEntity);
             }
-            fishingActivityEntity.setVesselTransportMeans(Set.of(vesselTransportMeansEntity));
             FishingTripEntity existingFishingTrip = em.find(FishingTripEntity.class, fishingActivityEntity.getFishingTrip().getFishingTripKey());
             if (existingFishingTrip != null) {
                 fishingActivityEntity.setFishingTrip(existingFishingTrip);

@@ -50,7 +50,7 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     @Mapping(target = "fromId", expression = "java(getFromId(entity))")
     @Mapping(target = "fromName", source = "faReportDocument.fluxParty_name")
     @Mapping(target = "vesselTransportMeansName", expression = "java(getFaReportDocVesselTransportMeans(entity).getName())")
-    @Mapping(target = "vesselId", source = "vesselTransportGuid")
+    @Mapping(target = "vesselId", expression = "java(getFaReportDocVesselTransportMeans(entity).getGuid())")
     @Mapping(target = "purposeCode", expression = "java(FaReportStatusType.valueOf(entity.getFaReportDocument().getStatus()).getPurposeCode().toString())")
     @Mapping(target = "faReportType", source = "faReportDocument.typeCode")
     @Mapping(source = "typeCode", target = "activityType")
