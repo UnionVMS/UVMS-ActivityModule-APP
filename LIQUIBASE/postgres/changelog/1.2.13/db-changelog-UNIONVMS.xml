@@ -3,7 +3,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd"
-        logicalFilePath="changelog/1.1.27/db-changelog-UNIONVMS.xml">
+        logicalFilePath="changelog/1.2.13/db-changelog-UNIONVMS.xml">
 
     <changeSet author="peerik" id="create parameter table">
         <createTable remarks="Table as a placeholder of parameters and its values" tableName="parameter">
