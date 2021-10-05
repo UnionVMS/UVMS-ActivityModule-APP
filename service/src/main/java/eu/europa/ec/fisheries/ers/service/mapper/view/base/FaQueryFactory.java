@@ -89,7 +89,7 @@ public class FaQueryFactory {
         if(consolidated){
             codeType =  createCodeType("Y", BOOLEAN_TYPE);
         } else{
-            codeType =  createCodeType("N", BOOLEAN_VALUE);
+            codeType =  createCodeType("N", BOOLEAN_TYPE);
         }
         simpleParams.add(
             new FAQueryParameter(
@@ -115,7 +115,7 @@ public class FaQueryFactory {
         if(consolidated){
             codeType =  createCodeType("Y", BOOLEAN_TYPE);
         } else{
-            codeType =  createCodeType("N", BOOLEAN_VALUE);
+            codeType =  createCodeType("N", BOOLEAN_TYPE);
         }
 
         simpleParams.add(
