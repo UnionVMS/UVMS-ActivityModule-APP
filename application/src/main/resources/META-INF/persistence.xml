@@ -3,20 +3,9 @@
              xmlns="http://java.sun.com/xml/ns/persistence"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
-<!--
-    <persistence-unit name="activityConfig" transaction-type="JTA">
-        <jta-data-source>jdbc/uvms_config</jta-data-source>
-        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
-        <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
-        </properties>
-    </persistence-unit>
--->
     <persistence-unit name="activityPUpostgres" transaction-type="JTA">
-
         <jta-data-source>java:jboss/datasources/uvms_activity</jta-data-source>
-
+        <class>eu.europa.ec.fisheries.uvms.config.service.entity.Parameter</class>
         <properties>
             <property name="hibernate.dialect" value="${hibernate.spatial.dialect}"/>
             <property name="hibernate.event.merge.entity_copy_observer" value="allow"/>
@@ -30,8 +19,6 @@
             <property name="hibernate.jpa.compliance.global_id_generators" value="false"/>
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
         </properties>
-
     </persistence-unit>
-
 </persistence>
 

@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -39,7 +38,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AssetModuleServiceBean implements AssetModuleService {
 
-    @EJB
     private AssetClient assetClient;
 
     public AssetModuleServiceBean() {

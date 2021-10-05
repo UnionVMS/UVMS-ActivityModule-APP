@@ -37,6 +37,9 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     @JsonbProperty("vesselTransportMeansName")
     private String vesselTransportMeansName;
 
+    @JsonbProperty("vesselId")
+    private String vesselId;
+
     @JsonbProperty("FAReportType")
     private String faReportType;
 
@@ -82,6 +85,16 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     @JsonbProperty("vesselTransportMeansName")
     public void setVesselTransportMeansName(String vesselTransportMeansName) {
         this.vesselTransportMeansName = vesselTransportMeansName;
+    }
+
+    @JsonbProperty("vesselId")
+    public String getVesselId() {
+        return vesselId;
+    }
+
+    @JsonbProperty("vesselId")
+    public void setVesselId(String vesselId) {
+        this.vesselId = vesselId;
     }
 
     @JsonbProperty("FAReportType")

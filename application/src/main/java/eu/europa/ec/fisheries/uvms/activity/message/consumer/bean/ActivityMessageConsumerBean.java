@@ -37,15 +37,10 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
-@MessageDriven(mappedName = MessageConstants.QUEUE_MODULE_ACTIVITY, activationConfig = {
-        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGING_TYPE_STR, propertyValue = MessageConstants.CONNECTION_TYPE),
+@MessageDriven(activationConfig = {
         @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_TYPE_STR, propertyValue = MessageConstants.DESTINATION_TYPE_QUEUE),
-        @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_ACTIVITY_NAME),
-        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "messageSelector IS NULL"),
-        @ActivationConfigProperty(propertyName = "maxMessagesPerSessions", propertyValue = "100"),
-        @ActivationConfigProperty(propertyName = "initialRedeliveryDelay", propertyValue = "60000"),
-        @ActivationConfigProperty(propertyName = "maximumRedeliveries", propertyValue = "3"),
-        @ActivationConfigProperty(propertyName = "maxSessions", propertyValue = "10")
+        @ActivationConfigProperty(propertyName = MessageConstants.DESTINATION_STR, propertyValue = MessageConstants.QUEUE_MODULE_ACTIVITY),
+        @ActivationConfigProperty(propertyName = MessageConstants.MESSAGE_SELECTOR_STR, propertyValue = "messageSelector IS NULL")
 })
 @Slf4j
 public class ActivityMessageConsumerBean implements MessageListener {

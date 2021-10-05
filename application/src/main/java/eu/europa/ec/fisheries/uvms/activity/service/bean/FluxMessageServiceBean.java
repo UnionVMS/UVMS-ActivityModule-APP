@@ -19,12 +19,12 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntit
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
+import eu.europa.ec.fisheries.uvms.activity.message.producer.EventProducer;
 import eu.europa.ec.fisheries.uvms.activity.service.AssetModuleService;
 import eu.europa.ec.fisheries.uvms.activity.service.FluxMessageService;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FluxFaReportMessageMapper;
 import eu.europa.ec.fisheries.uvms.activity.service.util.GeomUtil;
 import eu.europa.ec.fisheries.uvms.activity.service.util.Utils;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +51,9 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
     @Inject
     FluxFaReportMessageMapper fluxFaReportMessageMapper;
 
+    @Inject
+    EventProducer eventProducer;
+
     @PostConstruct
     public void init() {
         faReportDocumentDao = new FaReportDocumentDao(entityManager);
@@ -63,6 +66,8 @@ public class FluxMessageServiceBean extends BaseActivityBean implements FluxMess
         FluxFaReportMessageEntity messageEntity = fluxFaReportMessageMapper.mapToFluxFaReportMessage(faReportMessage, faReportSourceEnum);
 
         persistAndUpdateFishingActivityReport(messageEntity);
+
+        eventProducer.sendActivityEvent(messageEntity);
 
         return messageEntity;
     }
