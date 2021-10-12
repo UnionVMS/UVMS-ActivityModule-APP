@@ -245,7 +245,7 @@ public class FilterMap {
         filterMappings.put(SearchFilter.PERIOD_START, new FilterDetails(" ", "   a.calculatedStartTime  >= :" + OCCURENCE_START_DATE + " "));
         filterMappings.put(SearchFilter.PERIOD_END, new FilterDetails(DELIMITED_PERIOD_TABLE_ALIAS, " (dp.endDate <= :" + OCCURENCE_END_DATE+" OR  a.calculatedStartTime <= :"+ OCCURENCE_END_DATE +")") );
         filterMappings.put(SearchFilter.PERIOD_END_TRIP, new FilterDetails(" ", "   a.calculatedStartTime  >= :" + OCCURENCE_START_DATE + " ") );
-        filterMappings.put(SearchFilter.VESSEL_NAME, new FilterDetails("fa.vesselTransportMeans vt", "vt.name IN (:" + VESSEL_IDENTITY_NAME + ")"));
+        filterMappings.put(SearchFilter.VESSEL_NAME, new FilterDetails("fa.vesselTransportMeans vt", "UPPER(vt.name) IN (UPPER(:" + VESSEL_IDENTITY_NAME + "))"));
         filterMappings.put(SearchFilter.VESSEL_IDENTIFIRE, new FilterDetails("vt.vesselIdentifiers vi", "vi.vesselIdentifierId IN (:" + VESSEL_IDENTIFIRE + ")"));
         filterMappings.put(SearchFilter.VESSEL_GUIDS, new FilterDetails("fa.vesselTransportMeans vtMeans", "vtMeans.guid IN (:" + VTM_GUIDS + ")"));
         filterMappings.put(SearchFilter.PURPOSE, new FilterDetails(FLUX_REPORT_DOC_TABLE_ALIAS, "flux.purposeCode IN (:" + PURPOSE_CODE + ")"));
