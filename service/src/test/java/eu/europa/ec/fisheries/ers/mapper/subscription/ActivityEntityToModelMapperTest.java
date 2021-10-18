@@ -58,7 +58,7 @@ public class ActivityEntityToModelMapperTest {
         FluxFaReportMessageMappingContext ctx = new FluxFaReportMessageMappingContext();
         FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(ctx, fluxfaReportMessage, FaReportSourceEnum.MANUAL, new FluxFaReportMessageEntity());
 
-        FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()), "localNodeName", null);
+        FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()), "localNodeName", null,null);
 
         String controlSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(fluxfaReportMessage), "ISO-8859-15", true, null);
         String testSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(target), "ISO-8859-15", true, null);
@@ -94,7 +94,7 @@ public class ActivityEntityToModelMapperTest {
         FLUXFAReportMessage fluxfaReportMessage = sourceToEntity(resource);
         FluxFaReportMessageEntity entity = incomingFAReportMapper.mapToFluxFaReportMessage(null, fluxfaReportMessage, FaReportSourceEnum.MANUAL, new FluxFaReportMessageEntity());
 
-        FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()), "", null);
+        FLUXFAReportMessage target = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(new ArrayList<>(entity.getFaReportDocuments()), "", null,null);
 
         String controlSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(fluxfaReportMessage), "ISO-8859-15", true, null);
         String testSource = JAXBUtils.marshallJaxBObjectToString(getFirstElement(target), "ISO-8859-15", true, null);
