@@ -71,6 +71,7 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselStorageCharacteristicsEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
@@ -606,7 +607,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         }
 
         if(query.isXml()){
-            FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName, null);
+            FLUXFAReportMessage toBeMarshalled = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName, null,null);
             try {
                 AttachmentResponseObject responseObject = new AttachmentResponseObject();
                 String controlSource = JAXBUtils.marshallJaxBObjectToString(toBeMarshalled, "UTF-8", false, null);
@@ -1138,9 +1139,10 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         return activityServiceBean.findFaReportDocumentsByTripId(tripId, consolidated);
     }
 
-    private FLUXFAReportMessage makeMessageIfNeededAndForwardToRules(ForwardFAReportBaseRequest request, List<FaReportDocumentEntity> faReportDocumentEntities) throws ActivityModuleException {
+    private FLUXFAReportMessage makeMessageIfNeededAndForwardToRules(ForwardFAReportBaseRequest request, List<FaReportDocumentEntity> faReportDocumentEntities) throws ActivityModuleException, ServiceException {
         if (shouldSendFaReport(request) || (request.getEmailConfig() != null && request.getEmailConfig().isXml())) {
-            FLUXFAReportMessage fluxfaReportMessage = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName, null);
+            Map<Integer, List<IDType>> integerAssetMap = mapVesselsToDocumentEntityIDs(faReportDocumentEntities,request);
+            FLUXFAReportMessage fluxfaReportMessage = ActivityEntityToModelMapper.INSTANCE.mapToFLUXFAReportMessage(faReportDocumentEntities, localNodeName, null,integerAssetMap);
             fluxfaReportMessage.getFAReportDocuments().forEach(faReport -> filterVesselIdentifiers(request.getVesselIdentifiers(), faReport));
             if (request.isNewReportIds()) {
                 fluxfaReportMessage.getFAReportDocuments().forEach(this::setNewReportId);
@@ -1152,6 +1154,45 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         } else {
             return null;
         }
+    }
+
+    private Map<Integer,List<IDType>> mapVesselsToDocumentEntityIDs(List<FaReportDocumentEntity> faReportDocumentEntities,ForwardFAReportBaseRequest request) throws ServiceException {
+        Map<Integer,List<IDType>> assetHashMap = new HashMap<>();
+        for(FaReportDocumentEntity faReportDocumentEntity: faReportDocumentEntities) {
+            Asset asset = assetModuleService.getAssetGuidByIdentifierPrecedence(faReportDocumentEntity.getVesselTransportMeans().iterator().next(), faReportDocumentEntity);
+
+            List<IDType> idTypeList = new ArrayList<>();
+            for (VesselIdentifierSchemeIdEnum vesselIdentifierSchemeIdEnum: request.getVesselIdentifiers()){
+
+                IDType idType = new IDType();
+                idType.setValue( mapSchemeToAssetValue(asset,vesselIdentifierSchemeIdEnum));
+                idType.setSchemeID(vesselIdentifierSchemeIdEnum.value());
+                idTypeList.add(idType);
+            }
+
+            assetHashMap.put(faReportDocumentEntity.getId(),idTypeList);
+        }
+        return assetHashMap;
+    }
+
+    private String mapSchemeToAssetValue(Asset asset,VesselIdentifierSchemeIdEnum enumValue){
+
+        switch(enumValue){
+            case CFR:
+                return asset.getCfr();
+            case UVI:
+                return asset.getUvi();
+            case GFCM:
+                return asset.getGfcm();
+            case IRCS:
+                return asset.getIrcs();
+            case ICCAT:
+                return asset.getIccat();
+            case EXT_MARK:
+                return asset.getExternalMarking();
+            default: return null;
+        }
+
     }
 
     private void filterVesselIdentifiers(List<VesselIdentifierSchemeIdEnum> vesselIdentifiers, FAReportDocument faReportDocument) {
