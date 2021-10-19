@@ -545,14 +545,23 @@ public class FaCatchesProcessorMapper extends BaseActivityViewMapper {
 
     private static Double getConversionFactorFromMdr(MDRCondition... conditions) {
         Predicate<ObjectRepresentation> predicates = is -> true;
-        for(MDRCondition condition: conditions){
-            predicates = predicates.and(entry -> collectionToStream(entry.getFields()).anyMatch(column -> column.getColumnName().equals(condition.getColumn()) && column.getColumnValue().equals(condition.getValue())));
+        for  (MDRCondition condition: conditions){
+            predicates = predicates.and(entry -> collectionToStream(entry.getFields())
+                                .filter(column-> column.getColumnName() != null && column.getColumnValue() != null)
+                                .anyMatch(column -> column.getColumnName().equals(condition.getColumn()) && column.getColumnValue().equals(condition.getValue())));
         }
 
         List<ObjectRepresentation> entries = getMDRCacheBean().getEntry(MDRAcronymType.CONVERSION_FACTOR);
-        ObjectRepresentation result = collectionToStream(entries).filter(predicates).findAny().orElse(null);
-        if(result != null) {
-            String factor = collectionToStream(result.getFields()).filter(field -> field.getColumnName().equals("factor")).findFirst().map(ColumnDataType::getColumnValue).orElse("");
+        ObjectRepresentation result = collectionToStream(entries)
+                                        .filter(predicates)
+                                        .findAny()
+                                        .orElse(null);
+        if (result != null) {
+            String factor = collectionToStream(result.getFields())
+                    .filter(field -> field.getColumnName().equals("factor"))
+                    .findFirst()
+                    .map(ColumnDataType::getColumnValue)
+                    .orElse("");
             if (StringUtils.isNotEmpty(factor)) {
                 return Double.parseDouble(factor);
             }
