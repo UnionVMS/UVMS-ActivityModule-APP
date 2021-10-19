@@ -17,6 +17,7 @@ import java.util.*;
 import eu.europa.ec.fisheries.ers.fa.entities.*;
 import eu.europa.ec.fisheries.ers.fa.utils.FluxLocationCatchTypeEnum;
 import eu.europa.ec.fisheries.uvms.commons.date.DateUtils;
+import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -38,7 +39,7 @@ public class ActivityEntityToModelMapper {
 
     }
 
-    public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity, String localNodeName, IDType referencedId){
+    public FLUXFAReportMessage mapToFLUXFAReportMessage(List<FaReportDocumentEntity> faReportMessageEntity, String localNodeName, IDType referencedId,Map<Integer, List<IDType>> integerAssetMap){
         FLUXFAReportMessage target = new FLUXFAReportMessage();
 
         FLUXReportDocument fluxReportDocument = new FLUXReportDocument();
@@ -79,28 +80,29 @@ public class ActivityEntityToModelMapper {
         
         target.setFLUXReportDocument(fluxReportDocument);
         if (CollectionUtils.isNotEmpty(faReportMessageEntity)){
-            mapFAReportDocuments(target, faReportMessageEntity);
+            mapFAReportDocuments(target, faReportMessageEntity,integerAssetMap);
         }
         return target;
     }
 
-    private void mapFAReportDocuments(FLUXFAReportMessage target, List<FaReportDocumentEntity> faReportDocuments) {
+
+    private void mapFAReportDocuments(FLUXFAReportMessage target, List<FaReportDocumentEntity> faReportDocuments,Map<Integer, List<IDType>> integerAssetMap) {
         List<FAReportDocument> faReportDocumentList = new ArrayList<>();
         for (FaReportDocumentEntity faReportDocumentEntity : faReportDocuments){
             FAReportDocument faReportDocument = new FAReportDocument();
-            mapFAReportDocument(faReportDocument, faReportDocumentEntity);
+            mapFAReportDocument(faReportDocument, faReportDocumentEntity,integerAssetMap);
             faReportDocumentList.add(faReportDocument);
         }
         target.setFAReportDocuments(faReportDocumentList);
     }
 
-    private void mapFAReportDocument(FAReportDocument target, FaReportDocumentEntity source) {
+    private void mapFAReportDocument(FAReportDocument target, FaReportDocumentEntity source,Map<Integer, List<IDType>> integerAssetMap) {
         mapAcceptanceDateTime(target, source.getAcceptedDatetime());
         mapPurposeCode(target, source.getTypeCode(), source.getTypeCodeListId());
         mapFMCMarkerCode(target, source.getFmcMarker(), source.getFmcMarkerListId());
         target.setRelatedFLUXReportDocument(FluxReportDocumentMapper.INSTANCE.mapToFluxReportDocument(source.getFluxReportDocument()));
         mapRelatedReportIDs(target, source.getFaReportIdentifiers());
-        mapSpecifiedVesselTransportMeans(target, source.getVesselTransportMeans());
+        mapSpecifiedVesselTransportMeans(target, source.getVesselTransportMeans(),integerAssetMap,source.getId());
         mapFishingActivities(target, source.getFishingActivities());
     }
 
@@ -429,7 +431,7 @@ public class ActivityEntityToModelMapper {
                 mapNames(vesselTransportMeans, source.getName());
                 mapRegistrationVesselCountry(vesselTransportMeans, source.getCountry(), source.getCountrySchemeId());
                 mapRegistrationEvent(vesselTransportMeans, source.getRegistrationEvent());
-                mapIDs(vesselTransportMeans, source.getVesselIdentifiers());
+                mapIDs(vesselTransportMeans, source.getVesselIdentifiers(),null);
                 mapSpecifiedContactParties(vesselTransportMeans, source.getContactParty());
                 vesselTransportMeans.setGrantedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
                 vesselTransportMeansList.add(vesselTransportMeans);
@@ -438,7 +440,7 @@ public class ActivityEntityToModelMapper {
         }
     }
 
-    private void mapSpecifiedVesselTransportMeans(FAReportDocument target, Set<VesselTransportMeansEntity> entities) {
+    private void mapSpecifiedVesselTransportMeans(FAReportDocument target, Set<VesselTransportMeansEntity> entities,Map<Integer, List<IDType>> integerAssetMap,int id) {
         if (CollectionUtils.isNotEmpty(entities) && target != null){
             VesselTransportMeans vesselTransportMeans = new VesselTransportMeans();
             VesselTransportMeansEntity source = entities.iterator().next();
@@ -446,7 +448,7 @@ public class ActivityEntityToModelMapper {
             mapNames(vesselTransportMeans, source.getName());
             mapRegistrationVesselCountry(vesselTransportMeans, source.getCountry(), source.getCountrySchemeId());
             mapRegistrationEvent(vesselTransportMeans, source.getRegistrationEvent());
-            mapIDs(vesselTransportMeans, source.getVesselIdentifiers());
+            mapIDs(vesselTransportMeans, source.getVesselIdentifiers(),integerAssetMap ==null? null: integerAssetMap.get(id));
             mapSpecifiedContactParties(vesselTransportMeans, source.getContactParty());
 
             vesselTransportMeans.setGrantedFLAPDocuments(FlapDocumentMapper.INSTANCE.mapToFlapDocumentList(source.getFlapDocuments()));
@@ -487,7 +489,12 @@ public class ActivityEntityToModelMapper {
         target.setRoleCodes(codeTypeList);
     }
 
-    private void mapIDs(VesselTransportMeans vesselTransportMeans, Set<VesselIdentifierEntity> vesselIdentifiers) {
+    private void mapIDs(VesselTransportMeans vesselTransportMeans, Set<VesselIdentifierEntity> vesselIdentifiers, List<IDType> idTypeListSub) {
+        if(idTypeListSub != null){
+            vesselTransportMeans.setIDS(idTypeListSub);
+            return;
+        }
+
         if (CollectionUtils.isNotEmpty(vesselIdentifiers)){
             List<IDType> idTypeList = new ArrayList<>();
             for (VesselIdentifierEntity vesselIdentifierEntity : vesselIdentifiers){
