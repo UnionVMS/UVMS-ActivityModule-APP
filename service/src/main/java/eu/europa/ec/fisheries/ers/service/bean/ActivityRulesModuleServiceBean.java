@@ -162,7 +162,7 @@ public class ActivityRulesModuleServiceBean extends ModuleService implements Act
     public String composeAndSendVesselFaQueryToRules(CreateAndSendFAQueryForVesselRequest request) throws ActivityModuleException {
         try {
             FAQuery faQuery = FaQueryFactory.createFaQueryWithVesselId(localNodeName, request.getVesselIdentifiers(), request.isConsolidated(), request.getStartDate(), request.getEndDate());
-            request.setReceiver(localNodeName);
+            faQuery.setManual(request.isManual());
             sendFAQueryToRules(faQuery, request.getDataflow(), request.getReceiver());
             return faQuery.getID().getValue();
         } catch (ActivityModelMarshallException | RulesModelMapperException | MessageException e) {
