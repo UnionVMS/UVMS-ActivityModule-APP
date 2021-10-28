@@ -22,6 +22,11 @@
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <archive>
+                        <manifestEntries>
+                            <Logging-Profile>activity-logging-profile</Logging-Profile>
+                        </manifestEntries>
+                    </archive>
                     <modules>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>
