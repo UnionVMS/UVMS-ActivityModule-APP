@@ -113,7 +113,6 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
             assertNotNull(fishingActivityReportDTO.getActivityType());
             assertNull(fishingActivityReportDTO.getGeometry());
             assertNull(fishingActivityReportDTO.getReason());
-            assertNull(fishingActivityReportDTO.getFishingGears());
             assertNull(fishingActivityReportDTO.getFluxCharacteristics());
             assertNull(fishingActivityReportDTO.getDelimitedPeriod());
         }
@@ -173,7 +172,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         List<FishingActivityReportDTO> resultList = responseDto.getResultList();
 
         FishingActivityReportDTO fishingActivityReportDTO = resultList.get(0);
-        int faReportID = fishingActivityReportDTO.getFaReportID();
+        Integer faReportID = fishingActivityReportDTO.getFaReportID();
 
         FishingActivityQuery query2 = new FishingActivityQuery();
 
@@ -195,7 +194,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         assertEquals(1, resultList2.size());
 
         FishingActivityReportDTO dto = resultList2.get(0);
-        assertEquals(faReportID, dto.getFaReportID());
+        assertEquals(faReportID.intValue(), dto.getFaReportID().intValue());
     }
 
     @Test
@@ -520,7 +519,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
 
-        assertEquals(secondToLastActivity.getFishingActivityId(), responseDto.getData().intValue());
+        assertEquals(secondToLastActivity.getFishingActivityId().intValue(), responseDto.getData().intValue());
     }
 
     @Test
@@ -561,7 +560,7 @@ public class FishingActivityResourceIntegrationTest extends BaseActivityArquilli
         assertEquals(200, responseDto.getCode());
         assertNull(responseDto.getMsg());
 
-        assertEquals(nextActivity.getFishingActivityId(), responseDto.getData().intValue());
+        assertEquals(nextActivity.getFishingActivityId().intValue(), responseDto.getData().intValue());
     }
 
     private Response list(FishingActivityQuery query) {

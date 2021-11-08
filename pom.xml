@@ -24,7 +24,7 @@
         <installAtEnd>false</installAtEnd> <!-- Maven install plugin property -->
 
         <!-- Docker configuration -->
-        <docker.dev.version>3.45.2-EFR</docker.dev.version>
+        <docker.dev.version>4.0.29</docker.dev.version>
         <docker.liquibase.changeLogFile>LIQUIBASE/postgres/changelog/db-changelog-master.xml</docker.liquibase.changeLogFile>
         <docker.liquibase.db.user>activity</docker.liquibase.db.user>
         <docker.liquibase.db.passwd>activity</docker.liquibase.db.passwd>

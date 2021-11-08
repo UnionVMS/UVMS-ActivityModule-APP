@@ -2,51 +2,51 @@
 <ns2:deployApplicationRequest xmlns:ns2="module.user.wsdl.fisheries.ec.europa.eu">
     <method>DEPLOY_APPLICATION</method>
     <application>
-        <name>${activity.name}</name>
-        <description>Deployment descriptor of module "${activity.name}" version "@application.version@".</description>
+        <name>Activity</name>
+        <description>Deployment descriptor of module "Activity" version "@application.version@".</description>
         <parent>Union VMS</parent>
         <retainDatasets>true</retainDatasets>
 
         <feature>
             <name>ACTIVITY_ALLOWED</name>
             <description>Enables Activity module to become USM aware</description>
-            <group>${activity.name}</group>
+            <group>Activity</group>
         </feature>
 
         <feature>
             <name>LIST_ACTIVITY_REPORTS</name>
             <description>allows user to see Activity Reports</description>
-            <group>${activity.name}</group>
+            <group>Activity</group>
         </feature>
 
         <feature>
             <name>FISHING_TRIP_SUMMARY</name>
             <description>allows user to see Fishing Trip Summary</description>
-            <group>${activity.name}</group>
+            <group>Activity</group>
         </feature>
 
         <feature>
             <name>VIEW_FA_REPORT_DETAILS</name>
             <description>allows user to see fishing activity reports details</description>
-            <group>${activity.name}</group>
+            <group>Activity</group>
         </feature>
 
         <feature>
             <name>MANAGE_ADMIN_CONFIGURATIONS</name>
             <description>Allows you to view/update activity configurations located under the Admin tab</description>
-            <group>${activity.name}</group>
+            <group>Activity</group>
         </feature>
 
         <feature>
             <name>SHOW_DELETED_FA_REPORTS</name>
             <description>Allows the user to make requests that show the deletes reports</description>
-            <group>${activity.name}</group>
+            <group>Activity</group>
         </feature>
 
         <feature>
             <name>EXPORT_ACTIVITY_DATA</name>
             <description>Allows you to export activity data in several formats</description>
-            <group>${activity.name}</group>
+            <group>Activity</group>
         </feature>
 
         <option>

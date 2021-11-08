@@ -19,6 +19,14 @@ public class FishingGearDTO {
 
     private String gearRoleCode;
 
+    private String gearMeasure;
+
+    private String gearQuantity;
+
+    private String meshSize;
+
+    private String nominalLength;
+
     public String getGearTypeCode() {
         return gearTypeCode;
     }
@@ -33,5 +41,37 @@ public class FishingGearDTO {
 
     public void setGearRoleCode(String gearRoleCode) {
         this.gearRoleCode = gearRoleCode;
+    }
+
+    public String getGearMeasure() {
+        return gearMeasure;
+    }
+
+    public void setGearMeasure(String gearMeasure) {
+        this.gearMeasure = gearMeasure;
+    }
+
+    public String getGearQuantity() {
+        return gearQuantity;
+    }
+
+    public void setGearQuantity(String gearQuantity) {
+        this.gearQuantity = gearQuantity;
+    }
+
+    public String getMeshSize() {
+        return meshSize;
+    }
+
+    public void setMeshSize(String meshSize) {
+        this.meshSize = meshSize;
+    }
+
+    public String getNominalLength() {
+        return nominalLength;
+    }
+
+    public void setNominalLength(String nominalLength) {
+        this.nominalLength = nominalLength;
     }
 }
