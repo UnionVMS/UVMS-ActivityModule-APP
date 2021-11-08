@@ -14,13 +14,13 @@
 package eu.europa.ec.fisheries.uvms.activity.service.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
-import java.io.Serializable;
+import javax.persistence.Column;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class FishingActivityReportDTO extends FishingActivityDTO implements Serializable  {
+public class FishingActivityReportDTO extends FishingActivityDTO {
 
     @JsonbProperty("dataSource")
     private String dataSource;
@@ -65,13 +65,25 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
     private Instant endDate;
 
     @JsonbProperty("hasCorrection")
-    private boolean hasCorrection;
+    private Boolean hasCorrection;
 
     @JsonbProperty("fluxReportReferenceId")
     private String fluxReportReferenceId;
 
     @JsonbProperty("fluxReportReferenceSchemeId")
     private String fluxReportReferenceSchemeId;
+
+    @JsonbProperty("relatedActivities")
+    private List<FishingActivityReportDTO> relatedActivities;
+
+    @JsonbProperty("longitude")
+    private Double longitude;
+
+    @JsonbProperty("latitude")
+    private Double latitude;
+
+    @JsonbProperty("species")
+    private List<SpeciesDTO> species;
 
     public FishingActivityReportDTO() {
         // Assuming jackson needs this when serializing/deserializing
@@ -215,7 +227,7 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
         this.endDate = endDate;
     }
 
-    public boolean isHasCorrection() {
+    public Boolean isHasCorrection() {
         return hasCorrection;
     }
 
@@ -237,5 +249,37 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
 
     public void setFluxReportReferenceSchemeId(String fluxReportReferenceSchemeId) {
         this.fluxReportReferenceSchemeId = fluxReportReferenceSchemeId;
+    }
+
+    public List<FishingActivityReportDTO> getRelatedActivities() {
+        return relatedActivities;
+    }
+
+    public void setRelatedActivities(List<FishingActivityReportDTO> relatedActivities) {
+        this.relatedActivities = relatedActivities;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public List<SpeciesDTO> getSpecies() {
+        return species;
+    }
+
+    public void setSpecies(List<SpeciesDTO> species) {
+        this.species = species;
     }
 }

@@ -12,12 +12,13 @@ details. You should have received a copy of the GNU General Public License along
 package eu.europa.ec.fisheries.uvms.activity.service.mapper;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.*;
-import eu.europa.ec.fisheries.uvms.activity.fa.entities.LocationEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.LocationEnum;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.DelimitedPeriodDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingActivityReportDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.FishingGearDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.FluxReportIdentifierDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.dto.SpeciesDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.ReportDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -37,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Mapper(componentModel = "cdi", imports = {FaReportStatusType.class},
@@ -56,10 +58,9 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     @Mapping(source = "typeCode", target = "activityType")
     @Mapping(target = "areas", expression = "java(getAreasForFishingActivity(entity))")
     @Mapping(target = "port", expression = "java(getPortsForFishingActivity(entity))")
-    @Mapping(target = "fishingGear", expression = "java(getFishingGears(entity))")
+    @Mapping(target = "fishingGears", expression = "java(getFishingGears(entity))")
     @Mapping(target = "speciesCode", expression = "java(getSpeciesCode(entity))")
     @Mapping(target = "quantity", expression = "java(getQuantity(entity))")
-    @Mapping(target = "fishingGears", expression = "java(null)")
     @Mapping(target = "fluxCharacteristics", expression = "java(null)")
     @Mapping(target = "dataSource", source = "faReportDocument.source")
     @Mapping(target = "vesselIdTypes", expression = "java(getVesselIdType(entity))")
@@ -71,6 +72,10 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
     @Mapping(target = "cancelingReportID", source = "canceledBy")
     @Mapping(target = "deletingReportID", source = "deletedBy")
     @Mapping(target = "occurence", source = "occurence", qualifiedByName = "instantToDate")
+    @Mapping(target = "relatedActivities", expression = "java(getAllRelatedFishingActivites(entity))")
+    @Mapping(target = "longitude", source = "longitude")
+    @Mapping(target = "latitude", source = "latitude")
+    @Mapping(target = "species", expression = "java(getSpecies(entity))")
     public abstract FishingActivityReportDTO mapToFishingActivityReportDTO(FishingActivityEntity entity);
 
     @Mapping(target = "fishingActivityId", source = "id")
@@ -264,17 +269,29 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
         }
     }
 
-    protected Set<String> getFishingGears(FishingActivityEntity entity) {
+    protected List<FishingGearDTO> getFishingGears(FishingActivityEntity entity) {
         if (entity == null || entity.getFishingGears() == null) {
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
-        Set<String> gears = new HashSet<>();
-        Set<FishingGearEntity> gearList = entity.getFishingGears();
+        List<FishingGearDTO> gears = new ArrayList<>();
 
-        for (FishingGearEntity gear : gearList) {
-            gears.add(gear.getTypeCode());
+        for (FishingGearEntity gear : entity.getFishingGears()) {
+            FishingGearDTO gearDto = new FishingGearDTO();
+            gearDto.setGearTypeCode(gear.getTypeCode());
+            gearDto.setGearRoleCode(gear.getFishingGearRole().iterator().next().getRoleCode());
+            for(GearCharacteristicEntity characteristics : gear.getGearCharacteristics()) {
+                if (characteristics.getTypeCode().equals("GM")) {
+                    gearDto.setGearMeasure(characteristics.getValueMeasureUnitCode());
+                } else if (characteristics.getTypeCode().equals("GN")) {
+                    gearDto.setGearQuantity(characteristics.getValueQuantityCode());
+                } else if (characteristics.getTypeCode().equals("ME")) {
+                    gearDto.setMeshSize(characteristics.getValueMeasureUnitCode());
+                } else if (characteristics.getTypeCode().equals("NL")) {
+                    gearDto.setNominalLength(characteristics.getValueMeasureUnitCode());
+                }
+            }
+            gears.add(gearDto);
         }
-        gears.remove(null);
         return gears;
     }
 
@@ -307,5 +324,45 @@ public abstract class FishingActivityUtilsMapper extends BaseMapper {
         }
         ports.remove(null);
         return new ArrayList<>(ports);
+    }
+
+    protected List<FishingActivityReportDTO> getAllRelatedFishingActivites(FishingActivityEntity entity) {
+        if (entity == null || entity.getAllRelatedFishingActivities() == null) {
+            return Collections.emptyList();
+        }
+        return entity.getAllRelatedFishingActivities()
+                .stream()
+                .map(this::getRelatedFishingActivity)
+                .collect(Collectors.toList());
+    }
+
+    protected FishingActivityReportDTO getRelatedFishingActivity(FishingActivityEntity entity) {
+        FishingActivityReportDTO activity = new FishingActivityReportDTO();
+        activity.setActivityType(entity.getTypeCode());
+        activity.setOccurence(entity.getOccurence());
+        activity.setLatitude(entity.getLatitude());
+        activity.setLongitude(entity.getLongitude());
+        return activity;
+    }
+
+    protected List<SpeciesDTO> getSpecies(FishingActivityEntity entity) {
+        List<SpeciesDTO> speciesList = new ArrayList<>();
+        for (FaCatchEntity faCatch : entity.getFaCatchs()) {
+            SpeciesDTO species = new SpeciesDTO();
+            species.setCode(faCatch.getSpeciesCode());
+            species.setTypeCode(faCatch.getTypeCode());
+            species.setWeight(faCatch.getWeightMeasure());
+            species.setWeightMeans(faCatch.getWeighingMeansCode());
+            species.setSizeClass(faCatch.getSizeDistributionClassCode());
+            species.setPresentation(faCatch.getPresentation());
+            species.setLatitude(faCatch.getLatitude());
+            species.setLongitude(faCatch.getLongitude());
+            species.setAreas(faCatch.getLocations()
+                    .stream()
+                    .map(LocationEntity::getFluxLocationIdentifier)
+                    .collect(Collectors.toList()));
+            speciesList.add(species);
+        }
+        return speciesList;
     }
 }

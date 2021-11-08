@@ -25,6 +25,7 @@ import eu.europa.ec.fisheries.uvms.activity.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.service.mapper.FishingActivityUtilsMapper;
+import eu.europa.ec.fisheries.uvms.commons.date.JsonBConfigurator;
 import eu.europa.ec.fisheries.uvms.commons.message.api.MessageConstants;
 import eu.europa.ec.fisheries.uvms.commons.message.impl.AbstractTopicProducer;
 
@@ -33,7 +34,7 @@ public class EventProducer extends AbstractTopicProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(EventProducer.class);
 
-    private Jsonb jsonb = JsonbBuilder.create();
+    private Jsonb jsonb = new JsonBConfigurator().getContext(null);
 
     @Resource(mappedName = "java:/" + MessageConstants.EVENT_STREAM_TOPIC)
     private Topic destination;

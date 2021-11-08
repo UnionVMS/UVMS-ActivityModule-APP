@@ -35,6 +35,17 @@
 		<dispatcher>ASYNC</dispatcher>
 	</filter-mapping>
 
+    <filter>
+        <filter-name>RequestFilter</filter-name>
+        <filter-class>eu.europa.ec.fisheries.uvms.activity.rest.RequestFilter</filter-class>
+        <async-supported>true</async-supported>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>RequestFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
  	<filter-mapping>
  		<filter-name>AuthenticationFilter</filter-name>
  		<url-pattern>/rest/*</url-pattern>

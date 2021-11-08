@@ -115,8 +115,8 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         assertNull(dto.getLocations());
         assertEquals(correction, dto.isCorrection());
         assertNull(dto.getUniqueFAReportId());
-        assertNotEquals(0, dto.getFishingActivityId());
-        assertNotEquals(0, dto.getFaReportID());
+        assertNotNull(dto.getFishingActivityId());
+        assertNotNull(dto.getFaReportID());
         assertEquals(0, dto.getCancelingReportID());
         assertEquals(0, dto.getDeletingReportID());
         assertEquals(faUniqueReportId, dto.getFaUniqueReportID());
@@ -151,8 +151,8 @@ public class FishingTripResourceIntegrationTest extends BaseActivityArquillianTe
         assertEquals("DECLARATION", dto.getFaReportDocumentType());
         assertNull(dto.getLocations());
         assertNull(dto.getUniqueFAReportId());
-        assertNotEquals(0, dto.getFishingActivityId());
-        assertNotEquals(0, dto.getFaReportID());
+        assertNotNull(dto.getFishingActivityId());
+        assertNotNull(dto.getFaReportID());
         assertEquals(0, dto.getCancelingReportID());
         assertEquals(0, dto.getDeletingReportID());
         assertNotNull(dto.getFaUniqueReportID());

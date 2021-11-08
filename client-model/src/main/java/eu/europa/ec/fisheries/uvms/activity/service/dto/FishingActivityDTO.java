@@ -27,10 +27,10 @@ public class FishingActivityDTO {
     private List<FluxReportIdentifierDTO> uniqueFAReportId;
 
     @JsonbProperty("fishingActivityId")
-    private int fishingActivityId;
+    private Integer fishingActivityId;
 
     @JsonbProperty("faReportID")
-    private int faReportID;
+    private Integer faReportID;
 
     @JsonbTransient
     private int cancelingReportID;
