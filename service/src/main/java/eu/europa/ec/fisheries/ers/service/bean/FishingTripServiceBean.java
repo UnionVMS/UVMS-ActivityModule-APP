@@ -350,8 +350,13 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
             }
         }
         Asset asset = assetModuleService.getAssetGuidByIdentifierPrecedence(vesselTransportMeansEntity, vesselTransportMeansEntity.getFaReportDocument());
-        detailsDTO.enrichIdentifiers(asset);
-        detailsDTO.setName(asset.getName());
+        if(asset != null) {
+            detailsDTO.enrichIdentifiers(asset);
+            detailsDTO.setName(asset.getName());
+        } else {
+            detailsDTO.setVesselIdentifiers(detailsDTO.getVesselIdentifiers());
+            detailsDTO.setName(detailsDTO.getName());
+        }
         return detailsDTO;
     }
 
