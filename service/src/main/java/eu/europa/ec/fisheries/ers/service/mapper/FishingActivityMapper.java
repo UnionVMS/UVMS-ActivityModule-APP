@@ -421,7 +421,7 @@ public abstract class FishingActivityMapper extends BaseMapper {
     }
 
 
-    protected List<VesselIdentifierType> getVesselIdentifierTypeList(FishingActivityEntity entity) {
+    public static List<VesselIdentifierType> getVesselIdentifierTypeList(FishingActivityEntity entity) {
         if (entity == null) {
             return Collections.emptyList();
         }

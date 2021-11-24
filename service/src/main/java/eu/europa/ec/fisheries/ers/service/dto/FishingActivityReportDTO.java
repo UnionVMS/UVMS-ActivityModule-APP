@@ -16,6 +16,7 @@ package eu.europa.ec.fisheries.ers.service.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierType;
 import eu.europa.ec.fisheries.uvms.commons.date.CustomDateSerializer;
 
 import java.io.Serializable;
@@ -81,6 +82,9 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
 
     @JsonProperty("fluxReportReferenceSchemeId")
     private String fluxReportReferenceSchemeId;
+
+    @JsonProperty("vesselIdentifiers")
+    private List<VesselIdentifierType> vesselIdentifiers;
 
 
 
@@ -249,5 +253,13 @@ public class FishingActivityReportDTO extends FishingActivityDTO implements Seri
 
     public void setFluxReportReferenceSchemeId(String fluxReportReferenceSchemeId) {
         this.fluxReportReferenceSchemeId = fluxReportReferenceSchemeId;
+    }
+
+    public List<VesselIdentifierType> getVesselIdentifiers() {
+        return vesselIdentifiers;
+    }
+
+    public void setVesselIdentifiers(List<VesselIdentifierType> vesselIdentifiers) {
+        this.vesselIdentifiers = vesselIdentifiers;
     }
 }

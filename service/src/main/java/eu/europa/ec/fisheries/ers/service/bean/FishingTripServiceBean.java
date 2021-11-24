@@ -144,6 +144,7 @@ import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
 import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.asset.types.VesselIdentifiersHolder;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
@@ -826,6 +827,7 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
         List<FishingActivitySummary> fishingActivitySummaries = new ArrayList<>();
 
         List<FishingTripIdWithGeometry> fishingTripIdLists = new ArrayList<>();
+        Set<String> cfrSet = new HashSet<>();
         for (FishingTripId fishingTripId : fishingTripIds) {
 
             FishingActivityQuery query = new FishingActivityQuery();
@@ -842,15 +844,92 @@ public class FishingTripServiceBean extends BaseActivityBean implements FishingT
                 List<FishingActivityEntity> cleanedList = cleanFromDeletionsAndCancelations(fishingActivityEntityList);
                 fishingActivitySummaries.addAll(getFishingActivitySummaryList(cleanedList, uniqueActivityIdList));
             }
-
+            fishingActivityEntityList.get(0).setCfrAlt(fishingActivityEntityList.get(0).getCfr());
+            cfrSet.add(fishingActivityEntityList.get(0).getCfr());
             FishingTripIdWithGeometry fishingTripIdWithGeometry = new FishingTripIdWithGeometryMapper().mapToFishingTripIdWithDetails(fishingTripId, fishingActivityEntityList);
             fishingTripIdLists.add(fishingTripIdWithGeometry);
+        }
+
+        List<Asset> assetListResponse = new ArrayList<>();
+        try {
+            assetListResponse = assetModuleService.getAssetListResponse(getAssetListQuery(cfrSet));
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
+        for(FishingTripIdWithGeometry tripWithGeometry:fishingTripIdLists) {
+            if (tripWithGeometry.getVesselIdLists() == null || tripWithGeometry.getVesselIdLists().isEmpty()) {
+                continue;
+            }
+            String cfr = tripWithGeometry.getVesselIdLists().get(0).getValue();
+
+            if(cfr == null){
+                continue;
+            }
+
+            for (Asset asset : assetListResponse) {
+
+
+                 if ( cfr.equals(asset.getCfr())) {
+
+                     VesselIdentifierType iccat = new VesselIdentifierType();
+                     iccat.setValue(asset.getIccat());
+                     iccat.setKey(VesselIdentifierSchemeIdEnum.ICCAT);
+                     tripWithGeometry.getVesselIdLists().add(iccat);
+
+
+                     VesselIdentifierType gfcm = new VesselIdentifierType();
+                     gfcm.setValue(asset.getGfcm());
+                     gfcm.setKey(VesselIdentifierSchemeIdEnum.GFCM);
+                     tripWithGeometry.getVesselIdLists().add(gfcm);
+
+
+                     VesselIdentifierType uvi = new VesselIdentifierType();
+                     uvi.setValue(asset.getUvi());
+                     uvi.setKey(VesselIdentifierSchemeIdEnum.UVI);
+                     tripWithGeometry.getVesselIdLists().add(uvi);
+
+                     VesselIdentifierType ircs = new VesselIdentifierType();
+                     ircs.setValue(asset.getIrcs());
+                     ircs.setKey(VesselIdentifierSchemeIdEnum.IRCS);
+                     tripWithGeometry.getVesselIdLists().add(ircs);
+
+                     VesselIdentifierType extMark = new VesselIdentifierType();
+                     extMark.setValue(asset.getExternalMarking());
+                     extMark.setKey(VesselIdentifierSchemeIdEnum.EXT_MARK);
+                     tripWithGeometry.getVesselIdLists().add(extMark);
+                }
+            }
         }
 
         FishingTripResponse response = new FishingTripResponse();
         response.setFishingActivityLists(fishingActivitySummaries);
         response.setFishingTripIdLists(fishingTripIdLists);
         return response;
+    }
+
+    private AssetListQuery getAssetListQuery(Set<String> cfrSet){
+        List<AssetListCriteriaPair> assetListCriteriaList = new ArrayList<>();
+        for(String cfr:cfrSet){
+            AssetListCriteriaPair criteria = new AssetListCriteriaPair();
+            criteria.setKey(ConfigSearchField.CFR);
+            criteria.setValue(cfr);
+            assetListCriteriaList.add(criteria);
+        }
+        return createAssetListQuery(assetListCriteriaList);
+    }
+
+    private AssetListQuery createAssetListQuery(List<AssetListCriteriaPair> assetListCriteriaList) {
+        AssetListCriteria assetListCriteria = new AssetListCriteria();
+        assetListCriteria.getCriterias().addAll(assetListCriteriaList);
+        assetListCriteria.setIsDynamic(false);
+        AssetListPagination assetListPagination = new AssetListPagination();
+        assetListPagination.setPage(1);
+        assetListPagination.setListSize(assetListCriteriaList.size());
+        AssetListQuery assetListQuery = new AssetListQuery();
+        assetListQuery.setAssetSearchCriteria(assetListCriteria);
+        assetListQuery.setPagination(assetListPagination);
+        return assetListQuery;
     }
 
     private List<FishingActivityEntity> cleanFromDeletionsAndCancelations(List<FishingActivityEntity> fishingActivityEntityList) {

@@ -10,6 +10,7 @@ details. You should have received a copy of the GNU General Public License along
  */
 package eu.europa.ec.fisheries.ers.service.bean;
 
+import static eu.europa.ec.fisheries.ers.service.mapper.FishingActivityMapper.getVesselIdentifierTypeList;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.CFR;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.EXT_MARK;
 import static eu.europa.ec.fisheries.uvms.activity.model.schemas.VesselIdentifierSchemeIdEnum.GFCM;
@@ -26,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,8 @@ import eu.europa.ec.fisheries.ers.fa.entities.FaReportDocumentEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingActivityIdentifierEntity;
 import eu.europa.ec.fisheries.ers.fa.entities.FishingTripIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.ers.fa.entities.VesselTransportMeansEntity;
 import eu.europa.ec.fisheries.ers.fa.utils.FaReportStatusType;
 import eu.europa.ec.fisheries.ers.fa.utils.UsmUtils;
 import eu.europa.ec.fisheries.ers.service.ActivityService;
@@ -78,6 +82,11 @@ import eu.europa.ec.fisheries.uvms.commons.geometry.utils.GeometryUtils;
 import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.spatial.model.schemas.AreaIdentifierType;
 import eu.europa.ec.fisheries.wsdl.asset.types.Asset;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteria;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListCriteriaPair;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListPagination;
+import eu.europa.ec.fisheries.wsdl.asset.types.AssetListQuery;
+import eu.europa.ec.fisheries.wsdl.asset.types.ConfigSearchField;
 import eu.europa.ec.fisheries.wsdl.user.types.Dataset;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -380,8 +389,97 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
 
     private List<FishingActivityReportDTO> mapToFishingActivityReportDTOList(List<FishingActivityEntity> activityList) {
         List<FishingActivityReportDTO> activityReportDTOList = new ArrayList<>();
+        Set<String> uniqueCFRs = activityList.stream().filter(t -> t.getCfr() != null).map(FishingActivityEntity::getCfr).collect(Collectors.toSet());
+
+        List<Asset> assetListResponse = new ArrayList<>();
+        try {
+            assetListResponse = assetsServiceBean.getAssetListResponse(getAssetListQuery(uniqueCFRs));
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
+        List<VesselIdentifierEntity> list = new ArrayList<>();
         for (FishingActivityEntity entity : activityList) {
+
+            String cfr = entity.getCfr();
+            if(cfr!=null){
+                for(Asset asset:assetListResponse){
+                    if(cfr.equals(asset.getCfr())){
+
+                        Set<String> collectedIdentifiers = entity.getVesselTransportMeans().stream().filter(k -> k.getVesselIdentifiers() != null && !k.getVesselIdentifiers().isEmpty())
+                                .map(t -> t.getVesselIdentifiers().stream().map(VesselIdentifierEntity::getVesselIdentifierSchemeId)).flatMap(r -> r).collect(Collectors.toSet());
+
+                        if(!collectedIdentifiers.contains("ICCAT")){
+                            VesselIdentifierEntity vit = new VesselIdentifierEntity();
+                            vit.setVesselIdentifierId(asset.getIccat());
+                            vit.setVesselIdentifierSchemeId("ICCAT");
+                            list.add(vit);
+                        }
+
+                        if(!collectedIdentifiers.contains("GFCM")){
+                            VesselIdentifierEntity vit = new VesselIdentifierEntity();
+                            vit.setVesselIdentifierId(asset.getGfcm());
+                            vit.setVesselIdentifierSchemeId("GFCM");
+                            list.add(vit);
+                        }
+
+                        if(!collectedIdentifiers.contains("UVI")){
+                            VesselIdentifierEntity vit = new VesselIdentifierEntity();
+                            vit.setVesselIdentifierId(asset.getUvi());
+                            vit.setVesselIdentifierSchemeId("UVI");
+                            list.add(vit);
+                        }
+
+                        if(!collectedIdentifiers.contains("IRCS")){
+                            VesselIdentifierEntity vit = new VesselIdentifierEntity();
+                            vit.setVesselIdentifierId(asset.getIrcs());
+                            vit.setVesselIdentifierSchemeId("IRCS");
+                            list.add(vit);
+                        }
+
+                        if(!collectedIdentifiers.contains("EXT_MARK")){
+                            VesselIdentifierEntity vit = new VesselIdentifierEntity();
+                            vit.setVesselIdentifierId(asset.getExternalMarking());
+                            vit.setVesselIdentifierSchemeId("EXT_MARK");
+                            list.add(vit);
+                        }
+
+                        if(!collectedIdentifiers.contains("CFR")){
+                            VesselIdentifierEntity vit = new VesselIdentifierEntity();
+                            vit.setVesselIdentifierId(asset.getCfr());
+                            vit.setVesselIdentifierSchemeId("CFR");
+                            list.add(vit);
+                        }
+
+                            entity.setGfcm(asset.getGfcm());
+                            entity.setExtMark(asset.getExternalMarking());
+                            entity.setUvi(asset.getUvi());
+                            entity.setIrcs(asset.getIrcs());
+                            entity.setIccat(asset.getIccat());
+
+                            entity.setCfrAlt(asset.getCfr());
+                            entity.setGfcmAlt(asset.getGfcm());
+                            entity.setExtMarkAlt(asset.getExternalMarking());
+                            entity.setUviAlt(asset.getUvi());
+                            entity.setIrcsAlt(asset.getIrcs());
+                            entity.setIccatAlt(asset.getIccat());
+
+                        if(entity.getVesselTransportMeans() != null && !entity.getVesselTransportMeans().isEmpty()) {
+                            entity.getVesselTransportMeans().iterator().next().getVesselIdentifiers().addAll(list);
+                        } else {
+                            VesselTransportMeansEntity vtme = new VesselTransportMeansEntity();
+                            vtme.setVesselIdentifiers(new HashSet<>(list));
+                            Set<VesselTransportMeansEntity> vtmeSet = new HashSet<>();
+                            vtmeSet.add(vtme);
+                            entity.setVesselTransportMeans(vtmeSet);
+                        }
+                        list.clear();
+                    }
+                }
+            }
+
             FishingActivityReportDTO fishingActivityReportDTO = FishingActivityMapper.INSTANCE.mapToFishingActivityReportDTO(entity);
+            fishingActivityReportDTO.setVesselIdentifiers(getVesselIdentifierTypeList(entity));
             // Switch the report ids if this activity was canceled or deleted (needed from FE to display correctly)
             if(fishingActivityReportDTO.getCancelingReportID() != 0){
                 fishingActivityReportDTO.setFaReportID(fishingActivityReportDTO.getCancelingReportID());
@@ -403,6 +501,30 @@ public class ActivityServiceBean extends BaseActivityBean implements ActivitySer
             activityReportDTOList.add(fishingActivityReportDTO);
         }
         return activityReportDTOList;
+    }
+
+    private AssetListQuery getAssetListQuery(Set<String> cfrSet){
+        List<AssetListCriteriaPair> assetListCriteriaList = new ArrayList<>();
+        for(String cfr:cfrSet){
+            AssetListCriteriaPair criteria = new AssetListCriteriaPair();
+            criteria.setKey(ConfigSearchField.CFR);
+            criteria.setValue(cfr);
+            assetListCriteriaList.add(criteria);
+        }
+       return createAssetListQuery(assetListCriteriaList);
+    }
+
+    private AssetListQuery createAssetListQuery(List<AssetListCriteriaPair> assetListCriteriaList) {
+        AssetListCriteria assetListCriteria = new AssetListCriteria();
+        assetListCriteria.getCriterias().addAll(assetListCriteriaList);
+        assetListCriteria.setIsDynamic(false);
+        AssetListPagination assetListPagination = new AssetListPagination();
+        assetListPagination.setPage(1);
+        assetListPagination.setListSize(assetListCriteriaList.size());
+        AssetListQuery assetListQuery = new AssetListQuery();
+        assetListQuery.setAssetSearchCriteria(assetListCriteria);
+        assetListQuery.setPagination(assetListPagination);
+        return assetListQuery;
     }
 
     private Geometry getRestrictedAreaGeometry(List<Dataset> datasets) throws ServiceException {
