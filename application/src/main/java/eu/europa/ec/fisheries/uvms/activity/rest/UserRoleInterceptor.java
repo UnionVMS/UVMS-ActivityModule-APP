@@ -19,8 +19,8 @@ import javax.ws.rs.core.Context;
 import java.io.Serializable;
 
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.ActivityFeaturesEnum;
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.rest.constants.ErrorCodes;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 @IUserRoleInterceptor
 @Interceptor

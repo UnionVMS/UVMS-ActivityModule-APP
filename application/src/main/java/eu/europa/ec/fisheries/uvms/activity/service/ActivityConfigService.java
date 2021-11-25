@@ -14,8 +14,6 @@
 package eu.europa.ec.fisheries.uvms.activity.service;
 
 import eu.europa.ec.fisheries.uvms.activity.service.dto.config.ActivityConfigDTO;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
-
 import javax.ejb.Local;
 
 @Local
@@ -28,7 +26,7 @@ public interface ActivityConfigService {
      * @return ActivityConfigDTO
      * @throws ServiceException
      */
-    ActivityConfigDTO getAdminConfig(String adminConfig) throws ServiceException;
+    ActivityConfigDTO getAdminConfig(String adminConfig);
 
     /**
      * This service converts the user config received from USM into Activity Config DTO and merges non overridden values
@@ -39,7 +37,7 @@ public interface ActivityConfigService {
      * @return ActivityConfigDTO
      * @throws ServiceException
      */
-    ActivityConfigDTO getUserConfig(String userConfig, String adminConfig) throws ServiceException;
+    ActivityConfigDTO getUserConfig(String userConfig, String adminConfig);
 
     /**
      * This service converts updates Admin Configuration received from frontend to Json String for saving into USM
@@ -48,7 +46,7 @@ public interface ActivityConfigService {
      * @return Admin config in Json String
      * @throws ServiceException
      */
-    String saveAdminConfig(ActivityConfigDTO config) throws ServiceException;
+    String saveAdminConfig(ActivityConfigDTO config);
 
     /**
      * This services updates the user configuration with the updated values received from fronend
@@ -59,7 +57,7 @@ public interface ActivityConfigService {
      * @return Admin config in Json String
      * @throws ServiceException
      */
-    String saveUserConfig(ActivityConfigDTO updatedConfig, String userConfig) throws ServiceException;
+    String saveUserConfig(ActivityConfigDTO updatedConfig, String userConfig);
 
     /**
      * This service reset selected properties in user configuration.
@@ -69,5 +67,5 @@ public interface ActivityConfigService {
      * @param userConfig
      * @throws ServiceException
      */
-    String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig) throws ServiceException;
+    String resetUserConfig(ActivityConfigDTO resetConfig, String userConfig);
 }

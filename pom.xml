@@ -32,15 +32,12 @@
         <!-- The activity name is used as a common point to rename the application alias visible in USM-->
         <activity.name>Activity</activity.name>
 
-        <!-- Java EE version -->
-        <javaee.version>8.0</javaee.version>
-
         <!-- Other UVMS module dependencies -->
         <activity.model.version>1.0.11-SWE</activity.model.version>
 
         <uvms.pom.version>3.6</uvms.pom.version>
-        <uvms.commons.version>4.1.7</uvms.commons.version>
-        <usm4uvms.version>4.1.1</usm4uvms.version>
+        <uvms.commons.version>4.1.11</uvms.commons.version>
+        <usm4uvms.version>4.1.9</usm4uvms.version>
         <uvms.maven.version>3.3</uvms.maven.version>
 
         <config.model.version>4.3.5</config.model.version>
@@ -57,14 +54,10 @@
         <apache.commons.lang3.version>3.11</apache.commons.lang3.version>
         <commons.io.version>2.6</commons.io.version>
         <lombok.version>1.18.20</lombok.version>
-        <slf4j.api.version>1.7.25</slf4j.api.version>
-        <jetbrains.annotations.java5.version>16.0.3</jetbrains.annotations.java5.version>
         <geotools.version>22.0</geotools.version>
 
         <!-- Test dependency versions -->
-        <uvms.test.version>0.0.4</uvms.test.version>
         <activemq.artemis.version>2.15.0</activemq.artemis.version>
-        <arquillian.jacoco.version>1.1.0</arquillian.jacoco.version>
 
         <!-- Test filter -->
         <activity.integration.test.filter>**/*IntegrationTest.java</activity.integration.test.filter>
@@ -185,12 +178,6 @@
                 <groupId>eu.europa.ec.fisheries.uvms</groupId>
                 <artifactId>usm4uvms</artifactId>
                 <version>${usm4uvms.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.fasterxml.jackson.core</groupId>
-                        <artifactId>jackson-databind</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>
@@ -303,13 +290,6 @@
             </dependency>
 
             <dependency>
-                <groupId>org.jboss.arquillian.extension</groupId>
-                <artifactId>arquillian-jacoco</artifactId>
-                <version>${arquillian.jacoco.version}</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>javax.json.bind</groupId>
                 <artifactId>javax.json.bind-api</artifactId>
                 <version>1.0</version>
@@ -414,55 +394,6 @@
             <properties>
                 <database.dialect>${application.database.dialect}</database.dialect>
             </properties>
-        </profile>
-
-        <profile>
-            <id>doclint-java8-disable</id>
-            <activation>
-                <jdk>1.8</jdk>
-            </activation>
-            <properties>
-                <javadoc.doclint>none</javadoc.doclint>
-            </properties>
-        </profile>
-
-        <!-- enforce-jdk-version -->
-        <profile>
-            <id>enforce-jdk-version</id>
-            <activation>
-                <!-- To disable profile, define property -Dfocus-pom.enforce.jdk.version.disabled=true -->
-                <property>
-                    <name>!focus-pom.enforce.jdk.version.disabled</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-enforcer-plugin</artifactId>
-                        <inherited>false</inherited>
-                        <executions>
-                            <execution>
-                                <id>enforce-jdk-version</id>
-                                <goals>
-                                    <goal>enforce</goal>
-                                </goals>
-                                <configuration>
-                                    <rules>
-                                        <enforceBytecodeVersion>
-                                            <maxJdkVersion>${focus-pom.java.version}</maxJdkVersion>
-                                            <!-- NOTE: xstream do contain support for multiple jdk:s -->
-                                            <excludes>
-                                                <exclude>com.thoughtworks.xstream:xstream</exclude>
-                                            </excludes>
-                                        </enforceBytecodeVersion>
-                                    </rules>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 

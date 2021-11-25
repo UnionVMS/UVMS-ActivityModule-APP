@@ -12,7 +12,6 @@ package eu.europa.ec.fisheries.uvms.activity.service;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.FluxFaReportMessageEntity;
 import eu.europa.ec.fisheries.uvms.activity.fa.utils.FaReportSourceEnum;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import un.unece.uncefact.data.standard.fluxfareportmessage._3.FLUXFAReportMessage;
 
 public interface FluxMessageService {

@@ -15,10 +15,10 @@ package eu.europa.ec.fisheries.uvms.activity.fa.entities;
 
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingActivitySearchBuilder;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.SearchQueryBuilder;
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.SortKey;
 import eu.europa.ec.fisheries.uvms.activity.model.schemas.SearchFilter;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.junit.Test;
 
 import java.util.HashMap;

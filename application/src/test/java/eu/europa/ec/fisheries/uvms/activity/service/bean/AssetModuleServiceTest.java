@@ -10,10 +10,10 @@ details. You should have received a copy of the GNU General Public License along
 */
 package eu.europa.ec.fisheries.uvms.activity.service.bean;
 
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.asset.client.AssetClient;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

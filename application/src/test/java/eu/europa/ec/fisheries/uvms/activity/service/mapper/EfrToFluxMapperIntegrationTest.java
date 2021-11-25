@@ -10,7 +10,7 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.FishingReport
 import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.PriorNotificationDto;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.PriorNotificationEstimatedCatch;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.efrbackend.UserSpecifiedLocation;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ModelMapperException;
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ModelMapperException;
 import org.jboss.arquillian.junit.Arquillian;
 import org.junit.Before;
 import org.junit.Test;

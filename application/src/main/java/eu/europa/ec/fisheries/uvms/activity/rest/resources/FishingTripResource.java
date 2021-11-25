@@ -17,8 +17,8 @@ import eu.europa.ec.fisheries.uvms.activity.rest.ActivityExceptionInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.rest.IUserRoleInterceptor;
 import eu.europa.ec.fisheries.uvms.activity.service.FishingTripService;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvolutionDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.commons.rest.resource.UnionVMSResource;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.ejb.EJB;

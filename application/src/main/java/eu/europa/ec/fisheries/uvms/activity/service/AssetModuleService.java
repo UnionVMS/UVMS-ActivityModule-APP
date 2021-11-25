@@ -14,9 +14,9 @@
 package eu.europa.ec.fisheries.uvms.activity.service;
 
 import eu.europa.ec.fisheries.uvms.activity.fa.entities.VesselIdentifierEntity;
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.asset.client.model.AssetDTO;
 import eu.europa.ec.fisheries.uvms.asset.client.model.search.SearchBranch;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 import java.util.Collection;
 import java.util.List;

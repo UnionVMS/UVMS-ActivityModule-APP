@@ -13,10 +13,10 @@
 
 package eu.europa.ec.fisheries.uvms.activity.fa.dao;
 
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingTripId;
 import eu.europa.ec.fisheries.uvms.activity.service.search.builder.FishingTripIdSearchBuilder;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 

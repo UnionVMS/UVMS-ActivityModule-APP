@@ -19,8 +19,8 @@ import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchEvoluti
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.CatchSummaryListDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.FishingTripSummaryViewDTO;
 import eu.europa.ec.fisheries.uvms.activity.service.dto.fishingtrip.MessageCountDTO;
+import eu.europa.ec.fisheries.uvms.activity.service.exception.ServiceException;
 import eu.europa.ec.fisheries.uvms.activity.service.search.FishingActivityQuery;
-import eu.europa.ec.fisheries.uvms.commons.service.exception.ServiceException;
 
 import java.util.Map;
 
