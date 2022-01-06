@@ -22,6 +22,11 @@
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
                     <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <archive>
+                        <manifestEntries>
+                            <Logging-Profile>activity-logging-profile</Logging-Profile>
+                        </manifestEntries>
+                    </archive>
                     <modules>
                         <ejbModule>
                             <groupId>${project.groupId}</groupId>
@@ -124,6 +129,12 @@
             <groupId>eu.europa.ec.mare.usm</groupId>
             <artifactId>jwt-handler-impl</artifactId>
             <version>${usm.jwt-handler.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>fish.focus.uvms.maven</groupId>
+                    <artifactId>uvms-pom-logging-deps</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
