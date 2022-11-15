@@ -58,7 +58,7 @@
         <sl4j.version>1.7.25</sl4j.version>
         <logback.version>1.2.3</logback.version>
         <mapstruct.version>1.2.0.Final</mapstruct.version>
-        <jackson.version>2.10.0</jackson.version>
+        <jackson.version>2.12.7.1</jackson.version>
         <logback.core.version>1.2.3</logback.core.version>
         <asset.model.version>4.0.18</asset.model.version>
         <movement.model.version>4.0.9</movement.model.version>
